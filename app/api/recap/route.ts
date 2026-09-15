@@ -52,7 +52,7 @@ export async function GET(req: NextRequest) {
       const cached = debug ? undefined : cacheGet<RankedCandidate[]>(cacheKey);
       if (cached) {
         send({ type: 'batch', results: cached, pending: 0 });
-        send({ type: 'done', results: cached });
+        send({ type: 'done', results: cached, ytRateLimited: false });
         controller.close();
         return;
       }
@@ -62,6 +62,9 @@ export async function GET(req: NextRequest) {
       // Per-group diagnostics (counts + error messages, no secrets) so a
       // failing source can be identified without server log access.
       const diag: Array<Record<string, unknown>> = [];
+      // True when YouTube rate-limited us: the UI should say "try again
+      // later" instead of showing an empty "no recaps" state.
+      let ytRateLimited = false;
       // When preferred channels (IPFL / ONE on YouTube) have an actual
       // highlights video for the game, everything else is excluded as lower
       // quality. Punditry/news from those channels does not trigger this.
@@ -100,7 +103,9 @@ export async function GET(req: NextRequest) {
             if (debug) diag.push({ group: g.name, fetched: raw.length, kept });
           } catch (e) {
             /* a failing source group must not fail the whole search */
-            if (debug) diag.push({ group: g.name, error: (e as Error)?.message ?? String(e) });
+            const msg = (e as Error)?.message ?? String(e);
+            if (msg === 'HTTP 429' && g.name.startsWith('youtube')) ytRateLimited = true;
+            if (debug) diag.push({ group: g.name, error: msg });
           }
           pending -= 1;
           emit();
@@ -112,7 +117,7 @@ export async function GET(req: NextRequest) {
       // API quota (each fresh search costs ~8-10 search calls). Debug runs
       // bypass the cache so they always reflect a live search.
       if (!debug) cacheSet(cacheKey, finalRanked, 24 * 3600 * 1000);
-      send({ type: 'done', results: finalRanked, ...(debug ? { diag } : {}) });
+      send({ type: 'done', results: finalRanked, ytRateLimited, ...(debug ? { diag } : {}) });
       controller.close();
     },
   });
