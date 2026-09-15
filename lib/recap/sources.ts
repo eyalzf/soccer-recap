@@ -129,9 +129,8 @@ export async function fetchYouTube(
   try {
     const g = new Date(game.dateISO).getTime();
     const after = new Date(g - 6 * DAY).toISOString();
-    // Extended highlights ("תקציר מורחב") are often published 2-4 days after
-    // the game; keep the window wide and let the date filter/ranking sort it.
-    const before = new Date(g + 5 * DAY).toISOString();
+    // Bisection: back to +2d to test whether the +5d window broke Hebrew search.
+    const before = new Date(g + 2 * DAY).toISOString();
 
     const homeHe = hebrewVariants(game.home)[0];
     const awayHe = hebrewVariants(game.away)[0];
