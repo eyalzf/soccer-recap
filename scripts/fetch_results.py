@@ -336,17 +336,11 @@ def main():
         else:
             print(f"{slug}: loaded {len(st['games'])} stored games "
                   f"(season {st['season']})", flush=True)
-        # One-time migration: start checked_through a few days before the
-        # newest stored game so a stale backfill can't hide missed dates.
+        # One-time migration: the backfill was verified current today, so
+        # start the watermark at yesterday. This trusts the backfill for
+        # earlier dates rather than re-fetching them at 1 credit each.
         if not st["checked_through"]:
-            dates = sorted(g["dateISO"][:10] for g in st["games"].values()
-                           if g.get("dateISO"))
-            if dates:
-                anchor = (datetime.date.fromisoformat(dates[-1])
-                          - datetime.timedelta(days=3))
-                st["checked_through"] = anchor.isoformat()
-            else:
-                st["checked_through"] = yesterday.isoformat()
+            st["checked_through"] = yesterday.isoformat()
 
     # Incremental catch-up. Collect the union of dates the leagues still
     # need and fetch each date ONCE; matches_by_date returns every league,
