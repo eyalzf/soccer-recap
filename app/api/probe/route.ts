@@ -19,6 +19,9 @@ const ALLOWLIST = new Set([
   'www.uefa.com',
   'int.soccerway.com',
   'www.soccerway.com',
+  'footballdata.io',
+  'www.footballdata.io',
+  'api.footballdata.io',
 ]);
 
 const UA =
