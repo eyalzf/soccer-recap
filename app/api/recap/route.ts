@@ -48,7 +48,7 @@ export async function GET(req: NextRequest) {
         controller.enqueue(encoder.encode(`data: ${JSON.stringify(obj)}\n\n`));
       };
 
-      const cached = cacheGet<RankedCandidate[]>(cacheKey);
+      const cached = debug ? undefined : cacheGet<RankedCandidate[]>(cacheKey);
       if (cached) {
         send({ type: 'batch', results: cached, pending: 0 });
         send({ type: 'done', results: cached });
@@ -58,6 +58,10 @@ export async function GET(req: NextRequest) {
 
       const accepted: RawCandidate[] = [];
       const seen = new Set<string>();
+      const debug = req.nextUrl.searchParams.get('debug') === '1';
+      // Per-group diagnostics (counts + error messages, no secrets) so a
+      // failing source can be identified without server log access.
+      const diag: Array<Record<string, unknown>> = [];
       // When preferred channels (IPFL / ONE on YouTube) have an actual
       // highlights video for the game, everything else is excluded as lower
       // quality. Punditry/news from those channels does not trigger this.
@@ -84,13 +88,19 @@ export async function GET(req: NextRequest) {
         groups.map(async (g) => {
           try {
             const raw = await g.run();
+            let kept = 0;
             for (const c of raw) {
               if (seen.has(c.id)) continue;
               seen.add(c.id);
-              if (filterCandidate(c, game).keep) accepted.push(c);
+              if (filterCandidate(c, game).keep) {
+                accepted.push(c);
+                kept += 1;
+              }
             }
-          } catch {
+            if (debug) diag.push({ group: g.name, fetched: raw.length, kept });
+          } catch (e) {
             /* a failing source group must not fail the whole search */
+            if (debug) diag.push({ group: g.name, error: (e as Error)?.message ?? String(e) });
           }
           pending -= 1;
           emit();
@@ -99,9 +109,10 @@ export async function GET(req: NextRequest) {
 
       const finalRanked = rankCandidates(visible(accepted), game);
       // Recaps for a finished game don't change; cache long to spare YouTube
-      // API quota (each fresh search costs ~8-10 search calls).
-      cacheSet(cacheKey, finalRanked, 24 * 3600 * 1000);
-      send({ type: 'done', results: finalRanked });
+      // API quota (each fresh search costs ~8-10 search calls). Debug runs
+      // bypass the cache so they always reflect a live search.
+      if (!debug) cacheSet(cacheKey, finalRanked, 24 * 3600 * 1000);
+      send({ type: 'done', results: finalRanked, ...(debug ? { diag } : {}) });
       controller.close();
     },
   });
