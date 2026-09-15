@@ -1,12 +1,22 @@
 #!/usr/bin/env python3
-"""Phase 1 (exploratory): dump raw parse.bot FotMob API responses.
+"""Daily listings pipeline: FotMob API (via parse.bot) -> per-league JSON.
 
-Calls get_leagues, get_historical_match_results (param variants) and
-get_matches_by_date, saving every raw response under data/raw/ for
-inspection. The committed per-league files are built in phase 2 once
-the exact shapes are known.
+- Resolves the 4 league IDs via get_leagues (expected: PL 47, LaLiga 87,
+  Israel 127, UCL 42).
+- Backfills the current season via get_historical_match_results (one call
+  per league) when no local data file exists or the season rolled over.
+- Incrementally fetches get_matches_by_date for days missing since the
+  last run (capped), merging new finished games.
+- Writes data/<slug>.json: {league, league_id, season, updated_at, games[]}.
+  The app serves these files; it never calls parse.bot at request time.
+
+Team crests: matches_by_date carries FotMob team IDs, so badge URLs use
+FotMob's image CDN. A persistent name->id map (data/team_ids.json) lets
+older backfilled games gain crests once their teams appear in a daily fetch.
 
 Requires PARSE_BOT_API_KEY in the environment (GitHub Actions secret).
+Exits non-zero without touching data files when the API is unreachable,
+so the workflow fails loudly instead of committing empty data.
 """
 import datetime
 import json
@@ -24,6 +34,17 @@ if not KEY:
           flush=True)
     sys.exit(1)
 
+TEAM_LOGO = "https://images.fotmob.com/image_resources/logo/teamlogo/{id}.png"
+
+# slug -> (expected parse.bot league id, name keywords for resolution)
+LEAGUES = {
+    "premier-league": (47, ["premier league"], "ENG"),
+    "la-liga": (87, ["laliga", "la liga", "primera"], "ESP"),
+    "israeli-league": (127, ["israel", "ligat"], "ISR"),
+    "champions-league": (42, ["champions league"], "INT"),
+}
+MAX_CATCHUP_DAYS = 7
+
 
 def call(endpoint, params=None):
     url = f"{API}/{endpoint}"
@@ -33,31 +54,28 @@ def call(endpoint, params=None):
         url, headers={"X-API-Key": KEY, "Accept": "application/json"})
     try:
         with urllib.request.urlopen(req, timeout=60) as r:
-            return r.status, json.loads(r.read().decode("utf-8", "replace"))
+            return json.loads(r.read().decode("utf-8", "replace"))
     except urllib.error.HTTPError as e:
         try:
-            body = e.read().decode("utf-8", "replace")[:800]
+            body = e.read().decode("utf-8", "replace")[:300]
         except Exception:
             body = "<unreadable>"
-        return e.code, {"http_error": e.code, "body": body}
-    except Exception as e:  # noqa: BLE001
-        return -1, {"transport_error": str(e)}
+        raise RuntimeError(f"{endpoint} HTTP {e.code}: {body}") from e
+    except Exception as e:
+        raise RuntimeError(f"{endpoint} transport error: {e}") from e
 
 
-def dump(name, obj):
-    os.makedirs("data/raw", exist_ok=True)
-    path = f"data/raw/{name}.json"
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump(obj, f, ensure_ascii=False, indent=1)
-    print(f"saved {path}", flush=True)
+def ok_data(res, endpoint):
+    if not isinstance(res, dict) or res.get("status") != "success":
+        raise RuntimeError(f"{endpoint}: unsuccessful envelope: "
+                           f"{json.dumps(res)[:300]}")
+    return res.get("data")
 
 
 def find_leagues(node, out):
-    """Recursively collect {id, name} dicts from a grouped league listing."""
     if isinstance(node, dict):
         if isinstance(node.get("id"), (int, float)) and isinstance(node.get("name"), str):
-            out.append({"id": int(node["id"]), "name": node["name"],
-                        "ccode": node.get("ccode"), "pageUrl": node.get("pageUrl")})
+            out.append(node)
         for v in node.values():
             find_leagues(v, out)
     elif isinstance(node, list):
@@ -65,34 +83,191 @@ def find_leagues(node, out):
             find_leagues(v, out)
 
 
-def main():
-    # 1. League catalogue (no params).
-    status, leagues = call("get_leagues")
-    dump("leagues", {"status": status, "body": leagues})
+def resolve_league_ids():
+    data = ok_data(call("get_leagues"), "get_leagues")
     found = []
-    if status == 200:
-        find_leagues(leagues, found)
-        print(f"found {len(found)} leagues", flush=True)
+    find_leagues(data, found)
+    print(f"get_leagues: {len(found)} leagues", flush=True)
+    resolved = {}
+    for slug, (expected, keywords, ccode) in LEAGUES.items():
+        candidates = []
         for lg in found:
-            n = lg["name"].lower()
-            if any(k in n for k in ("israel", "premier league", "la liga",
-                                    "primera", "champions league", "ligat")):
-                print(f"  CANDIDATE id={lg['id']} name={lg['name']!r} ccode={lg.get('ccode')}",
-                      flush=True)
+            n = str(lg.get("name", "")).lower()
+            if any(k in n for k in keywords):
+                candidates.append(lg)
+        match = None
+        # Prefer the candidate from the expected country (many countries
+        # have a league literally named "Premier League").
+        for lg in candidates:
+            if str(lg.get("ccode", "")).upper() == ccode:
+                match = lg
+                break
+        match = match or (candidates[0] if candidates else None)
+        if match and int(match["id"]) != expected:
+            print(f"NOTE: {slug} resolved to id={match['id']} "
+                  f"(expected {expected}); using resolved", flush=True)
+            resolved[slug] = int(match["id"])
+        elif match:
+            resolved[slug] = int(match["id"])
+        else:
+            print(f"WARNING: {slug} not found in get_leagues; "
+                  f"falling back to expected id {expected}", flush=True)
+            resolved[slug] = expected
+        print(f"  {slug} -> {resolved[slug]}", flush=True)
+    return resolved
 
-    # 2. Historical results for Israel (id 127, verified by user) — try param variants.
-    for pname in ("league_id", "id", "leagueId"):
-        status, res = call("get_historical_match_results", {pname: 127})
-        dump(f"historical_israel_{pname}", {"status": status, "body": res})
-        preview = json.dumps(res, ensure_ascii=False)[:300]
-        print(f"historical {pname}=127 -> {status}: {preview}", flush=True)
 
-    # 3. Matches by date (yesterday) — all leagues, one call.
-    yesterday = (datetime.date.today() - datetime.timedelta(days=1)).strftime("%Y%m%d")
-    status, res = call("get_matches_by_date", {"date": yesterday})
-    dump("matches_by_date", {"status": status, "body": res})
-    print(f"matches_by_date {yesterday} -> {status}, "
-          f"{len(json.dumps(res, ensure_ascii=False))} chars", flush=True)
+def norm_historical(m):
+    """Normalize one get_historical_match_results record, or None."""
+    if m.get("status") != "finished":
+        return None
+    ft = (m.get("regulation_score") or {}).get("ft") or {}
+    hs, aws = ft.get("home"), ft.get("away")
+    if not isinstance(hs, int) or not isinstance(aws, int):
+        return None
+    if not m.get("home_team") or not m.get("away_team") or not m.get("date"):
+        return None
+    return {
+        "id": str(m.get("match_id")),
+        "home": m["home_team"],
+        "away": m["away_team"],
+        "dateISO": m["date"],
+        "homeScore": hs,
+        "awayScore": aws,
+        "homeBadge": None,
+        "awayBadge": None,
+        "round": m.get("round"),
+    }
+
+
+def norm_daily(m):
+    """Normalize one get_matches_by_date match, or None. Returns (game, team_ids)."""
+    st = m.get("status") or {}
+    reason = (st.get("reason") or {}).get("longKey", "")
+    if not (st.get("finished") or reason == "finished"):
+        return None
+    home, away = m.get("home") or {}, m.get("away") or {}
+    hs, aws = home.get("score"), away.get("score")
+    if not isinstance(hs, int) or not isinstance(aws, int):
+        return None
+    if not home.get("name") or not away.get("name"):
+        return None
+    date_iso = st.get("utcTime") or m.get("timeTS")
+    if not date_iso:
+        return None
+    if isinstance(date_iso, (int, float)):
+        date_iso = datetime.datetime.fromtimestamp(
+            date_iso / 1000, tz=datetime.timezone.utc).isoformat()
+    tids = {}
+    if home.get("id"):
+        tids[home["name"]] = int(home["id"])
+    if away.get("id"):
+        tids[away["name"]] = int(away["id"])
+    game = {
+        "id": str(m.get("id")),
+        "home": home["name"],
+        "away": away["name"],
+        "dateISO": date_iso,
+        "homeScore": hs,
+        "awayScore": aws,
+        "homeBadge": TEAM_LOGO.format(id=home["id"]) if home.get("id") else None,
+        "awayBadge": TEAM_LOGO.format(id=away["id"]) if away.get("id") else None,
+        "round": m.get("tournamentStage"),
+    }
+    return game, tids
+
+
+def load_json(path):
+    if os.path.exists(path):
+        with open(path, encoding="utf-8") as f:
+            return json.load(f)
+    return None
+
+
+def main():
+    os.makedirs("data", exist_ok=True)
+    os.makedirs("data/raw", exist_ok=True)
+    league_ids = resolve_league_ids()
+
+    for slug, lid in league_ids.items():
+        path = f"data/{slug}.json"
+        existing = load_json(path)
+        games_by_id = {}
+        season = None
+        # name -> FotMob team id, accumulated across runs for badge backfill.
+        team_ids = dict((existing or {}).get("team_ids") or {})
+
+        # Backfill when no file exists or the season rolled over.
+        need_backfill = True
+        if existing and existing.get("games"):
+            need_backfill = False
+        hist = ok_data(call("get_historical_match_results", {"league_id": lid}),
+                       "get_historical_match_results")
+        season = hist.get("season")
+        if need_backfill or (existing and existing.get("season") != season):
+            print(f"{slug}: backfilling season {season}", flush=True)
+            for m in hist.get("matches") or []:
+                g = norm_historical(m)
+                if g:
+                    games_by_id[g["id"]] = g
+        else:
+            for g in existing.get("games", []):
+                games_by_id[g["id"]] = g
+            print(f"{slug}: loaded {len(games_by_id)} stored games "
+                  f"(season {existing.get('season')})", flush=True)
+
+        # Incremental catch-up for days missing since the last stored game.
+        dates = sorted(g["dateISO"][:10] for g in games_by_id.values())
+        if dates:
+            last = datetime.date.fromisoformat(dates[-1])
+            today = datetime.date.today()
+            missing = []
+            d = last + datetime.timedelta(days=1)
+            while d < today and len(missing) < MAX_CATCHUP_DAYS:
+                missing.append(d)
+                d += datetime.timedelta(days=1)
+            for d in missing:
+                ds = d.strftime("%Y%m%d")
+                data = ok_data(call("get_matches_by_date", {"date": ds}),
+                               "get_matches_by_date")
+                added = 0
+                for lg in (data.get("leagues") or []):
+                    if int(lg.get("id", -1)) != lid:
+                        continue
+                    for m in lg.get("matches") or []:
+                        r = norm_daily(m)
+                        if not r:
+                            continue
+                        g, tids = r
+                        team_ids.update(tids)
+                        if g["id"] not in games_by_id:
+                            games_by_id[g["id"]] = g
+                            added += 1
+                print(f"{slug}: {ds} +{added} games", flush=True)
+
+        # Enrich older games' badges from the accumulated name->id map.
+        for g in games_by_id.values():
+            if not g.get("homeBadge") and g["home"] in team_ids:
+                g["homeBadge"] = TEAM_LOGO.format(id=team_ids[g["home"]])
+            if not g.get("awayBadge") and g["away"] in team_ids:
+                g["awayBadge"] = TEAM_LOGO.format(id=team_ids[g["away"]])
+
+        games = sorted(games_by_id.values(),
+                       key=lambda g: g["dateISO"], reverse=True)
+        out = {
+            "league": slug,
+            "league_id": lid,
+            "season": season,
+            "updated_at": datetime.datetime.now(
+                datetime.timezone.utc).isoformat(),
+            "team_ids": team_ids,
+            "games": games,
+        }
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(out, f, ensure_ascii=False, indent=1)
+        print(f"{slug}: wrote {len(games)} games -> {path}", flush=True)
+
+    print("done")
 
 
 if __name__ == "__main__":
