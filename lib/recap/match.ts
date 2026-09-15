@@ -78,6 +78,11 @@ const EXCLUDED = [
   'legends', 'אגדות',
   'preview', 'לקראת', 'press conference', 'מסיבת עיתונאים',
   'friendly', 'ידידות',
+  // Compilations of older games, often published recently: the publish-date
+  // filter cannot catch these, so reject them by title.
+  'classic', 'classics', 'קלאסי', 'קלאסיקה',
+  'best of', 'top 10', 'top10', 'מצעד',
+  'history', 'היסטוריה', 'retro', 'רטרו', 'throwback',
 ];
 
 export function excludedCategory(title: string): string | null {
@@ -117,6 +122,12 @@ export function isTrusted(c: RawCandidate): boolean {
   if (TRUSTED_YT_HANDLES.includes(h)) return true;
   const name = (c.channelName || '').toLowerCase();
   return name.includes('ipfl') || name === 'one';
+}
+
+/** Preferred YouTube channels only (IPFL / ONE): when these have results for
+ *  a game, everything else is excluded as lower quality. */
+export function isPreferredChannel(c: RawCandidate): boolean {
+  return c.source === 'youtube' && isTrusted(c);
 }
 
 export interface FilterResult {
