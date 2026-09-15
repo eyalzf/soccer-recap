@@ -1,0 +1,44 @@
+name: Fetch match results
+
+on:
+  schedule:
+    - cron: '0 5 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Fetch results from parse.bot
+        env:
+          PARSE_BOT_API_KEY: ${{ secrets.PARSE_BOT_API_KEY }}
+        run: python3 scripts/fetch_results.py
+
+      - name: Upload raw API dumps (debugging)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: raw-dumps
+          path: data/raw/
+          retention-days: 7
+
+      - name: Commit updated data files
+        run: |
+          git config user.name "results-bot"
+          git config user.email "results-bot@users.noreply.github.com"
+          git add data/premier-league.json data/la-liga.json data/israeli-league.json data/champions-league.json
+          if git diff --cached --quiet; then
+            echo "No data changes."
+          else
+            git commit -m "Update match results data"
+            git push
+          fi
