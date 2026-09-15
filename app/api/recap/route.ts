@@ -48,6 +48,7 @@ export async function GET(req: NextRequest) {
         controller.enqueue(encoder.encode(`data: ${JSON.stringify(obj)}\n\n`));
       };
 
+      const debug = req.nextUrl.searchParams.get('debug') === '1';
       const cached = debug ? undefined : cacheGet<RankedCandidate[]>(cacheKey);
       if (cached) {
         send({ type: 'batch', results: cached, pending: 0 });
@@ -58,7 +59,6 @@ export async function GET(req: NextRequest) {
 
       const accepted: RawCandidate[] = [];
       const seen = new Set<string>();
-      const debug = req.nextUrl.searchParams.get('debug') === '1';
       // Per-group diagnostics (counts + error messages, no secrets) so a
       // failing source can be identified without server log access.
       const diag: Array<Record<string, unknown>> = [];
