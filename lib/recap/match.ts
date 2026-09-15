@@ -1,6 +1,7 @@
 import type { ClubEntry } from '../teams';
 import { lookupClubEn } from '../teamIndex';
 import type { GameInput, RawCandidate } from './types';
+import { LEAGUE_SEARCH_PLANS } from './leaguePlans';
 
 export const hasHebrew = (s: string): boolean => /[\u0590-\u05FF]/.test(s);
 
@@ -113,7 +114,15 @@ export function dateProximity(publishedAt: string | undefined, gameISO: string):
   return 'bad';
 }
 
-export const TRUSTED_YT_HANDLES = ['ipflofficial', 'one-1004'];
+export const TRUSTED_YT_HANDLES: string[] = [
+  ...new Set(
+    Object.values(LEAGUE_SEARCH_PLANS)
+      .flatMap((p) => p.preferred.map((s) => s.handle))
+      .map((h) => h.toLowerCase().replace(/^@/, ''))
+  ),
+];
+
+/** Preferred YouTube channels (see lib/recap/leaguePlans.ts). */
 
 /** Trusted Hebrew sources: official IPFL / ONE YouTube channels, Sport1/Sport5/ONE sites. */
 export function isTrusted(c: RawCandidate): boolean {
