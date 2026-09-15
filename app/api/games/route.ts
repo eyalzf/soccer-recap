@@ -19,8 +19,8 @@ export async function GET(req: NextRequest) {
   if (nocache) cacheDel(`games:${def.slug}`);
 
   const games = await getLeagueGames(def.slug);
-  const total = games.length;
-  const items = games
+  const total = games.games.length;
+  const items = games.games
     .slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE)
     .map((g) => ({
       ...g,
@@ -31,11 +31,13 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({
     league: def.slug,
     leagueHe: def.hebrewName,
-    leagueBadge: games[0]?.leagueBadge ?? null,
+    leagueBadge: `https://api.sofascore.com/api/v1/unique-tournament/${def.sofascoreUtid}/image`,
     page,
     pageSize: PAGE_SIZE,
     total,
     hasMore: (page + 1) * PAGE_SIZE < total,
     items,
+    // Additive debug aid: present only when the listings fetch failed.
+    ...(games.error ? { _error: games.error } : {}),
   });
 }
