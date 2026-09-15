@@ -113,8 +113,10 @@ export async function GET(req: NextRequest) {
 
       // Phase 1: preferred channels in priority order, one search each
       // (YouTube allows a single channelId per search.list call). Stop at
-      // the first channel with a proper highlight result.
+      // the first channel with a proper highlight result. A 429 means the
+      // rate limiter is engaged: further calls would fail too, so stop.
       for (const src of plan.preferred) {
+        if (ytRateLimited) break;
         const channelId = await channelIdForHandle(src.handle);
         if (!channelId) {
           if (debug) diag.push({ search: 'preferred:' + src.handle, skipped: 'unresolved handle' });
@@ -131,11 +133,11 @@ export async function GET(req: NextRequest) {
       }
 
       // Phase 2: general-search fallback, only when no preferred channel hit.
-      if (!hasProperHighlight()) {
+      if (!ytRateLimited && !hasProperHighlight()) {
         for (const lang of plan.fallbackLangs) {
           const q = lang === 'he' ? hebrewQuery(game) : englishQuery(game);
           await runSearch('general:' + lang, { q, lang });
-          if (hasProperHighlight()) break;
+          if (ytRateLimited || hasProperHighlight()) break;
         }
       } else if (debug) {
         diag.push({ shortCircuited: true });
