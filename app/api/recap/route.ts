@@ -98,7 +98,9 @@ export async function GET(req: NextRequest) {
       );
 
       const finalRanked = rankCandidates(visible(accepted), game);
-      cacheSet(cacheKey, finalRanked, 6 * 3600 * 1000);
+      // Recaps for a finished game don't change; cache long to spare YouTube
+      // API quota (each fresh search costs ~8-10 search calls).
+      cacheSet(cacheKey, finalRanked, 24 * 3600 * 1000);
       send({ type: 'done', results: finalRanked });
       controller.close();
     },
