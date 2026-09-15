@@ -126,8 +126,8 @@ export default function Home() {
 
       <footer className="attribution">
         <span>מקור נתוני המשחקים: </span>
-        <a href="https://sportscore.com" target="_blank" rel="noopener noreferrer">
-          Powered by SportScore
+        <a href="https://www.fotmob.com" target="_blank" rel="noopener noreferrer">
+          FotMob
         </a>
       </footer>
     </div>
