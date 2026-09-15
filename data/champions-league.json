@@ -1,0 +1,190 @@
+{
+ "league": "champions-league",
+ "league_id": 42,
+ "season": "2026/2027",
+ "updated_at": "2026-09-15T14:30:07.977655+00:00",
+ "last_historical_check": "2026-09-15T14:30:07.977655+00:00",
+ "team_ids": {},
+ "games": [
+  {
+   "id": "6106240",
+   "home": "Bayern München",
+   "away": "Bodø/Glimt",
+   "dateISO": "2026-09-10T19:00:00.000Z",
+   "homeScore": 5,
+   "awayScore": 0,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "6106411",
+   "home": "Como",
+   "away": "RB Leipzig",
+   "dateISO": "2026-09-10T19:00:00.000Z",
+   "homeScore": 4,
+   "awayScore": 1,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "6106293",
+   "home": "Manchester United",
+   "away": "Sabah FK",
+   "dateISO": "2026-09-10T19:00:00.000Z",
+   "homeScore": 4,
+   "awayScore": 0,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "6106392",
+   "home": "Slavia Prague",
+   "away": "Lens",
+   "dateISO": "2026-09-10T19:00:00.000Z",
+   "homeScore": 2,
+   "awayScore": 3,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "6106331",
+   "home": "Fenerbahçe",
+   "away": "Roma",
+   "dateISO": "2026-09-10T16:45:00.000Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "6106304",
+   "home": "PSV Eindhoven",
+   "away": "Shakhtar Donetsk",
+   "dateISO": "2026-09-10T16:45:00.000Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "6106246",
+   "home": "Liverpool",
+   "away": "Atlético Madrid",
+   "dateISO": "2026-09-09T19:00:00.000Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "6106237",
+   "home": "Paris Saint-Germain",
+   "away": "Slovan Bratislava",
+   "dateISO": "2026-09-09T19:00:00.000Z",
+   "homeScore": 6,
+   "awayScore": 1,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "6106280",
+   "home": "Sporting CP",
+   "away": "Galatasaray",
+   "dateISO": "2026-09-09T19:00:00.000Z",
+   "homeScore": 3,
+   "awayScore": 1,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "6106318",
+   "home": "Napoli",
+   "away": "Arsenal",
+   "dateISO": "2026-09-09T19:00:00.000Z",
+   "homeScore": 0,
+   "awayScore": 1,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "6106264",
+   "home": "Barcelona",
+   "away": "Feyenoord",
+   "dateISO": "2026-09-09T16:45:00.000Z",
+   "homeScore": 5,
+   "awayScore": 1,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "6106400",
+   "home": "VfB Stuttgart",
+   "away": "Viking",
+   "dateISO": "2026-09-09T16:45:00.000Z",
+   "homeScore": 3,
+   "awayScore": 1,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "6106272",
+   "home": "Borussia Dortmund",
+   "away": "Villarreal",
+   "dateISO": "2026-09-08T19:00:00.000Z",
+   "homeScore": 3,
+   "awayScore": 2,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "6106286",
+   "home": "FC Porto",
+   "away": "Manchester City",
+   "dateISO": "2026-09-08T19:00:00.000Z",
+   "homeScore": 0,
+   "awayScore": 2,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "6106311",
+   "home": "Lille",
+   "away": "Real Betis",
+   "dateISO": "2026-09-08T19:00:00.000Z",
+   "homeScore": 2,
+   "awayScore": 3,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "6106242",
+   "home": "Real Madrid",
+   "away": "Inter",
+   "dateISO": "2026-09-08T19:00:00.000Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "6106404",
+   "home": "AEK Athens",
+   "away": "LASK",
+   "dateISO": "2026-09-08T16:45:00.000Z",
+   "homeScore": 1,
+   "awayScore": 0,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "6106295",
+   "home": "Club Brugge",
+   "away": "Aston Villa",
+   "dateISO": "2026-09-08T16:45:00.000Z",
+   "homeScore": 2,
+   "awayScore": 3,
+   "homeBadge": null,
+   "awayBadge": null
+  }
+ ]
+}

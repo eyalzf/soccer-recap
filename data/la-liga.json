@@ -1,0 +1,520 @@
+{
+ "league": "la-liga",
+ "league_id": 87,
+ "season": "2026/2027",
+ "updated_at": "2026-09-15T14:30:07.977655+00:00",
+ "last_historical_check": "2026-09-15T14:30:07.977655+00:00",
+ "team_ids": {},
+ "games": [
+  {
+   "id": "5868060",
+   "home": "Villarreal",
+   "away": "Real Betis",
+   "dateISO": "2026-09-14T19:00:00.000Z",
+   "homeScore": 1,
+   "awayScore": 2,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "5868058",
+   "home": "Real Sociedad",
+   "away": "Atlético Madrid",
+   "dateISO": "2026-09-13T19:00:00.000Z",
+   "homeScore": 0,
+   "awayScore": 3,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "5868053",
+   "home": "Getafe",
+   "away": "Deportivo A Coruña",
+   "dateISO": "2026-09-13T16:30:00.000Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "5868054",
+   "home": "Levante",
+   "away": "Barcelona",
+   "dateISO": "2026-09-13T14:15:00.000Z",
+   "homeScore": 2,
+   "awayScore": 4,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "5868052",
+   "home": "Celta Vigo",
+   "away": "Málaga",
+   "dateISO": "2026-09-13T12:00:00.000Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "5868057",
+   "home": "Real Madrid",
+   "away": "Rayo Vallecano",
+   "dateISO": "2026-09-12T19:00:00.000Z",
+   "homeScore": 4,
+   "awayScore": 1,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "5868051",
+   "home": "Athletic Club",
+   "away": "Elche",
+   "dateISO": "2026-09-12T16:30:00.000Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "5868055",
+   "home": "Osasuna",
+   "away": "Espanyol",
+   "dateISO": "2026-09-12T14:15:00.000Z",
+   "homeScore": 0,
+   "awayScore": 2,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "5868056",
+   "home": "Racing Santander",
+   "away": "Deportivo Alavés",
+   "dateISO": "2026-09-12T12:00:00.000Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "5868059",
+   "home": "Sevilla",
+   "away": "Valencia",
+   "dateISO": "2026-09-11T19:00:00.000Z",
+   "homeScore": 1,
+   "awayScore": 0,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "5868044",
+   "home": "Elche",
+   "away": "Real Sociedad",
+   "dateISO": "2026-09-07T19:30:00.000Z",
+   "homeScore": 2,
+   "awayScore": 3,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "5868046",
+   "home": "Getafe",
+   "away": "Celta Vigo",
+   "dateISO": "2026-09-07T17:00:00.000Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "5868045",
+   "home": "Espanyol",
+   "away": "Sevilla",
+   "dateISO": "2026-09-06T19:00:00.000Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "5868041",
+   "home": "Deportivo Alavés",
+   "away": "Osasuna",
+   "dateISO": "2026-09-06T16:30:00.000Z",
+   "homeScore": 5,
+   "awayScore": 2,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "5868047",
+   "home": "Málaga",
+   "away": "Levante",
+   "dateISO": "2026-09-06T16:30:00.000Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "5868049",
+   "home": "Valencia",
+   "away": "Barcelona",
+   "dateISO": "2026-09-06T14:15:00.000Z",
+   "homeScore": 0,
+   "awayScore": 5,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "5868050",
+   "home": "Villarreal",
+   "away": "Deportivo A Coruña",
+   "dateISO": "2026-09-05T19:00:00.000Z",
+   "homeScore": 2,
+   "awayScore": 3,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "5868048",
+   "home": "Rayo Vallecano",
+   "away": "Racing Santander",
+   "dateISO": "2026-09-05T16:30:00.000Z",
+   "homeScore": 3,
+   "awayScore": 2,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "5868042",
+   "home": "Athletic Club",
+   "away": "Atlético Madrid",
+   "dateISO": "2026-09-05T14:15:00.000Z",
+   "homeScore": 3,
+   "awayScore": 0,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "5868043",
+   "home": "Real Betis",
+   "away": "Real Madrid",
+   "dateISO": "2026-09-04T19:00:00.000Z",
+   "homeScore": 1,
+   "awayScore": 0,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "5868070",
+   "home": "Real Sociedad",
+   "away": "Celta Vigo",
+   "dateISO": "2026-09-03T19:00:00.000Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "5868034",
+   "home": "Barcelona",
+   "away": "Rayo Vallecano",
+   "dateISO": "2026-08-31T19:30:00.000Z",
+   "homeScore": 5,
+   "awayScore": 2,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "5868036",
+   "home": "Osasuna",
+   "away": "Getafe",
+   "dateISO": "2026-08-31T17:30:00.000Z",
+   "homeScore": 1,
+   "awayScore": 0,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "5868032",
+   "home": "Celta Vigo",
+   "away": "Athletic Club",
+   "dateISO": "2026-08-30T19:30:00.000Z",
+   "homeScore": 0,
+   "awayScore": 2,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "5868033",
+   "home": "Deportivo A Coruña",
+   "away": "Valencia",
+   "dateISO": "2026-08-30T17:30:00.000Z",
+   "homeScore": 3,
+   "awayScore": 1,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "5868038",
+   "home": "Real Madrid",
+   "away": "Málaga",
+   "dateISO": "2026-08-30T15:00:00.000Z",
+   "homeScore": 4,
+   "awayScore": 0,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "5868040",
+   "home": "Sevilla",
+   "away": "Atlético Madrid",
+   "dateISO": "2026-08-29T19:30:00.000Z",
+   "homeScore": 1,
+   "awayScore": 3,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "5868039",
+   "home": "Real Sociedad",
+   "away": "Espanyol",
+   "dateISO": "2026-08-29T17:00:00.000Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "5868035",
+   "home": "Levante",
+   "away": "Real Betis",
+   "dateISO": "2026-08-29T15:00:00.000Z",
+   "homeScore": 5,
+   "awayScore": 2,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "5868031",
+   "home": "Deportivo Alavés",
+   "away": "Villarreal",
+   "dateISO": "2026-08-28T19:30:00.000Z",
+   "homeScore": 1,
+   "awayScore": 0,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "5868037",
+   "home": "Racing Santander",
+   "away": "Elche",
+   "dateISO": "2026-08-28T17:00:00.000Z",
+   "homeScore": 3,
+   "awayScore": 2,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "5868016",
+   "home": "Barcelona",
+   "away": "Athletic Club",
+   "dateISO": "2026-08-27T19:00:00.000Z",
+   "homeScore": 2,
+   "awayScore": 0,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "5868013",
+   "home": "Celta Vigo",
+   "away": "Osasuna",
+   "dateISO": "2026-08-27T18:30:00.000Z",
+   "homeScore": 1,
+   "awayScore": 2,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "5868018",
+   "home": "Real Madrid",
+   "away": "Real Sociedad",
+   "dateISO": "2026-08-26T19:00:00.000Z",
+   "homeScore": 4,
+   "awayScore": 1,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "5868020",
+   "home": "Valencia",
+   "away": "Real Betis",
+   "dateISO": "2026-08-25T19:00:00.000Z",
+   "homeScore": 0,
+   "awayScore": 1,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "5868027",
+   "home": "Málaga",
+   "away": "Deportivo A Coruña",
+   "dateISO": "2026-08-24T19:30:00.000Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "5868028",
+   "home": "Osasuna",
+   "away": "Levante",
+   "dateISO": "2026-08-24T17:30:00.000Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "5868024",
+   "home": "Elche",
+   "away": "Barcelona",
+   "dateISO": "2026-08-23T19:30:00.000Z",
+   "homeScore": 0,
+   "awayScore": 5,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "5868026",
+   "home": "Getafe",
+   "away": "Racing Santander",
+   "dateISO": "2026-08-23T17:30:00.000Z",
+   "homeScore": 1,
+   "awayScore": 0,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "5868022",
+   "home": "Atlético Madrid",
+   "away": "Villarreal",
+   "dateISO": "2026-08-23T15:00:00.000Z",
+   "homeScore": 2,
+   "awayScore": 2,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "5868025",
+   "home": "Espanyol",
+   "away": "Real Madrid",
+   "dateISO": "2026-08-22T19:30:00.000Z",
+   "homeScore": 1,
+   "awayScore": 2,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "5868030",
+   "home": "Valencia",
+   "away": "Celta Vigo",
+   "dateISO": "2026-08-22T17:30:00.000Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "5868021",
+   "home": "Athletic Club",
+   "away": "Sevilla",
+   "dateISO": "2026-08-22T15:00:00.000Z",
+   "homeScore": 1,
+   "awayScore": 3,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "5868023",
+   "home": "Real Betis",
+   "away": "Real Sociedad",
+   "dateISO": "2026-08-21T19:00:00.000Z",
+   "homeScore": 1,
+   "awayScore": 0,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "5868029",
+   "home": "Rayo Vallecano",
+   "away": "Deportivo Alaves",
+   "dateISO": "2026-08-20T19:00:00.000Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "5868012",
+   "home": "Atletico Madrid",
+   "away": "Malaga",
+   "dateISO": "2026-08-19T19:05:00.000Z",
+   "homeScore": 2,
+   "awayScore": 0,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "5868014",
+   "home": "Deportivo A Coruña",
+   "away": "Elche",
+   "dateISO": "2026-08-17T19:00:00.000Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "5868015",
+   "home": "Espanyol",
+   "away": "Levante",
+   "dateISO": "2026-08-16T17:00:00.000Z",
+   "homeScore": 3,
+   "awayScore": 0,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "5868017",
+   "home": "Racing Santander",
+   "away": "Villarreal",
+   "dateISO": "2026-08-16T15:00:00.000Z",
+   "homeScore": 2,
+   "awayScore": 2,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "5868019",
+   "home": "Sevilla",
+   "away": "Rayo Vallecano",
+   "dateISO": "2026-08-15T19:30:00.000Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "homeBadge": null,
+   "awayBadge": null
+  },
+  {
+   "id": "5868011",
+   "home": "Deportivo Alavés",
+   "away": "Getafe",
+   "dateISO": "2026-08-15T17:30:00.000Z",
+   "homeScore": 3,
+   "awayScore": 0,
+   "homeBadge": null,
+   "awayBadge": null
+  }
+ ]
+}
