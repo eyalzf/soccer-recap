@@ -43,7 +43,10 @@ export default function CompositeThumb({ homeBadge, awayBadge, homeHe, awayHe }:
           return;
         }
         const img = new Image();
-        img.crossOrigin = 'anonymous';
+        // No crossOrigin attribute: neither image CDN sends CORS headers,
+        // and the canvas is display-only (pixels are never read back),
+        // so canvas tainting is harmless. With crossOrigin='anonymous'
+        // the loads fail and no crest ever renders.
         img.onload = () => resolve(img);
         img.onerror = () => resolve(null);
         img.src = src;
