@@ -4,7 +4,7 @@ import { LEAGUES } from '@/lib/leagues';
 
 export const dynamic = 'force-dynamic';
 
-/** League tabs metadata (Hebrew names + logos). Logos come from SportScore's CDN. */
+/** League tabs metadata (Hebrew names + logos). Logos come from FotMob's image CDN. */
 export async function GET() {
   const cached = cacheGet('league-meta');
   if (cached) return NextResponse.json(cached);
