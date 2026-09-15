@@ -65,7 +65,9 @@ async function channelIdForHandle(handle: string): Promise<string | null> {
         YT_KEY
     )) as { items?: Array<{ id?: string }> };
     const id = data.items?.[0]?.id ?? null;
-    cacheSet(key, id, 7 * DAY);
+    // Only cache successful resolutions: caching a null after a transient
+    // failure would silently disable the trusted-channel search for days.
+    if (id) cacheSet(key, id, 7 * DAY);
     return id;
   } catch {
     return null;
