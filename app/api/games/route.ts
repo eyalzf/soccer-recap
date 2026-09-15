@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cacheDel } from '@/lib/cache';
 import { getLeague, LEAGUES, type LeagueSlug } from '@/lib/leagues';
-import { getLeagueGames } from '@/lib/sofascore';
+import { getLeagueGames } from '@/lib/sportscore';
 import { toHebrew } from '@/lib/teamIndex';
 
 export const dynamic = 'force-dynamic';
@@ -31,7 +31,7 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({
     league: def.slug,
     leagueHe: def.hebrewName,
-    leagueBadge: `https://api.sofascore.com/api/v1/unique-tournament/${def.sofascoreUtid}/image`,
+    leagueBadge: games.games[0]?.leagueBadge ?? null,
     page,
     pageSize: PAGE_SIZE,
     total,

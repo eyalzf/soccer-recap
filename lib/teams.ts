@@ -25,7 +25,7 @@ export const CLUBS: ClubEntry[] = [
   {
     en: "Bournemouth",
     he: "בורנמות'",
-    enAliases: ["AFC Bournemouth", "The Cherries", "Boscombe"],
+    enAliases: ["AFC Bournemouth", "Bournemouth AFC", "The Cherries", "Boscombe"],
     heAliases: [],
   },
   {
@@ -37,7 +37,7 @@ export const CLUBS: ClubEntry[] = [
   {
     en: "Brighton and Hove Albion",
     he: "ברייטון",
-    enAliases: ["Brighton", "BHAFC", "The Seagulls"],
+    enAliases: ["Brighton", "Brighton Hove Albion", "BHAFC", "The Seagulls"],
     heAliases: ["ברייטון אנד הוב אלביון"],
   },
   {
@@ -181,7 +181,7 @@ export const CLUBS: ClubEntry[] = [
   {
     en: "Deportivo de A Coruña",
     he: "דפורטיבו לה קורוניה",
-    enAliases: ["Deportivo", "Depor", "A Coruña"],
+    enAliases: ["Deportivo", "Depor", "A Coruña", "RC Deportivo"],
     heAliases: [],
   },
   {
@@ -193,7 +193,7 @@ export const CLUBS: ClubEntry[] = [
   {
     en: "Espanyol",
     he: "אספניול",
-    enAliases: ["RCD Espanyol", "Español", "Pericos"],
+    enAliases: ["RCD Espanyol", "RCD Espanyol de Barcelona", "Español", "Pericos"],
     heAliases: [],
   },
   {
@@ -361,7 +361,7 @@ export const CLUBS: ClubEntry[] = [
   {
     en: "Maccabi Petah Tikva",
     he: "מכבי פתח תקווה",
-    enAliases: ["Maccabi Petach Tikva"],
+    enAliases: ["Maccabi Petach Tikva", "Maccabi Petah Tikva FC"],
     heAliases: ["מכבי פ\"ת", "מכבי פתח תקוה"],
   },
   {
@@ -601,7 +601,7 @@ export const CLUBS: ClubEntry[] = [
   {
     en: "Bodø/Glimt",
     he: "בודו גלימט",
-    enAliases: ["Bodo Glimt", "Bodø", "FK Bodø/Glimt"],
+    enAliases: ["Bodo Glimt", "Bodø", "FK Bodø/Glimt", "FK Bodo/Glimt"],
     heAliases: [],
   },
   {
@@ -806,7 +806,7 @@ export const CLUBS: ClubEntry[] = [
   {
     en: "NK Celje",
     he: "צליה",
-    enAliases: ["Celje"],
+    enAliases: ["Celje", "NK Publikum Celje"],
     heAliases: [],
   },
   {

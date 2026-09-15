@@ -123,6 +123,13 @@ export default function Home() {
       {selected && (
         <RecapPanel game={selected} league={league} onClose={() => setSelected(null)} />
       )}
+
+      <footer className="attribution">
+        <span>מקור נתוני המשחקים: </span>
+        <a href="https://sportscore.com" target="_blank" rel="noopener noreferrer">
+          Powered by SportScore
+        </a>
+      </footer>
     </div>
   );
 }
