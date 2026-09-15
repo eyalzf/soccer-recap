@@ -14,7 +14,10 @@ import { getLeague, type LeagueSlug } from './leagues';
  * costs 2 requests per league (last/0 + last/1); never hammer this endpoint.
  */
 
-const API = 'https://www.sofascore.com/api/v1';
+const API_HOSTS = [
+  'https://www.sofascore.com/api/v1',
+  'https://api.sofascore.com/api/v1', // fallback host: verified serving 200s
+];
 const UA =
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36';
 const FIVE_HOURS_MS = 5 * 3600 * 1000;
@@ -65,6 +68,23 @@ async function fetchJson(url: string, timeoutMs = 20000): Promise<unknown> {
   }
 }
 
+/** Try each Sofascore host in order; returns the first success or the last error. */
+async function fetchSofa(
+  path: string,
+  timeoutMs = 15000
+): Promise<{ data: unknown; error: string | null }> {
+  let lastError = 'no hosts configured';
+  for (const host of API_HOSTS) {
+    try {
+      const data = await fetchJson(`${host}${path}`, timeoutMs);
+      return { data, error: null };
+    } catch (e) {
+      lastError = `${host} -> ${e instanceof Error ? e.message : String(e)}`;
+    }
+  }
+  return { data: null, error: lastError };
+}
+
 /** Resolve the current season id for a league; falls back to the last-known id. */
 async function resolveSeasonId(slug: LeagueSlug): Promise<number> {
   const league = getLeague(slug);
@@ -72,46 +92,53 @@ async function resolveSeasonId(slug: LeagueSlug): Promise<number> {
   const cacheKey = `sofa-season:${slug}`;
   const cached = cacheGet<number>(cacheKey);
   if (cached) return cached;
-  try {
-    const data = (await fetchJson(`${API}/unique-tournament/${league.sofascoreUtid}/seasons`)) as {
-      seasons?: Array<{ id?: number }>;
-    };
-    const id = data.seasons?.[0]?.id;
-    if (typeof id === 'number') {
-      cacheSet(cacheKey, id, 24 * 3600 * 1000);
-      return id;
-    }
-  } catch {
-    // fall through to the hardcoded fallback
+  const { data } = await fetchSofa(
+    `/unique-tournament/${league.sofascoreUtid}/seasons`,
+    15000
+  );
+  const id = (data as { seasons?: Array<{ id?: number }> } | null)?.seasons?.[0]
+    ?.id;
+  if (typeof id === 'number') {
+    cacheSet(cacheKey, id, 24 * 3600 * 1000);
+    return id;
   }
   return league.sofascoreSeasonId;
+}
+
+export interface LeagueGamesResult {
+  games: GameRecord[];
+  /** Last fetch error when games is empty; null on success. */
+  error: string | null;
 }
 
 /**
  * Current-season games for a league, most recent first.
  * Only includes games that ended at least 5 hours ago.
  */
-export async function getLeagueGames(slug: LeagueSlug): Promise<GameRecord[]> {
+export async function getLeagueGames(slug: LeagueSlug): Promise<LeagueGamesResult> {
   const cacheKey = `games:${slug}`;
   const cached = cacheGet<GameRecord[]>(cacheKey);
-  if (cached) return cached;
+  // An empty cached entry is a brief negative-cache marker from a failed fetch:
+  // fall through and retry instead of serving it as a real result.
+  if (cached && cached.length > 0) return { games: cached, error: null };
 
   const league = getLeague(slug);
-  if (!league) return [];
+  if (!league) return { games: [], error: `unknown league ${slug}` };
 
   const seasonId = await resolveSeasonId(slug);
 
   // last/0 = most recent ~26-30 events; last/1 extends the pool for page 1.
+  let lastError: string | null = null;
   const pages = await Promise.all(
     [0, 1].map(async (p) => {
-      try {
-        const data = (await fetchJson(
-          `${API}/unique-tournament/${league.sofascoreUtid}/season/${seasonId}/events/last/${p}`
-        )) as { events?: SofaEvent[] };
-        return data.events ?? [];
-      } catch {
+      const { data, error } = await fetchSofa(
+        `/unique-tournament/${league.sofascoreUtid}/season/${seasonId}/events/last/${p}`
+      );
+      if (error) {
+        lastError = error;
         return [] as SofaEvent[];
       }
+      return ((data as { events?: SofaEvent[] } | null)?.events ?? []) as SofaEvent[];
     })
   );
 
@@ -150,6 +177,12 @@ export async function getLeagueGames(slug: LeagueSlug): Promise<GameRecord[]> {
   }
 
   games.sort((a, b) => (a.dateISO < b.dateISO ? 1 : -1));
-  cacheSet(cacheKey, games, 30 * 60 * 1000);
-  return games;
+  if (games.length > 0) {
+    // Never cache an empty result long-term: a failed fetch must not poison the cache.
+    cacheSet(cacheKey, games, 30 * 60 * 1000);
+    return { games, error: null };
+  }
+  // Brief negative cache so an outage doesn't hammer the unofficial API.
+  cacheSet(cacheKey, [], 60 * 1000);
+  return { games: [], error: lastError ?? 'no games returned' };
 }
