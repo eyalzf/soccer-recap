@@ -1,16 +1,27 @@
 #!/usr/bin/env python3
 """Daily listings pipeline: FotMob API (via parse.bot) -> per-league JSON.
 
-- Resolves the 4 league IDs via get_leagues (expected: PL 47, LaLiga 87,
-  Israel 127, UCL 42).
-- Backfills the current season via get_historical_match_results (one call
-  per league) when no local data file exists; re-checks the season weekly
+Credit-conscious design (parse.bot free tier: 200 credits/month):
+- League IDs are resolved once and cached in the data files; get_leagues
+  is only called when a file is missing (first run).
+- Each league tracks `checked_through`: the last date fully pulled via
+  matches_by_date. A date is never fetched twice for the same league.
+- Each calendar date is fetched ONCE per run and the payload is shared
+  across all four leagues (matches_by_date returns every league).
+- The season backfill check runs monthly, not weekly.
+- All calls are paced to the 5 req/min limit with retries on HTTP 429.
+
+Flow per run:
+- Backfill the current season via get_historical_match_results (one call
+  per league) when no local data file exists; re-checks the season monthly
   so a rollover triggers a fresh backfill.
-- Incrementally fetches get_matches_by_date for days missing since the
-  last run (capped), merging new finished games.
+- Incrementally fetches get_matches_by_date for dates after
+  checked_through (capped), merging new finished games.
+- Cold-start harvest: when a league's team-id map is still empty, fetch
+  only the dates on which it actually has stored games.
 - Writes data/<slug>.json: {league, league_id, season, updated_at,
-  team_ids, games[]}. The app serves these files; it never calls
-  parse.bot at request time.
+  checked_through, team_ids, games[]}. The app serves these files; it
+  never calls parse.bot at request time.
 
 Team crests: matches_by_date carries FotMob team IDs, so badge URLs use
 FotMob's image CDN. A persistent name->id map per league file lets older
@@ -53,15 +64,16 @@ LEAGUES = {
     "champions-league": (42, ["champions league"], "INT"),
 }
 MAX_CATCHUP_DAYS = 14
-HISTORICAL_CHECK_DAYS = 7
+HISTORICAL_CHECK_DAYS = 30
 
 # Parse free tier: 5 requests/minute. Pace calls and retry on 429.
 _MIN_INTERVAL = 12.0
 _LAST_CALL = 0.0
+_CALL_COUNT = 0
 
 
 def call(endpoint, params=None, retries=3):
-    global _LAST_CALL
+    global _LAST_CALL, _CALL_COUNT
     url = f"{API}/{endpoint}"
     if params:
         url += "?" + urllib.parse.urlencode(params)
@@ -71,6 +83,7 @@ def call(endpoint, params=None, retries=3):
         if wait > 0:
             time.sleep(wait)
         _LAST_CALL = time.monotonic()
+        _CALL_COUNT += 1
         req = urllib.request.Request(
             url, headers={"X-API-Key": KEY, "Accept": "application/json"})
         try:
@@ -256,101 +269,173 @@ def historical_check_due(existing):
 def main():
     os.makedirs("data", exist_ok=True)
     now_iso = datetime.datetime.now(datetime.timezone.utc).isoformat()
-    league_ids = resolve_league_ids()
+    today = datetime.date.today()
+    yesterday = today - datetime.timedelta(days=1)
 
+    # League IDs are stable; reuse the IDs stored in the data files and
+    # only hit get_leagues when a file is missing them (first run).
+    league_ids = {}
+    for slug in LEAGUES:
+        d = load_json(f"data/{slug}.json") or {}
+        if d.get("league_id"):
+            league_ids[slug] = int(d["league_id"])
+    if len(league_ids) < len(LEAGUES):
+        league_ids = resolve_league_ids()
+    else:
+        print("league ids cached: " + ", ".join(
+            f"{s}={i}" for s, i in league_ids.items()), flush=True)
+
+    # Per-league state.
+    states = {}
     for slug, lid in league_ids.items():
-        path = f"data/{slug}.json"
-        existing = load_json(path) or {}
-        games_by_id = {}
-        # name -> FotMob team id, accumulated across runs for badge backfill.
-        team_ids = dict(existing.get("team_ids") or {})
-        season = existing.get("season")
-        last_check = existing.get("last_historical_check")
+        existing = load_json(f"data/{slug}.json") or {}
+        states[slug] = {
+            "lid": lid,
+            "games": {g["id"]: g for g in existing.get("games", [])},
+            # name -> FotMob team id, accumulated for badge backfill.
+            "team_ids": dict(existing.get("team_ids") or {}),
+            "season": existing.get("season"),
+            "last_check": existing.get("last_historical_check"),
+            # Last date fully pulled via matches_by_date. Never re-fetch
+            # at or before this date: each calendar date costs API calls,
+            # so every date is fetched at most once per league.
+            "checked_through": existing.get("checked_through"),
+        }
 
-        if historical_check_due(existing):
-            hist = ok_data(call("get_historical_match_results", {"league_id": lid}),
+    # Season backfill / rollover check (monthly; 1 call per league when due).
+    for slug, st in states.items():
+        lid = st["lid"]
+        proxy = {"games": list(st["games"].values()),
+                 "season": st["season"],
+                 "last_historical_check": st["last_check"]}
+        if historical_check_due(proxy):
+            hist = ok_data(call("get_historical_match_results",
+                                 {"league_id": lid}),
                            "get_historical_match_results")
-            season = hist.get("season")
-            last_check = now_iso
-            if not existing.get("games") or existing.get("season") != season:
-                print(f"{slug}: backfilling season {season}", flush=True)
+            new_season = hist.get("season")
+            st["last_check"] = now_iso
+            if not st["games"] or st["season"] != new_season:
+                if st["season"]:
+                    print(f"{slug}: season rollover {st['season']} -> "
+                          f"{new_season}; re-backfilling", flush=True)
+                else:
+                    print(f"{slug}: backfilling season {new_season}",
+                          flush=True)
+                st["season"] = new_season
+                st["games"] = {}
                 for m in hist.get("matches") or []:
                     g = norm_historical(m)
                     if g:
-                        games_by_id[g["id"]] = g
+                        st["games"][g["id"]] = g
+                # team_ids are kept: FotMob team ids are stable across
+                # seasons, and reusing them saves harvest calls.
             else:
-                for g in existing.get("games", []):
-                    games_by_id[g["id"]] = g
-                print(f"{slug}: season {season} unchanged "
-                      f"({len(games_by_id)} stored games)", flush=True)
+                st["season"] = new_season
+                print(f"{slug}: season {st['season']} unchanged "
+                      f"({len(st['games'])} stored games)", flush=True)
         else:
-            for g in existing.get("games", []):
-                games_by_id[g["id"]] = g
-            print(f"{slug}: loaded {len(games_by_id)} stored games "
-                  f"(season {season})", flush=True)
+            print(f"{slug}: loaded {len(st['games'])} stored games "
+                  f"(season {st['season']})", flush=True)
+        # One-time migration: start checked_through a few days before the
+        # newest stored game so a stale backfill can't hide missed dates.
+        if not st["checked_through"]:
+            dates = sorted(g["dateISO"][:10] for g in st["games"].values()
+                           if g.get("dateISO"))
+            if dates:
+                anchor = (datetime.date.fromisoformat(dates[-1])
+                          - datetime.timedelta(days=3))
+                st["checked_through"] = anchor.isoformat()
+            else:
+                st["checked_through"] = yesterday.isoformat()
 
-        # Incremental catch-up for days missing since the last stored game.
-        dates = sorted(g["dateISO"][:10] for g in games_by_id.values()
-                       if g.get("dateISO"))
-        if dates:
-            last = datetime.date.fromisoformat(dates[-1])
-            today = datetime.date.today()
-            missing = []
-            d = last + datetime.timedelta(days=1)
-            while d < today and len(missing) < MAX_CATCHUP_DAYS:
-                missing.append(d)
-                d += datetime.timedelta(days=1)
-            for d in missing:
-                ds = d.strftime("%Y%m%d")
-                data = ok_data(call("get_matches_by_date", {"date": ds}),
-                               "get_matches_by_date")
-                added = harvest_daily(data, lid, games_by_id, team_ids)
-                print(f"{slug}: {ds} +{added} games", flush=True)
+    # Incremental catch-up. Collect the union of dates the leagues still
+    # need and fetch each date ONCE; matches_by_date returns every league,
+    # so the payload is then distributed to whichever leagues want it.
+    wanted = {}  # date -> set of slugs
+    for slug, st in states.items():
+        start = datetime.date.fromisoformat(st["checked_through"])
+        d = start + datetime.timedelta(days=1)
+        while d <= yesterday and (d - start).days <= MAX_CATCHUP_DAYS:
+            wanted.setdefault(d, set()).add(slug)
+            d += datetime.timedelta(days=1)
 
-        # Cold start: when the map is still empty the backfill may already
-        # be current (or the missing days had no games for this league, e.g.
-        # UCL between matchdays), leaving no team IDs to build crests from.
-        # Scan the last 7 days once so backfilled games gain crests.
-        if not team_ids:
-            today = datetime.date.today()
-            for back in range(1, 8):
-                ds = (today - datetime.timedelta(days=back)).strftime("%Y%m%d")
+    payloads = {}
+    for d in sorted(wanted):
+        ds = d.strftime("%Y%m%d")
+        try:
+            payloads[d] = ok_data(call("get_matches_by_date", {"date": ds}),
+                                  "get_matches_by_date")
+        except RuntimeError as e:
+            print(f"daily {ds} failed: {e}", flush=True)
+    print(f"incremental: fetched {len(payloads)}/{len(wanted)} dates",
+          flush=True)
+
+    for slug, st in states.items():
+        cur = datetime.date.fromisoformat(st["checked_through"])
+        for d in sorted(wanted):
+            if slug not in wanted[d]:
+                continue
+            if d not in payloads:
+                break  # failed date: retry it next run, don't skip it
+            added = harvest_daily(payloads[d], st["lid"],
+                                  st["games"], st["team_ids"])
+            if added:
+                print(f"{slug}: {d} +{added} games", flush=True)
+            cur = d
+        st["checked_through"] = cur.isoformat()
+
+    # Cold start: a league whose team-id map is still empty never saw its
+    # teams via matches_by_date (e.g. UCL between matchdays). Fetch only
+    # the dates on which it actually has stored games — no blind scanning.
+    for slug, st in states.items():
+        if st["team_ids"]:
+            continue
+        game_dates = sorted({g["dateISO"][:10] for g in st["games"].values()
+                             if g.get("dateISO")}, reverse=True)[:7]
+        for ds10 in game_dates:
+            d = datetime.date.fromisoformat(ds10)
+            if d in payloads:
+                data = payloads[d]
+            else:
                 try:
-                    data = ok_data(call("get_matches_by_date", {"date": ds}),
+                    data = ok_data(call("get_matches_by_date",
+                                         {"date": d.strftime("%Y%m%d")}),
                                    "get_matches_by_date")
                 except RuntimeError as e:
-                    print(f"{slug}: harvest {ds} failed: {e}", flush=True)
+                    print(f"{slug}: harvest {ds10} failed: {e}", flush=True)
                     continue
-                leagues = data.get("leagues") or []
-                lg = next((l for l in leagues
-                           if str(l.get("id")) == str(lid)), None)
-                n_matches = len(lg.get("matches") or []) if lg else 0
-                added = harvest_daily(data, lid, games_by_id, team_ids)
-                print(f"{slug}: harvest {ds}: {len(leagues)} leagues, "
-                      f"league {lid} present={lg is not None} "
-                      f"matches={n_matches} +{added} games, "
-                      f"ids={len(team_ids)}", flush=True)
-            print(f"{slug}: cold-start harvest -> {len(team_ids)} team ids",
-                  flush=True)
+            leagues = data.get("leagues") or []
+            lg = next((l for l in leagues
+                       if str(l.get("id")) == str(st["lid"])), None)
+            before = len(st["team_ids"])
+            harvest_daily(data, st["lid"], st["games"], st["team_ids"])
+            print(f"{slug}: harvest {ds10}: league present={lg is not None} "
+                  f"matches={len(lg.get('matches') or []) if lg else 0} "
+                  f"+{len(st['team_ids']) - before} ids", flush=True)
+        print(f"{slug}: cold-start harvest -> {len(st['team_ids'])} team ids",
+              flush=True)
 
-        # Enrich older games' badges from the accumulated name->id map.
-        # The historical and daily feeds sometimes spell a team slightly
-        # differently (accents, apostrophes, FC suffixes), so match
-        # tolerantly: exact, then accent/case/punctuation-insensitive,
-        # then a high-threshold fuzzy fallback.
+    # Enrich older games' badges from the accumulated name->id map.
+    # The historical and daily feeds sometimes spell a team slightly
+    # differently (accents, apostrophes, FC suffixes), so match
+    # tolerantly: exact, then accent/case/punctuation-insensitive,
+    # then a high-threshold fuzzy fallback.
+    for slug, st in states.items():
+        team_ids = st["team_ids"]
         norm_map = {norm_team_name(k): v for k, v in team_ids.items()}
         norm_keys = list(norm_map.keys())
 
-        def team_id_for(name):
-            if name in team_ids:
-                return team_ids[name]
+        def team_id_for(name, _ids=team_ids,
+                        _nmap=norm_map, _nkeys=norm_keys):
+            if name in _ids:
+                return _ids[name]
             nk = norm_team_name(name)
-            if nk in norm_map:
-                return norm_map[nk]
-            best = difflib.get_close_matches(nk, norm_keys, n=1, cutoff=0.9)
-            return norm_map[best[0]] if best else None
+            if nk in _nmap:
+                return _nmap[nk]
+            best = difflib.get_close_matches(nk, _nkeys, n=1, cutoff=0.9)
+            return _nmap[best[0]] if best else None
 
-        for g in games_by_id.values():
+        for g in st["games"].values():
             if not g.get("homeBadge"):
                 tid = team_id_for(g["home"])
                 if tid:
@@ -364,27 +449,30 @@ def main():
         # ever describe the same fixture with different ids. Prefer the
         # entry that carries crest URLs.
         deduped = {}
-        for g in games_by_id.values():
+        for g in st["games"].values():
             key = (g["dateISO"][:10], g["home"], g["away"])
             prev = deduped.get(key)
             if prev is None or (not prev.get("homeBadge") and g.get("homeBadge")):
                 deduped[key] = g
-        games = sorted(deduped.values(), key=lambda g: g["dateISO"], reverse=True)
+        games = sorted(deduped.values(), key=lambda g: g["dateISO"],
+                       reverse=True)
 
         out = {
             "league": slug,
-            "league_id": lid,
-            "season": season,
+            "league_id": st["lid"],
+            "season": st["season"],
             "updated_at": now_iso,
-            "last_historical_check": last_check,
+            "last_historical_check": st["last_check"],
+            "checked_through": st["checked_through"],
             "team_ids": team_ids,
             "games": games,
         }
+        path = f"data/{slug}.json"
         with open(path, "w", encoding="utf-8") as f:
             json.dump(out, f, ensure_ascii=False, indent=1)
         print(f"{slug}: wrote {len(games)} games -> {path}", flush=True)
 
-    print("done")
+    print(f"done (API calls this run: {_CALL_COUNT})")
 
 
 if __name__ == "__main__":
