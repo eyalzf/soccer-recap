@@ -25,6 +25,7 @@ const ALLOWLIST = new Set([
   'site.api.espn.com',
   'site.web.api.espn.com',
   'api.parse.bot',
+  'images.fotmob.com',
 ]);
 
 const UA =
