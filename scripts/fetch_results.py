@@ -2,19 +2,18 @@
 """Daily listings pipeline: FotMob API (via parse.bot) -> per-league JSON.
 
 Credit-conscious design (parse.bot free tier: 200 credits/month):
-- League IDs are resolved once and cached in the data files; get_leagues
-  is only called when a file is missing (first run).
-- Each league tracks `checked_through`: the last date fully pulled via
-  matches_by_date. A date is never fetched twice for the same league.
+- The script calls exactly ONE endpoint: get_matches_by_date.
+- League IDs are hardcoded (verified 2026-09-15) and cached in the data
+  files; no get_leagues call, ever.
+- Each league tracks `checked_through`: the last date fully pulled.
+  A date is never fetched twice.
 - Each calendar date is fetched ONCE per run and the payload is shared
-  across all four leagues (matches_by_date returns every league).
-- The season backfill check runs monthly, not weekly.
+  across all four leagues (the endpoint returns every league).
+- Season rollover is detected from the calendar (all four leagues run
+  August->May): zero API calls.
 - All calls are paced to the 5 req/min limit with retries on HTTP 429.
 
 Flow per run:
-- Backfill the current season via get_historical_match_results (one call
-  per league) when no local data file exists; re-checks the season monthly
-  so a rollover triggers a fresh backfill.
 - Incrementally fetches get_matches_by_date for dates after
   checked_through (capped), merging new finished games.
 - Cold-start harvest: when a league's team-id map is still empty, fetch
@@ -27,8 +26,8 @@ Team crests: matches_by_date carries FotMob team IDs, so badge URLs use
 FotMob's image CDN. A persistent name->id map per league file lets older
 backfilled games gain crests once their teams appear in a daily fetch.
 
-Credit budget: ~1 (leagues) + ~1 (daily) calls/day, plus 4/week for the
-season check - well under the 200/month free tier.
+Credit budget: ~1 call/day total (one shared date fetch). Well under the
+200/month free tier.
 
 Requires PARSE_BOT_API_KEY in the environment (GitHub Actions secret).
 Exits non-zero without touching data files when the API is unreachable,
@@ -56,15 +55,14 @@ if not KEY:
 
 TEAM_LOGO = "https://images.fotmob.com/image_resources/logo/teamlogo/{id}.png"
 
-# slug -> (expected parse.bot league id, name keywords for resolution, country code)
+# slug -> parse.bot league id (verified 2026-09-15; stable)
 LEAGUES = {
-    "premier-league": (47, ["premier league"], "ENG"),
-    "la-liga": (87, ["laliga", "la liga", "primera"], "ESP"),
-    "israeli-league": (127, ["israel", "ligat"], "ISR"),
-    "champions-league": (42, ["champions league"], "INT"),
+    "premier-league": 47,
+    "la-liga": 87,
+    "israeli-league": 127,
+    "champions-league": 42,
 }
 MAX_CATCHUP_DAYS = 14
-HISTORICAL_CHECK_DAYS = 30
 
 # Parse free tier: 5 requests/minute. Pace calls and retry on 429.
 _MIN_INTERVAL = 12.0
@@ -111,45 +109,6 @@ def ok_data(res, endpoint):
     return res.get("data")
 
 
-def find_leagues(node, out):
-    if isinstance(node, dict):
-        if isinstance(node.get("id"), (int, float)) and isinstance(node.get("name"), str):
-            out.append(node)
-        for v in node.values():
-            find_leagues(v, out)
-    elif isinstance(node, list):
-        for v in node:
-            find_leagues(v, out)
-
-
-def resolve_league_ids():
-    data = ok_data(call("get_leagues"), "get_leagues")
-    found = []
-    find_leagues(data, found)
-    print(f"get_leagues: {len(found)} leagues", flush=True)
-    resolved = {}
-    for slug, (expected, keywords, ccode) in LEAGUES.items():
-        candidates = [lg for lg in found
-                      if any(k in str(lg.get("name", "")).lower() for k in keywords)]
-        match = None
-        # Prefer the candidate from the expected country (many countries
-        # have a league literally named "Premier League").
-        for lg in candidates:
-            if str(lg.get("ccode", "")).upper() == ccode:
-                match = lg
-                break
-        match = match or (candidates[0] if candidates else None)
-        if match and int(match["id"]) != expected:
-            print(f"NOTE: {slug} resolved to id={match['id']} "
-                  f"(expected {expected}); using resolved", flush=True)
-        if not match:
-            print(f"WARNING: {slug} not found in get_leagues; "
-                  f"falling back to expected id {expected}", flush=True)
-        resolved[slug] = int(match["id"]) if match else expected
-        print(f"  {slug} -> {resolved[slug]}", flush=True)
-    return resolved
-
-
 def norm_team_name(s):
     """Tolerant team-name key: lowercase, no accents/punctuation."""
     s = (s or "").lower()
@@ -157,28 +116,6 @@ def norm_team_name(s):
     s = re.sub(r"[\u0300-\u036f]", "", s)
     s = re.sub(r"[^a-z0-9 ]", " ", s)
     return re.sub(r"\s+", " ", s).strip()
-
-
-def norm_historical(m):
-    """Normalize one get_historical_match_results record, or None."""
-    if m.get("status") != "finished":
-        return None
-    ft = (m.get("regulation_score") or {}).get("ft") or {}
-    hs, aws = ft.get("home"), ft.get("away")
-    if not isinstance(hs, int) or not isinstance(aws, int):
-        return None
-    if not m.get("home_team") or not m.get("away_team") or not m.get("date"):
-        return None
-    return {
-        "id": str(m.get("match_id")),
-        "home": m["home_team"],
-        "away": m["away_team"],
-        "dateISO": m["date"],
-        "homeScore": hs,
-        "awayScore": aws,
-        "homeBadge": None,
-        "awayBadge": None,
-    }
 
 
 def norm_daily(m):
@@ -251,96 +188,57 @@ def harvest_daily(data, lid, games_by_id, team_ids):
     return added
 
 
-def historical_check_due(existing):
-    """True when the season backfill should be (re)checked."""
-    if not existing or not existing.get("games"):
-        return True
-    last = existing.get("last_historical_check")
-    if not last:
-        return True
-    try:
-        age = (datetime.datetime.now(datetime.timezone.utc)
-               - datetime.datetime.fromisoformat(last))
-        return age.days >= HISTORICAL_CHECK_DAYS
-    except Exception:
-        return True
-
-
 def main():
     os.makedirs("data", exist_ok=True)
     now_iso = datetime.datetime.now(datetime.timezone.utc).isoformat()
     today = datetime.date.today()
     yesterday = today - datetime.timedelta(days=1)
 
-    # League IDs are stable; reuse the IDs stored in the data files and
-    # only hit get_leagues when a file is missing them (first run).
+    # League IDs are hardcoded (verified 2026-09-15); the data files
+    # carry them too, but the constant is the fallback. No get_leagues
+    # call, ever: this script only calls get_matches_by_date.
     league_ids = {}
-    for slug in LEAGUES:
+    for slug, lid in LEAGUES.items():
         d = load_json(f"data/{slug}.json") or {}
-        if d.get("league_id"):
-            league_ids[slug] = int(d["league_id"])
-    if len(league_ids) < len(LEAGUES):
-        league_ids = resolve_league_ids()
-    else:
-        print("league ids cached: " + ", ".join(
-            f"{s}={i}" for s, i in league_ids.items()), flush=True)
+        league_ids[slug] = int(d["league_id"]) if d.get("league_id") else lid
+    print("league ids: " + ", ".join(
+        f"{s}={i}" for s, i in league_ids.items()), flush=True)
+
+    # Season rollover, free: all four leagues run August->May. When the
+    # calendar says a new season started, drop the old season's games.
+    # team_ids are kept: FotMob team ids are stable across seasons.
+    season_label = (f"{today.year}/{today.year + 1}" if today.month >= 8
+                    else f"{today.year - 1}/{today.year}")
 
     # Per-league state.
     states = {}
     for slug, lid in league_ids.items():
         existing = load_json(f"data/{slug}.json") or {}
+        season = existing.get("season") or season_label
+        games = {g["id"]: g for g in existing.get("games", [])}
+        if season != season_label:
+            print(f"{slug}: season rollover {season} -> {season_label}; "
+                  f"dropping {len(games)} old games", flush=True)
+            games = {}
+            season = season_label
         states[slug] = {
             "lid": lid,
-            "games": {g["id"]: g for g in existing.get("games", [])},
+            "games": games,
             # name -> FotMob team id, accumulated for badge backfill.
             "team_ids": dict(existing.get("team_ids") or {}),
-            "season": existing.get("season"),
-            "last_check": existing.get("last_historical_check"),
-            # Last date fully pulled via matches_by_date. Never re-fetch
-            # at or before this date: each calendar date costs API calls,
-            # so every date is fetched at most once per league.
+            "season": season,
+            # Last date fully pulled via get_matches_by_date. Never
+            # re-fetch at or before this date: each calendar date costs
+            # an API call, so every date is fetched at most once.
             "checked_through": existing.get("checked_through"),
         }
-
-    # Season backfill / rollover check (monthly; 1 call per league when due).
-    for slug, st in states.items():
-        lid = st["lid"]
-        proxy = {"games": list(st["games"].values()),
-                 "season": st["season"],
-                 "last_historical_check": st["last_check"]}
-        if historical_check_due(proxy):
-            hist = ok_data(call("get_historical_match_results",
-                                 {"league_id": lid}),
-                           "get_historical_match_results")
-            new_season = hist.get("season")
-            st["last_check"] = now_iso
-            if not st["games"] or st["season"] != new_season:
-                if st["season"]:
-                    print(f"{slug}: season rollover {st['season']} -> "
-                          f"{new_season}; re-backfilling", flush=True)
-                else:
-                    print(f"{slug}: backfilling season {new_season}",
-                          flush=True)
-                st["season"] = new_season
-                st["games"] = {}
-                for m in hist.get("matches") or []:
-                    g = norm_historical(m)
-                    if g:
-                        st["games"][g["id"]] = g
-                # team_ids are kept: FotMob team ids are stable across
-                # seasons, and reusing them saves harvest calls.
-            else:
-                st["season"] = new_season
-                print(f"{slug}: season {st['season']} unchanged "
-                      f"({len(st['games'])} stored games)", flush=True)
-        else:
-            print(f"{slug}: loaded {len(st['games'])} stored games "
-                  f"(season {st['season']})", flush=True)
+        print(f"{slug}: loaded {len(games)} stored games "
+              f"(season {season})", flush=True)
         # One-time migration: the backfill was verified current today, so
         # start the watermark at yesterday. This trusts the backfill for
         # earlier dates rather than re-fetching them at 1 credit each.
-        if not st["checked_through"]:
-            st["checked_through"] = yesterday.isoformat()
+        if not states[slug]["checked_through"]:
+            states[slug]["checked_through"] = yesterday.isoformat()
 
     # Incremental catch-up. Collect the union of dates the leagues still
     # need and fetch each date ONCE; matches_by_date returns every league,
@@ -456,7 +354,6 @@ def main():
             "league_id": st["lid"],
             "season": st["season"],
             "updated_at": now_iso,
-            "last_historical_check": st["last_check"],
             "checked_through": st["checked_through"],
             "team_ids": team_ids,
             "games": games,
