@@ -126,8 +126,10 @@ export async function fetchYouTube(
   group: 'he' | 'en' | 'trusted'
 ): Promise<RawCandidate[]> {
   if (!YT_KEY) return [];
-  try {
-    const g = new Date(game.dateISO).getTime();
+  // NOTE: errors propagate to the caller (the recap route catches per-group
+  // and records them in debug diagnostics). Do not swallow them here: a
+  // silent [] is indistinguishable from "no videos found".
+  const g = new Date(game.dateISO).getTime();
     const after = new Date(g - 6 * DAY).toISOString();
     // Bisection: back to +2d to test whether the +5d window broke Hebrew search.
     const before = new Date(g + 2 * DAY).toISOString();
@@ -194,12 +196,6 @@ export async function fetchYouTube(
         lang,
       } satisfies RawCandidate;
     });
-  } catch (e) {
-    // Log the failure: a silent empty group is indistinguishable from "no
-    // videos found", which made a past outage hard to diagnose.
-    console.error('[recap] youtube group failed:', (e as Error)?.message ?? e);
-    return [];
-  }
 }
 
 // ---------- Sport1 / Sport5 / ONE (best-effort) ----------
