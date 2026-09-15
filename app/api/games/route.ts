@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cacheDel } from '@/lib/cache';
 import { getLeague, LEAGUES, type LeagueSlug } from '@/lib/leagues';
-import { getLeagueGames } from '@/lib/sportscore';
+import { getLeagueGames } from '@/lib/results';
 import { toHebrew } from '@/lib/teamIndex';
 
 export const dynamic = 'force-dynamic';
