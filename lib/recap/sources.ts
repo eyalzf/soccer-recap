@@ -195,7 +195,10 @@ export async function fetchYouTube(
         lang,
       } satisfies RawCandidate;
     });
-  } catch {
+  } catch (e) {
+    // Log the failure: a silent empty group is indistinguishable from "no
+    // videos found", which made a past outage hard to diagnose.
+    console.error('[recap] youtube group failed:', (e as Error)?.message ?? e);
     return [];
   }
 }
