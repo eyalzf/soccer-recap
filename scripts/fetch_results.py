@@ -24,9 +24,12 @@ Exits non-zero without touching data files when the API is unreachable,
 so the workflow fails loudly instead of committing empty data.
 """
 import datetime
+import difflib
 import json
 import os
+import re
 import sys
+import unicodedata
 import urllib.parse
 import urllib.request
 import urllib.error
@@ -115,6 +118,15 @@ def resolve_league_ids():
         resolved[slug] = int(match["id"]) if match else expected
         print(f"  {slug} -> {resolved[slug]}", flush=True)
     return resolved
+
+
+def norm_team_name(s):
+    """Tolerant team-name key: lowercase, no accents/punctuation."""
+    s = (s or "").lower()
+    s = unicodedata.normalize("NFD", s)
+    s = re.sub(r"[\u0300-\u036f]", "", s)
+    s = re.sub(r"[^a-z0-9 ]", " ", s)
+    return re.sub(r"\s+", " ", s).strip()
 
 
 def norm_historical(m):
@@ -263,7 +275,6 @@ def main():
         # Incremental catch-up for days missing since the last stored game.
         dates = sorted(g["dateISO"][:10] for g in games_by_id.values()
                        if g.get("dateISO"))
-        fetched_any = False
         if dates:
             last = datetime.date.fromisoformat(dates[-1])
             today = datetime.date.today()
@@ -273,17 +284,17 @@ def main():
                 missing.append(d)
                 d += datetime.timedelta(days=1)
             for d in missing:
-                fetched_any = True
                 ds = d.strftime("%Y%m%d")
                 data = ok_data(call("get_matches_by_date", {"date": ds}),
                                "get_matches_by_date")
                 added = harvest_daily(data, lid, games_by_id, team_ids)
                 print(f"{slug}: {ds} +{added} games", flush=True)
 
-        # Cold start: the backfill may already be current, leaving no missing
-        # days to harvest team IDs from. Scan the last few days once so
-        # backfilled games gain crests immediately.
-        if not team_ids and not fetched_any:
+        # Cold start: when the map is still empty the backfill may already
+        # be current (or the missing days had no games for this league, e.g.
+        # UCL between matchdays), leaving no team IDs to build crests from.
+        # Scan the last 7 days once so backfilled games gain crests.
+        if not team_ids:
             today = datetime.date.today()
             for back in range(1, 8):
                 ds = (today - datetime.timedelta(days=back)).strftime("%Y%m%d")
@@ -298,11 +309,31 @@ def main():
                   flush=True)
 
         # Enrich older games' badges from the accumulated name->id map.
+        # The historical and daily feeds sometimes spell a team slightly
+        # differently (accents, apostrophes, FC suffixes), so match
+        # tolerantly: exact, then accent/case/punctuation-insensitive,
+        # then a high-threshold fuzzy fallback.
+        norm_map = {norm_team_name(k): v for k, v in team_ids.items()}
+        norm_keys = list(norm_map.keys())
+
+        def team_id_for(name):
+            if name in team_ids:
+                return team_ids[name]
+            nk = norm_team_name(name)
+            if nk in norm_map:
+                return norm_map[nk]
+            best = difflib.get_close_matches(nk, norm_keys, n=1, cutoff=0.9)
+            return norm_map[best[0]] if best else None
+
         for g in games_by_id.values():
-            if not g.get("homeBadge") and g["home"] in team_ids:
-                g["homeBadge"] = TEAM_LOGO.format(id=team_ids[g["home"]])
-            if not g.get("awayBadge") and g["away"] in team_ids:
-                g["awayBadge"] = TEAM_LOGO.format(id=team_ids[g["away"]])
+            if not g.get("homeBadge"):
+                tid = team_id_for(g["home"])
+                if tid:
+                    g["homeBadge"] = TEAM_LOGO.format(id=tid)
+            if not g.get("awayBadge"):
+                tid = team_id_for(g["away"])
+                if tid:
+                    g["awayBadge"] = TEAM_LOGO.format(id=tid)
 
         # Safety net: dedupe on (date, home, away) in case the two sources
         # ever describe the same fixture with different ids. Prefer the
