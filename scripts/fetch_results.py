@@ -4,15 +4,20 @@
 - Resolves the 4 league IDs via get_leagues (expected: PL 47, LaLiga 87,
   Israel 127, UCL 42).
 - Backfills the current season via get_historical_match_results (one call
-  per league) when no local data file exists or the season rolled over.
+  per league) when no local data file exists; re-checks the season weekly
+  so a rollover triggers a fresh backfill.
 - Incrementally fetches get_matches_by_date for days missing since the
   last run (capped), merging new finished games.
-- Writes data/<slug>.json: {league, league_id, season, updated_at, games[]}.
-  The app serves these files; it never calls parse.bot at request time.
+- Writes data/<slug>.json: {league, league_id, season, updated_at,
+  team_ids, games[]}. The app serves these files; it never calls
+  parse.bot at request time.
 
 Team crests: matches_by_date carries FotMob team IDs, so badge URLs use
-FotMob's image CDN. A persistent name->id map (data/team_ids.json) lets
-older backfilled games gain crests once their teams appear in a daily fetch.
+FotMob's image CDN. A persistent name->id map per league file lets older
+backfilled games gain crests once their teams appear in a daily fetch.
+
+Credit budget: ~1 (leagues) + ~1 (daily) calls/day, plus 4/week for the
+season check - well under the 200/month free tier.
 
 Requires PARSE_BOT_API_KEY in the environment (GitHub Actions secret).
 Exits non-zero without touching data files when the API is unreachable,
@@ -36,14 +41,15 @@ if not KEY:
 
 TEAM_LOGO = "https://images.fotmob.com/image_resources/logo/teamlogo/{id}.png"
 
-# slug -> (expected parse.bot league id, name keywords for resolution)
+# slug -> (expected parse.bot league id, name keywords for resolution, country code)
 LEAGUES = {
     "premier-league": (47, ["premier league"], "ENG"),
     "la-liga": (87, ["laliga", "la liga", "primera"], "ESP"),
     "israeli-league": (127, ["israel", "ligat"], "ISR"),
     "champions-league": (42, ["champions league"], "INT"),
 }
-MAX_CATCHUP_DAYS = 7
+MAX_CATCHUP_DAYS = 14
+HISTORICAL_CHECK_DAYS = 7
 
 
 def call(endpoint, params=None):
@@ -90,11 +96,8 @@ def resolve_league_ids():
     print(f"get_leagues: {len(found)} leagues", flush=True)
     resolved = {}
     for slug, (expected, keywords, ccode) in LEAGUES.items():
-        candidates = []
-        for lg in found:
-            n = str(lg.get("name", "")).lower()
-            if any(k in n for k in keywords):
-                candidates.append(lg)
+        candidates = [lg for lg in found
+                      if any(k in str(lg.get("name", "")).lower() for k in keywords)]
         match = None
         # Prefer the candidate from the expected country (many countries
         # have a league literally named "Premier League").
@@ -106,13 +109,10 @@ def resolve_league_ids():
         if match and int(match["id"]) != expected:
             print(f"NOTE: {slug} resolved to id={match['id']} "
                   f"(expected {expected}); using resolved", flush=True)
-            resolved[slug] = int(match["id"])
-        elif match:
-            resolved[slug] = int(match["id"])
-        else:
+        if not match:
             print(f"WARNING: {slug} not found in get_leagues; "
                   f"falling back to expected id {expected}", flush=True)
-            resolved[slug] = expected
+        resolved[slug] = int(match["id"]) if match else expected
         print(f"  {slug} -> {resolved[slug]}", flush=True)
     return resolved
 
@@ -136,7 +136,6 @@ def norm_historical(m):
         "awayScore": aws,
         "homeBadge": None,
         "awayBadge": None,
-        "round": m.get("round"),
     }
 
 
@@ -152,12 +151,13 @@ def norm_daily(m):
         return None
     if not home.get("name") or not away.get("name"):
         return None
-    date_iso = st.get("utcTime") or m.get("timeTS")
+    date_iso = st.get("utcTime")
+    if not date_iso and isinstance(m.get("timeTS"), (int, float)):
+        # timeTS is epoch milliseconds.
+        date_iso = datetime.datetime.fromtimestamp(
+            m["timeTS"] / 1000, tz=datetime.timezone.utc).isoformat()
     if not date_iso:
         return None
-    if isinstance(date_iso, (int, float)):
-        date_iso = datetime.datetime.fromtimestamp(
-            date_iso / 1000, tz=datetime.timezone.utc).isoformat()
     tids = {}
     if home.get("id"):
         tids[home["name"]] = int(home["id"])
@@ -172,7 +172,6 @@ def norm_daily(m):
         "awayScore": aws,
         "homeBadge": TEAM_LOGO.format(id=home["id"]) if home.get("id") else None,
         "awayBadge": TEAM_LOGO.format(id=away["id"]) if away.get("id") else None,
-        "round": m.get("tournamentStage"),
     }
     return game, tids
 
@@ -184,40 +183,60 @@ def load_json(path):
     return None
 
 
+def historical_check_due(existing):
+    """True when the season backfill should be (re)checked."""
+    if not existing or not existing.get("games"):
+        return True
+    last = existing.get("last_historical_check")
+    if not last:
+        return True
+    try:
+        age = (datetime.datetime.now(datetime.timezone.utc)
+               - datetime.datetime.fromisoformat(last))
+        return age.days >= HISTORICAL_CHECK_DAYS
+    except Exception:
+        return True
+
+
 def main():
     os.makedirs("data", exist_ok=True)
-    os.makedirs("data/raw", exist_ok=True)
+    now_iso = datetime.datetime.now(datetime.timezone.utc).isoformat()
     league_ids = resolve_league_ids()
 
     for slug, lid in league_ids.items():
         path = f"data/{slug}.json"
-        existing = load_json(path)
+        existing = load_json(path) or {}
         games_by_id = {}
-        season = None
         # name -> FotMob team id, accumulated across runs for badge backfill.
-        team_ids = dict((existing or {}).get("team_ids") or {})
+        team_ids = dict(existing.get("team_ids") or {})
+        season = existing.get("season")
+        last_check = existing.get("last_historical_check")
 
-        # Backfill when no file exists or the season rolled over.
-        need_backfill = True
-        if existing and existing.get("games"):
-            need_backfill = False
-        hist = ok_data(call("get_historical_match_results", {"league_id": lid}),
-                       "get_historical_match_results")
-        season = hist.get("season")
-        if need_backfill or (existing and existing.get("season") != season):
-            print(f"{slug}: backfilling season {season}", flush=True)
-            for m in hist.get("matches") or []:
-                g = norm_historical(m)
-                if g:
+        if historical_check_due(existing):
+            hist = ok_data(call("get_historical_match_results", {"league_id": lid}),
+                           "get_historical_match_results")
+            season = hist.get("season")
+            last_check = now_iso
+            if not existing.get("games") or existing.get("season") != season:
+                print(f"{slug}: backfilling season {season}", flush=True)
+                for m in hist.get("matches") or []:
+                    g = norm_historical(m)
+                    if g:
+                        games_by_id[g["id"]] = g
+            else:
+                for g in existing.get("games", []):
                     games_by_id[g["id"]] = g
+                print(f"{slug}: season {season} unchanged "
+                      f"({len(games_by_id)} stored games)", flush=True)
         else:
             for g in existing.get("games", []):
                 games_by_id[g["id"]] = g
             print(f"{slug}: loaded {len(games_by_id)} stored games "
-                  f"(season {existing.get('season')})", flush=True)
+                  f"(season {season})", flush=True)
 
         # Incremental catch-up for days missing since the last stored game.
-        dates = sorted(g["dateISO"][:10] for g in games_by_id.values())
+        dates = sorted(g["dateISO"][:10] for g in games_by_id.values()
+                       if g.get("dateISO"))
         if dates:
             last = datetime.date.fromisoformat(dates[-1])
             today = datetime.date.today()
@@ -232,7 +251,11 @@ def main():
                                "get_matches_by_date")
                 added = 0
                 for lg in (data.get("leagues") or []):
-                    if int(lg.get("id", -1)) != lid:
+                    try:
+                        lg_id = int(lg.get("id", -1))
+                    except (TypeError, ValueError):
+                        continue
+                    if lg_id != lid:
                         continue
                     for m in lg.get("matches") or []:
                         r = norm_daily(m)
@@ -252,14 +275,23 @@ def main():
             if not g.get("awayBadge") and g["away"] in team_ids:
                 g["awayBadge"] = TEAM_LOGO.format(id=team_ids[g["away"]])
 
-        games = sorted(games_by_id.values(),
-                       key=lambda g: g["dateISO"], reverse=True)
+        # Safety net: dedupe on (date, home, away) in case the two sources
+        # ever describe the same fixture with different ids. Prefer the
+        # entry that carries crest URLs.
+        deduped = {}
+        for g in games_by_id.values():
+            key = (g["dateISO"][:10], g["home"], g["away"])
+            prev = deduped.get(key)
+            if prev is None or (not prev.get("homeBadge") and g.get("homeBadge")):
+                deduped[key] = g
+        games = sorted(deduped.values(), key=lambda g: g["dateISO"], reverse=True)
+
         out = {
             "league": slug,
             "league_id": lid,
             "season": season,
-            "updated_at": datetime.datetime.now(
-                datetime.timezone.utc).isoformat(),
+            "updated_at": now_iso,
+            "last_historical_check": last_check,
             "team_ids": team_ids,
             "games": games,
         }
