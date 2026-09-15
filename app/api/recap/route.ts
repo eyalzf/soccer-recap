@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 import { cacheGet, cacheSet } from '@/lib/cache';
-import { filterCandidate, isPreferredChannel } from '@/lib/recap/match';
+import { filterCandidate, hasHighlightIntent, isPreferredChannel } from '@/lib/recap/match';
 import { rankCandidates } from '@/lib/recap/rank';
 import { fetchWebSource, fetchYouTube } from '@/lib/recap/sources';
 import type { GameInput, RankedCandidate, RawCandidate } from '@/lib/recap/types';
@@ -58,11 +58,12 @@ export async function GET(req: NextRequest) {
 
       const accepted: RawCandidate[] = [];
       const seen = new Set<string>();
-      // When preferred channels (IPFL / ONE on YouTube) have results for the
-      // game, everything else is excluded as lower quality.
+      // When preferred channels (IPFL / ONE on YouTube) have an actual
+      // highlights video for the game, everything else is excluded as lower
+      // quality. Punditry/news from those channels does not trigger this.
       const visible = (list: RawCandidate[]): RawCandidate[] => {
         const pref = list.filter(isPreferredChannel);
-        return pref.length > 0 ? pref : list;
+        return pref.some((c) => hasHighlightIntent(c.title)) ? pref : list;
       };
       const groups: Array<{ name: string; run: () => Promise<RawCandidate[]> }> = [
         { name: 'youtube-he', run: () => fetchYouTube(game, 'he') },
