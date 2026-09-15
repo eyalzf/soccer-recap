@@ -183,6 +183,32 @@ def load_json(path):
     return None
 
 
+def harvest_daily(data, lid, games_by_id, team_ids):
+    """Merge one get_matches_by_date payload into the league's games.
+
+    Returns the number of new games added. Always accumulates team ids,
+    even for already-known games.
+    """
+    added = 0
+    for lg in (data.get("leagues") or []):
+        try:
+            lg_id = int(lg.get("id", -1))
+        except (TypeError, ValueError):
+            continue
+        if lg_id != lid:
+            continue
+        for m in lg.get("matches") or []:
+            r = norm_daily(m)
+            if not r:
+                continue
+            g, tids = r
+            team_ids.update(tids)
+            if g["id"] not in games_by_id:
+                games_by_id[g["id"]] = g
+                added += 1
+    return added
+
+
 def historical_check_due(existing):
     """True when the season backfill should be (re)checked."""
     if not existing or not existing.get("games"):
@@ -237,6 +263,7 @@ def main():
         # Incremental catch-up for days missing since the last stored game.
         dates = sorted(g["dateISO"][:10] for g in games_by_id.values()
                        if g.get("dateISO"))
+        fetched_any = False
         if dates:
             last = datetime.date.fromisoformat(dates[-1])
             today = datetime.date.today()
@@ -246,27 +273,29 @@ def main():
                 missing.append(d)
                 d += datetime.timedelta(days=1)
             for d in missing:
+                fetched_any = True
                 ds = d.strftime("%Y%m%d")
                 data = ok_data(call("get_matches_by_date", {"date": ds}),
                                "get_matches_by_date")
-                added = 0
-                for lg in (data.get("leagues") or []):
-                    try:
-                        lg_id = int(lg.get("id", -1))
-                    except (TypeError, ValueError):
-                        continue
-                    if lg_id != lid:
-                        continue
-                    for m in lg.get("matches") or []:
-                        r = norm_daily(m)
-                        if not r:
-                            continue
-                        g, tids = r
-                        team_ids.update(tids)
-                        if g["id"] not in games_by_id:
-                            games_by_id[g["id"]] = g
-                            added += 1
+                added = harvest_daily(data, lid, games_by_id, team_ids)
                 print(f"{slug}: {ds} +{added} games", flush=True)
+
+        # Cold start: the backfill may already be current, leaving no missing
+        # days to harvest team IDs from. Scan the last few days once so
+        # backfilled games gain crests immediately.
+        if not team_ids and not fetched_any:
+            today = datetime.date.today()
+            for back in range(1, 4):
+                ds = (today - datetime.timedelta(days=back)).strftime("%Y%m%d")
+                try:
+                    data = ok_data(call("get_matches_by_date", {"date": ds}),
+                                   "get_matches_by_date")
+                except RuntimeError as e:
+                    print(f"{slug}: harvest {ds} failed: {e}", flush=True)
+                    continue
+                harvest_daily(data, lid, games_by_id, team_ids)
+            print(f"{slug}: cold-start harvest -> {len(team_ids)} team ids",
+                  flush=True)
 
         # Enrich older games' badges from the accumulated name->id map.
         for g in games_by_id.values():
