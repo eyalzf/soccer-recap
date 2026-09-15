@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 import { cacheGet, cacheSet } from '@/lib/cache';
-import { filterCandidate } from '@/lib/recap/match';
+import { filterCandidate, isPreferredChannel } from '@/lib/recap/match';
 import { rankCandidates } from '@/lib/recap/rank';
 import { fetchWebSource, fetchYouTube } from '@/lib/recap/sources';
 import type { GameInput, RankedCandidate, RawCandidate } from '@/lib/recap/types';
@@ -58,6 +58,12 @@ export async function GET(req: NextRequest) {
 
       const accepted: RawCandidate[] = [];
       const seen = new Set<string>();
+      // When preferred channels (IPFL / ONE on YouTube) have results for the
+      // game, everything else is excluded as lower quality.
+      const visible = (list: RawCandidate[]): RawCandidate[] => {
+        const pref = list.filter(isPreferredChannel);
+        return pref.length > 0 ? pref : list;
+      };
       const groups: Array<{ name: string; run: () => Promise<RawCandidate[]> }> = [
         { name: 'youtube-he', run: () => fetchYouTube(game, 'he') },
         { name: 'youtube-en', run: () => fetchYouTube(game, 'en') },
@@ -69,7 +75,7 @@ export async function GET(req: NextRequest) {
 
       let pending = groups.length;
       const emit = () => {
-        send({ type: 'batch', results: rankCandidates(accepted, game), pending });
+        send({ type: 'batch', results: rankCandidates(visible(accepted), game), pending });
       };
       send({ type: 'start', pending });
 
@@ -90,7 +96,7 @@ export async function GET(req: NextRequest) {
         })
       );
 
-      const finalRanked = rankCandidates(accepted, game);
+      const finalRanked = rankCandidates(visible(accepted), game);
       cacheSet(cacheKey, finalRanked, 6 * 3600 * 1000);
       send({ type: 'done', results: finalRanked });
       controller.close();
