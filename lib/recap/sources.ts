@@ -56,7 +56,10 @@ async function ytSearch(
   return data.items ?? [];
 }
 
-async function channelIdForHandle(handle: string): Promise<string | null> {
+/** Resolve a YouTube @handle to its channel ID (cached 7 days). Exported so
+ * the recap route can resolve per-league preferred channels. Returns null
+ * when the handle doesn't resolve; never throws. */
+export async function channelIdForHandle(handle: string): Promise<string | null> {
   const key = 'ytchan:' + handle;
   const cached = cacheGet<string | null>(key);
   if (cached !== undefined) return cached;
@@ -118,74 +121,61 @@ async function ytDurations(ids: string[]): Promise<Map<string, number>> {
   return map;
 }
 
-const TRUSTED_HANDLES = ['Ipflofficial', 'one-1004'];
+/** Hebrew general query: "{homeHe} {awayHe} תקציר}". */
+export function hebrewQuery(game: GameInput): string {
+  const homeHe = hebrewVariants(game.home)[0];
+  const awayHe = hebrewVariants(game.away)[0];
+  return `${homeHe} ${awayHe} תקציר`;
+}
+
+/** English general query: "{home} vs {away} highlights". */
+export function englishQuery(game: GameInput): string {
+  return `${game.home} vs ${game.away} highlights`;
+}
+
+export interface YouTubeSearchJob {
+  /** Full query text. */
+  q: string;
+  /** When set, the search is scoped to this channel (one search.list call). */
+  channelId?: string;
+  /** Channel handle, recorded on results for preferred-channel display. */
+  handle?: string;
+  /** Query language, used as a soft Hebrew ranking signal. */
+  lang: 'he' | 'en';
+}
 
 /**
- * YouTube search group. If YOUTUBE_API_KEY is missing, returns [] gracefully.
- * group 'he' / 'en': general queries; 'trusted': scoped to official Hebrew channels.
+ * A single YouTube search.list call (100 quota units) plus durations.
+ * If YOUTUBE_API_KEY is missing, returns [] gracefully.
+ * NOTE: errors propagate to the caller (the recap route catches per-search
+ * and records them in debug diagnostics). Do not swallow them here: a
+ * silent [] is indistinguishable from "no videos found".
  */
-export async function fetchYouTube(
+export async function youtubeSearch(
   game: GameInput,
-  group: 'he' | 'en' | 'trusted'
+  job: YouTubeSearchJob
 ): Promise<RawCandidate[]> {
   if (!YT_KEY) return [];
-  // NOTE: errors propagate to the caller (the recap route catches per-group
-  // and records them in debug diagnostics). Do not swallow them here: a
-  // silent [] is indistinguishable from "no videos found".
   const g = new Date(game.dateISO).getTime();
   const after = new Date(g - 6 * DAY).toISOString();
   // Extended highlights ("תקציר מורחב") are often published 2-4 days after
   // the game; keep the window wide and let the date filter/ranking sort it.
   const before = new Date(g + 5 * DAY).toISOString();
 
-  const homeHe = hebrewVariants(game.home)[0];
-  const awayHe = hebrewVariants(game.away)[0];
-
-  // (query, channelId, channelHandle)
-  // Kept to one precise query per group: fewer parallel search.list calls
-  // means fewer HTTP 429 rate-limit hits and less daily quota burn
-  // (~400 units/game instead of ~800). YouTube's relevance matching covers
-  // title variants (e.g. "נגד") without a second query.
-  const jobs: Array<{ q: string; channelId?: string; handle?: string }> = [];
-  if (group === 'he') {
-    jobs.push({ q: `${homeHe} ${awayHe} תקציר` });
-  } else if (group === 'en') {
-    jobs.push({ q: `${game.home} vs ${game.away} highlights` });
-  } else {
-    const resolved = await Promise.all(
-      TRUSTED_HANDLES.map(async (h) => ({ h, id: await channelIdForHandle(h) }))
-    );
-    for (const { h, id } of resolved) {
-      if (!id) continue;
-      jobs.push({ q: `${homeHe} ${awayHe} תקציר`, channelId: id, handle: h });
-    }
-    if (jobs.length === 0) return [];
-  }
-
-  const items: YtSearchItem[] = [];
-  const handles = new Map<string, string>();
-  // Run the searches sequentially with a small stagger instead of one
-  // parallel burst: gentler on YouTube's rate limiter. (Groups themselves
-  // still run in parallel so results stream progressively.)
-  for (const j of jobs) {
-    const r = await ytSearch(j.q, { channelId: j.channelId, after, before });
-    for (const it of r) {
-      const vid = it.id?.videoId;
-      if (!vid) continue;
-      items.push(it);
-      if (j.handle) handles.set(vid, j.handle);
-    }
-    await new Promise((res) => setTimeout(res, 1000));
-  }
+  const r = await ytSearch(job.q, {
+    channelId: job.channelId,
+    after,
+    before,
+  });
 
   const uniq = new Map<string, YtSearchItem>();
-  for (const it of items) {
-    const vid = it.id.videoId as string;
-    if (!uniq.has(vid)) uniq.set(vid, it);
+  for (const it of r) {
+    const vid = it.id?.videoId;
+    if (!vid || uniq.has(vid)) continue;
+    uniq.set(vid, it);
   }
 
   const durs = await ytDurations([...uniq.keys()]);
-  const lang = group === 'en' ? 'en' : 'he';
 
   return [...uniq.entries()].map(([vid, it]) => {
     const sn = it.snippet;
@@ -199,8 +189,8 @@ export async function fetchYouTube(
       publishedAt: sn.publishedAt,
       durationSec: durs.get(vid),
       channelName: sn.channelTitle,
-      channelHandle: handles.get(vid),
-      lang,
+      channelHandle: job.handle,
+      lang: job.lang,
     } satisfies RawCandidate;
   });
 }
