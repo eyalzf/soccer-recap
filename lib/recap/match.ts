@@ -130,6 +130,11 @@ export function isPreferredChannel(c: RawCandidate): boolean {
   return c.source === 'youtube' && isTrusted(c);
 }
 
+/** Title signals an actual highlights/recap video (not punditry or news). */
+export function hasHighlightIntent(title: string): boolean {
+  return /תקציר|highlights|סיכום/i.test(title);
+}
+
 export interface FilterResult {
   keep: boolean;
   reason: string;
