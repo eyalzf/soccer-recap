@@ -3,6 +3,7 @@ import {
   dateProximity,
   extractScore,
   hasHebrew,
+  hasHighlightIntent,
   isTrusted,
   mentionIndex,
 } from './match';
@@ -27,6 +28,9 @@ export function scoreCandidate(c: RawCandidate, game: GameInput): number {
 
   // Hebrew before English fallback.
   if (c.lang === 'he' || hasHebrew(c.title)) s += 25;
+
+  // Actual highlights/recap, not punditry or news about the game.
+  if (hasHighlightIntent(c.title)) s += 35;
 
   // Publication date near the game date.
   const prox = dateProximity(c.publishedAt, game.dateISO);
