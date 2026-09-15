@@ -2,7 +2,7 @@
  "league": "la-liga",
  "league_id": 87,
  "season": "2026/2027",
- "updated_at": "2026-09-15T14:38:33.127225+00:00",
+ "updated_at": "2026-09-15T14:49:02.688302+00:00",
  "last_historical_check": "2026-09-15T14:30:07.977655+00:00",
  "team_ids": {
   "Villarreal": 10205,
@@ -475,7 +475,7 @@
    "homeScore": 1,
    "awayScore": 1,
    "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8370.png",
-   "awayBadge": null
+   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9866.png"
   },
   {
    "id": "5868012",
@@ -484,8 +484,8 @@
    "dateISO": "2026-08-19T19:05:00.000Z",
    "homeScore": 2,
    "awayScore": 0,
-   "homeBadge": null,
-   "awayBadge": null
+   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9906.png",
+   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9864.png"
   },
   {
    "id": "5868014",
