@@ -34,8 +34,7 @@ interface YtSearchItem {
 
 async function ytSearch(
   q: string,
-  opts: { channelId?: string; after: string; before: string },
-  retries = 1
+  opts: { channelId?: string; after: string; before: string }
 ): Promise<YtSearchItem[]> {
   const p = new URLSearchParams({
     part: 'snippet',
@@ -48,20 +47,13 @@ async function ytSearch(
     key: YT_KEY,
   });
   if (opts.channelId) p.set('channelId', opts.channelId);
-  try {
-    const data = (await fetchJson(
-      'https://www.googleapis.com/youtube/v3/search?' + p.toString()
-    )) as { items?: YtSearchItem[] };
-    return data.items ?? [];
-  } catch (e) {
-    // Retry once on rate limiting with a short backoff; otherwise propagate
-    // to the per-group handler (which reports it in debug diagnostics).
-    if (retries > 0 && (e as Error)?.message === 'HTTP 429') {
-      await new Promise((r) => setTimeout(r, 2500));
-      return ytSearch(q, opts, retries - 1);
-    }
-    throw e;
-  }
+  // NOTE: no automatic retry here. During a rate-limit event retries become a
+  // retry storm that prolongs the block; the caller reports HTTP 429 so the
+  // UI can ask the user to try again later.
+  const data = (await fetchJson(
+    'https://www.googleapis.com/youtube/v3/search?' + p.toString()
+  )) as { items?: YtSearchItem[] };
+  return data.items ?? [];
 }
 
 async function channelIdForHandle(handle: string): Promise<string | null> {
@@ -172,17 +164,19 @@ export async function fetchYouTube(
 
   const items: YtSearchItem[] = [];
   const handles = new Map<string, string>();
-  await Promise.all(
-    jobs.map(async (j) => {
-      const r = await ytSearch(j.q, { channelId: j.channelId, after, before });
-      for (const it of r) {
-        const vid = it.id?.videoId;
-        if (!vid) continue;
-        items.push(it);
-        if (j.handle) handles.set(vid, j.handle);
-      }
-    })
-  );
+  // Run the searches sequentially with a small stagger instead of one
+  // parallel burst: gentler on YouTube's rate limiter. (Groups themselves
+  // still run in parallel so results stream progressively.)
+  for (const j of jobs) {
+    const r = await ytSearch(j.q, { channelId: j.channelId, after, before });
+    for (const it of r) {
+      const vid = it.id?.videoId;
+      if (!vid) continue;
+      items.push(it);
+      if (j.handle) handles.set(vid, j.handle);
+    }
+    await new Promise((res) => setTimeout(res, 1000));
+  }
 
   const uniq = new Map<string, YtSearchItem>();
   for (const it of items) {
