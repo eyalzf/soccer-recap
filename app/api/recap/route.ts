@@ -27,9 +27,11 @@ function parseGame(sp: URLSearchParams): GameInput | null {
 
 /**
  * Progressive recap search over Server-Sent Events.
- * Source groups (Hebrew YouTube, English YouTube, trusted Hebrew channels,
- * Sport1, Sport5, ONE) run in parallel; each completed batch is merged,
- * re-ranked and streamed to the client immediately.
+ * Two phases: phase 1 runs the most-likely sources (trusted Hebrew channels
+ * for the Israeli league, Hebrew+English YouTube otherwise, plus the free
+ * web sources); phase 2 (the fallback) runs only if phase 1 produced no
+ * proper highlight result. Each completed group is merged, re-ranked and
+ * streamed to the client immediately.
  */
 export async function GET(req: NextRequest) {
   const game = parseGame(req.nextUrl.searchParams);
@@ -80,44 +82,73 @@ export async function GET(req: NextRequest) {
         { name: 'sport5', run: () => fetchWebSource(game, 'sport5') },
         { name: 'one', run: () => fetchWebSource(game, 'one') },
       ];
+      const byName = new Map(groups.map((g) => [g.name, g]));
 
-      let pending = groups.length;
+      // Two-phase search to save YouTube API calls (100 quota units each).
+      // Phase 1 runs the most-likely sources; phase 2 (English fallback /
+      // trusted channels for foreign leagues) runs only if phase 1 produced
+      // no proper highlight result. Web sources cost no quota, so they ride
+      // along in phase 1.
+      // Note: YouTube search.list accepts a single channelId per call, so the
+      // trusted group is inherently 2 calls (IPFL + ONE), not 1.
+      const isIsraeli = game.league === 'israeli-league';
+      const phase1Names = isIsraeli
+        ? ['youtube-trusted', 'sport1', 'sport5', 'one']
+        : ['youtube-he', 'youtube-en', 'sport1', 'sport5', 'one'];
+      const phase2Names = isIsraeli
+        ? ['youtube-he', 'youtube-en']
+        : ['youtube-trusted'];
+
+      let pending = 0;
       const emit = () => {
         send({ type: 'batch', results: rankCandidates(visible(accepted), game), pending });
       };
-      send({ type: 'start', pending });
-
-      await Promise.all(
-        groups.map(async (g) => {
-          try {
-            const raw = await g.run();
-            let kept = 0;
-            for (const c of raw) {
-              if (seen.has(c.id)) continue;
-              seen.add(c.id);
-              if (filterCandidate(c, game).keep) {
-                accepted.push(c);
-                kept += 1;
-              }
+      const runGroup = async (g: { name: string; run: () => Promise<RawCandidate[]> }) => {
+        try {
+          const raw = await g.run();
+          let kept = 0;
+          for (const c of raw) {
+            if (seen.has(c.id)) continue;
+            seen.add(c.id);
+            if (filterCandidate(c, game).keep) {
+              accepted.push(c);
+              kept += 1;
             }
-            if (debug) diag.push({ group: g.name, fetched: raw.length, kept });
-          } catch (e) {
-            /* a failing source group must not fail the whole search */
-            const msg = (e as Error)?.message ?? String(e);
-            if (msg === 'HTTP 429' && g.name.startsWith('youtube')) ytRateLimited = true;
-            if (debug) diag.push({ group: g.name, error: msg });
           }
-          pending -= 1;
-          emit();
-        })
-      );
+          if (debug) diag.push({ group: g.name, fetched: raw.length, kept });
+        } catch (e) {
+          /* a failing source group must not fail the whole search */
+          const msg = (e as Error)?.message ?? String(e);
+          if (msg === 'HTTP 429' && g.name.startsWith('youtube')) ytRateLimited = true;
+          if (debug) diag.push({ group: g.name, error: msg });
+        }
+        pending -= 1;
+        emit();
+      };
+
+      const phase1 = phase1Names.map((n) => byName.get(n)!);
+      pending = phase1.length;
+      send({ type: 'start', pending });
+      await Promise.all(phase1.map(runGroup));
+
+      // Short-circuit: a proper highlight result means no English fallback
+      // (and no further YouTube calls) are needed.
+      const hasProperHighlight = accepted.some((c) => hasHighlightIntent(c.title));
+      if (!hasProperHighlight) {
+        const phase2 = phase2Names.map((n) => byName.get(n)!);
+        pending = phase2.length;
+        send({ type: 'start', pending });
+        await Promise.all(phase2.map(runGroup));
+      } else if (debug) {
+        diag.push({ shortCircuited: true, skipped: phase2Names });
+      }
 
       const finalRanked = rankCandidates(visible(accepted), game);
       // Recaps for a finished game don't change; cache long to spare YouTube
-      // API quota (each fresh search costs ~4 search calls). Debug runs
-      // bypass the cache so they always reflect a live search. Never cache a
-      // rate-limited run: an empty result from HTTP 429 must not poison the
-      // cache for 24h.
+      // API quota (a fresh search costs 2-4 search calls thanks to the
+      // two-phase short-circuit). Debug runs bypass the cache so they always
+      // reflect a live search. Never cache a rate-limited run: an empty
+      // result from HTTP 429 must not poison the cache for 24h.
       if (!debug && !ytRateLimited) cacheSet(cacheKey, finalRanked, 24 * 3600 * 1000);
       send({ type: 'done', results: finalRanked, ytRateLimited, ...(debug ? { diag } : {}) });
       controller.close();
