@@ -22,6 +22,8 @@ const ALLOWLIST = new Set([
   'footballdata.io',
   'www.footballdata.io',
   'api.footballdata.io',
+  'site.api.espn.com',
+  'site.web.api.espn.com',
 ]);
 
 const UA =
