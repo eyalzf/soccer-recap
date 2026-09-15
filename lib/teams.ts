@@ -1,5 +1,5 @@
 export interface ClubEntry {
-  /** Canonical English name exactly as TheSportsDB uses it, e.g. "Manchester United" */
+  /** Canonical English name, e.g. "Manchester United" */
   en: string;
   /** Hebrew display name, e.g. "מנצ'סטר יונייטד" */
   he: string;
@@ -217,7 +217,7 @@ export const CLUBS: ClubEntry[] = [
   {
     en: "Racing de Santander",
     he: "ראסינג סנטנדר",
-    enAliases: ["Racing", "Real Racing", "Racing Santander"],
+    enAliases: ["Racing", "Real Racing", "Racing Santander", "Real Racing Club", "R. Racing Club"],
     heAliases: [],
   },
   {
@@ -367,13 +367,13 @@ export const CLUBS: ClubEntry[] = [
   {
     en: "Hapoel Ramat Gan",
     he: "הפועל רמת גן",
-    enAliases: ["Hapoel Ramat-Gan"],
+    enAliases: ["Hapoel Ramat-Gan", "Hapoel Ramat Gan Givataim", "H. Ramat Gan"],
     heAliases: ["הפועל ר\"ג"],
   },
   {
     en: "Ironi Tiberias",
     he: "עירוני טבריה",
-    enAliases: ["Hapoel Ironi Tiberias"],
+    enAliases: ["Hapoel Ironi Tiberias", "Ironi Dorot Tiberias"],
     heAliases: [],
   },
   {
@@ -397,7 +397,7 @@ export const CLUBS: ClubEntry[] = [
   {
     en: "Bayern Munich",
     he: "באיירן מינכן",
-    enAliases: ["Bayern", "FC Bayern", "FC Bayern Munich"],
+    enAliases: ["Bayern", "FC Bayern", "FC Bayern Munich", "FC Bayern München"],
     heAliases: [],
   },
   {
@@ -547,13 +547,13 @@ export const CLUBS: ClubEntry[] = [
   {
     en: "Dinamo Zagreb",
     he: "דינמו זאגרב",
-    enAliases: ["GNK Dinamo", "Dinamo"],
+    enAliases: ["GNK Dinamo", "Dinamo", "GNK Dinamo Zagreb"],
     heAliases: [],
   },
   {
     en: "Red Star Belgrade",
     he: "הכוכב האדום בלגרד",
-    enAliases: ["Crvena Zvezda", "Red Star"],
+    enAliases: ["Crvena Zvezda", "Red Star", "FK Crvena Zvezda"],
     heAliases: [],
   },
   {
@@ -613,7 +613,7 @@ export const CLUBS: ClubEntry[] = [
   {
     en: "Union Saint-Gilloise",
     he: "אוניון סן-ז'ילואז",
-    enAliases: ["Union SG", "USG"],
+    enAliases: ["Union SG", "USG", "Royale Union Saint-Gilloise"],
     heAliases: [],
   },
   {
@@ -685,7 +685,7 @@ export const CLUBS: ClubEntry[] = [
   {
     en: "Kairat Almaty",
     he: "קאיראט אלמטי",
-    enAliases: ["Kairat", "FC Kairat"],
+    enAliases: ["Kairat", "FC Kairat", "FC Kairat Almaty"],
     heAliases: [],
   },
   {
@@ -703,7 +703,7 @@ export const CLUBS: ClubEntry[] = [
   {
     en: "KÍ Klaksvík",
     he: "קלאקסוויק",
-    enAliases: ["KI Klaksvik", "Klaksvik"],
+    enAliases: ["KI Klaksvik", "Klaksvik", "Klaksvíkar Ítróttarfelag"],
     heAliases: [],
   },
   {
@@ -788,6 +788,115 @@ export const CLUBS: ClubEntry[] = [
     en: "Víkingur Reykjavík",
     he: "ויקינגור רייקיאוויק",
     enAliases: ["Vikingur Reykjavik", "Víkingur"],
+    heAliases: [],
+  },
+  // --- Sofascore spelling coverage (added 2026-09-15) ---
+  {
+    en: "Olympique Lyonnais",
+    he: "אולימפיק ליון",
+    enAliases: ["Olympique Lyon", "Lyon", "OL"],
+    heAliases: [],
+  },
+  {
+    en: "ŠK Slovan Bratislava",
+    he: "סלובן ברטיסלבה",
+    enAliases: ["Slovan Bratislava", "Slovan"],
+    heAliases: [],
+  },
+  {
+    en: "NK Celje",
+    he: "צליה",
+    enAliases: ["Celje"],
+    heAliases: [],
+  },
+  {
+    en: "NEC Nijmegen",
+    he: "ניימכן",
+    enAliases: ["NEC", "N.E.C. Nijmegen"],
+    heAliases: [],
+  },
+  {
+    en: "LASK",
+    he: "לאסק",
+    enAliases: ["LASK Linz"],
+    heAliases: [],
+  },
+  {
+    en: "AEK Athens",
+    he: "א.א.ק אתונה",
+    enAliases: ["AEK", "AEK Athen"],
+    heAliases: [],
+  },
+  {
+    en: "Viking FK",
+    he: "ויקינג סטוונגר",
+    enAliases: ["Viking", "Viking Stavanger"],
+    heAliases: [],
+  },
+  {
+    en: "Lille",
+    he: "ליל",
+    enAliases: ["LOSC Lille", "LOSC"],
+    heAliases: [],
+  },
+  {
+    en: "VfB Stuttgart",
+    he: "שטוטגרט",
+    enAliases: ["Stuttgart", "VfB"],
+    heAliases: [],
+  },
+  {
+    en: "AS Roma",
+    he: "רומא",
+    enAliases: ["Roma"],
+    heAliases: [],
+  },
+  {
+    en: "RC Lens",
+    he: "לאנס",
+    enAliases: ["Lens", "Racing Lens"],
+    heAliases: [],
+  },
+  {
+    en: "Como",
+    he: "קומו",
+    enAliases: ["Como 1907"],
+    heAliases: [],
+  },
+  {
+    en: "RB Leipzig",
+    he: "ר.ב. לייפציג",
+    enAliases: ["Leipzig", "RasenBallsport Leipzig"],
+    heAliases: [],
+  },
+  {
+    en: "Omonia Nicosia",
+    he: "אומוניה ניקוסיה",
+    enAliases: ["Omonia", "AC Omonia"],
+    heAliases: [],
+  },
+  {
+    en: "Lech Poznań",
+    he: "לך פוזנן",
+    enAliases: ["Lech", "Lech Poznan", "KKS Lech Poznań"],
+    heAliases: [],
+  },
+  {
+    en: "AGF",
+    he: "אורהוס",
+    enAliases: ["AGF Aarhus", "Aarhus GF"],
+    heAliases: [],
+  },
+  {
+    en: "Górnik Zabrze",
+    he: "גורניק זאבז'ה",
+    enAliases: ["Gornik Zabrze", "Górnik"],
+    heAliases: [],
+  },
+  {
+    en: "Mjällby AIF",
+    he: "מיאלבי",
+    enAliases: ["Mjallby AIF", "Mjällby"],
     heAliases: [],
   },
 ];
