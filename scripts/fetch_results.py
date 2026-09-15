@@ -285,7 +285,7 @@ def main():
         # backfilled games gain crests immediately.
         if not team_ids and not fetched_any:
             today = datetime.date.today()
-            for back in range(1, 4):
+            for back in range(1, 8):
                 ds = (today - datetime.timedelta(days=back)).strftime("%Y%m%d")
                 try:
                     data = ok_data(call("get_matches_by_date", {"date": ds}),
