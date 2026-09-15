@@ -114,9 +114,11 @@ export async function GET(req: NextRequest) {
 
       const finalRanked = rankCandidates(visible(accepted), game);
       // Recaps for a finished game don't change; cache long to spare YouTube
-      // API quota (each fresh search costs ~8-10 search calls). Debug runs
-      // bypass the cache so they always reflect a live search.
-      if (!debug) cacheSet(cacheKey, finalRanked, 24 * 3600 * 1000);
+      // API quota (each fresh search costs ~4 search calls). Debug runs
+      // bypass the cache so they always reflect a live search. Never cache a
+      // rate-limited run: an empty result from HTTP 429 must not poison the
+      // cache for 24h.
+      if (!debug && !ytRateLimited) cacheSet(cacheKey, finalRanked, 24 * 3600 * 1000);
       send({ type: 'done', results: finalRanked, ytRateLimited, ...(debug ? { diag } : {}) });
       controller.close();
     },
