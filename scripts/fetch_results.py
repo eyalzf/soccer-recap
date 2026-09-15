@@ -29,6 +29,7 @@ import json
 import os
 import re
 import sys
+import time
 import unicodedata
 import urllib.parse
 import urllib.request
@@ -54,24 +55,40 @@ LEAGUES = {
 MAX_CATCHUP_DAYS = 14
 HISTORICAL_CHECK_DAYS = 7
 
+# Parse free tier: 5 requests/minute. Pace calls and retry on 429.
+_MIN_INTERVAL = 12.0
+_LAST_CALL = 0.0
 
-def call(endpoint, params=None):
+
+def call(endpoint, params=None, retries=3):
+    global _LAST_CALL
     url = f"{API}/{endpoint}"
     if params:
         url += "?" + urllib.parse.urlencode(params)
-    req = urllib.request.Request(
-        url, headers={"X-API-Key": KEY, "Accept": "application/json"})
-    try:
-        with urllib.request.urlopen(req, timeout=60) as r:
-            return json.loads(r.read().decode("utf-8", "replace"))
-    except urllib.error.HTTPError as e:
+    last_err = None
+    for attempt in range(retries):
+        wait = _MIN_INTERVAL - (time.monotonic() - _LAST_CALL)
+        if wait > 0:
+            time.sleep(wait)
+        _LAST_CALL = time.monotonic()
+        req = urllib.request.Request(
+            url, headers={"X-API-Key": KEY, "Accept": "application/json"})
         try:
-            body = e.read().decode("utf-8", "replace")[:300]
-        except Exception:
-            body = "<unreadable>"
-        raise RuntimeError(f"{endpoint} HTTP {e.code}: {body}") from e
-    except Exception as e:
-        raise RuntimeError(f"{endpoint} transport error: {e}") from e
+            with urllib.request.urlopen(req, timeout=60) as r:
+                return json.loads(r.read().decode("utf-8", "replace"))
+        except urllib.error.HTTPError as e:
+            try:
+                body = e.read().decode("utf-8", "replace")[:300]
+            except Exception:
+                body = "<unreadable>"
+            last_err = (f"{endpoint} HTTP {e.code}: {body}")
+            if e.code == 429 and attempt < retries - 1:
+                time.sleep(20 * (attempt + 1))
+                continue
+            raise RuntimeError(last_err) from e
+        except Exception as e:
+            raise RuntimeError(f"{endpoint} transport error: {e}") from e
+    raise RuntimeError(last_err or f"{endpoint}: retries exhausted")
 
 
 def ok_data(res, endpoint):
@@ -304,7 +321,15 @@ def main():
                 except RuntimeError as e:
                     print(f"{slug}: harvest {ds} failed: {e}", flush=True)
                     continue
-                harvest_daily(data, lid, games_by_id, team_ids)
+                leagues = data.get("leagues") or []
+                lg = next((l for l in leagues
+                           if str(l.get("id")) == str(lid)), None)
+                n_matches = len(lg.get("matches") or []) if lg else 0
+                added = harvest_daily(data, lid, games_by_id, team_ids)
+                print(f"{slug}: harvest {ds}: {len(leagues)} leagues, "
+                      f"league {lid} present={lg is not None} "
+                      f"matches={n_matches} +{added} games, "
+                      f"ids={len(team_ids)}", flush=True)
             print(f"{slug}: cold-start harvest -> {len(team_ids)} team ids",
                   flush=True)
 
