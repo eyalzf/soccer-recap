@@ -34,23 +34,34 @@ interface YtSearchItem {
 
 async function ytSearch(
   q: string,
-  opts: { channelId?: string; after: string; before: string }
+  opts: { channelId?: string; after: string; before: string },
+  retries = 1
 ): Promise<YtSearchItem[]> {
   const p = new URLSearchParams({
     part: 'snippet',
     type: 'video',
     order: 'relevance',
-    maxResults: '8',
+    maxResults: '10',
     q,
     publishedAfter: opts.after,
     publishedBefore: opts.before,
     key: YT_KEY,
   });
   if (opts.channelId) p.set('channelId', opts.channelId);
-  const data = (await fetchJson(
-    'https://www.googleapis.com/youtube/v3/search?' + p.toString()
-  )) as { items?: YtSearchItem[] };
-  return data.items ?? [];
+  try {
+    const data = (await fetchJson(
+      'https://www.googleapis.com/youtube/v3/search?' + p.toString()
+    )) as { items?: YtSearchItem[] };
+    return data.items ?? [];
+  } catch (e) {
+    // Retry once on rate limiting with a short backoff; otherwise propagate
+    // to the per-group handler (which reports it in debug diagnostics).
+    if (retries > 0 && (e as Error)?.message === 'HTTP 429') {
+      await new Promise((r) => setTimeout(r, 2500));
+      return ytSearch(q, opts, retries - 1);
+    }
+    throw e;
+  }
 }
 
 async function channelIdForHandle(handle: string): Promise<string | null> {
@@ -130,72 +141,74 @@ export async function fetchYouTube(
   // and records them in debug diagnostics). Do not swallow them here: a
   // silent [] is indistinguishable from "no videos found".
   const g = new Date(game.dateISO).getTime();
-    const after = new Date(g - 6 * DAY).toISOString();
-    // Bisection: back to +2d to test whether the +5d window broke Hebrew search.
-    const before = new Date(g + 2 * DAY).toISOString();
+  const after = new Date(g - 6 * DAY).toISOString();
+  // Extended highlights ("תקציר מורחב") are often published 2-4 days after
+  // the game; keep the window wide and let the date filter/ranking sort it.
+  const before = new Date(g + 5 * DAY).toISOString();
 
-    const homeHe = hebrewVariants(game.home)[0];
-    const awayHe = hebrewVariants(game.away)[0];
+  const homeHe = hebrewVariants(game.home)[0];
+  const awayHe = hebrewVariants(game.away)[0];
 
-    // (query, channelId, channelHandle)
-    const jobs: Array<{ q: string; channelId?: string; handle?: string }> = [];
-    if (group === 'he') {
-      jobs.push({ q: `${homeHe} ${awayHe} תקציר` });
-      jobs.push({ q: `${homeHe} נגד ${awayHe}` });
-    } else if (group === 'en') {
-      jobs.push({ q: `${game.home} vs ${game.away} highlights` });
-      jobs.push({ q: `${game.home} ${game.away} highlights` });
-    } else {
-      const resolved = await Promise.all(
-        TRUSTED_HANDLES.map(async (h) => ({ h, id: await channelIdForHandle(h) }))
-      );
-      for (const { h, id } of resolved) {
-        if (!id) continue;
-        jobs.push({ q: `${homeHe} ${awayHe} תקציר`, channelId: id, handle: h });
-        jobs.push({ q: `${homeHe} ${awayHe}`, channelId: id, handle: h });
-      }
-      if (jobs.length === 0) return [];
-    }
-
-    const items: YtSearchItem[] = [];
-    const handles = new Map<string, string>();
-    await Promise.all(
-      jobs.map(async (j) => {
-        const r = await ytSearch(j.q, { channelId: j.channelId, after, before });
-        for (const it of r) {
-          const vid = it.id?.videoId;
-          if (!vid) continue;
-          items.push(it);
-          if (j.handle) handles.set(vid, j.handle);
-        }
-      })
+  // (query, channelId, channelHandle)
+  // Kept to one precise query per group: fewer parallel search.list calls
+  // means fewer HTTP 429 rate-limit hits and less daily quota burn
+  // (~400 units/game instead of ~800). YouTube's relevance matching covers
+  // title variants (e.g. "נגד") without a second query.
+  const jobs: Array<{ q: string; channelId?: string; handle?: string }> = [];
+  if (group === 'he') {
+    jobs.push({ q: `${homeHe} ${awayHe} תקציר` });
+  } else if (group === 'en') {
+    jobs.push({ q: `${game.home} vs ${game.away} highlights` });
+  } else {
+    const resolved = await Promise.all(
+      TRUSTED_HANDLES.map(async (h) => ({ h, id: await channelIdForHandle(h) }))
     );
-
-    const uniq = new Map<string, YtSearchItem>();
-    for (const it of items) {
-      const vid = it.id.videoId as string;
-      if (!uniq.has(vid)) uniq.set(vid, it);
+    for (const { h, id } of resolved) {
+      if (!id) continue;
+      jobs.push({ q: `${homeHe} ${awayHe} תקציר`, channelId: id, handle: h });
     }
+    if (jobs.length === 0) return [];
+  }
 
-    const durs = await ytDurations([...uniq.keys()]);
-    const lang = group === 'en' ? 'en' : 'he';
+  const items: YtSearchItem[] = [];
+  const handles = new Map<string, string>();
+  await Promise.all(
+    jobs.map(async (j) => {
+      const r = await ytSearch(j.q, { channelId: j.channelId, after, before });
+      for (const it of r) {
+        const vid = it.id?.videoId;
+        if (!vid) continue;
+        items.push(it);
+        if (j.handle) handles.set(vid, j.handle);
+      }
+    })
+  );
 
-    return [...uniq.entries()].map(([vid, it]) => {
-      const sn = it.snippet;
-      return {
-        id: 'yt:' + vid,
-        title: sn.title,
-        url: 'https://www.youtube.com/watch?v=' + vid,
-        source: 'youtube' as SourceKind,
-        videoId: vid,
-        thumbnail: sn.thumbnails?.medium?.url ?? sn.thumbnails?.default?.url,
-        publishedAt: sn.publishedAt,
-        durationSec: durs.get(vid),
-        channelName: sn.channelTitle,
-        channelHandle: handles.get(vid),
-        lang,
-      } satisfies RawCandidate;
-    });
+  const uniq = new Map<string, YtSearchItem>();
+  for (const it of items) {
+    const vid = it.id.videoId as string;
+    if (!uniq.has(vid)) uniq.set(vid, it);
+  }
+
+  const durs = await ytDurations([...uniq.keys()]);
+  const lang = group === 'en' ? 'en' : 'he';
+
+  return [...uniq.entries()].map(([vid, it]) => {
+    const sn = it.snippet;
+    return {
+      id: 'yt:' + vid,
+      title: sn.title,
+      url: 'https://www.youtube.com/watch?v=' + vid,
+      source: 'youtube' as SourceKind,
+      videoId: vid,
+      thumbnail: sn.thumbnails?.medium?.url ?? sn.thumbnails?.default?.url,
+      publishedAt: sn.publishedAt,
+      durationSec: durs.get(vid),
+      channelName: sn.channelTitle,
+      channelHandle: handles.get(vid),
+      lang,
+    } satisfies RawCandidate;
+  });
 }
 
 // ---------- Sport1 / Sport5 / ONE (best-effort) ----------
