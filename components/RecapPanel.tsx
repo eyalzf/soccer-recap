@@ -36,6 +36,7 @@ export default function RecapPanel({
   const [pending, setPending] = useState(0);
   const [started, setStarted] = useState(false);
   const [failed, setFailed] = useState(false);
+  const [rateLimited, setRateLimited] = useState(false);
   const [selected, setSelected] = useState<Candidate | null>(null);
 
   useEffect(() => {
@@ -43,6 +44,7 @@ export default function RecapPanel({
     setSelected(null);
     setStarted(false);
     setFailed(false);
+    setRateLimited(false);
     const q = new URLSearchParams({
       home: game.home,
       away: game.away,
@@ -58,6 +60,7 @@ export default function RecapPanel({
           type: string;
           results?: Candidate[];
           pending?: number;
+          ytRateLimited?: boolean;
         };
         if (data.type === 'start') {
           setStarted(true);
@@ -68,6 +71,7 @@ export default function RecapPanel({
         } else if (data.type === 'done') {
           setResults(data.results ?? []);
           setPending(0);
+          if (data.ytRateLimited) setRateLimited(true);
           es.close();
         }
       } catch {
@@ -144,7 +148,10 @@ export default function RecapPanel({
         {failed && results.length === 0 && (
           <div className="empty">החיפוש נכשל — נסו שוב מאוחר יותר</div>
         )}
-        {started && pending === 0 && !failed && results.length === 0 && (
+        {!failed && rateLimited && results.length === 0 && (
+          <div className="empty">יוטיוב מגביל כרגע חיפושים — נסו שוב בעוד כמה דקות</div>
+        )}
+        {started && pending === 0 && !failed && !rateLimited && results.length === 0 && (
           <div className="empty">לא נמצאו תקצירים למשחק זה</div>
         )}
       </div>
