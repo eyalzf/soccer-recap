@@ -2,7 +2,9 @@ import { NextRequest } from 'next/server';
 import { cacheGet, cacheSet } from '@/lib/cache';
 import { filterCandidate, hasHighlightIntent, isPreferredChannel } from '@/lib/recap/match';
 import { rankCandidates } from '@/lib/recap/rank';
-import { fetchWebSource, fetchYouTube } from '@/lib/recap/sources';
+import { channelIdForHandle, englishQuery, hebrewQuery, youtubeSearch } from '@/lib/recap/sources';
+import type { YouTubeSearchJob } from '@/lib/recap/sources';
+import { searchPlanFor } from '@/lib/recap/leaguePlans';
 import type { GameInput, RankedCandidate, RawCandidate } from '@/lib/recap/types';
 
 export const dynamic = 'force-dynamic';
@@ -27,11 +29,10 @@ function parseGame(sp: URLSearchParams): GameInput | null {
 
 /**
  * Progressive recap search over Server-Sent Events.
- * Two phases: phase 1 runs the most-likely sources (trusted Hebrew channels
- * for the Israeli league, Hebrew+English YouTube otherwise, plus the free
- * web sources); phase 2 (the fallback) runs only if phase 1 produced no
- * proper highlight result. Each completed group is merged, re-ranked and
- * streamed to the client immediately.
+ * Per-league plan (see lib/recap/leaguePlans.ts): preferred channels are
+ * tried in priority order, one search each, stopping at the first with a
+ * proper highlight result; only then does the general-search fallback run.
+ * Each completed search is merged, re-ranked and streamed immediately.
  */
 export async function GET(req: NextRequest) {
   const game = parseGame(req.nextUrl.searchParams);
@@ -74,38 +75,23 @@ export async function GET(req: NextRequest) {
         const pref = list.filter(isPreferredChannel);
         return pref.some((c) => hasHighlightIntent(c.title)) ? pref : list;
       };
-      const groups: Array<{ name: string; run: () => Promise<RawCandidate[]> }> = [
-        { name: 'youtube-he', run: () => fetchYouTube(game, 'he') },
-        { name: 'youtube-en', run: () => fetchYouTube(game, 'en') },
-        { name: 'youtube-trusted', run: () => fetchYouTube(game, 'trusted') },
-        { name: 'sport1', run: () => fetchWebSource(game, 'sport1') },
-        { name: 'sport5', run: () => fetchWebSource(game, 'sport5') },
-        { name: 'one', run: () => fetchWebSource(game, 'one') },
-      ];
-      const byName = new Map(groups.map((g) => [g.name, g]));
+      // Per-league search plan: preferred channels in priority order, then
+      // general-search fallback languages. Non-YouTube sources are omitted.
+      const plan = searchPlanFor(game.league);
 
-      // Two-phase search to save YouTube API calls (100 quota units each).
-      // Phase 1 runs the most-likely sources; phase 2 (English fallback /
-      // trusted channels for foreign leagues) runs only if phase 1 produced
-      // no proper highlight result. Web sources cost no quota, so they ride
-      // along in phase 1.
-      // Note: YouTube search.list accepts a single channelId per call, so the
-      // trusted group is inherently 2 calls (IPFL + ONE), not 1.
-      const isIsraeli = game.league === 'israeli-league';
-      const phase1Names = isIsraeli
-        ? ['youtube-trusted', 'sport1', 'sport5', 'one']
-        : ['youtube-he', 'youtube-en', 'sport1', 'sport5', 'one'];
-      const phase2Names = isIsraeli
-        ? ['youtube-he', 'youtube-en']
-        : ['youtube-trusted'];
-
-      let pending = 0;
-      const emit = () => {
+      send({ type: 'start', pending: 1 });
+      const emit = (pending: number) => {
         send({ type: 'batch', results: rankCandidates(visible(accepted), game), pending });
       };
-      const runGroup = async (g: { name: string; run: () => Promise<RawCandidate[]> }) => {
+      // "Proper" = an accepted candidate with highlight intent. A preferred
+      // channel returning only punditry does not count and does not stop
+      // the search.
+      const hasProperHighlight = () =>
+        accepted.some((c) => hasHighlightIntent(c.title));
+
+      const runSearch = async (label: string, job: YouTubeSearchJob) => {
         try {
-          const raw = await g.run();
+          const raw = await youtubeSearch(game, job);
           let kept = 0;
           for (const c of raw) {
             if (seen.has(c.id)) continue;
@@ -115,40 +101,53 @@ export async function GET(req: NextRequest) {
               kept += 1;
             }
           }
-          if (debug) diag.push({ group: g.name, fetched: raw.length, kept });
+          if (debug) diag.push({ search: label, fetched: raw.length, kept });
         } catch (e) {
-          /* a failing source group must not fail the whole search */
+          /* a failing search must not fail the whole run */
           const msg = (e as Error)?.message ?? String(e);
-          if (msg === 'HTTP 429' && g.name.startsWith('youtube')) ytRateLimited = true;
-          if (debug) diag.push({ group: g.name, error: msg });
+          if (msg === 'HTTP 429') ytRateLimited = true;
+          if (debug) diag.push({ search: label, error: msg });
         }
-        pending -= 1;
-        emit();
+        emit(1);
       };
 
-      const phase1 = phase1Names.map((n) => byName.get(n)!);
-      pending = phase1.length;
-      send({ type: 'start', pending });
-      await Promise.all(phase1.map(runGroup));
-
-      // Short-circuit: a proper highlight result means no English fallback
-      // (and no further YouTube calls) are needed.
-      const hasProperHighlight = accepted.some((c) => hasHighlightIntent(c.title));
-      if (!hasProperHighlight) {
-        const phase2 = phase2Names.map((n) => byName.get(n)!);
-        pending = phase2.length;
-        send({ type: 'start', pending });
-        await Promise.all(phase2.map(runGroup));
-      } else if (debug) {
-        diag.push({ shortCircuited: true, skipped: phase2Names });
+      // Phase 1: preferred channels in priority order, one search each
+      // (YouTube allows a single channelId per search.list call). Stop at
+      // the first channel with a proper highlight result.
+      for (const src of plan.preferred) {
+        const channelId = await channelIdForHandle(src.handle);
+        if (!channelId) {
+          if (debug) diag.push({ search: 'preferred:' + src.handle, skipped: 'unresolved handle' });
+          continue;
+        }
+        const q = src.lang === 'he' ? hebrewQuery(game) : englishQuery(game);
+        await runSearch('preferred:' + src.handle, {
+          q,
+          channelId,
+          handle: src.handle,
+          lang: src.lang,
+        });
+        if (hasProperHighlight()) break;
       }
+
+      // Phase 2: general-search fallback, only when no preferred channel hit.
+      if (!hasProperHighlight()) {
+        for (const lang of plan.fallbackLangs) {
+          const q = lang === 'he' ? hebrewQuery(game) : englishQuery(game);
+          await runSearch('general:' + lang, { q, lang });
+          if (hasProperHighlight()) break;
+        }
+      } else if (debug) {
+        diag.push({ shortCircuited: true });
+      }
+      emit(0);
 
       const finalRanked = rankCandidates(visible(accepted), game);
       // Recaps for a finished game don't change; cache long to spare YouTube
-      // API quota (a fresh search costs 2-4 search calls thanks to the
-      // two-phase short-circuit). Debug runs bypass the cache so they always
-      // reflect a live search. Never cache a rate-limited run: an empty
-      // result from HTTP 429 must not poison the cache for 24h.
+      // API quota (a fresh search costs 1-3 search calls thanks to the
+      // per-league priority short-circuit). Debug runs bypass the cache so
+      // they always reflect a live search. Never cache a rate-limited run:
+      // an empty result from HTTP 429 must not poison the cache for 24h.
       if (!debug && !ytRateLimited) cacheSet(cacheKey, finalRanked, 24 * 3600 * 1000);
       send({ type: 'done', results: finalRanked, ytRateLimited, ...(debug ? { diag } : {}) });
       controller.close();
