@@ -7,17 +7,20 @@ export type LeagueSlug =
 export interface LeagueDef {
   slug: LeagueSlug;
   hebrewName: string;
-  /** SportScore competition slug (verified live) */
-  sportscoreSlug: string;
-  /** Static competition logo URL (SportScore CDN) */
+  /** FotMob league id used by the parse.bot listings pipeline (verified live) */
+  parsebotId: number;
+  /** Static competition logo URL (FotMob image CDN) */
   badge: string;
 }
 
+const LEAGUE_LOGO = (id: number) =>
+  `https://images.fotmob.com/image_resources/logo/leaguelogo/${id}.png`;
+
 export const LEAGUES: LeagueDef[] = [
-  { slug: 'premier-league', hebrewName: 'פרמייר ליג', sportscoreSlug: 'english-premier-league', badge: 'https://img.thesports.com/football/competition/3549f192c75cbc737a05fd51ecad383e.png' },
-  { slug: 'la-liga', hebrewName: 'לה ליגה', sportscoreSlug: 'spanish-la-liga', badge: 'https://img.thesports.com/football/competition/1fbbb4be3b47d9465c5badecc3122e07.png' },
-  { slug: 'israeli-league', hebrewName: 'ליגת העל', sportscoreSlug: 'israel-premier-league', badge: 'https://img.thesports.com/football/competition/acaae7840e78337f1fcdffd3430e4205.png' },
-  { slug: 'champions-league', hebrewName: 'ליגת האלופות', sportscoreSlug: 'uefa-champions-league', badge: 'https://img.thesports.com/football/competition/ac05535bde17129cb598311242b3afba.png' },
+  { slug: 'premier-league', hebrewName: 'פרמייר ליג', parsebotId: 47, badge: LEAGUE_LOGO(47) },
+  { slug: 'la-liga', hebrewName: 'לה ליגה', parsebotId: 87, badge: LEAGUE_LOGO(87) },
+  { slug: 'israeli-league', hebrewName: 'ליגת העל', parsebotId: 127, badge: LEAGUE_LOGO(127) },
+  { slug: 'champions-league', hebrewName: 'ליגת האלופות', parsebotId: 42, badge: LEAGUE_LOGO(42) },
 ];
 
 export function getLeague(slug: string): LeagueDef | undefined {
