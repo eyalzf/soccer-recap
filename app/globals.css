@@ -70,16 +70,8 @@ body {
 .game-score { font-size: 1.25rem; font-weight: 800; color: var(--text); direction: ltr; }
 .league-logo { width: 22px; height: 22px; object-fit: contain; vertical-align: middle; }
 
-.pager {
-  display: flex; align-items: center; justify-content: center;
-  gap: 14px; margin: 24px 0 40px;
-}
-.pager button {
-  background: var(--card); color: var(--text);
-  border: 1px solid var(--border); border-radius: 10px;
-  padding: 8px 18px; font-size: 1rem; cursor: pointer;
-}
-.pager button:disabled { opacity: 0.4; cursor: default; }
+.infinite-sentinel { height: 1px; }
+.status.slim { padding: 18px 0 30px; }
 
 .status { text-align: center; color: var(--muted); padding: 40px 0; }
 
@@ -140,6 +132,13 @@ body {
 .recap-title { font-size: 0.98rem; font-weight: 600; margin-bottom: 4px; }
 .recap-src { font-size: 0.82rem; color: var(--muted); }
 .empty { color: var(--muted); text-align: center; padding: 26px 0; }
+
+.attribution {
+  text-align: center; font-size: 0.75rem; color: var(--muted);
+  padding: 18px 0 8px; margin-top: 12px; border-top: 1px solid var(--border);
+}
+.attribution a { color: var(--muted); text-decoration: underline; }
+.attribution a:hover { color: var(--text); }
 
 @media (max-width: 640px) {
   .topbar h1 { font-size: 1.5rem; }

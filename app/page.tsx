@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import GameCard, { type GameItem } from '@/components/GameCard';
 import RecapPanel from '@/components/RecapPanel';
 import { LEAGUES, type LeagueSlug } from '@/lib/leagues';
@@ -22,12 +22,20 @@ interface LeagueMeta {
 
 export default function Home() {
   const [league, setLeague] = useState<LeagueSlug>('premier-league');
-  const [page, setPage] = useState(0);
-  const [data, setData] = useState<GamesResponse | null>(null);
+  const [items, setItems] = useState<GameItem[]>([]);
+  const [total, setTotal] = useState(0);
+  /** Next page index to fetch. */
+  const [nextPage, setNextPage] = useState(0);
+  const [hasMore, setHasMore] = useState(false);
   const [leagues, setLeagues] = useState<LeagueMeta[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [selected, setSelected] = useState<GameItem | null>(null);
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
+  // Mutable snapshot so the intersection callback never reads stale state.
+  const stateRef = useRef({ league, nextPage, hasMore, loading, loadingMore });
+  stateRef.current = { league, nextPage, hasMore, loading, loadingMore };
 
   useEffect(() => {
     fetch('/api/leagues')
@@ -36,34 +44,77 @@ export default function Home() {
       .catch(() => {});
   }, []);
 
-  const load = useCallback(
-    async (lg: LeagueSlug, pg: number, force = false) => {
+  const fetchPage = useCallback(async (lg: LeagueSlug, pg: number, force = false) => {
+    const res = await fetch(
+      `/api/games?league=${lg}&page=${pg}${force ? '&nocache=1' : ''}`,
+      { cache: 'no-store' }
+    );
+    return (await res.json()) as GamesResponse;
+  }, []);
+
+  /** Load the first page, replacing the list (initial load, league switch, refresh). */
+  const loadFirst = useCallback(
+    async (lg: LeagueSlug, force = false) => {
       if (force) setRefreshing(true);
       else setLoading(true);
       try {
-        const res = await fetch(
-          `/api/games?league=${lg}&page=${pg}${force ? '&nocache=1' : ''}`,
-          { cache: 'no-store' }
-        );
-        const j = (await res.json()) as GamesResponse;
-        setData(j);
+        const j = await fetchPage(lg, 0, force);
+        setItems(j.items);
+        setTotal(j.total);
+        setHasMore(j.hasMore);
+        setNextPage(1);
       } catch {
-        setData(null);
+        setItems([]);
+        setHasMore(false);
       }
       setLoading(false);
       setRefreshing(false);
     },
-    []
+    [fetchPage]
   );
 
+  /** Append the next page when the bottom sentinel scrolls into view. */
+  const loadMore = useCallback(async () => {
+    const s = stateRef.current;
+    if (s.loading || s.loadingMore || !s.hasMore) return;
+    setLoadingMore(true);
+    try {
+      const j = await fetchPage(s.league, s.nextPage);
+      setItems((prev) => {
+        const seen = new Set(prev.map((g) => g.id));
+        return [...prev, ...j.items.filter((g) => !seen.has(g.id))];
+      });
+      setTotal(j.total);
+      setHasMore(j.hasMore);
+      setNextPage(s.nextPage + 1);
+    } catch {
+      /* keep the list as-is; the sentinel stays and can retry */
+    }
+    setLoadingMore(false);
+  }, [fetchPage]);
+
   useEffect(() => {
-    load(league, page);
-  }, [league, page, load]);
+    loadFirst(league);
+  }, [league, loadFirst]);
+
+  useEffect(() => {
+    const el = sentinelRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) loadMore();
+      },
+      { rootMargin: '600px' }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [loadMore]);
 
   const switchLeague = (lg: LeagueSlug) => {
+    if (lg === league) return;
     setLeague(lg);
-    setPage(0);
     setSelected(null);
+    window.scrollTo(0, 0);
   };
 
   const badgeFor = (slug: string): string | null =>
@@ -76,7 +127,7 @@ export default function Home() {
         <button
           className="refresh-btn"
           disabled={refreshing}
-          onClick={() => load(league, page, true)}
+          onClick={() => loadFirst(league, true)}
         >
           {refreshing ? 'מרענן…' : 'רענן'}
         </button>
@@ -97,26 +148,22 @@ export default function Home() {
 
       {loading ? (
         <div className="status">טוען משחקים…</div>
-      ) : !data || data.items.length === 0 ? (
+      ) : items.length === 0 ? (
         <div className="status">אין משחקים להצגה</div>
       ) : (
         <>
           <div className="games">
-            {data.items.map((g) => (
+            {items.map((g) => (
               <GameCard key={g.id} game={g} onSelect={setSelected} />
             ))}
           </div>
-          <div className="pager">
-            <button disabled={page === 0} onClick={() => setPage(page - 1)}>
-              הקודם
-            </button>
-            <span>
-              עמוד {page + 1} מתוך {Math.max(1, Math.ceil(data.total / 10))}
-            </span>
-            <button disabled={!data.hasMore} onClick={() => setPage(page + 1)}>
-              הבא
-            </button>
-          </div>
+          <div ref={sentinelRef} className="infinite-sentinel" aria-hidden="true" />
+          {loadingMore && <div className="status slim">טוען עוד משחקים…</div>}
+          {!hasMore && !loadingMore && items.length > 0 && (
+            <div className="status slim">
+              הוצגו {items.length} מתוך {total} משחקים
+            </div>
+          )}
         </>
       )}
 
