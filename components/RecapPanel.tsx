@@ -28,10 +28,13 @@ const SOURCE_HE: Record<string, string> = {
 export default function RecapPanel({
   game,
   league,
+  fixture,
   onClose,
 }: {
   game: GameItem;
   league: string;
+  /** When set, replay a recorded fixture instead of a live YouTube search (zero quota). */
+  fixture?: string;
   onClose: () => void;
 }) {
   const [results, setResults] = useState<Candidate[]>([]);
@@ -56,7 +59,9 @@ export default function RecapPanel({
       hs: game.homeScore == null ? '' : String(game.homeScore),
       as: game.awayScore == null ? '' : String(game.awayScore),
     });
-    const es = new EventSource(`/api/recap?${q.toString()}`);
+    const es = new EventSource(
+      `/api/recap?${q.toString()}${fixture ? `&fixture=${encodeURIComponent(fixture)}` : ''}`
+    );
     es.onmessage = (ev) => {
       try {
         const data = JSON.parse(ev.data) as {
@@ -87,7 +92,7 @@ export default function RecapPanel({
       setFailed(true);
     };
     return () => es.close();
-  }, [game, league]);
+  }, [game, league, fixture]);
 
   return (
     <div className="modal-backdrop" onClick={onClose}>

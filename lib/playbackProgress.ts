@@ -74,6 +74,22 @@ export function isWatched(videoId: string): boolean {
   return read()[videoId]?.watched === true;
 }
 
+/** Remove saved progress: one video, or everything when no id is given. */
+export function clearProgress(videoId?: string): void {
+  if (typeof window === 'undefined') return;
+  try {
+    if (!videoId) {
+      localStorage.removeItem(KEY);
+      return;
+    }
+    const map = read();
+    delete map[videoId];
+    write(map);
+  } catch {
+    // ignore
+  }
+}
+
 /** 0..1 progress fraction for in-progress videos, null when not applicable. */
 export function progressFraction(videoId: string): number | null {
   const e = read()[videoId];

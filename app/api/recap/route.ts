@@ -5,10 +5,44 @@ import { rankCandidates } from '@/lib/recap/rank';
 import { channelIdForHandle, englishQuery, hebrewQuery, youtubeSearch } from '@/lib/recap/sources';
 import type { YouTubeSearchJob } from '@/lib/recap/sources';
 import { searchPlanFor } from '@/lib/recap/leaguePlans';
+import { loadFixture, MATCHER_VERSION } from '@/lib/recap/fixtures';
 import type { GameInput, RankedCandidate, RawCandidate } from '@/lib/recap/types';
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
+
+/**
+ * Replay a recorded fixture as the SSE stream, with small delays between
+ * events so progressive UI behavior is exercised. Costs no YouTube quota.
+ */
+async function replayFixture(slug: string): Promise<Response> {
+  const fixture = await loadFixture(slug);
+  if (!fixture) {
+    return new Response(JSON.stringify({ error: 'unknown fixture' }), { status: 404 });
+  }
+  const stale = fixture.matcherVersion !== MATCHER_VERSION;
+  const encoder = new TextEncoder();
+  const stream = new ReadableStream({
+    async start(controller) {
+      for (const ev of fixture.events) {
+        const out =
+          ev['type'] === 'done'
+            ? { ...ev, fixture: { slug, recordedAt: fixture.recordedAt, stale } }
+            : ev;
+        controller.enqueue(encoder.encode(`data: ${JSON.stringify(out)}\n\n`));
+        await new Promise((r) => setTimeout(r, 200));
+      }
+      controller.close();
+    },
+  });
+  return new Response(stream, {
+    headers: {
+      'Content-Type': 'text/event-stream; charset=utf-8',
+      'Cache-Control': 'no-cache, no-transform',
+      Connection: 'keep-alive',
+    },
+  });
+}
 
 function parseGame(sp: URLSearchParams): GameInput | null {
   const home = sp.get('home') || '';
@@ -35,6 +69,11 @@ function parseGame(sp: URLSearchParams): GameInput | null {
  * Each completed search is merged, re-ranked and streamed immediately.
  */
 export async function GET(req: NextRequest) {
+  // Fixture mode: replay a recorded search with zero YouTube quota, for
+  // validation. Event shapes are identical to a live search.
+  const fixtureSlug = req.nextUrl.searchParams.get('fixture');
+  if (fixtureSlug) return replayFixture(fixtureSlug);
+
   const game = parseGame(req.nextUrl.searchParams);
   if (!game) {
     return new Response(JSON.stringify({ error: 'missing params' }), { status: 400 });
