@@ -181,6 +181,9 @@ export function filterCandidate(c: RawCandidate, game: GameInput): FilterResult 
   // The uploader disabled embedding: it would fail in our player.
   if (c.embeddable === false) return { keep: false, reason: 'not-embeddable' };
 
+  // The uploader geo-blocked the video in Israel: it would fail playback here.
+  if (c.blockedInIL === true) return { keep: false, reason: 'region-blocked' };
+
   // Generic search can return third-language videos (the query language
   // doesn't constrain the results). Exclude videos the uploader tagged as
   // neither Hebrew nor English; untagged videos fail open.
