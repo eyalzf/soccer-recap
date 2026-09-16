@@ -2,8 +2,8 @@
  "league": "premier-league",
  "league_id": 47,
  "season": "2026/2027",
- "updated_at": "2026-09-15T14:49:02.688302+00:00",
- "last_historical_check": "2026-09-15T14:30:07.977655+00:00",
+ "updated_at": "2026-09-16T09:36:45.461449+00:00",
+ "checked_through": "2026-09-15",
  "team_ids": {
   "Leeds United": 8463,
   "Newcastle United": 10261,
