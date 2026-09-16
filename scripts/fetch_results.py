@@ -255,10 +255,22 @@ def main():
     for d in sorted(wanted):
         ds = d.strftime("%Y%m%d")
         try:
-            payloads[d] = ok_data(call("get_matches_by_date", {"date": ds}),
-                                  "get_matches_by_date")
+            payload = ok_data(call("get_matches_by_date", {"date": ds}),
+                              "get_matches_by_date")
         except RuntimeError as e:
             print(f"daily {ds} failed: {e}", flush=True)
+            continue
+        # Guard against degenerate upstream responses: matches_by_date
+        # always returns a leagues array (it covers every league, not just
+        # ours). An empty/missing leagues list means the response itself is
+        # bad — not "no games". The date must NOT be marked as checked, or
+        # its games are silently lost forever (a date is never re-fetched).
+        leagues = payload.get("leagues") if isinstance(payload, dict) else None
+        if not leagues:
+            print(f"daily {ds}: empty leagues in response; "
+                  f"not marking checked, will retry next run", flush=True)
+            continue
+        payloads[d] = payload
     print(f"incremental: fetched {len(payloads)}/{len(wanted)} dates",
           flush=True)
 
