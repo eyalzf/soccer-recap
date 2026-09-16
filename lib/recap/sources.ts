@@ -5,6 +5,22 @@ import type { GameInput, RawCandidate, SourceKind } from './types';
 const YT_KEY = process.env.YOUTUBE_API_KEY || '';
 const DAY = 86400000;
 
+/**
+ * YouTube Data API returns snippet titles with HTML entities
+ * (&quot; &#39; &amp; ...). Decode them at ingestion: the matcher compares
+ * titles against our team aliases (a title containing the literal text
+ * "&quot;" never matches 'בית"ר'), and the UI would otherwise show the
+ * raw entities to users.
+ */
+function decodeHtml(s: string): string {
+  return s
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;|&apos;/g, "'")
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&amp;/g, '&');
+}
+
 async function fetchJson(url: string, timeoutMs = 12000): Promise<unknown> {
   const ctrl = new AbortController();
   const t = setTimeout(() => ctrl.abort(), timeoutMs);
@@ -181,7 +197,7 @@ export async function youtubeSearch(
     const sn = it.snippet;
     return {
       id: 'yt:' + vid,
-      title: sn.title,
+      title: decodeHtml(sn.title),
       url: 'https://www.youtube.com/watch?v=' + vid,
       source: 'youtube' as SourceKind,
       videoId: vid,
