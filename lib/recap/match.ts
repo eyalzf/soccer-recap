@@ -9,6 +9,19 @@ function esc(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
+/**
+ * Normalize Hebrew quote/niqqud variants before comparing a title against
+ * our alias lists. Uploaders type abbreviations inconsistently: gershayim
+ * (״) vs straight quote ("), geresh (׳) vs apostrophe, and occasional
+ * niqqud (שׁ vs ש). Without this, "מכבי ת״א" never matches our "מכבי ת\"א".
+ */
+function normHeCompare(s: string): string {
+  return s
+    .replace(/[״"]/g, '"')
+    .replace(/[׳'’‘`]/g, "'")
+    .replace(/[֑-ׇ]/g, '');
+}
+
 /** Does the title mention the club (any English/Hebrew spelling)? */
 export function teamMentioned(title: string, club: ClubEntry): boolean {
   const t = title.toLowerCase();
@@ -21,8 +34,9 @@ export function teamMentioned(title: string, club: ClubEntry): boolean {
       return true;
     }
   }
+  const th = normHeCompare(title);
   for (const v of [club.he, ...club.heAliases]) {
-    if (v && title.includes(v)) return true;
+    if (v && th.includes(normHeCompare(v))) return true;
   }
   return false;
 }
@@ -35,9 +49,10 @@ export function mentionIndex(title: string, club: ClubEntry): number {
     const i = t.indexOf(v.toLowerCase());
     if (i >= 0 && i < best) best = i;
   }
+  const th = normHeCompare(title);
   for (const v of [club.he, ...club.heAliases]) {
     if (!v) continue;
-    const i = title.indexOf(v);
+    const i = th.indexOf(normHeCompare(v));
     if (i >= 0 && i < best) best = i;
   }
   return best;
@@ -84,6 +99,8 @@ const EXCLUDED = [
   'classic', 'classics', 'קלאסי', 'קלאסיקה',
   'best of', 'top 10', 'top10', 'מצעד',
   'history', 'היסטוריה', 'retro', 'רטרו', 'throwback',
+  // Live streams / live broadcasts are not recaps.
+  'שידור חי', 'שידור ישיר', 'לייב', 'livestream',
 ];
 
 export function excludedCategory(title: string): string | null {
@@ -91,6 +108,9 @@ export function excludedCategory(title: string): string | null {
   for (const kw of EXCLUDED) {
     if (t.includes(kw.toLowerCase())) return kw;
   }
+  // Standalone "live" (word boundary): catches "LIVE:", "(Live)", "live
+  // stream" without false-positiving on substrings like "delivered".
+  if (/\blive\b/.test(t)) return 'live';
   return null;
 }
 
