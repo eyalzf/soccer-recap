@@ -332,7 +332,7 @@ export const CLUBS: ClubEntry[] = [
     en: "Hapoel Ironi Kiryat Shmona",
     he: "הפועל עירוני קריית שמונה",
     enAliases: ["Hapoel Kiryat Shmona"],
-    heAliases: ["הפועל קריית שמונה", "הפועל קרית שמונה", "עירוני קריית שמונה", "קריית שמונה", "קרית שמונה"],
+    heAliases: ["הפועל קריית שמונה", "הפועל קרית שמונה", "עירוני קריית שמונה", "קריית שמונה", "קרית שמונה", "הפועל ק\"ש", "ק\"ש"],
   },
   {
     en: "Bnei Sakhnin",
@@ -344,7 +344,7 @@ export const CLUBS: ClubEntry[] = [
     en: "Beitar Jerusalem",
     he: "בית\"ר ירושלים",
     enAliases: ["Beitar"],
-    heAliases: ["ביתר ירושלים"],
+    heAliases: ["ביתר ירושלים", "בית\"ר", "בית\"ר ירושלים"],
   },
   {
     en: "Hapoel Haifa",
@@ -356,7 +356,7 @@ export const CLUBS: ClubEntry[] = [
     en: "Hapoel Tel Aviv",
     he: "הפועל תל אביב",
     enAliases: [],
-    heAliases: [],
+    heAliases: ["הפועל ת\"א"],
   },
   {
     en: "Maccabi Petah Tikva",
