@@ -10,6 +10,8 @@ export interface RawCandidate {
   /** ISO datetime */
   publishedAt?: string;
   durationSec?: number;
+  /** YouTube status.embeddable. undefined = unknown (fail open). */
+  embeddable?: boolean;
   channelName?: string;
   channelHandle?: string;
   lang: 'he' | 'en';

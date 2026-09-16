@@ -106,28 +106,45 @@ function parseDuration(iso: string): number {
   );
 }
 
-async function ytDurations(ids: string[]): Promise<Map<string, number>> {
-  const map = new Map<string, number>();
+interface YtVideoMeta {
+  duration: number;
+  /** null when the videos.list item was missing (deleted/private) or the call failed. */
+  embeddable: boolean | null;
+}
+
+async function ytVideoMeta(ids: string[]): Promise<Map<string, YtVideoMeta>> {
+  const map = new Map<string, YtVideoMeta>();
   for (let i = 0; i < ids.length; i += 50) {
     const chunk = ids.slice(i, i + 50);
-    const ck = 'ytdur:' + chunk.join(',');
-    const cached = cacheGet<Record<string, number>>(ck);
+    const ck = 'ytmeta:' + chunk.join(',');
+    const cached = cacheGet<Record<string, YtVideoMeta>>(ck);
     if (cached) {
       for (const [k, v] of Object.entries(cached)) map.set(k, v);
       continue;
     }
     try {
+      // status.embeddable tells whether the uploader allows embedding.
+      // Same call as the duration lookup: no extra quota.
       const data = (await fetchJson(
-        'https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id=' +
+        'https://www.googleapis.com/youtube/v3/videos?part=contentDetails,status&id=' +
           chunk.join(',') +
           '&key=' +
           YT_KEY
-      )) as { items?: Array<{ id: string; contentDetails?: { duration?: string } }> };
-      const rec: Record<string, number> = {};
+      )) as {
+        items?: Array<{
+          id: string;
+          contentDetails?: { duration?: string };
+          status?: { embeddable?: boolean };
+        }>;
+      };
+      const rec: Record<string, YtVideoMeta> = {};
       for (const it of data.items ?? []) {
-        const d = parseDuration(it.contentDetails?.duration || '');
-        map.set(it.id, d);
-        rec[it.id] = d;
+        const meta = {
+          duration: parseDuration(it.contentDetails?.duration || ''),
+          embeddable: it.status?.embeddable ?? null,
+        };
+        map.set(it.id, meta);
+        rec[it.id] = meta;
       }
       cacheSet(ck, rec, 24 * DAY);
     } catch {
@@ -191,10 +208,11 @@ export async function youtubeSearch(
     uniq.set(vid, it);
   }
 
-  const durs = await ytDurations([...uniq.keys()]);
+  const durs = await ytVideoMeta([...uniq.keys()]);
 
   return [...uniq.entries()].map(([vid, it]) => {
     const sn = it.snippet;
+    const meta = durs.get(vid);
     return {
       id: 'yt:' + vid,
       title: decodeHtml(sn.title),
@@ -203,7 +221,9 @@ export async function youtubeSearch(
       videoId: vid,
       thumbnail: sn.thumbnails?.medium?.url ?? sn.thumbnails?.default?.url,
       publishedAt: sn.publishedAt,
-      durationSec: durs.get(vid),
+      durationSec: meta?.duration,
+      // Only set when positively known; unknown fails open (kept).
+      ...(meta?.embeddable != null ? { embeddable: meta.embeddable } : {}),
       channelName: sn.channelTitle,
       channelHandle: job.handle,
       lang: job.lang,

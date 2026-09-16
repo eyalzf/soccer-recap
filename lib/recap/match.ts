@@ -178,6 +178,9 @@ export function filterCandidate(c: RawCandidate, game: GameInput): FilterResult 
   const away = lookupClubEn(game.away);
   if (!home || !away) return { keep: false, reason: 'unknown-team' };
 
+  // The uploader disabled embedding: it would fail in our player.
+  if (c.embeddable === false) return { keep: false, reason: 'not-embeddable' };
+
   if (!teamMentioned(c.title, home) || !teamMentioned(c.title, away)) {
     return { keep: false, reason: 'teams' };
   }

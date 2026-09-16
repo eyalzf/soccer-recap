@@ -78,6 +78,10 @@ export function rankCandidates(list: RawCandidate[], game: GameInput): RankedCan
     seen.add(key);
     out.push({ ...c, score: scoreCandidate(c, game) });
   }
-  out.sort((a, b) => b.score - a.score);
+  // Longest first; relevance score breaks ties. Videos with unknown
+  // duration sort last.
+  out.sort(
+    (a, b) => (b.durationSec ?? -1) - (a.durationSec ?? -1) || b.score - a.score
+  );
   return out;
 }
