@@ -98,6 +98,8 @@ export default function Home() {
   }, [league, loadFirst]);
 
   useEffect(() => {
+    // Runs again when loading finishes / items change, because the sentinel
+    // only exists in the DOM after the first page renders.
     const el = sentinelRef.current;
     if (!el) return;
     const obs = new IntersectionObserver(
@@ -108,7 +110,7 @@ export default function Home() {
     );
     obs.observe(el);
     return () => obs.disconnect();
-  }, [loadMore]);
+  }, [loadMore, loading, items.length]);
 
   const switchLeague = (lg: LeagueSlug) => {
     if (lg === league) return;
