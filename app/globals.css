@@ -102,6 +102,30 @@ body {
   width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 12px;
   background: #000;
 }
+.player-wrap--api { position: relative; }
+.player-mount {
+  position: relative; width: 100%; aspect-ratio: 16 / 9;
+  border-radius: 12px; background: #000; overflow: hidden;
+}
+.player-mount iframe {
+  position: absolute; inset: 0; width: 100% !important; height: 100% !important;
+  border: 0;
+}
+.resume-chip {
+  position: absolute; top: 10px; inset-inline-start: 10px;
+  background: rgba(0, 0, 0, 0.72); color: #fff;
+  padding: 6px 12px; border-radius: 999px; font-size: 0.85rem;
+  pointer-events: none;
+}
+.watched-badge {
+  display: inline-block; margin-inline-start: 8px;
+  color: var(--accent); font-size: 0.82rem; font-weight: 700;
+}
+.progress-track {
+  display: block; height: 4px; background: var(--border);
+  border-radius: 2px; margin-top: 6px; overflow: hidden;
+}
+.progress-fill { display: block; height: 100%; background: var(--accent); }
 .source-link {
   display: inline-block; margin: 12px 0; padding: 12px 22px;
   background: var(--accent); color: #06281a; font-weight: 800;

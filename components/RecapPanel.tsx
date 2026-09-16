@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import type { GameItem } from './GameCard';
+import ResumePlayer from './ResumePlayer';
+import { isWatched, progressFraction } from '../lib/playbackProgress';
 
 interface Candidate {
   id: string;
@@ -38,6 +40,7 @@ export default function RecapPanel({
   const [failed, setFailed] = useState(false);
   const [rateLimited, setRateLimited] = useState(false);
   const [selected, setSelected] = useState<Candidate | null>(null);
+  const [, setProgressTick] = useState(0);
 
   useEffect(() => {
     setResults([]);
@@ -99,14 +102,12 @@ export default function RecapPanel({
         </div>
 
         {selected?.videoId ? (
-          <div className="player-wrap">
-            <iframe
-              src={`https://www.youtube.com/embed/${selected.videoId}?rel=0&playsinline=1&fs=1&enablejsapi=1`}
-              title={selected.title}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
-          </div>
+          <ResumePlayer
+            key={selected.videoId}
+            videoId={selected.videoId}
+            title={selected.title}
+            onProgress={() => setProgressTick((n) => n + 1)}
+          />
         ) : selected ? (
           <a
             className="source-link"
@@ -126,23 +127,36 @@ export default function RecapPanel({
         )}
 
         <div className="recap-list">
-          {results.map((c) => (
-            <button
-              key={c.id}
-              className={'recap-item' + (selected?.id === c.id ? ' selected' : '')}
-              onClick={() => setSelected(c)}
-            >
-              {c.thumbnail && <img src={c.thumbnail} alt="" loading="lazy" />}
-              <span>
-                <span className="recap-title">{c.title}</span>
-                <br />
-                <span className="recap-src">
-                  {SOURCE_HE[c.source] ?? c.source}
-                  {c.channelName ? ` · ${c.channelName}` : ''}
+          {results.map((c) => {
+            const watched = c.videoId ? isWatched(c.videoId) : false;
+            const frac = !watched && c.videoId ? progressFraction(c.videoId) : null;
+            return (
+              <button
+                key={c.id}
+                className={'recap-item' + (selected?.id === c.id ? ' selected' : '')}
+                onClick={() => setSelected(c)}
+              >
+                {c.thumbnail && <img src={c.thumbnail} alt="" loading="lazy" />}
+                <span>
+                  <span className="recap-title">{c.title}</span>
+                  <br />
+                  <span className="recap-src">
+                    {SOURCE_HE[c.source] ?? c.source}
+                    {c.channelName ? ` · ${c.channelName}` : ''}
+                  </span>
+                  {watched && <span className="watched-badge">נצפה ✓</span>}
+                  {frac != null && (
+                    <span className="progress-track" aria-hidden="true">
+                      <span
+                        className="progress-fill"
+                        style={{ width: `${Math.round(frac * 100)}%` }}
+                      />
+                    </span>
+                  )}
                 </span>
-              </span>
-            </button>
-          ))}
+              </button>
+            );
+          })}
         </div>
 
         {failed && results.length === 0 && (
