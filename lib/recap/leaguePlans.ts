@@ -29,7 +29,7 @@ export interface LeagueSearchPlan {
 export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
   'israeli-league': {
     preferred: [
-      { handle: 'FootballTV10', lang: 'he' },
+      { handle: 'FootballYom1', lang: 'he' },
       { handle: 'Ipflofficial', lang: 'he' },
     ],
     fallbackLangs: ['he', 'en'],
