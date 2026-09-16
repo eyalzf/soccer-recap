@@ -2,7 +2,7 @@
  "league": "la-liga",
  "league_id": 87,
  "season": "2026/2027",
- "updated_at": "2026-09-16T09:36:45.461449+00:00",
+ "updated_at": "2026-09-16T12:59:14.711853+00:00",
  "checked_through": "2026-09-15",
  "team_ids": {
   "Villarreal": 10205,
@@ -27,6 +27,36 @@
   "Valencia": 10267
  },
  "games": [
+  {
+   "id": "manual-20260915-elche-real-madrid",
+   "home": "Elche",
+   "away": "Real Madrid",
+   "dateISO": "2026-09-15T19:30:00.000Z",
+   "homeScore": 2,
+   "awayScore": 3,
+   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10268.png",
+   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8633.png"
+  },
+  {
+   "id": "manual-20260915-rayo-vallecano-espanyol",
+   "home": "Rayo Vallecano",
+   "away": "Espanyol",
+   "dateISO": "2026-09-15T17:00:00.000Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8370.png",
+   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8558.png"
+  },
+  {
+   "id": "manual-20260915-deportivo-alaves-valencia",
+   "home": "Deportivo Alavés",
+   "away": "Valencia",
+   "dateISO": "2026-09-15T17:00:00.000Z",
+   "homeScore": 0,
+   "awayScore": 1,
+   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9866.png",
+   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10267.png"
+  },
   {
    "id": "5868060",
    "home": "Villarreal",
