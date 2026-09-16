@@ -120,7 +120,9 @@ interface YtVideoMeta {
   blockedInIL: boolean;
 }
 
-async function ytVideoMeta(ids: string[]): Promise<Map<string, YtVideoMeta>> {
+/** Batched videos.list metadata (duration, embeddable, region, audio lang),
+ * cached 24h. Exported for the bulk uploads tier. */
+export async function ytVideoMeta(ids: string[]): Promise<Map<string, YtVideoMeta>> {
   const map = new Map<string, YtVideoMeta>();
   for (let i = 0; i < ids.length; i += 50) {
     const chunk = ids.slice(i, i + 50);
@@ -329,4 +331,17 @@ export async function fetchWebSource(
   } catch {
     return [];
   }
+}
+
+/**
+ * Raw YouTube Data API GET for endpoints without a dedicated helper
+ * (e.g. playlistItems). Throws `HTTP 429` on rate limit, like the other
+ * helpers; callers decide how to handle it.
+ */
+export async function ytApiGet(
+  path: string,
+  params: Record<string, string>
+): Promise<unknown> {
+  const p = new URLSearchParams({ ...params, key: YT_KEY });
+  return fetchJson(`https://www.googleapis.com/youtube/v3/${path}?` + p.toString());
 }

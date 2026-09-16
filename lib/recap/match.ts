@@ -22,17 +22,27 @@ function normHeCompare(s: string): string {
     .replace(/[֑-ׇ]/g, '');
 }
 
+/**
+ * Index of an English name/alias variant in a lowercased title. Short
+ * variants (<=6 chars) match on word boundaries only: "inter" must not
+ * match inside "winter", "betis" inside "alphabetis", etc. Longer names are
+ * distinctive enough for substring matching. -1 when absent.
+ */
+function enVariantIndex(t: string, vv: string): number {
+  if (vv.length <= 6) {
+    const m = t.match(new RegExp(`\\b${esc(vv)}\\b`));
+    return m?.index ?? -1;
+  }
+  return t.indexOf(vv);
+}
+
 /** Does the title mention the club (any English/Hebrew spelling)? */
 export function teamMentioned(title: string, club: ClubEntry): boolean {
   const t = title.toLowerCase();
   for (const v of [club.en, ...club.enAliases]) {
     const vv = v.toLowerCase().trim();
     if (!vv) continue;
-    if (vv.length <= 4) {
-      if (new RegExp(`\\b${esc(vv)}\\b`).test(t)) return true;
-    } else if (t.includes(vv)) {
-      return true;
-    }
+    if (enVariantIndex(t, vv) >= 0) return true;
   }
   const th = normHeCompare(title);
   for (const v of [club.he, ...club.heAliases]) {
@@ -46,7 +56,7 @@ export function mentionIndex(title: string, club: ClubEntry): number {
   let best = Infinity;
   const t = title.toLowerCase();
   for (const v of [club.en, ...club.enAliases]) {
-    const i = t.indexOf(v.toLowerCase());
+    const i = enVariantIndex(t, v.toLowerCase());
     if (i >= 0 && i < best) best = i;
   }
   const th = normHeCompare(title);
@@ -94,11 +104,14 @@ const EXCLUDED = [
   'legends', 'אגדות',
   'preview', 'לקראת', 'press conference', 'מסיבת עיתונאים',
   'friendly', 'ידידות',
+  // Transfer news is never a recap.
+  'transfer', 'העברות',
   // Compilations of older games, often published recently: the publish-date
   // filter cannot catch these, so reject them by title.
   'classic', 'classics', 'קלאסי', 'קלאסיקה',
   'best of', 'top 10', 'top10', 'מצעד',
   'history', 'היסטוריה', 'retro', 'רטרו', 'throwback',
+  'season review',
   // Live streams / live broadcasts are not recaps.
   'שידור חי', 'שידור ישיר', 'לייב', 'livestream',
 ];
@@ -114,11 +127,18 @@ export function excludedCategory(title: string): string | null {
   return null;
 }
 
-/** Extract a scoreline like "2-1" / "2:1" from a title. */
+/**
+ * Extract a scoreline like "2-1" / "2:1" from a title. Matches embedded in
+ * longer digit runs are skipped: a season range like "2026-27" would
+ * otherwise veto as score 26-27. The first remaining match wins, so
+ * "UCL 2026-27: Real Madrid 2-1 Highlights" still yields (2,1).
+ */
+const SCORE_RE = /(?<!\d)(\d{1,2})\s*[-:–—]\s*(\d{1,2})(?!\d)/g;
 export function extractScore(title: string): [number, number] | null {
-  const m = title.match(/(\d{1,2})\s*[-:–—]\s*(\d{1,2})/);
-  if (!m) return null;
-  return [parseInt(m[1], 10), parseInt(m[2], 10)];
+  for (const m of title.matchAll(SCORE_RE)) {
+    return [parseInt(m[1], 10), parseInt(m[2], 10)];
+  }
+  return null;
 }
 
 export type Proximity = 'ok' | 'near' | 'bad' | 'undated';
@@ -159,9 +179,25 @@ export function isPreferredChannel(c: RawCandidate): boolean {
   return c.source === 'youtube' && isTrusted(c);
 }
 
+/** Handles of the curated bulk tier (uploads playlists scanned + matched
+ * app-side), derived from the per-league plans. */
+export const BULK_YT_HANDLES: string[] = [
+  ...new Set(
+    Object.values(LEAGUE_SEARCH_PLANS)
+      .flatMap((p) => p.bulk.map((b) => b.handle ?? ''))
+      .filter(Boolean)
+      .map((h) => h.toLowerCase().replace(/^@/, ''))
+  ),
+];
+
+/** Candidate came from a curated bulk channel (flagged at ingestion time). */
+export function isBulkChannel(c: RawCandidate): boolean {
+  return c.source === 'youtube' && c.bulk === true;
+}
+
 /** Title signals an actual highlights/recap video (not punditry or news). */
 export function hasHighlightIntent(title: string): boolean {
-  return /תקציר|highlights|סיכום/i.test(title);
+  return /תקציר|highlights|סיכום|all goals|כל השערים|resumen/i.test(title);
 }
 
 export interface FilterResult {

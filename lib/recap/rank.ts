@@ -4,6 +4,7 @@ import {
   extractScore,
   hasHebrew,
   hasHighlightIntent,
+  isBulkChannel,
   isTrusted,
   mentionIndex,
 } from './match';
@@ -22,6 +23,7 @@ export function scoreCandidate(c: RawCandidate, game: GameInput): number {
   // Trusted Hebrew sources first.
   if (c.source === 'youtube') {
     if (isTrusted(c)) s += 50;
+    else if (isBulkChannel(c)) s += 25; // curated pool beats general search
   } else {
     s += 40; // sport1 / sport5 / one
   }

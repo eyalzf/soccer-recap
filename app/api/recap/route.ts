@@ -1,15 +1,27 @@
 import { NextRequest } from 'next/server';
-import { cacheGet, cacheSet } from '@/lib/cache';
 import { filterCandidate, hasHighlightIntent, isPreferredChannel } from '@/lib/recap/match';
 import { rankCandidates } from '@/lib/recap/rank';
 import { channelIdForHandle, englishQuery, hebrewQuery, youtubeSearch } from '@/lib/recap/sources';
 import type { YouTubeSearchJob } from '@/lib/recap/sources';
 import { searchPlanFor } from '@/lib/recap/leaguePlans';
+import { bulkScan } from '@/lib/recap/bulk';
+import { pget, pset } from '@/lib/recap/persist';
 import { loadFixture, MATCHER_VERSION } from '@/lib/recap/fixtures';
 import type { GameInput, RankedCandidate, RawCandidate } from '@/lib/recap/types';
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
+
+const DAY = 86400000;
+// Games older than this are "settled": highlights no longer appear, so
+// results are cached long (persisted in Blob). Fresher games get a short
+// TTL so late uploads (IPFL extended cuts land 2-4 days out) are picked up.
+const SETTLED_MS = 5 * DAY;
+const FRESH_TTL = 6 * 3600 * 1000;
+const SETTLED_TTL = 30 * DAY;
+// Negative cache: games with no highlights yet (listed 5h after kickoff,
+// highlights take 1-3 days) must not re-run the pipeline on every view.
+const NEGATIVE_TTL = 2 * 3600 * 1000;
 
 /**
  * Replay a recorded fixture as the SSE stream, with small delays between
@@ -61,13 +73,153 @@ function parseGame(sp: URLSearchParams): GameInput | null {
   };
 }
 
+/** Persisted per-game cache key: league + teams + date (teams meet twice a
+ *  season). Versioned so matcher changes auto-invalidate. */
+function gameCacheKey(game: GameInput): string {
+  const seg = (s: string) => encodeURIComponent(s).replace(/[%().]/g, '_');
+  return `game/v2/${game.league}/${seg(game.home)}-${seg(game.away)}-${seg(game.dateISO)}`;
+}
+
+interface CachedGame {
+  results: RankedCandidate[];
+  empty: boolean;
+}
+
+function ttlFor(game: GameInput, empty: boolean): number {
+  if (Date.now() - Date.parse(game.dateISO) > SETTLED_MS) return SETTLED_TTL;
+  if (empty) return NEGATIVE_TTL;
+  return FRESH_TTL;
+}
+
+interface ComputeResult {
+  results: RankedCandidate[];
+  ytRateLimited: boolean;
+  diag: Array<Record<string, unknown>>;
+}
+
+// Stampede protection: concurrent requests for the same game share one
+// in-flight computation (per instance; Blob persistence covers the rest).
+const inflight = new Map<string, Promise<ComputeResult>>();
+
 /**
- * Progressive recap search over Server-Sent Events.
- * Per-league plan (see lib/recap/leaguePlans.ts): preferred channels are
- * tried in priority order, one search each, stopping at the first with a
- * proper highlight result; only then does the general-search fallback run.
- * Each completed search is merged, re-ranked and streamed immediately.
+ * Three-tier recap search:
+ *  1. Preferred channels (search.list, 100 units each), stop at the first
+ *     proper highlight.
+ *  2. Curated bulk pool: uploads playlists (1 unit / 50 videos, cached 6h
+ *     in Blob), aggregated across all channels, matched app-side.
+ *  3. General search.list fallback, only when tiers 1+2 find nothing.
+ * Results (including empty ones) are persisted with a TTL that depends on
+ * game age. A 429 stops everything and is never cached.
  */
+async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeResult> {
+  const key = gameCacheKey(game);
+  if (!debug) {
+    const rec = await pget<CachedGame>(key);
+    if (rec && Date.now() - rec.fetchedAt < ttlFor(game, rec.val.empty)) {
+      return { results: rec.val.results, ytRateLimited: false, diag: [] };
+    }
+  }
+
+  const accepted: RawCandidate[] = [];
+  const seen = new Set<string>();
+  const diag: Array<Record<string, unknown>> = [];
+  let ytRateLimited = false;
+  // When preferred channels (IPFL / ONE on YouTube) have an actual
+  // highlights video for the game, everything else is excluded as lower
+  // quality. Punditry/news from those channels does not trigger this.
+  const visible = (list: RawCandidate[]): RawCandidate[] => {
+    const pref = list.filter(isPreferredChannel);
+    return pref.some((c) => hasHighlightIntent(c.title)) ? pref : list;
+  };
+  const plan = searchPlanFor(game.league);
+  // "Proper" = an accepted candidate with highlight intent. A preferred
+  // channel returning only punditry does not count and does not stop the
+  // search.
+  const hasProperHighlight = () => accepted.some((c) => hasHighlightIntent(c.title));
+
+  const ingest = (label: string, raw: RawCandidate[]) => {
+    let kept = 0;
+    const rejected: Array<{ title: string; channel?: string; reason: string }> = [];
+    for (const c of raw) {
+      if (seen.has(c.id)) continue;
+      seen.add(c.id);
+      const f = filterCandidate(c, game);
+      if (f.keep) {
+        accepted.push(c);
+        kept += 1;
+      } else if (debug && rejected.length < 10) {
+        rejected.push({ title: c.title, channel: c.channelName, reason: f.reason });
+      }
+    }
+    if (debug) diag.push({ search: label, fetched: raw.length, kept, ...(rejected.length ? { rejected } : {}) });
+  };
+
+  const runSearch = async (label: string, job: YouTubeSearchJob, diagExtra?: Record<string, unknown>) => {
+    try {
+      const raw = await youtubeSearch(game, job);
+      ingest(label, raw);
+      if (debug) Object.assign(diag[diag.length - 1], diagExtra);
+    } catch (e) {
+      /* a failing search must not fail the whole run */
+      const msg = (e as Error)?.message ?? String(e);
+      if (msg === 'HTTP 429') ytRateLimited = true;
+      if (debug) diag.push({ search: label, error: msg });
+    }
+  };
+
+  // Tier 1: preferred channels in priority order, one search each
+  // (YouTube allows a single channelId per search.list call). Stop at the
+  // first channel with a proper highlight result. A 429 means the rate
+  // limiter is engaged: further calls would fail too, so stop.
+  for (const src of plan.preferred) {
+    if (ytRateLimited) break;
+    const channelId = await channelIdForHandle(src.handle);
+    if (!channelId) {
+      if (debug) diag.push({ search: 'preferred:' + src.handle, skipped: 'unresolved handle' });
+      continue;
+    }
+    const q = src.lang === 'he' ? hebrewQuery(game) : englishQuery(game);
+    await runSearch(
+      'preferred:' + src.handle,
+      { q, channelId, handle: src.handle, lang: src.lang },
+      { channelId, q }
+    );
+    if (hasProperHighlight()) break;
+  }
+
+  // Tier 2: curated bulk pool (uploads playlists, app-side matching).
+  if (!ytRateLimited && !hasProperHighlight() && plan.bulk.length > 0) {
+    const bulk = await bulkScan(game);
+    if (bulk.ytRateLimited) ytRateLimited = true;
+    ingest('bulk', bulk.candidates);
+    if (debug) diag.push(...bulk.diag);
+  }
+
+  // Tier 3: general-search fallback, only when tiers 1+2 found nothing.
+  if (!ytRateLimited && !hasProperHighlight()) {
+    for (const lang of plan.fallbackLangs) {
+      const q = lang === 'he' ? hebrewQuery(game) : englishQuery(game);
+      await runSearch('general:' + lang, { q, lang });
+      if (ytRateLimited || hasProperHighlight()) break;
+    }
+  } else if (debug) {
+    diag.push({ shortCircuited: true });
+  }
+
+  const finalRanked = rankCandidates(visible(accepted), game);
+  // Persist every outcome (including empty) with an age-appropriate TTL.
+  // Never cache a rate-limited run: an empty result from HTTP 429 must not
+  // poison the cache. Debug runs bypass the cache so they always reflect a
+  // live search.
+  if (!debug && !ytRateLimited) {
+    await pset(key, {
+      results: finalRanked,
+      empty: finalRanked.length === 0,
+    } satisfies CachedGame);
+  }
+  return { results: finalRanked, ytRateLimited, diag };
+}
+
 export async function GET(req: NextRequest) {
   // Fixture mode: replay a recorded search with zero YouTube quota, for
   // validation. Event shapes are identical to a live search.
@@ -79,137 +231,23 @@ export async function GET(req: NextRequest) {
     return new Response(JSON.stringify({ error: 'missing params' }), { status: 400 });
   }
 
-  const cacheKey =
-    `recap:${game.league}:${game.home}:${game.away}:${game.dateISO}:` +
-    `${game.homeScore}-${game.awayScore}`;
-  const encoder = new TextEncoder();
+  const debug = req.nextUrl.searchParams.get('debug') === '1';
+  const flightKey = gameCacheKey(game) + (debug ? ':debug' : '');
+  let promise = inflight.get(flightKey);
+  if (!promise) {
+    promise = computeRecap(game, debug).finally(() => inflight.delete(flightKey));
+    inflight.set(flightKey, promise);
+  }
+  const { results, ytRateLimited, diag } = await promise;
 
+  const encoder = new TextEncoder();
   const stream = new ReadableStream({
-    async start(controller) {
+    start(controller) {
       const send = (obj: unknown) => {
         controller.enqueue(encoder.encode(`data: ${JSON.stringify(obj)}\n\n`));
       };
-
-      const debug = req.nextUrl.searchParams.get('debug') === '1';
-      const cached = debug ? undefined : cacheGet<RankedCandidate[]>(cacheKey);
-      if (cached) {
-        send({ type: 'batch', results: cached, pending: 0 });
-        send({ type: 'done', results: cached, ytRateLimited: false });
-        controller.close();
-        return;
-      }
-
-      const accepted: RawCandidate[] = [];
-      const seen = new Set<string>();
-      // Per-group diagnostics (counts + error messages, no secrets) so a
-      // failing source can be identified without server log access.
-      const diag: Array<Record<string, unknown>> = [];
-      // True when YouTube rate-limited us: the UI should say "try again
-      // later" instead of showing an empty "no recaps" state.
-      let ytRateLimited = false;
-      // When preferred channels (IPFL / ONE on YouTube) have an actual
-      // highlights video for the game, everything else is excluded as lower
-      // quality. Punditry/news from those channels does not trigger this.
-      const visible = (list: RawCandidate[]): RawCandidate[] => {
-        const pref = list.filter(isPreferredChannel);
-        return pref.some((c) => hasHighlightIntent(c.title)) ? pref : list;
-      };
-      // Per-league search plan: preferred channels in priority order, then
-      // general-search fallback languages. Non-YouTube sources are omitted.
-      const plan = searchPlanFor(game.league);
-
-      send({ type: 'start', pending: 1 });
-      const emit = (pending: number) => {
-        send({ type: 'batch', results: rankCandidates(visible(accepted), game), pending });
-      };
-      // "Proper" = an accepted candidate with highlight intent. A preferred
-      // channel returning only punditry does not count and does not stop
-      // the search.
-      const hasProperHighlight = () =>
-        accepted.some((c) => hasHighlightIntent(c.title));
-
-      const runSearch = async (
-        label: string,
-        job: YouTubeSearchJob,
-        diagExtra?: Record<string, unknown>
-      ) => {
-        try {
-          const raw = await youtubeSearch(game, job);
-          let kept = 0;
-          const rejected: Array<{ title: string; channel?: string; reason: string }> = [];
-          for (const c of raw) {
-            if (seen.has(c.id)) continue;
-            seen.add(c.id);
-            const f = filterCandidate(c, game);
-            if (f.keep) {
-              accepted.push(c);
-              kept += 1;
-            } else if (debug && rejected.length < 10) {
-              rejected.push({ title: c.title, channel: c.channelName, reason: f.reason });
-            }
-          }
-          if (debug)
-            diag.push({
-              search: label,
-              fetched: raw.length,
-              kept,
-              ...diagExtra,
-              ...(rejected.length ? { rejected } : {}),
-            });
-        } catch (e) {
-          /* a failing search must not fail the whole run */
-          const msg = (e as Error)?.message ?? String(e);
-          if (msg === 'HTTP 429') ytRateLimited = true;
-          if (debug) diag.push({ search: label, error: msg });
-        }
-        emit(1);
-      };
-
-      // Phase 1: preferred channels in priority order, one search each
-      // (YouTube allows a single channelId per search.list call). Stop at
-      // the first channel with a proper highlight result. A 429 means the
-      // rate limiter is engaged: further calls would fail too, so stop.
-      for (const src of plan.preferred) {
-        if (ytRateLimited) break;
-        const channelId = await channelIdForHandle(src.handle);
-        if (!channelId) {
-          if (debug) diag.push({ search: 'preferred:' + src.handle, skipped: 'unresolved handle' });
-          continue;
-        }
-        const q = src.lang === 'he' ? hebrewQuery(game) : englishQuery(game);
-        await runSearch(
-          'preferred:' + src.handle,
-          {
-            q,
-            channelId,
-            handle: src.handle,
-            lang: src.lang,
-          },
-          { channelId, q }
-        );
-        if (hasProperHighlight()) break;
-      }
-
-      // Phase 2: general-search fallback, only when no preferred channel hit.
-      if (!ytRateLimited && !hasProperHighlight()) {
-        for (const lang of plan.fallbackLangs) {
-          const q = lang === 'he' ? hebrewQuery(game) : englishQuery(game);
-          await runSearch('general:' + lang, { q, lang });
-          if (ytRateLimited || hasProperHighlight()) break;
-        }
-      } else if (debug) {
-        diag.push({ shortCircuited: true });
-      }
-      emit(0);
-
-      const finalRanked = rankCandidates(visible(accepted), game);
-      // Recaps for a finished game don't change; cache long to spare YouTube
-      // API quota (a fresh search costs 1-3 search calls thanks to the
-      // per-league priority short-circuit). Debug runs bypass the cache so
-      // they always reflect a live search. Never cache a rate-limited run:
-      // an empty result from HTTP 429 must not poison the cache for 24h.
-      if (!debug && !ytRateLimited) cacheSet(cacheKey, finalRanked, 24 * 3600 * 1000);
-      send({ type: 'done', results: finalRanked, ytRateLimited, ...(debug ? { diag } : {}) });
+      send({ type: 'batch', results, pending: 0 });
+      send({ type: 'done', results, ytRateLimited, ...(debug ? { diag } : {}) });
       controller.close();
     },
   });

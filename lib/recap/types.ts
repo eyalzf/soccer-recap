@@ -21,6 +21,8 @@ export interface RawCandidate {
   blockedInIL?: boolean;
   channelName?: string;
   channelHandle?: string;
+  /** Ingested from a curated bulk channel (uploads playlist scan). */
+  bulk?: boolean;
   lang: 'he' | 'en';
 }
 
