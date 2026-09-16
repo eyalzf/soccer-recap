@@ -89,19 +89,34 @@ export async function GET(req: NextRequest) {
       const hasProperHighlight = () =>
         accepted.some((c) => hasHighlightIntent(c.title));
 
-      const runSearch = async (label: string, job: YouTubeSearchJob) => {
+      const runSearch = async (
+        label: string,
+        job: YouTubeSearchJob,
+        diagExtra?: Record<string, unknown>
+      ) => {
         try {
           const raw = await youtubeSearch(game, job);
           let kept = 0;
+          const rejected: Array<{ title: string; channel?: string; reason: string }> = [];
           for (const c of raw) {
             if (seen.has(c.id)) continue;
             seen.add(c.id);
-            if (filterCandidate(c, game).keep) {
+            const f = filterCandidate(c, game);
+            if (f.keep) {
               accepted.push(c);
               kept += 1;
+            } else if (debug && rejected.length < 10) {
+              rejected.push({ title: c.title, channel: c.channelName, reason: f.reason });
             }
           }
-          if (debug) diag.push({ search: label, fetched: raw.length, kept });
+          if (debug)
+            diag.push({
+              search: label,
+              fetched: raw.length,
+              kept,
+              ...diagExtra,
+              ...(rejected.length ? { rejected } : {}),
+            });
         } catch (e) {
           /* a failing search must not fail the whole run */
           const msg = (e as Error)?.message ?? String(e);
@@ -123,12 +138,16 @@ export async function GET(req: NextRequest) {
           continue;
         }
         const q = src.lang === 'he' ? hebrewQuery(game) : englishQuery(game);
-        await runSearch('preferred:' + src.handle, {
-          q,
-          channelId,
-          handle: src.handle,
-          lang: src.lang,
-        });
+        await runSearch(
+          'preferred:' + src.handle,
+          {
+            q,
+            channelId,
+            handle: src.handle,
+            lang: src.lang,
+          },
+          { channelId, q }
+        );
         if (hasProperHighlight()) break;
       }
 
