@@ -181,6 +181,15 @@ export function filterCandidate(c: RawCandidate, game: GameInput): FilterResult 
   // The uploader disabled embedding: it would fail in our player.
   if (c.embeddable === false) return { keep: false, reason: 'not-embeddable' };
 
+  // Generic search can return third-language videos (the query language
+  // doesn't constrain the results). Exclude videos the uploader tagged as
+  // neither Hebrew nor English; untagged videos fail open.
+  if (c.audioLang) {
+    const lang = c.audioLang.toLowerCase().split('-')[0];
+    if (lang !== 'he' && lang !== 'iw' && lang !== 'en')
+      return { keep: false, reason: 'language' };
+  }
+
   if (!teamMentioned(c.title, home) || !teamMentioned(c.title, away)) {
     return { keep: false, reason: 'teams' };
   }

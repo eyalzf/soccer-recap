@@ -110,23 +110,26 @@ interface YtVideoMeta {
   duration: number;
   /** null when the videos.list item was missing (deleted/private) or the call failed. */
   embeddable: boolean | null;
+  /** Uploader-declared audio language; null when untagged. */
+  audioLang: string | null;
 }
 
 async function ytVideoMeta(ids: string[]): Promise<Map<string, YtVideoMeta>> {
   const map = new Map<string, YtVideoMeta>();
   for (let i = 0; i < ids.length; i += 50) {
     const chunk = ids.slice(i, i + 50);
-    const ck = 'ytmeta:' + chunk.join(',');
+    const ck = 'ytmeta2:' + chunk.join(',');
     const cached = cacheGet<Record<string, YtVideoMeta>>(ck);
     if (cached) {
       for (const [k, v] of Object.entries(cached)) map.set(k, v);
       continue;
     }
     try {
-      // status.embeddable tells whether the uploader allows embedding.
-      // Same call as the duration lookup: no extra quota.
+      // status.embeddable tells whether the uploader allows embedding;
+      // snippet.defaultAudioLanguage tags the video's language. Same call
+      // as the duration lookup: no extra quota.
       const data = (await fetchJson(
-        'https://www.googleapis.com/youtube/v3/videos?part=contentDetails,status&id=' +
+        'https://www.googleapis.com/youtube/v3/videos?part=contentDetails,status,snippet&id=' +
           chunk.join(',') +
           '&key=' +
           YT_KEY
@@ -135,6 +138,7 @@ async function ytVideoMeta(ids: string[]): Promise<Map<string, YtVideoMeta>> {
           id: string;
           contentDetails?: { duration?: string };
           status?: { embeddable?: boolean };
+          snippet?: { defaultAudioLanguage?: string; defaultLanguage?: string };
         }>;
       };
       const rec: Record<string, YtVideoMeta> = {};
@@ -142,6 +146,8 @@ async function ytVideoMeta(ids: string[]): Promise<Map<string, YtVideoMeta>> {
         const meta = {
           duration: parseDuration(it.contentDetails?.duration || ''),
           embeddable: it.status?.embeddable ?? null,
+          audioLang:
+            it.snippet?.defaultAudioLanguage ?? it.snippet?.defaultLanguage ?? null,
         };
         map.set(it.id, meta);
         rec[it.id] = meta;
@@ -224,6 +230,7 @@ export async function youtubeSearch(
       durationSec: meta?.duration,
       // Only set when positively known; unknown fails open (kept).
       ...(meta?.embeddable != null ? { embeddable: meta.embeddable } : {}),
+      ...(meta?.audioLang ? { audioLang: meta.audioLang } : {}),
       channelName: sn.channelTitle,
       channelHandle: job.handle,
       lang: job.lang,

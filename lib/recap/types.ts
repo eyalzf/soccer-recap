@@ -12,6 +12,8 @@ export interface RawCandidate {
   durationSec?: number;
   /** YouTube status.embeddable. undefined = unknown (fail open). */
   embeddable?: boolean;
+  /** YouTube snippet.defaultAudioLanguage (fallback defaultLanguage). undefined = untagged (fail open). */
+  audioLang?: string;
   channelName?: string;
   channelHandle?: string;
   lang: 'he' | 'en';
