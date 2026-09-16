@@ -14,6 +14,11 @@ export interface RawCandidate {
   embeddable?: boolean;
   /** YouTube snippet.defaultAudioLanguage (fallback defaultLanguage). undefined = untagged (fail open). */
   audioLang?: string;
+  /**
+   * Uploader geo-blocked this video in Israel (from
+   * contentDetails.regionRestriction). undefined = unknown (fail open).
+   */
+  blockedInIL?: boolean;
   channelName?: string;
   channelHandle?: string;
   lang: 'he' | 'en';
