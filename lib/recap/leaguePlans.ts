@@ -39,7 +39,11 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
     fallbackLangs: ['en'],
   },
   'champions-league': {
-    preferred: [{ handle: 'sportsextra', lang: 'en' }],
+    // No reliable preferred channel: CBS Sports Golazo and TNT Sports are
+    // geo-blocked in Israel, beIN SPORTS posts Arabic commentary only, and
+    // SPORTS EXTRA proved unreliable (surfaced in 1 of 6 test games, short
+    // clips, takedown risk). General English search only.
+    preferred: [],
     fallbackLangs: ['en'],
   },
   'premier-league': {
