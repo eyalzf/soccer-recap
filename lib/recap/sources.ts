@@ -50,7 +50,7 @@ interface YtSearchItem {
 
 async function ytSearch(
   q: string,
-  opts: { channelId?: string; after: string; before: string }
+  opts: { channelId?: string; after: string; before: string; regionCode?: string }
 ): Promise<YtSearchItem[]> {
   const p = new URLSearchParams({
     part: 'snippet',
@@ -63,6 +63,10 @@ async function ytSearch(
     key: YT_KEY,
   });
   if (opts.channelId) p.set('channelId', opts.channelId);
+  // Bias results toward videos viewable in the user's country: geo-blocked
+  // videos (e.g. US/UK rights holders' highlights) otherwise consume result
+  // slots and get picked only to fail at playback.
+  if (opts.regionCode) p.set('regionCode', opts.regionCode);
   // NOTE: no automatic retry here. During a rate-limit event retries become a
   // retry storm that prolongs the block; the caller reports HTTP 429 so the
   // UI can ask the user to try again later.
@@ -112,13 +116,16 @@ interface YtVideoMeta {
   embeddable: boolean | null;
   /** Uploader-declared audio language; null when untagged. */
   audioLang: string | null;
+  /** Whether the uploader geo-blocked the video in Israel. */
+  blockedInIL: boolean;
 }
 
 async function ytVideoMeta(ids: string[]): Promise<Map<string, YtVideoMeta>> {
   const map = new Map<string, YtVideoMeta>();
   for (let i = 0; i < ids.length; i += 50) {
     const chunk = ids.slice(i, i + 50);
-    const ck = 'ytmeta2:' + chunk.join(',');
+    // Key version bump: v3 adds blockedInIL to the cached shape.
+    const ck = 'ytmeta3:' + chunk.join(',');
     const cached = cacheGet<Record<string, YtVideoMeta>>(ck);
     if (cached) {
       for (const [k, v] of Object.entries(cached)) map.set(k, v);
@@ -126,8 +133,9 @@ async function ytVideoMeta(ids: string[]): Promise<Map<string, YtVideoMeta>> {
     }
     try {
       // status.embeddable tells whether the uploader allows embedding;
-      // snippet.defaultAudioLanguage tags the video's language. Same call
-      // as the duration lookup: no extra quota.
+      // snippet.defaultAudioLanguage tags the video's language;
+      // contentDetails.regionRestriction tells whether it's geo-blocked in
+      // Israel. Same call as the duration lookup: no extra quota.
       const data = (await fetchJson(
         'https://www.googleapis.com/youtube/v3/videos?part=contentDetails,status,snippet&id=' +
           chunk.join(',') +
@@ -136,18 +144,28 @@ async function ytVideoMeta(ids: string[]): Promise<Map<string, YtVideoMeta>> {
       )) as {
         items?: Array<{
           id: string;
-          contentDetails?: { duration?: string };
+          contentDetails?: {
+            duration?: string;
+            regionRestriction?: { allowed?: string[]; blocked?: string[] };
+          };
           status?: { embeddable?: boolean };
           snippet?: { defaultAudioLanguage?: string; defaultLanguage?: string };
         }>;
       };
       const rec: Record<string, YtVideoMeta> = {};
       for (const it of data.items ?? []) {
+        const rr = it.contentDetails?.regionRestriction;
+        // Absent regionRestriction = no geo-blocking (playable in Israel).
+        const blockedInIL = rr
+          ? (rr.blocked ?? []).includes('IL') ||
+            (rr.allowed != null && !rr.allowed.includes('IL'))
+          : false;
         const meta = {
           duration: parseDuration(it.contentDetails?.duration || ''),
           embeddable: it.status?.embeddable ?? null,
           audioLang:
             it.snippet?.defaultAudioLanguage ?? it.snippet?.defaultLanguage ?? null,
+          blockedInIL,
         };
         map.set(it.id, meta);
         rec[it.id] = meta;
@@ -205,6 +223,7 @@ export async function youtubeSearch(
     channelId: job.channelId,
     after,
     before,
+    regionCode: 'IL',
   });
 
   const uniq = new Map<string, YtSearchItem>();
@@ -231,6 +250,9 @@ export async function youtubeSearch(
       // Only set when positively known; unknown fails open (kept).
       ...(meta?.embeddable != null ? { embeddable: meta.embeddable } : {}),
       ...(meta?.audioLang ? { audioLang: meta.audioLang } : {}),
+      // Set only when the videos.list item was returned; a missing item
+      // (deleted/private/failed lookup) fails open and keeps the candidate.
+      ...(meta ? { blockedInIL: meta.blockedInIL } : {}),
       channelName: sn.channelTitle,
       channelHandle: job.handle,
       lang: job.lang,
