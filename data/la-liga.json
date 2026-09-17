@@ -2,8 +2,8 @@
  "league": "la-liga",
  "league_id": 87,
  "season": "2026/2027",
- "updated_at": "2026-09-16T12:59:14.711853+00:00",
- "checked_through": "2026-09-15",
+ "updated_at": "2026-09-17T09:45:16.815854+00:00",
+ "checked_through": "2026-09-16",
  "team_ids": {
   "Villarreal": 10205,
   "Real Betis": 8603,
@@ -27,6 +27,36 @@
   "Valencia": 10267
  },
  "games": [
+  {
+   "id": "5868066",
+   "home": "Barcelona",
+   "away": "Racing Santander",
+   "dateISO": "2026-09-16T19:30:00.000Z",
+   "homeScore": 7,
+   "awayScore": 2,
+   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8634.png",
+   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8696.png"
+  },
+  {
+   "id": "5868062",
+   "home": "Atlético Madrid",
+   "away": "Osasuna",
+   "dateISO": "2026-09-16T17:00:00.000Z",
+   "homeScore": 4,
+   "awayScore": 0,
+   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9906.png",
+   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8371.png"
+  },
+  {
+   "id": "5868064",
+   "home": "Deportivo A Coruña",
+   "away": "Sevilla",
+   "dateISO": "2026-09-16T17:00:00.000Z",
+   "homeScore": 0,
+   "awayScore": 1,
+   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9783.png",
+   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8302.png"
+  },
   {
    "id": "manual-20260915-elche-real-madrid",
    "home": "Elche",
