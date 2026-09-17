@@ -282,7 +282,9 @@ export function isBulkChannel(c: RawCandidate): boolean {
 
 /** Title signals an actual highlights/recap video (not punditry or news). */
 export function hasHighlightIntent(title: string): boolean {
-  return /תקציר|highlights|סיכום|all goals|כל השערים|resumen/i.test(title);
+  // 'highights' is a common uploader typo of 'highlights' (seen in the wild
+  // on an official club channel); matching it is strict improvement.
+  return /תקציר|highlights|highights|סיכום|all goals|כל השערים|resumen/i.test(title);
 }
 
 /**
