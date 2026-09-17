@@ -227,6 +227,19 @@ const derby: RawCandidate = {
   lang: 'en', embeddable: true, publishedAt: '2026-09-15T10:00:00Z',
 };
 eq('united-city shorthand kept', filterCandidate(derby, manuCity).keep, true);
+
+// Duration cap: videos over 30 minutes are excluded; exactly 30 min and
+// unknown duration fail open (kept).
+const longVid: RawCandidate = {
+  id: 'long', title: 'United 2-0 City | Extended Highlights',
+  url: 'https://www.youtube.com/watch?v=L2', source: 'youtube', videoId: 'L2',
+  lang: 'en', embeddable: true, publishedAt: '2026-09-15T10:00:00Z', durationSec: 2000,
+};
+eq('over-30min rejected', filterCandidate(longVid, manuCity).reason, 'too-long');
+check('exactly-30min kept',
+  filterCandidate({ ...longVid, id: 'edge', durationSec: 1800 }, manuCity).keep);
+check('unknown-duration kept',
+  filterCandidate({ ...longVid, id: 'nodur', durationSec: undefined }, manuCity).keep);
 const mtaGame: GameInput = {
   home: 'Maccabi Tel Aviv', away: 'Hapoel Tel Aviv',
   dateISO: '2026-09-13T18:00:00Z', league: 'israeli-league', homeScore: 2, awayScore: 0,
