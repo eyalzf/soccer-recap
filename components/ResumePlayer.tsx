@@ -97,6 +97,16 @@ export default function ResumePlayer({
         playerVars: { rel: 0, playsinline: 1, fs: 1 },
         events: {
           onReady: (e: any) => {
+            // Captions off by default: the embed otherwise follows the
+            // viewer's YouTube caption preference, which was showing
+            // subtitles on every video. This only deselects the track —
+            // the viewer can still toggle CC manually. No playerVars value
+            // forces captions off (cc_load_policy=1 only forces them on).
+            try {
+              e.target.setOption('captions', 'track', {});
+            } catch {
+              // captions module unavailable; leave the default
+            }
             const t = getResumeSeconds(videoId);
             if (t != null) {
               try {
