@@ -15,14 +15,15 @@ export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
 
 const DAY = 86400000;
-// Game-level cache policy (design doc):
-// - results persist in Blob with a 120-day TTL;
+// Game-level cache policy (design doc, as clarified: the 120-day window is
+// for DB pruning, not cache invalidation — old games are extremely
+// unlikely to be reviewed, so a weekly cron deletes game blobs untouched
+// for 120 days instead of the read path expiring them):
 // - a cache younger than 1h is served directly;
 // - games played less than 3 days ago are re-fetched (late uploads — IPFL
 //   extended cuts land 2-4 days out — must be picked up);
 // - older games always serve the cache;
 // - consecutive runs can only ADD to existing results (append-only merge).
-const GAME_TTL = 120 * DAY;
 const SERVE_MS = 3600 * 1000;
 const REFRESH_WINDOW = 3 * DAY;
 // Negative cache: games with no highlights yet must not re-run the pipeline
@@ -84,7 +85,7 @@ function parseGame(sp: URLSearchParams): GameInput | null {
  *  season). Versioned so matcher/policy changes auto-invalidate. */
 function gameCacheKey(game: GameInput): string {
   const seg = (s: string) => encodeURIComponent(s).replace(/[%().]/g, '_');
-  return `game/v6/${game.league}/${seg(game.home)}-${seg(game.away)}-${seg(game.dateISO)}`;
+  return `game/v7/${game.league}/${seg(game.home)}-${seg(game.away)}-${seg(game.dateISO)}`;
 }
 
 interface CachedGame {
@@ -129,8 +130,9 @@ const inflight = new Map<string, Promise<ComputeResult>>();
  *     app-side.
  *  3. General search.list fallback (100 units per language), only when
  *     tiers 1+2 find nothing.
- * Game results persist 120 days in Blob; consecutive runs only ADD to
- * existing results (append-only merge). A 429 stops everything and is
+ * Game results persist in Blob with no read-path TTL (120-day pruning is
+ * handled by the weekly /api/recap/prune cron); consecutive runs only ADD
+ * to existing results (append-only merge). A 429 stops everything and is
  * never cached.
  */
 async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeResult> {
@@ -164,7 +166,11 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
   if (!debug) {
     const rec = await pget<CachedGame>(key);
     const now = Date.now();
-    if (rec && now - rec.fetchedAt < GAME_TTL) {
+    // No logical TTL on the read path: a cached game is served (or
+    // refreshed+merged) regardless of age. Expiry is handled by pruning —
+    // the weekly /api/recap/prune cron deletes game blobs untouched for
+    // 120 days.
+    if (rec) {
       const cacheAge = now - rec.fetchedAt;
       const gameAge = now - Date.parse(game.dateISO);
       // Design-doc retrieval logic: <=1h serve cached; game <3d old
@@ -331,7 +337,9 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
         rateLimited: ytRateLimited,
       })
     : null;
-  // Persist every outcome (including empty) with the 120-day TTL.
+  // Persist every outcome (including empty) with no read-path TTL.
+  // Expiry is by pruning: /api/recap/prune (weekly Vercel cron) deletes
+  // game blobs untouched for 120 days.
   // Never cache a rate-limited run: an empty result from HTTP 429 must not
   // poison the cache. Debug runs bypass the cache so they always reflect a
   // live search.
