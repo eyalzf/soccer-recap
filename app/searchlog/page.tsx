@@ -44,6 +44,32 @@ function bump(a: Agg, e: SearchLogEntry): void {
 
 const pct = (a: number, b: number): string => (b ? `${Math.round((a / b) * 100)}%` : '—');
 
+const KIND_HE: Record<string, string> = {
+  preferred: 'מועדף',
+  bulk: 'מאגר',
+  general: 'כללי',
+};
+
+function SourcesCell({ e }: { e: SearchLogEntry }) {
+  const srcs = e.sources ?? [];
+  if (e.cached) return <span className="src-cache">מטמון המשחק</span>;
+  if (!srcs.length) return <span className="src-none">—</span>;
+  return (
+    <div className="src-list">
+      {srcs.map((s, i) => (
+        <div key={i} className="src-line">
+          <span className="src-label">{s.label}</span>{' '}
+          <span className="src-kind">({KIND_HE[s.kind] ?? s.kind})</span>{' '}
+          <span className="src-nums">
+            {s.fetched} נשלפו · {s.kept} נשמרו
+          </span>
+          {s.cached && <span className="src-cache"> · מטמון</span>}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function fmtTime(t: number): string {
   return new Date(t).toLocaleString('he-IL', {
     day: 'numeric',
@@ -141,6 +167,7 @@ export default async function SearchLogPage() {
             <th>משחק</th>
             <th>ליגה</th>
             <th>מקור מנצח</th>
+            <th>מקורות (נשלפו / נשמרו)</th>
             <th>תוצאות</th>
           </tr>
         </thead>
@@ -154,6 +181,9 @@ export default async function SearchLogPage() {
               </td>
               <td>{LEAGUE_HE[e.league] ?? e.league}</td>
               <td>{WINNER_HE[e.winner ?? 'none'] ?? e.winner}</td>
+              <td>
+                <SourcesCell e={e} />
+              </td>
               <td>{e.results}</td>
             </tr>
           ))}
