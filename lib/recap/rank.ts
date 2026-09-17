@@ -4,6 +4,7 @@ import {
   extractScore,
   hasHebrew,
   hasHighlightIntent,
+  highlightTier,
   isBulkChannel,
   isTrusted,
   mentionIndex,
@@ -80,10 +81,14 @@ export function rankCandidates(list: RawCandidate[], game: GameInput): RankedCan
     seen.add(key);
     out.push({ ...c, score: scoreCandidate(c, game) });
   }
-  // Longest first; relevance score breaks ties. Videos with unknown
-  // duration sort last.
+  // Relevance tier first (extended > standard > rest), then longest
+  // first within each tier; relevance score breaks remaining ties.
+  // Videos with unknown duration sort last within their tier.
   out.sort(
-    (a, b) => (b.durationSec ?? -1) - (a.durationSec ?? -1) || b.score - a.score
+    (a, b) =>
+      highlightTier(a.title) - highlightTier(b.title) ||
+      (b.durationSec ?? -1) - (a.durationSec ?? -1) ||
+      b.score - a.score
   );
   return out;
 }

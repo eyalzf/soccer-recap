@@ -242,6 +242,17 @@ export function hasHighlightIntent(title: string): boolean {
   return /תקציר|highlights|סיכום|all goals|כל השערים|resumen/i.test(title);
 }
 
+/**
+ * Relevance tier for display sorting: 0 = extended highlights/recaps,
+ * 1 = standard highlights/recaps, 2 = everything else (news, punditry…).
+ */
+export function highlightTier(title: string): number {
+  if (/extended|מורחב|all goals|כל השערים|every goal|full highlights/i.test(title))
+    return 0;
+  if (hasHighlightIntent(title)) return 1;
+  return 2;
+}
+
 export interface FilterResult {
   keep: boolean;
   reason: string;

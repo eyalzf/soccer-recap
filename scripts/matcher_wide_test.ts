@@ -20,6 +20,7 @@ import {
   extractScore,
   filterCandidate,
   hasHighlightIntent,
+  highlightTier,
   isTrusted,
   teamMentioned,
 } from '../lib/recap/match';
@@ -114,6 +115,7 @@ for (const slice of SLICES) {
       ...base,
       ...over,
       id: `${gid} :: ${id}`,
+      videoId: `${gid} :: ${id}`, // unique: rankCandidates dedupes on videoId
       title,
     });
 
@@ -154,10 +156,12 @@ for (const slice of SLICES) {
       if (r.keep) kept.push(k.c);
     }
 
-    // Ranking: the Hebrew highlight must come out on top of the kept set.
+    // Ranking: relevance tier first — the English "Extended Highlights"
+    // candidate outranks the standard Hebrew one, longest first within a tier.
     const ranked = rankCandidates(kept, game);
     const heId = `${gid} :: he`;
-    check(`${gid} [rank] hebrew-first`, ranked.length > 0 && ranked[0].id === heId,
+    const enId = `${gid} :: en`;
+    check(`${gid} [rank] extended-first`, ranked.length > 0 && ranked[0].id === enId,
       `top was ${ranked[0]?.id ?? 'none'} (kept: ${kept.length})`);
     const heScore = ranked.find((r) => r.id === heId)?.score ?? -1;
     const enScore = ranked.find((r) => r.id === `${gid} :: en`)?.score ?? -1;
@@ -253,6 +257,40 @@ eq('contra fa-cup', competitionContradiction('Arsenal vs Chelsea | FA Cup Highli
 eq('contra none', competitionContradiction('Arsenal vs Chelsea | Premier League Highlights', 'premier-league'), null);
 eq('excluded season-review', excludedCategory('Manchester City 2025/26 Season Review'), 'season review');
 eq('excluded livestream', excludedCategory('Real Madrid vs Barcelona | שידור חי'), 'שידור חי');
+
+// Relevance tiers: extended (0) > standard (1) > rest (2).
+check('tier extended en', highlightTier('Real Madrid 2-1 Inter | Extended Highlights') === 0);
+check('tier extended he', highlightTier('מכבי חיפה 2-0 מכבי תל אביב | תקציר מורחב') === 0);
+check('tier all-goals', highlightTier('Barcelona vs Sevilla | All Goals') === 0);
+check('tier every-goal', highlightTier('Arsenal 3-1 Tottenham | Every Goal') === 0);
+check('tier standard en', highlightTier('Arsenal 2-0 Chelsea | Highlights') === 1);
+check('tier standard he', highlightTier('בית״ר ירושלים נגד הפועל ת״א | תקציר המשחק') === 1);
+check('tier rest', highlightTier('Real Madrid winter transfer news') === 2);
+
+// Tier beats duration: a 5-minute extended video outranks a 12-minute
+// standard one; within a tier the longer video still wins.
+const tierGame: GameInput = {
+  home: 'Arsenal', away: 'Chelsea', dateISO: '2026-09-14T19:00:00Z',
+  league: 'premier-league', homeScore: 2, awayScore: 0,
+};
+const mkTier = (id: string, title: string, durationSec: number): RawCandidate => ({
+  id, title, url: `https://www.youtube.com/watch?v=${id}`, source: 'youtube',
+  videoId: id, lang: 'en', embeddable: true, durationSec,
+});
+const tierRanked = rankCandidates(
+  [
+    mkTier('std-long', 'Arsenal 2-0 Chelsea | Highlights', 720),
+    mkTier('std-short', 'Arsenal 2-0 Chelsea | Highlights', 240),
+    mkTier('ext-short', 'Arsenal 2-0 Chelsea | Extended Highlights', 300),
+    mkTier('news', 'Arsenal 2-0 Chelsea | Post-match reactions', 900),
+  ],
+  tierGame
+);
+check(
+  'tier sort order',
+  tierRanked.map((r) => r.id).join(',') === 'ext-short,std-long,std-short,news',
+  tierRanked.map((r) => r.id).join(',')
+);
 
 // ---------------------------------------------------------------- report ---
 console.log(`\n${gameCount} games, ${pass + fail} assertions: ${pass} pass, ${fail} fail`);
