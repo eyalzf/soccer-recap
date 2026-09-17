@@ -585,7 +585,7 @@ export const CLUBS: ClubEntry[] = [
   {
     en: "Slavia Prague",
     he: "סלביה פראג",
-    enAliases: ["SK Slavia", "SK Slavia Praha"],
+    enAliases: ["SK Slavia", "SK Slavia Praha", "Slavia Praha"],
     heAliases: [],
   },
   {
