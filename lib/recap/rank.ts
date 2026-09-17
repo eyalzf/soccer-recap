@@ -18,6 +18,20 @@ const COMPETITION_POSITIVE: Record<string, string[]> = {
   'champions-league': ['champions league', 'ליגת האלופות', 'ucl'],
 };
 
+/**
+ * The video's own language: title script first, uploader tag second, query
+ * language only as a last resort for untagged videos. 'other' = neither
+ * Hebrew nor English (e.g. a Spanish club-channel recap).
+ */
+export function videoLang(c: RawCandidate): 'he' | 'en' | 'other' {
+  if (hasHebrew(c.title)) return 'he';
+  const al = c.audioLang?.toLowerCase().split('-')[0];
+  if (al === 'he' || al === 'iw') return 'he';
+  if (al === 'en') return 'en';
+  if (al) return 'other';
+  return c.lang === 'he' ? 'he' : 'en';
+}
+
 export function scoreCandidate(c: RawCandidate, game: GameInput): number {
   let s = 0;
 
@@ -29,8 +43,11 @@ export function scoreCandidate(c: RawCandidate, game: GameInput): number {
     s += 40; // sport1 / sport5 / one
   }
 
-  // Hebrew before English fallback.
-  if (c.lang === 'he' || hasHebrew(c.title)) s += 25;
+  // Language preference: Hebrew first, English fallback, other last.
+  // Based on the video itself (title script, uploader tag), not the query.
+  const vlang = videoLang(c);
+  if (vlang === 'he') s += 25;
+  else if (vlang === 'en') s += 10;
 
   // Actual highlights/recap, not punditry or news about the game.
   if (hasHighlightIntent(c.title)) s += 35;
