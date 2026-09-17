@@ -43,6 +43,7 @@ interface YtSearchItem {
   snippet: {
     title: string;
     publishedAt: string;
+    channelId: string;
     channelTitle: string;
     thumbnails?: { medium?: { url: string }; default?: { url: string } };
   };
@@ -257,6 +258,7 @@ export async function youtubeSearch(
       ...(meta ? { blockedInIL: meta.blockedInIL } : {}),
       channelName: sn.channelTitle,
       channelHandle: job.handle,
+      channelId: sn.channelId,
       lang: job.lang,
     } satisfies RawCandidate;
   });
