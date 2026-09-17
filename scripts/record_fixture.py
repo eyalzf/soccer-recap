@@ -68,6 +68,18 @@ def main() -> int:
         print("bad slug (lowercase letters, digits, dashes only)", file=sys.stderr)
         return 2
 
+    # Single source of truth: read MATCHER_VERSION from lib/recap/fixtures.ts
+    # so recorded fixtures are never stamped with a stale version.
+    fixtures_ts = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                               "..", "lib", "recap", "fixtures.ts")
+    m = re.search(r"export const MATCHER_VERSION\s*=\s*(\d+)",
+                  open(fixtures_ts, encoding="utf-8").read())
+    if not m:
+        print("could not read MATCHER_VERSION from lib/recap/fixtures.ts",
+              file=sys.stderr)
+        return 2
+    matcher_version = int(m.group(1))
+
     q = urllib.parse.urlencode({
         "home": args.home, "away": args.away, "date": args.date,
         "league": args.league, "hs": args.hs, "as": getattr(args, "as"),
@@ -89,7 +101,7 @@ def main() -> int:
             "homeHe": args.home_he or args.home,
             "awayHe": args.away_he or args.away,
         },
-        "matcherVersion": 1,
+        "matcherVersion": matcher_version,
         "recordedAt": datetime.datetime.now(datetime.timezone.utc).isoformat(),
         "events": events,
     }

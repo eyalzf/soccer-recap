@@ -1,4 +1,4 @@
-import type { ClubEntry } from '../teams';
+import { CLUBS, type ClubEntry } from '../teams';
 import { lookupClubEn } from '../teamIndex';
 import type { GameInput, RawCandidate } from './types';
 import { LEAGUE_SEARCH_PLANS } from './leaguePlans';
@@ -23,26 +23,67 @@ function normHeCompare(s: string): string {
 }
 
 /**
+ * Multi-word English variants of every club, used to disambiguate short
+ * aliases: "United" is a fine alias for Manchester United, but inside
+ * "Leeds United" it refers to Leeds. A short-alias match that falls inside
+ * another club's multi-word name is attributed to that club, not ours.
+ */
+const MULTIWORD_VARIANTS: Array<{ club: ClubEntry; text: string }> = [];
+for (const club of CLUBS) {
+  for (const v of [club.en, ...club.enAliases]) {
+    const vv = v.toLowerCase().trim();
+    if (vv.includes(' ')) MULTIWORD_VARIANTS.push({ club, text: vv });
+  }
+}
+
+/** Spans in the title covered by multi-word names of clubs other than `club`. */
+function otherClubSpans(t: string, club: ClubEntry): Array<[number, number]> {
+  const spans: Array<[number, number]> = [];
+  for (const { club: other, text } of MULTIWORD_VARIANTS) {
+    if (other === club) continue;
+    let from = 0;
+    for (;;) {
+      const i = t.indexOf(text, from);
+      if (i < 0) break;
+      spans.push([i, i + text.length]);
+      from = i + 1;
+    }
+  }
+  return spans;
+}
+
+function insideSpans(idx: number, len: number, spans: Array<[number, number]>): boolean {
+  return spans.some(([s, e]) => idx >= s && idx + len <= e);
+}
+
+/**
  * Index of an English name/alias variant in a lowercased title. Short
  * variants (<=6 chars) match on word boundaries only: "inter" must not
  * match inside "winter", "betis" inside "alphabetis", etc. Longer names are
- * distinctive enough for substring matching. -1 when absent.
+ * distinctive enough for substring matching. A match covered by another
+ * club's multi-word name ("united" inside "leeds united") is skipped.
+ * -1 when absent.
  */
-function enVariantIndex(t: string, vv: string): number {
+function enVariantIndex(t: string, vv: string, spans: Array<[number, number]>): number {
   if (vv.length <= 6) {
-    const m = t.match(new RegExp(`\\b${esc(vv)}\\b`));
-    return m?.index ?? -1;
+    for (const m of t.matchAll(new RegExp(`\\b${esc(vv)}\\b`, 'g'))) {
+      const i = m.index ?? -1;
+      if (i >= 0 && !insideSpans(i, vv.length, spans)) return i;
+    }
+    return -1;
   }
-  return t.indexOf(vv);
+  const i = t.indexOf(vv);
+  return i >= 0 && !insideSpans(i, vv.length, spans) ? i : -1;
 }
 
 /** Does the title mention the club (any English/Hebrew spelling)? */
 export function teamMentioned(title: string, club: ClubEntry): boolean {
   const t = title.toLowerCase();
+  const spans = otherClubSpans(t, club);
   for (const v of [club.en, ...club.enAliases]) {
     const vv = v.toLowerCase().trim();
     if (!vv) continue;
-    if (enVariantIndex(t, vv) >= 0) return true;
+    if (enVariantIndex(t, vv, spans) >= 0) return true;
   }
   const th = normHeCompare(title);
   for (const v of [club.he, ...club.heAliases]) {
@@ -55,8 +96,9 @@ export function teamMentioned(title: string, club: ClubEntry): boolean {
 export function mentionIndex(title: string, club: ClubEntry): number {
   let best = Infinity;
   const t = title.toLowerCase();
+  const spans = otherClubSpans(t, club);
   for (const v of [club.en, ...club.enAliases]) {
-    const i = enVariantIndex(t, v.toLowerCase());
+    const i = enVariantIndex(t, v.toLowerCase(), spans);
     if (i >= 0 && i < best) best = i;
   }
   const th = normHeCompare(title);
@@ -250,8 +292,10 @@ export function filterCandidate(c: RawCandidate, game: GameInput): FilterResult 
     const matchesEither = (a === hs && b === as) || (a === as && b === hs);
     if (!matchesEither) return { keep: false, reason: 'score' }; // veto (a)
     // Veto (b): home listed first + reversed digits + untrusted + undated.
+    // Skipped for draws: a reversed draw scoreline is identical, so there
+    // is no reversal to veto (e.g. "Leeds 0-0 Man Utd" is correct either way).
     const homeFirst = mentionIndex(c.title, home) <= mentionIndex(c.title, away);
-    if (homeFirst && a === as && b === hs && !isTrusted(c) && prox === 'undated') {
+    if (homeFirst && hs !== as && a === as && b === hs && !isTrusted(c) && prox === 'undated') {
       return { keep: false, reason: 'score-reversed' };
     }
   }
