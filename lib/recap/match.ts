@@ -158,6 +158,49 @@ const EXCLUDED = [
   'שידור חי', 'שידור ישיר', 'לייב', 'livestream',
 ];
 
+/**
+ * Press conferences and prematch shows are never recaps — in any tier or
+ * language. Official club channels (the curated bulk pool) publish a lot of
+ * them, so the terms are multilingual. Kept separate from EXCLUDED so the
+ * reject reason distinguishes them in diagnostics.
+ */
+const PRESS_CONFERENCE_TERMS = [
+  'press conference',
+  'rueda de prensa',
+  'conferencia de prensa',
+  'conferência de imprensa',
+  'conferencia de imprensa',
+  'coletiva de imprensa',
+  'coletiva',
+  'persconferentie',
+  'pressekonferenz',
+  'conférence de presse',
+  'conferenza stampa',
+  'מסיבת עיתונאים',
+  'basın toplantısı',
+];
+
+const PREMATCH_TERMS = [
+  'pre-match',
+  'prematch',
+  'previa',
+  'antevisão',
+  'antevisao',
+  'avant-match',
+];
+
+/** 'press-conference' | 'prematch' when the title is a non-recap format, else null. */
+export function nonRecapFormat(title: string): 'press-conference' | 'prematch' | null {
+  const t = title.toLowerCase();
+  for (const kw of PRESS_CONFERENCE_TERMS) {
+    if (t.includes(kw.toLowerCase())) return 'press-conference';
+  }
+  for (const kw of PREMATCH_TERMS) {
+    if (t.includes(kw.toLowerCase())) return 'prematch';
+  }
+  return null;
+}
+
 export function excludedCategory(title: string): string | null {
   const t = title.toLowerCase();
   for (const kw of EXCLUDED) {
@@ -267,16 +310,24 @@ export function filterCandidate(c: RawCandidate, game: GameInput): FilterResult 
   const away = lookupClubEn(game.away);
   if (!home || !away) return { keep: false, reason: 'unknown-team' };
 
+  // Press conferences and prematch shows are never recaps, in any tier.
+  // (Matters most for the curated club-channel pool, which is full of them.)
+  const fmt = nonRecapFormat(c.title);
+  if (fmt) return { keep: false, reason: fmt };
+
   // The uploader disabled embedding: it would fail in our player.
   if (c.embeddable === false) return { keep: false, reason: 'not-embeddable' };
 
   // The uploader geo-blocked the video in Israel: it would fail playback here.
   if (c.blockedInIL === true) return { keep: false, reason: 'region-blocked' };
 
-  // Generic search can return third-language videos (the query language
-  // doesn't constrain the results). Exclude videos the uploader tagged as
-  // neither Hebrew nor English; untagged videos fail open.
-  if (c.audioLang) {
+  // Language: in curated tiers (preferred/bulk/candidate) language is a
+  // ranking preference, not a veto — official club channels post recaps in
+  // their own language (Spanish, Portuguese, Dutch...). General search keeps
+  // the hard veto: an unscoped query can return any third-language video.
+  // Untagged videos fail open.
+  const curatedTier = c.bulk === true || isPreferredChannel(c);
+  if (!curatedTier && c.audioLang) {
     const lang = c.audioLang.toLowerCase().split('-')[0];
     if (lang !== 'he' && lang !== 'iw' && lang !== 'en')
       return { keep: false, reason: 'language' };
