@@ -95,6 +95,7 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
     preferred: [{ handle: 'one-1004', lang: 'he' }],
     bulk: [
       { handle: 'laliga', label: 'LaLiga official' },
+      { handle: 'FCBarcelona', label: 'FC Barcelona', teams: ['Barcelona'] },
       { handle: 'realmadrid', label: 'Real Madrid', teams: ['Real Madrid'] },
       { handle: 'atleticodemadrid', label: 'Atletico Madrid', teams: ['Atletico Madrid'] },
       { handle: 'villarrealcf', label: 'Villarreal CF', teams: ['Villarreal'] },
