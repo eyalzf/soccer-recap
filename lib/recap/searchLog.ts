@@ -4,7 +4,8 @@
  *
  * Each entry records which tiers ran and which tier produced the results,
  * so fallback-to-general-search frequency can be reviewed per league.
- * Logging never throws and never blocks a search: callers fire-and-forget.
+ * Logging never throws: callers await it, but a failure only skips the
+ * log entry and never breaks a search.
  */
 import { pget, pset } from './persist';
 

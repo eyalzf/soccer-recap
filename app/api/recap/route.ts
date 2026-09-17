@@ -129,8 +129,10 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
     const rec = await pget<CachedGame>(key);
     if (rec && Date.now() - rec.fetchedAt < ttlFor(game, rec.val.empty)) {
       // Cache hit: no tier ran. Still logged so fallback frequency is
-      // measured against real searches, not cache serves.
-      void logSearch({
+      // measured against real searches, not cache serves. Awaited: on
+      // Vercel a fire-and-forget write may never run after the response
+      // is sent. logSearch never throws, so awaiting is safe.
+      await logSearch({
         ...logEntry,
         cached: true,
         winner: 'cache' as SearchWinner,
@@ -238,26 +240,30 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
   }
 
   const finalRanked = rankCandidates(visible(accepted), game);
-  // Log which tiers ran and which one won (fire-and-forget; never blocks).
+  // Log which tiers ran and which one won. Awaited together with the
+  // game-cache write below so the Blob write completes before the response
+  // is sent (a fire-and-forget write may never run on Vercel).
   // Debug runs are excluded: they bypass the cache and would skew stats.
-  if (!debug) {
-    void logSearch({
-      ...logEntry,
-      winner,
-      results: finalRanked.length,
-      rateLimited: ytRateLimited,
-    });
-  }
+  const logPromise = !debug
+    ? logSearch({
+        ...logEntry,
+        winner,
+        results: finalRanked.length,
+        rateLimited: ytRateLimited,
+      })
+    : null;
   // Persist every outcome (including empty) with an age-appropriate TTL.
   // Never cache a rate-limited run: an empty result from HTTP 429 must not
   // poison the cache. Debug runs bypass the cache so they always reflect a
   // live search.
-  if (!debug && !ytRateLimited) {
-    await pset(key, {
-      results: finalRanked,
-      empty: finalRanked.length === 0,
-    } satisfies CachedGame);
-  }
+  const persistPromise =
+    !debug && !ytRateLimited
+      ? pset(key, {
+          results: finalRanked,
+          empty: finalRanked.length === 0,
+        } satisfies CachedGame)
+      : null;
+  await Promise.all([logPromise, persistPromise]);
   return { results: finalRanked, ytRateLimited, diag };
 }
 
