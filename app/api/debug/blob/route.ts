@@ -20,7 +20,7 @@ export async function GET() {
   const key = 'searchlog/_diag.json';
   try {
     await put(key, JSON.stringify({ t: Date.now() }), {
-      access: 'public',
+      access: 'private',
       addRandomSuffix: false,
       contentType: 'application/json',
     });

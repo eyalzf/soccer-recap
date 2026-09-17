@@ -11,39 +11,30 @@
  * cross-instance persistence. Create the store via Vercel dashboard →
  * Storage → Create → Blob; the env var is auto-injected on next deploy.
  */
-import { list as blobList, put as blobPut } from '@vercel/blob';
+import { get as blobGet, put as blobPut } from '@vercel/blob';
 import { cacheGet, cacheSet } from '@/lib/cache';
 
 const TOKEN = process.env.BLOB_READ_WRITE_TOKEN || '';
+
+/** The store may be public or private; the app always uses private access. */
+const BLOB_ACCESS = 'private' as const;
 
 export interface Persisted<T> {
   fetchedAt: number;
   val: T;
 }
 
-// In-memory map of pathname -> public URL, populated on pset so pget can
-// skip the blobList call within a warm instance.
-const urlByPath = new Map<string, string>();
-
 export async function pget<T>(key: string): Promise<Persisted<T> | null> {
   if (!TOKEN) {
     return cacheGet<Persisted<T>>(key) ?? null;
   }
   try {
-    let url = urlByPath.get(key);
-    if (!url) {
-      const { blobs } = await blobList({ prefix: key, limit: 5 });
-      const b = blobs.find((x) => x.pathname === key) ?? null;
-      if (!b) return null;
-      url = b.url;
-      urlByPath.set(key, url);
-    }
-    const res = await fetch(url, { cache: 'no-store' });
-    if (!res.ok) {
-      urlByPath.delete(key);
-      return null;
-    }
-    return (await res.json()) as Persisted<T>;
+    // Authenticated download; useCache:false bypasses the CDN so a
+    // just-written value (e.g. the daily search log) reads back fresh.
+    const res = await blobGet(key, { access: BLOB_ACCESS, useCache: false });
+    if (!res || res.statusCode !== 200 || !res.stream) return null;
+    const text = await new Response(res.stream).text();
+    return JSON.parse(text) as Persisted<T>;
   } catch {
     return null;
   }
@@ -56,12 +47,11 @@ export async function pset(key: string, val: unknown): Promise<void> {
     return;
   }
   try {
-    const blob = await blobPut(key, JSON.stringify(rec), {
-      access: 'public',
+    await blobPut(key, JSON.stringify(rec), {
+      access: BLOB_ACCESS,
       addRandomSuffix: false,
       contentType: 'application/json',
     });
-    urlByPath.set(key, blob.url);
   } catch {
     // Blob write failed (permissions, network): keep an in-memory copy.
     cacheSet(key, rec, 30 * 86400000);
