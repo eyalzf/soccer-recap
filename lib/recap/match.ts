@@ -317,6 +317,11 @@ export function filterCandidate(c: RawCandidate, game: GameInput): FilterResult 
   const fmt = nonRecapFormat(c.title);
   if (fmt) return { keep: false, reason: fmt };
 
+  // Overlong videos are not highlights: cap at 30 minutes, in every tier.
+  // Videos with unknown duration fail open (kept).
+  if (c.durationSec != null && c.durationSec > 1800)
+    return { keep: false, reason: 'too-long' };
+
   // The uploader disabled embedding: it would fail in our player.
   if (c.embeddable === false) return { keep: false, reason: 'not-embeddable' };
 
