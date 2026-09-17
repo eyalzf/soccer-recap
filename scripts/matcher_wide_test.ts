@@ -26,6 +26,7 @@ import {
   teamMentioned,
 } from '../lib/recap/match';
 import { rankCandidates, scoreCandidate, videoLang } from '../lib/recap/rank';
+import { channelsForGame, teamMatchesTag } from '../lib/recap/bulk';
 import type { GameInput, RawCandidate } from '../lib/recap/types';
 
 let pass = 0;
@@ -227,6 +228,24 @@ const derby: RawCandidate = {
   lang: 'en', embeddable: true, publishedAt: '2026-09-15T10:00:00Z',
 };
 eq('united-city shorthand kept', filterCandidate(derby, manuCity).keep, true);
+
+// Team-scoped channel selection: club channels only scan their own games.
+check('tag alias-aware', teamMatchesTag('Manchester City', 'Man City'));
+check('tag substring', teamMatchesTag('Celta Vigo', 'Celta'));
+check('tag negative', !teamMatchesTag('Real Madrid', 'Barcelona'));
+check('tag inter not winter-club', !teamMatchesTag('Some Club', 'Inter'));
+const chGame: GameInput = {
+  home: 'Real Madrid', away: 'Celta Vigo',
+  dateISO: '2026-09-14T19:00:00Z', league: 'la-liga', homeScore: 2, awayScore: 1,
+};
+const chEntries = [
+  { label: 'Real Madrid', teams: ['Real Madrid'] },
+  { label: 'RC Celta', teams: ['Celta'] },
+  { label: 'Barcelona', teams: ['Barcelona'] },
+  { label: 'LaLiga official' },
+];
+const chSel = channelsForGame(chEntries, chGame).map((e) => e.label);
+eq('team filter keeps own clubs + league-wide', chSel, ['Real Madrid', 'RC Celta', 'LaLiga official']);
 
 // Duration cap: videos over 30 minutes are excluded; exactly 30 min and
 // unknown duration fail open (kept).
