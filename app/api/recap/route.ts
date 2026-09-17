@@ -6,6 +6,8 @@ import type { YouTubeSearchJob } from '@/lib/recap/sources';
 import { searchPlanFor } from '@/lib/recap/leaguePlans';
 import { bulkScan } from '@/lib/recap/bulk';
 import { pget, pset } from '@/lib/recap/persist';
+import { emptyTierStats, logSearch } from '@/lib/recap/searchLog';
+import type { SearchWinner } from '@/lib/recap/searchLog';
 import { loadFixture, MATCHER_VERSION } from '@/lib/recap/fixtures';
 import type { GameInput, RankedCandidate, RawCandidate } from '@/lib/recap/types';
 
@@ -113,9 +115,28 @@ const inflight = new Map<string, Promise<ComputeResult>>();
  */
 async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeResult> {
   const key = gameCacheKey(game);
+  const logEntry = {
+    t: Date.now(),
+    home: game.home,
+    away: game.away,
+    league: game.league,
+    date: game.dateISO,
+    preferred: emptyTierStats(),
+    bulk: emptyTierStats(),
+    general: emptyTierStats(),
+  };
   if (!debug) {
     const rec = await pget<CachedGame>(key);
     if (rec && Date.now() - rec.fetchedAt < ttlFor(game, rec.val.empty)) {
+      // Cache hit: no tier ran. Still logged so fallback frequency is
+      // measured against real searches, not cache serves.
+      void logSearch({
+        ...logEntry,
+        cached: true,
+        winner: 'cache' as SearchWinner,
+        results: rec.val.results.length,
+        rateLimited: false,
+      });
       return { results: rec.val.results, ytRateLimited: false, diag: [] };
     }
   }
@@ -137,7 +158,7 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
   // search.
   const hasProperHighlight = () => accepted.some((c) => hasHighlightIntent(c.title));
 
-  const ingest = (label: string, raw: RawCandidate[]) => {
+  const ingest = (label: string, raw: RawCandidate[]): number => {
     let kept = 0;
     const rejected: Array<{ title: string; channel?: string; reason: string }> = [];
     for (const c of raw) {
@@ -152,18 +173,21 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
       }
     }
     if (debug) diag.push({ search: label, fetched: raw.length, kept, ...(rejected.length ? { rejected } : {}) });
+    return kept;
   };
 
-  const runSearch = async (label: string, job: YouTubeSearchJob, diagExtra?: Record<string, unknown>) => {
+  const runSearch = async (label: string, job: YouTubeSearchJob, diagExtra?: Record<string, unknown>): Promise<number> => {
     try {
       const raw = await youtubeSearch(game, job);
-      ingest(label, raw);
+      const kept = ingest(label, raw);
       if (debug) Object.assign(diag[diag.length - 1], diagExtra);
+      return kept;
     } catch (e) {
       /* a failing search must not fail the whole run */
       const msg = (e as Error)?.message ?? String(e);
       if (msg === 'HTTP 429') ytRateLimited = true;
       if (debug) diag.push({ search: label, error: msg });
+      return 0;
     }
   };
 
@@ -171,6 +195,7 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
   // (YouTube allows a single channelId per search.list call). Stop at the
   // first channel with a proper highlight result. A 429 means the rate
   // limiter is engaged: further calls would fail too, so stop.
+  let winner: SearchWinner = 'none';
   for (const src of plan.preferred) {
     if (ytRateLimited) break;
     const channelId = await channelIdForHandle(src.handle);
@@ -179,34 +204,50 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
       continue;
     }
     const q = src.lang === 'he' ? hebrewQuery(game) : englishQuery(game);
-    await runSearch(
+    logEntry.preferred.ran += 1;
+    logEntry.preferred.kept += await runSearch(
       'preferred:' + src.handle,
       { q, channelId, handle: src.handle, lang: src.lang },
       { channelId, q }
     );
     if (hasProperHighlight()) break;
   }
+  if (hasProperHighlight()) winner = 'preferred';
 
   // Tier 2: curated bulk pool (uploads playlists, app-side matching).
-  if (!ytRateLimited && !hasProperHighlight() && plan.bulk.length > 0) {
+  if (!ytRateLimited && winner === 'none' && plan.bulk.length > 0) {
     const bulk = await bulkScan(game);
     if (bulk.ytRateLimited) ytRateLimited = true;
-    ingest('bulk', bulk.candidates);
+    logEntry.bulk.ran += 1;
+    logEntry.bulk.kept += ingest('bulk', bulk.candidates);
     if (debug) diag.push(...bulk.diag);
+    if (hasProperHighlight()) winner = 'bulk';
   }
 
   // Tier 3: general-search fallback, only when tiers 1+2 found nothing.
-  if (!ytRateLimited && !hasProperHighlight()) {
+  if (!ytRateLimited && winner === 'none') {
     for (const lang of plan.fallbackLangs) {
       const q = lang === 'he' ? hebrewQuery(game) : englishQuery(game);
-      await runSearch('general:' + lang, { q, lang });
+      logEntry.general.ran += 1;
+      logEntry.general.kept += await runSearch('general:' + lang, { q, lang });
       if (ytRateLimited || hasProperHighlight()) break;
     }
+    if (hasProperHighlight()) winner = 'general';
   } else if (debug) {
     diag.push({ shortCircuited: true });
   }
 
   const finalRanked = rankCandidates(visible(accepted), game);
+  // Log which tiers ran and which one won (fire-and-forget; never blocks).
+  // Debug runs are excluded: they bypass the cache and would skew stats.
+  if (!debug) {
+    void logSearch({
+      ...logEntry,
+      winner,
+      results: finalRanked.length,
+      rateLimited: ytRateLimited,
+    });
+  }
   // Persist every outcome (including empty) with an age-appropriate TTL.
   // Never cache a rate-limited run: an empty result from HTTP 429 must not
   // poison the cache. Debug runs bypass the cache so they always reflect a

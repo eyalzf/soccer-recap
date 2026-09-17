@@ -50,8 +50,7 @@ export default function RecapPanel({
   onClose: () => void;
 }) {
   const [results, setResults] = useState<Candidate[]>([]);
-  const [pending, setPending] = useState(0);
-  const [started, setStarted] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [failed, setFailed] = useState(false);
   const [rateLimited, setRateLimited] = useState(false);
   const [selected, setSelected] = useState<Candidate | null>(null);
@@ -62,7 +61,7 @@ export default function RecapPanel({
   useEffect(() => {
     setResults([]);
     setSelected(null);
-    setStarted(false);
+    setLoading(true);
     setFailed(false);
     setRateLimited(false);
     setBrokenThumb({});
@@ -86,14 +85,13 @@ export default function RecapPanel({
           ytRateLimited?: boolean;
         };
         if (data.type === 'start') {
-          setStarted(true);
-          setPending(data.pending ?? 0);
+          setLoading(true);
         } else if (data.type === 'batch') {
           setResults(data.results ?? []);
-          setPending(data.pending ?? 0);
+          setLoading(false);
         } else if (data.type === 'done') {
           setResults(data.results ?? []);
-          setPending(0);
+          setLoading(false);
           if (data.ytRateLimited) setRateLimited(true);
           es.close();
         }
@@ -103,7 +101,7 @@ export default function RecapPanel({
     };
     es.onerror = () => {
       es.close();
-      setPending(0);
+      setLoading(false);
       setFailed(true);
     };
     return () => es.close();
@@ -139,7 +137,7 @@ export default function RecapPanel({
           </a>
         ) : null}
 
-        {pending > 0 && (
+        {loading && (
           <div className="loading-row" aria-live="polite">
             <span className="spinner" />
             מחפש תקצירים…
@@ -207,7 +205,7 @@ export default function RecapPanel({
         {!failed && rateLimited && results.length === 0 && (
           <div className="empty">יוטיוב מגביל כרגע חיפושים — נסו שוב בעוד כמה דקות</div>
         )}
-        {started && pending === 0 && !failed && !rateLimited && results.length === 0 && (
+        {!loading && !failed && !rateLimited && results.length === 0 && (
           <div className="empty">לא נמצאו תקצירים למשחק זה</div>
         )}
       </div>

@@ -199,6 +199,28 @@ body {
 .attribution a { color: var(--muted); text-decoration: underline; }
 .attribution a:hover { color: var(--text); }
 
+/* Search-log review page */
+.log-summary { display: flex; gap: 10px; margin: 12px 0 4px; }
+.log-card {
+  flex: 1; background: var(--card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 12px; text-align: center;
+}
+.log-card.warn { border-color: #b3541e; }
+.log-num { font-size: 1.5rem; font-weight: 700; }
+.log-pct { font-size: 0.95rem; color: var(--muted); }
+.log-label { font-size: 0.8rem; color: var(--muted); margin-top: 2px; }
+.log-h2 { font-size: 1.05rem; margin: 18px 0 8px; }
+.log-table {
+  width: 100%; border-collapse: collapse; font-size: 0.85rem;
+  background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+  overflow: hidden;
+}
+.log-table th, .log-table td {
+  padding: 8px 10px; border-bottom: 1px solid var(--border); text-align: right;
+}
+.log-table th { color: var(--muted); font-weight: 600; }
+.log-table tr:last-child td { border-bottom: none; }
+
 @media (max-width: 640px) {
   .topbar h1 { font-size: 1.5rem; }
   .games { grid-template-columns: 1fr; }
