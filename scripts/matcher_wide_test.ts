@@ -381,6 +381,22 @@ check('v5 rank he > en > other',
   scoreCandidate(rlEn, rlGame) > scoreCandidate(rlEs, rlGame),
   `he=${scoreCandidate(rlHe, rlGame)} en=${scoreCandidate(rlEn, rlGame)} es=${scoreCandidate(rlEs, rlGame)}`);
 
+// Uploader typo 'Highights' still counts as highlight intent.
+check('v5 intent highights-typo', hasHighlightIntent("Villa 1-2 Nott'm Forest | Premier League Highights"));
+const villaGame: GameInput = {
+  home: 'Aston Villa', away: 'Nottingham Forest',
+  dateISO: '2026-09-12T19:00:00Z', league: 'premier-league', homeScore: 1, awayScore: 2,
+};
+const typoVid: RawCandidate = {
+  id: 'typo-v5', title: "Villa 1-2 Nott'm Forest | Premier League Highights",
+  url: 'https://www.youtube.com/watch?v=TV5', source: 'youtube', videoId: 'TV5',
+  lang: 'en', embeddable: true, publishedAt: '2026-09-13T10:00:00Z',
+  bulk: true, channelHandle: 'avfcofficial',
+};
+const typoRes = filterCandidate(typoVid, villaGame);
+eq('v5 highights typo kept', typoRes.keep, true);
+check('v5 highights typo proper', typoRes.keep && hasHighlightIntent(typoVid.title));
+
 // ---------------------------------------------------------------- report ---
 console.log(`\n${gameCount} games, ${pass + fail} assertions: ${pass} pass, ${fail} fail`);
 if (failures.length) {
