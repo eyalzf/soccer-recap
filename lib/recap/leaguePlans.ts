@@ -57,6 +57,9 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
       // Israel availability + recency after quota reset).
       { handle: 'Taktzirim0', label: 'תקצירים' },
       { handle: 'basketball9m', label: 'micro recap channel' },
+      // כדורגל ישראלי: verified in the 2026-09-17 round-2 curation
+      // (8/10 proper-highlight coverage on the 10-game test).
+      { channelId: 'UC5TtVDq_BSplSOHf7lb2AGQ', label: 'כדורגל ישראלי' },
       // TODO(verify): Hapoel Jerusalem FC, Beitar Jerusalem official,
       // כדורגל.2, FCBJ_edit, Green And Glory, DicapOr, adix — handles
       // unknown; resolve via forHandle (1 unit each) after quota reset.
@@ -111,6 +114,14 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
       { handle: 'SportingCP', label: 'Sporting CP' },
       { handle: 'PSV', label: 'PSV Eindhoven' },
       { handle: 'clubbrugge', label: 'Club Brugge' },
+      // Aggregator channels verified in the 2026-09-17 round-2 curation
+      // (proper-highlight coverage on 10-game tests): CHEFON FF 9/10,
+      // Al Faris Production 7/10, FranSports 6/10, Franq Media 6/10.
+      // Handles unconfirmed; use the verified channel IDs.
+      { channelId: 'UCxctJ_xwwuwK386DVEnVFqw', label: 'CHEFON FF' },
+      { channelId: 'UChgMnlNqz-SVd_9tp--Ls8A', label: 'Al Faris Production' },
+      { channelId: 'UCmFG2HW29cDZIeM9auPgOag', label: 'FranSports' },
+      { channelId: 'UC6_c5Pv9Y4kkingkVQ9xRvA', label: 'Franq Media' },
       // TODO(verify): Tottenham (handle unconfirmed), UEFA (matchday
       // roundups only — rejected by per-game matching anyway).
     ],
