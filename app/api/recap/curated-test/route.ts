@@ -38,6 +38,9 @@ interface ChannelReport {
  * research: they are scanned as a separate "candidate" tier with the same
  * matcher, without touching the league plan.
  *
+ * &only=candidate skips the plan tiers and runs just the candidate tier
+ * (quota-cheap triage of new channels).
+ *
  * NOTE: production's preferred tier uses search.list scoped to the channel
  * (100 quota units); this test scans the channel's uploads playlist instead
  * (1 unit/page, Blob-cached) so the test stays quota-cheap. The matcher and
@@ -143,6 +146,7 @@ export async function GET(req: NextRequest) {
   };
 
   for (const tierName of ['preferred', 'bulk'] as const) {
+    if (sp.get('only') === 'candidate') break;
     const channels: ChannelReport[] = [];
     for (const entry of plan[tierName]) {
       const label =
