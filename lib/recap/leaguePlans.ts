@@ -2,11 +2,13 @@
  * Per-league YouTube search plans.
  *
  * Three tiers, tried in order:
- *  1. `preferred` — trusted channels, searched one by one via search.list
- *     (100 units each). First proper highlight result stops the cascade.
- *  2. `bulk` — curated channel pool: recent-uploads playlists are fetched
- *     (1 unit per 50 videos, cached 6h in Blob) and matched app-side with
- *     our own filter/rank logic. Aggregated across ALL bulk channels.
+ *  1. `preferred` — trusted channels, scanned via their uploads playlists
+ *     (1 unit per 50 videos, cached 1h in Blob per channel ID) and matched
+ *     app-side. First proper highlight result stops the cascade.
+ *  2. `bulk` — curated channel pool: same uploads-playlist mechanism.
+ *     Team-scoped entries (club channels) are only scanned for their own
+ *     club's games; league-wide entries (aggregators, broadcasters) always.
+ *     Aggregated across the selected channels, matched app-side.
  *  3. General search.list fallback (100 units per language), only when
  *     tiers 1+2 produce nothing.
  *
@@ -20,6 +22,16 @@ export interface PreferredChannel {
   handle: string;
   /** Query language for searches scoped to this channel. */
   lang: 'he' | 'en';
+  /**
+   * Max uploads-playlist pages to scan (50 videos/page, newest first,
+   * early-stop once videos predate the game). Default 3.
+   */
+  pages?: number;
+  /**
+   * When set, this channel is only consulted for games involving one of
+   * these teams (English names, alias-aware). Unset = league-wide.
+   */
+  teams?: string[];
 }
 
 export interface BulkChannel {
@@ -29,6 +41,13 @@ export interface BulkChannel {
   channelId?: string;
   /** Human label for diagnostics. */
   label: string;
+  /**
+   * When set, this channel is only scanned for games involving one of
+   * these teams (English names, alias-aware via the club index with a
+   * substring fallback). Club channels are team-scoped; aggregators and
+   * league/broadcaster channels stay league-wide (unset).
+   */
+  teams?: string[];
 }
 
 export interface LeagueSearchPlan {
@@ -36,6 +55,11 @@ export interface LeagueSearchPlan {
   preferred: PreferredChannel[];
   /** Curated bulk pool: uploads playlists scanned + matched app-side. */
   bulk: BulkChannel[];
+  /**
+   * Max uploads-playlist pages per bulk channel (50 videos/page, newest
+   * first, early-stop once videos predate the game). Default 10.
+   */
+  bulkPages?: number;
   /** General-search fallback, tried in order when tiers 1+2 find nothing. */
   fallbackLangs: Array<'he' | 'en'>;
 }
@@ -50,9 +74,10 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
     ],
     bulk: [
       // Official club channels (Hebrew recap coverage for big clubs).
-      { channelId: 'UC-oWQqnf8B8a_TsmVi0mTUg', label: 'Maccabi Tel Aviv FC' },
-      { handle: 'mhfootballclub', label: 'Maccabi Haifa' },
-      { handle: 'HapoelTelAvivFC', label: 'Hapoel Tel Aviv' },
+      // Team-scoped: only scanned for their own club's games.
+      { channelId: 'UC-oWQqnf8B8a_TsmVi0mTUg', label: 'Maccabi Tel Aviv FC', teams: ['Maccabi Tel Aviv'] },
+      { handle: 'mhfootballclub', label: 'Maccabi Haifa', teams: ['Maccabi Haifa'] },
+      { handle: 'HapoelTelAvivFC', label: 'Hapoel Tel Aviv', teams: ['Hapoel Tel Aviv'] },
       // Hebrew recap aggregators (last resort: takedown risk, verify
       // Israel availability + recency after quota reset).
       { handle: 'Taktzirim0', label: 'תקצירים' },
@@ -70,19 +95,20 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
     preferred: [{ handle: 'one-1004', lang: 'he' }],
     bulk: [
       { handle: 'laliga', label: 'LaLiga official' },
-      { handle: 'realmadrid', label: 'Real Madrid' },
-      { handle: 'atleticodemadrid', label: 'Atletico Madrid' },
-      { handle: 'villarrealcf', label: 'Villarreal CF' },
+      { handle: 'realmadrid', label: 'Real Madrid', teams: ['Real Madrid'] },
+      { handle: 'atleticodemadrid', label: 'Atletico Madrid', teams: ['Atletico Madrid'] },
+      { handle: 'villarrealcf', label: 'Villarreal CF', teams: ['Villarreal'] },
       // Real Betis: legacy user URL; handle unconfirmed.
-      { channelId: 'UCeB7JZwcar2fVoK2w2f9OwA', label: 'Real Betis' },
+      { channelId: 'UCeB7JZwcar2fVoK2w2f9OwA', label: 'Real Betis', teams: ['Real Betis'] },
       { handle: 'ESPNFC', label: 'ESPN FC' },
       // Club channels verified in the 2026-09-17 curation round (language
       // veto lifted for curated tiers; press-conference exclusion added).
-      { handle: 'AthleticClubTV', label: 'Athletic Club' },
-      { handle: 'GetafeCFmedia', label: 'Getafe CF' },
-      { handle: 'realsociedadtv', label: 'Real Sociedad' },
+      // Team-scoped: only scanned for their own club's games.
+      { handle: 'AthleticClubTV', label: 'Athletic Club', teams: ['Athletic Club'] },
+      { handle: 'GetafeCFmedia', label: 'Getafe CF', teams: ['Getafe'] },
+      { handle: 'realsociedadtv', label: 'Real Sociedad', teams: ['Real Sociedad'] },
       // Celta: handle unconfirmed; use the verified channel ID.
-      { channelId: 'UCCJLVZYqRb_85b2Flpg04cg', label: 'RC Celta' },
+      { channelId: 'UCCJLVZYqRb_85b2Flpg04cg', label: 'RC Celta', teams: ['Celta'] },
       // TODO(verify): Premier Sports, Sky Sports Football, FC Barcelona
       // (LaLiga rights block club highlights), beIN regional (geo-blocked).
     ],
@@ -95,25 +121,26 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
     // the curated pool instead.
     preferred: [],
     bulk: [
-      { handle: 'realmadrid', label: 'Real Madrid' },
-      { handle: 'FCBarcelona', label: 'FC Barcelona' },
-      { handle: 'LiverpoolFC', label: 'Liverpool' },
-      { handle: 'Arsenal', label: 'Arsenal' },
-      { handle: 'ManCity', label: 'Man City' },
-      { handle: 'Inter', label: 'Inter' },
-      { handle: 'FCBayern', label: 'Bayern' },
-      { handle: 'BVB', label: 'Dortmund' },
-      { handle: 'atleticodemadrid', label: 'Atletico Madrid' },
-      { handle: 'Juventus', label: 'Juventus' },
-      { handle: 'ChelseaFC', label: 'Chelsea' },
-      { handle: 'PSG', label: 'PSG' },
-      { handle: 'SLBenfica', label: 'Benfica' },
-      { handle: 'AFCAjax', label: 'Ajax' },
+      { handle: 'realmadrid', label: 'Real Madrid', teams: ['Real Madrid'] },
+      { handle: 'FCBarcelona', label: 'FC Barcelona', teams: ['Barcelona'] },
+      { handle: 'LiverpoolFC', label: 'Liverpool', teams: ['Liverpool'] },
+      { handle: 'Arsenal', label: 'Arsenal', teams: ['Arsenal'] },
+      { handle: 'ManCity', label: 'Man City', teams: ['Manchester City'] },
+      { handle: 'Inter', label: 'Inter', teams: ['Inter'] },
+      { handle: 'FCBayern', label: 'Bayern', teams: ['Bayern Munich'] },
+      { handle: 'BVB', label: 'Dortmund', teams: ['Borussia Dortmund'] },
+      { handle: 'atleticodemadrid', label: 'Atletico Madrid', teams: ['Atletico Madrid'] },
+      { handle: 'Juventus', label: 'Juventus', teams: ['Juventus'] },
+      { handle: 'ChelseaFC', label: 'Chelsea', teams: ['Chelsea'] },
+      { handle: 'PSG', label: 'PSG', teams: ['Paris Saint-Germain'] },
+      { handle: 'SLBenfica', label: 'Benfica', teams: ['Benfica'] },
+      { handle: 'AFCAjax', label: 'Ajax', teams: ['Ajax'] },
       // Club channels verified in the 2026-09-17 curation round (language
       // veto lifted for curated tiers; press-conference exclusion added).
-      { handle: 'SportingCP', label: 'Sporting CP' },
-      { handle: 'PSV', label: 'PSV Eindhoven' },
-      { handle: 'clubbrugge', label: 'Club Brugge' },
+      // Team-scoped: only scanned for their own club's games.
+      { handle: 'SportingCP', label: 'Sporting CP', teams: ['Sporting CP'] },
+      { handle: 'PSV', label: 'PSV Eindhoven', teams: ['PSV Eindhoven'] },
+      { handle: 'clubbrugge', label: 'Club Brugge', teams: ['Club Brugge'] },
       // Aggregator channels verified in the 2026-09-17 round-2 curation
       // (proper-highlight coverage on 10-game tests): CHEFON FF 9/10,
       // Al Faris Production 7/10, FranSports 6/10, Franq Media 6/10.
@@ -133,19 +160,20 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
       // User-verified 2026-09-17: @skysportspremierleague is the active
       // channel (the old 'SkySportsPL' handle resolves to a near-dead one).
       { handle: 'skysportspremierleague', label: 'Sky Sports Premier League' },
-      { handle: 'mancity', label: 'Man City' },
-      { handle: 'manutd', label: 'Man Utd' },
-      { handle: 'Arsenal', label: 'Arsenal' },
-      { handle: 'LiverpoolFC', label: 'Liverpool' },
-      { handle: 'chelseafc', label: 'Chelsea' },
+      { handle: 'mancity', label: 'Man City', teams: ['Manchester City'] },
+      { handle: 'manutd', label: 'Man Utd', teams: ['Manchester United'] },
+      { handle: 'Arsenal', label: 'Arsenal', teams: ['Arsenal'] },
+      { handle: 'LiverpoolFC', label: 'Liverpool', teams: ['Liverpool'] },
+      { handle: 'chelseafc', label: 'Chelsea', teams: ['Chelsea'] },
       // Club channels verified in the 2026-09-17 curation round.
-      { handle: 'tottenhamhotspur', label: 'Tottenham Hotspur' },
-      { handle: 'sunderlandafc', label: 'Sunderland AFC' },
-      { handle: 'NottinghamForestFC', label: 'Nottingham Forest' },
-      { handle: 'avfcofficial', label: 'Aston Villa' },
+      // Team-scoped: only scanned for their own club's games.
+      { handle: 'tottenhamhotspur', label: 'Tottenham Hotspur', teams: ['Tottenham Hotspur'] },
+      { handle: 'sunderlandafc', label: 'Sunderland AFC', teams: ['Sunderland'] },
+      { handle: 'NottinghamForestFC', label: 'Nottingham Forest', teams: ['Nottingham Forest'] },
+      { handle: 'avfcofficial', label: 'Aston Villa', teams: ['Aston Villa'] },
       // Leeds / Bournemouth: handles unconfirmed; use verified channel IDs.
-      { channelId: 'UCRHkt-FUeYUG-ybo1Koh2WA', label: 'Leeds United' },
-      { channelId: 'UCeOCuVSSweaEj6oVtJZEKQw', label: 'AFC Bournemouth' },
+      { channelId: 'UCRHkt-FUeYUG-ybo1Koh2WA', label: 'Leeds United', teams: ['Leeds United'] },
+      { channelId: 'UCeOCuVSSweaEj6oVtJZEKQw', label: 'AFC Bournemouth', teams: ['Bournemouth'] },
     ],
     fallbackLangs: ['en'],
   },
