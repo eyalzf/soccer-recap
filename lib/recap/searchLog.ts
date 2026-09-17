@@ -18,6 +18,23 @@ export interface TierStats {
 
 export type SearchWinner = 'preferred' | 'bulk' | 'general' | 'none' | 'cache';
 
+/**
+ * One raw data source access within a search (design-doc logging):
+ * which source was touched, whether its listing came from cache, and how
+ * many videos it returned vs how many survived matching.
+ */
+export interface SourceAccess {
+  /** Channel handle/label, or 'general:<lang>'. */
+  label: string;
+  kind: 'preferred' | 'bulk' | 'general';
+  /** The channel's uploads listing was served from the playlist cache. */
+  cached: boolean;
+  /** Videos returned by the raw source, before matching. */
+  fetched: number;
+  /** Videos that survived filterCandidate. */
+  kept: number;
+}
+
 export interface SearchLogEntry {
   t: number;
   home: string;
@@ -31,6 +48,8 @@ export interface SearchLogEntry {
   preferred: TierStats;
   bulk: TierStats;
   general: TierStats;
+  /** per raw data source access (empty on cache hits / old entries) */
+  sources?: SourceAccess[];
   results: number;
   rateLimited: boolean;
 }
