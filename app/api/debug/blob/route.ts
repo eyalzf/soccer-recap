@@ -1,37 +1,52 @@
 import { NextResponse } from 'next/server';
-import { del, list, put } from '@vercel/blob';
+import { del, get as blobGet, put as blobPut } from '@vercel/blob';
 
 export const dynamic = 'force-dynamic';
 
 /**
- * Blob connectivity probe. Reports only whether the configured
- * BLOB_READ_WRITE_TOKEN works for list/put — never the token value.
+ * Reproduces logSearch's exact write pattern (create then overwrite the
+ * same pathname) on a scratch key, reporting each step. Never exposes
+ * the token. The real daily log is untouched.
  */
 export async function GET() {
-  const out: Record<string, unknown> = {
-    hasToken: !!process.env.BLOB_READ_WRITE_TOKEN,
+  const out: Record<string, unknown> = { hasToken: !!process.env.BLOB_READ_WRITE_TOKEN };
+  const key = 'searchlog/_diag-overwrite.json';
+  const opts = {
+    access: 'private' as const,
+    addRandomSuffix: false,
+    contentType: 'application/json',
   };
+
   try {
-    await list({ limit: 1 });
-    out.list = 'ok';
+    await blobPut(key, JSON.stringify({ n: 1 }), opts);
+    out.create = 'ok';
   } catch (e) {
-    out.list = 'fail: ' + (e as Error).message;
+    out.create = 'fail: ' + (e as Error).message;
   }
-  const key = 'searchlog/_diag.json';
+
   try {
-    await put(key, JSON.stringify({ t: Date.now() }), {
-      access: 'private',
-      addRandomSuffix: false,
-      contentType: 'application/json',
-    });
-    out.put = 'ok';
-    try {
-      await del(key);
-    } catch {
-      /* cleanup is best-effort */
+    await blobPut(key, JSON.stringify({ n: 2 }), opts);
+    out.overwrite = 'ok';
+  } catch (e) {
+    out.overwrite = 'fail: ' + (e as Error).message;
+  }
+
+  try {
+    const res = await blobGet(key, { access: 'private', useCache: false });
+    if (!res || res.statusCode !== 200 || !res.stream) {
+      out.readBack = 'no-stream';
+    } else {
+      out.readBack = 'ok body=' + (await new Response(res.stream).text());
     }
   } catch (e) {
-    out.put = 'fail: ' + (e as Error).message;
+    out.readBack = 'fail: ' + (e as Error).message;
+  }
+
+  try {
+    await del(key);
+    out.cleanup = 'ok';
+  } catch (e) {
+    out.cleanup = 'fail: ' + (e as Error).message;
   }
   return NextResponse.json(out);
 }
