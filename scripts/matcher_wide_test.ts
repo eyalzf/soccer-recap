@@ -22,9 +22,10 @@ import {
   hasHighlightIntent,
   highlightTier,
   isTrusted,
+  nonRecapFormat,
   teamMentioned,
 } from '../lib/recap/match';
-import { rankCandidates, scoreCandidate } from '../lib/recap/rank';
+import { rankCandidates, scoreCandidate, videoLang } from '../lib/recap/rank';
 import type { GameInput, RawCandidate } from '../lib/recap/types';
 
 let pass = 0;
@@ -291,6 +292,94 @@ check(
   tierRanked.map((r) => r.id).join(',') === 'ext-short,std-long,std-short,news',
   tierRanked.map((r) => r.id).join(',')
 );
+
+// --------------------------------- v5: language veto lift + exclusions ---
+// Curated tiers (preferred/bulk/candidate): language is a ranking preference,
+// not a veto. General search keeps the hard veto.
+const esGame: GameInput = {
+  home: 'Athletic Bilbao', away: 'Elche',
+  dateISO: '2026-09-12T19:00:00Z', league: 'la-liga', homeScore: 1, awayScore: 1,
+};
+const esTitle = 'Highlights | Athletic Club 1-1 Elche CF | LaLiga 2026/27 J5';
+const mkEs = (over: Partial<RawCandidate>): RawCandidate => ({
+  id: 'es-v5', title: esTitle, url: 'https://www.youtube.com/watch?v=ESV5',
+  source: 'youtube', videoId: 'ESV5', lang: 'en', embeddable: true,
+  publishedAt: '2026-09-13T10:00:00Z', audioLang: 'es', ...over,
+});
+eq('v5 es bulk kept (veto lifted)', filterCandidate(mkEs({ bulk: true, channelHandle: 'AthleticClubTV' }), esGame).keep, true);
+eq('v5 es candidate kept (veto lifted)', filterCandidate(mkEs({ bulk: true, channelHandle: 'x' }), esGame).keep, true);
+eq('v5 es preferred kept (veto lifted)', filterCandidate(mkEs({ channelHandle: 'one-1004' }), esGame).keep, true);
+const esGen = filterCandidate(mkEs({}), esGame);
+eq('v5 es general still rejected', esGen.keep, false);
+eq('v5 es general reason', esGen.reason, 'language');
+// Proper-highlight intent is detected on the Spanish title.
+check('v5 es properHighlight', hasHighlightIntent(esTitle));
+
+// Press conferences and prematch shows: rejected in every tier and language.
+const pressGame: GameInput = {
+  home: 'Elche', away: 'Real Sociedad',
+  dateISO: '2026-09-07T19:00:00Z', league: 'la-liga', homeScore: 2, awayScore: 3,
+};
+const mkPress = (title: string, over: Partial<RawCandidate> = {}): RawCandidate => ({
+  id: 'press-v5', title, url: 'https://www.youtube.com/watch?v=PV5',
+  source: 'youtube', videoId: 'PV5', lang: 'en', embeddable: true,
+  publishedAt: '2026-09-08T10:00:00Z', audioLang: 'es',
+  bulk: true, channelHandle: 'realsociedadtv', ...over,
+});
+eq('v5 rueda de prensa rejected',
+  filterCandidate(mkPress('RUEDA DE PRENSA | Pellegrino Matarazzo | Elche CF - Real Sociedad'), pressGame).reason,
+  'press-conference');
+eq('v5 conferencia de prensa rejected',
+  filterCandidate(mkPress('Conferencia de prensa | Elche CF - Real Sociedad'), pressGame).reason,
+  'press-conference');
+eq('v5 dutch persconferentie rejected',
+  filterCandidate(mkPress('Persconferentie | PSV - Shakhtar', { audioLang: 'nl', bulk: true }), pressGame).reason,
+  'press-conference');
+eq('v5 hebrew presser rejected',
+  filterCandidate(mkPress('מסיבת עיתונאים | מאמן אלצ׳ה', { audioLang: 'he' }), pressGame).reason,
+  'press-conference');
+eq('v5 previa rejected',
+  filterCandidate(mkPress('La previa | Elche - Real Sociedad'), pressGame).reason, 'prematch');
+eq('v5 pre-match rejected',
+  filterCandidate(mkPress('Elche vs Real Sociedad | Pre-match show'), pressGame).reason, 'prematch');
+// ...but a genuine Spanish highlight from the same channel still passes.
+eq('v5 spanish highlight kept',
+  filterCandidate(mkPress('Resumen | Elche 2-3 Real Sociedad | LaLiga'), pressGame).keep, true);
+
+// Hapoel Tel Aviv sponsor-inserted alias.
+const htaGame: GameInput = {
+  home: 'Hapoel Tel Aviv', away: 'Hapoel Ramat Gan',
+  dateISO: '2026-09-07T17:00:00Z', league: 'israeli-league', homeScore: 4, awayScore: 0,
+};
+const ibi: RawCandidate = {
+  id: 'ibi-v5', title: 'עונת 2026/2027, מחזור 3 | הפועל IBI ת"א 0:4 הפועל ר"ג',
+  url: 'https://www.youtube.com/watch?v=IBIV5', source: 'youtube', videoId: 'IBIV5',
+  lang: 'he', embeddable: true, publishedAt: '2026-09-08T10:00:00Z',
+  bulk: true, channelHandle: 'HapoelTelAvivFC',
+};
+eq('v5 hapoel IBI alias kept', filterCandidate(ibi, htaGame).keep, true);
+
+// Language ranking preference: Hebrew > English > other.
+const rlGame: GameInput = {
+  home: 'Athletic Bilbao', away: 'Elche',
+  dateISO: '2026-09-12T19:00:00Z', league: 'la-liga', homeScore: 1, awayScore: 1,
+};
+const mkRl = (id: string, over: Partial<RawCandidate>): RawCandidate => ({
+  id, title: 'Athletic Club 1-1 Elche CF | Highlights',
+  url: `https://www.youtube.com/watch?v=${id}`, source: 'youtube', videoId: id,
+  lang: 'en', embeddable: true, publishedAt: '2026-09-13T10:00:00Z',
+  bulk: true, ...over,
+});
+const rlHe = mkRl('rl-he', { title: 'אתלטיק בילבאו 1-1 אלצ׳ה | תקציר' });
+const rlEn = mkRl('rl-en', { audioLang: 'en' });
+const rlEs = mkRl('rl-es', { audioLang: 'es' });
+eq('v5 videoLang he', videoLang(rlHe), 'he');
+eq('v5 videoLang en', videoLang(rlEn), 'en');
+eq('v5 videoLang other', videoLang(rlEs), 'other');
+check('v5 rank he > en > other',
+  scoreCandidate(rlHe, rlGame) > scoreCandidate(rlEn, rlGame) &&
+  scoreCandidate(rlEn, rlGame) > scoreCandidate(rlEs, rlGame),
+  `he=${scoreCandidate(rlHe, rlGame)} en=${scoreCandidate(rlEn, rlGame)} es=${scoreCandidate(rlEs, rlGame)}`);
 
 // ---------------------------------------------------------------- report ---
 console.log(`\n${gameCount} games, ${pass + fail} assertions: ${pass} pass, ${fail} fail`);
