@@ -54,7 +54,7 @@ export default function GameCard({
         <div className="game-meta">
           <span>{formatDate(game.dateISO)}</span>
           <span className="game-score">
-            {game.homeScore} - {game.awayScore}
+            {game.awayScore} - {game.homeScore}
           </span>
           {game.leagueBadge && <img className="league-logo" src={game.leagueBadge} alt="" />}
         </div>
