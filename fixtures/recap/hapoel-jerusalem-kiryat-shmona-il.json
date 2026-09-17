@@ -1,0 +1,263 @@
+{
+  "slug": "hapoel-jerusalem-kiryat-shmona-il",
+  "label": "Hapoel Jerusalem 4-2 H. Kiryat Shmona (IL)",
+  "request": {
+    "home": "Hapoel Jerusalem FC",
+    "away": "Hapoel Ironi Kiryat Shmona",
+    "date": "2026-09-05",
+    "league": "israeli-league",
+    "hs": "4",
+    "as": "2",
+    "homeHe": "הפועל ירושלים",
+    "awayHe": "הפועל עירוני קריית שמונה"
+  },
+  "matcherVersion": 3,
+  "recordedAt": "2026-09-17T07:18:16.752652+00:00",
+  "events": [
+    {
+      "type": "batch",
+      "results": [
+        {
+          "id": "yt:Y6_B0sex6uo",
+          "title": "הפועל ירושלים נגד עירוני קרית שמונה 2-4 תקציר המשחק ",
+          "url": "https://www.youtube.com/watch?v=Y6_B0sex6uo",
+          "source": "youtube",
+          "videoId": "Y6_B0sex6uo",
+          "thumbnail": "https://i.ytimg.com/vi/Y6_B0sex6uo/mqdefault.jpg",
+          "publishedAt": "2026-09-05T20:36:08Z",
+          "durationSec": 486,
+          "embeddable": true,
+          "audioLang": "iw",
+          "blockedInIL": false,
+          "channelName": "כדורגל ישראלי ",
+          "lang": "he",
+          "score": 107
+        },
+        {
+          "id": "yt:NcOdyxf1bV4",
+          "title": "הפועל ירושלים נגד עירוני קרית שמונה 2 4 תקציר המשחק",
+          "url": "https://www.youtube.com/watch?v=NcOdyxf1bV4",
+          "source": "youtube",
+          "videoId": "NcOdyxf1bV4",
+          "thumbnail": "https://i.ytimg.com/vi/NcOdyxf1bV4/mqdefault.jpg",
+          "publishedAt": "2026-09-06T11:35:41Z",
+          "durationSec": 486,
+          "embeddable": true,
+          "audioLang": "iw",
+          "blockedInIL": false,
+          "channelName": "עדכוני כדורגל",
+          "lang": "he",
+          "score": 95
+        },
+        {
+          "id": "yt:RapbN0cE4Ew",
+          "title": "הפועל ירושלים 4 - עירוני ק\"ש 2 | מחזור 3, 2026/27",
+          "url": "https://www.youtube.com/watch?v=RapbN0cE4Ew",
+          "source": "youtube",
+          "videoId": "RapbN0cE4Ew",
+          "thumbnail": "https://i.ytimg.com/vi/RapbN0cE4Ew/mqdefault.jpg",
+          "publishedAt": "2026-09-08T08:35:35Z",
+          "durationSec": 486,
+          "embeddable": true,
+          "audioLang": "iw",
+          "blockedInIL": false,
+          "channelName": "Hapoel Jerusalem FC",
+          "lang": "he",
+          "score": 50
+        },
+        {
+          "id": "yt:BkNNBE5l5Tk",
+          "title": "הפועל ירושלים נגד עירוני קריית שמונה | מחזור 3 ליגת העל",
+          "url": "https://www.youtube.com/watch?v=BkNNBE5l5Tk",
+          "source": "youtube",
+          "videoId": "BkNNBE5l5Tk",
+          "thumbnail": "https://i.ytimg.com/vi/BkNNBE5l5Tk/mqdefault.jpg",
+          "publishedAt": "2026-09-05T07:00:07Z",
+          "durationSec": 121,
+          "embeddable": true,
+          "audioLang": "iw",
+          "blockedInIL": false,
+          "channelName": "הכדור ומספריו",
+          "lang": "he",
+          "score": 55
+        }
+      ],
+      "pending": 0
+    },
+    {
+      "type": "done",
+      "results": [
+        {
+          "id": "yt:Y6_B0sex6uo",
+          "title": "הפועל ירושלים נגד עירוני קרית שמונה 2-4 תקציר המשחק ",
+          "url": "https://www.youtube.com/watch?v=Y6_B0sex6uo",
+          "source": "youtube",
+          "videoId": "Y6_B0sex6uo",
+          "thumbnail": "https://i.ytimg.com/vi/Y6_B0sex6uo/mqdefault.jpg",
+          "publishedAt": "2026-09-05T20:36:08Z",
+          "durationSec": 486,
+          "embeddable": true,
+          "audioLang": "iw",
+          "blockedInIL": false,
+          "channelName": "כדורגל ישראלי ",
+          "lang": "he",
+          "score": 107
+        },
+        {
+          "id": "yt:NcOdyxf1bV4",
+          "title": "הפועל ירושלים נגד עירוני קרית שמונה 2 4 תקציר המשחק",
+          "url": "https://www.youtube.com/watch?v=NcOdyxf1bV4",
+          "source": "youtube",
+          "videoId": "NcOdyxf1bV4",
+          "thumbnail": "https://i.ytimg.com/vi/NcOdyxf1bV4/mqdefault.jpg",
+          "publishedAt": "2026-09-06T11:35:41Z",
+          "durationSec": 486,
+          "embeddable": true,
+          "audioLang": "iw",
+          "blockedInIL": false,
+          "channelName": "עדכוני כדורגל",
+          "lang": "he",
+          "score": 95
+        },
+        {
+          "id": "yt:RapbN0cE4Ew",
+          "title": "הפועל ירושלים 4 - עירוני ק\"ש 2 | מחזור 3, 2026/27",
+          "url": "https://www.youtube.com/watch?v=RapbN0cE4Ew",
+          "source": "youtube",
+          "videoId": "RapbN0cE4Ew",
+          "thumbnail": "https://i.ytimg.com/vi/RapbN0cE4Ew/mqdefault.jpg",
+          "publishedAt": "2026-09-08T08:35:35Z",
+          "durationSec": 486,
+          "embeddable": true,
+          "audioLang": "iw",
+          "blockedInIL": false,
+          "channelName": "Hapoel Jerusalem FC",
+          "lang": "he",
+          "score": 50
+        },
+        {
+          "id": "yt:BkNNBE5l5Tk",
+          "title": "הפועל ירושלים נגד עירוני קריית שמונה | מחזור 3 ליגת העל",
+          "url": "https://www.youtube.com/watch?v=BkNNBE5l5Tk",
+          "source": "youtube",
+          "videoId": "BkNNBE5l5Tk",
+          "thumbnail": "https://i.ytimg.com/vi/BkNNBE5l5Tk/mqdefault.jpg",
+          "publishedAt": "2026-09-05T07:00:07Z",
+          "durationSec": 121,
+          "embeddable": true,
+          "audioLang": "iw",
+          "blockedInIL": false,
+          "channelName": "הכדור ומספריו",
+          "lang": "he",
+          "score": 55
+        }
+      ],
+      "ytRateLimited": false,
+      "diag": [
+        {
+          "search": "preferred:Ipflofficial",
+          "fetched": 1,
+          "kept": 0,
+          "rejected": [
+            {
+              "title": "מחזור 1 | תקציר מורחב: הפועל ת\"א - בית\"ר ירושלים 0:3",
+              "channel": "IPFL - מנהלת הליגות לכדורגל",
+              "reason": "teams"
+            }
+          ],
+          "channelId": "UCxjaVFauWASy0CuJfHKZeiw",
+          "q": "הפועל ירושלים הפועל עירוני קריית שמונה תקציר"
+        },
+        {
+          "search": "preferred:FootballTV10",
+          "fetched": 0,
+          "kept": 0,
+          "channelId": "UCU01SHos620ofLWFsg6O9jg",
+          "q": "הפועל ירושלים הפועל עירוני קריית שמונה תקציר"
+        },
+        {
+          "search": "bulk",
+          "fetched": 159,
+          "kept": 0,
+          "rejected": [
+            {
+              "title": "הדרבי מבפנים | דקה אחרי דקה עד הניצחון",
+              "channel": "Maccabi Tel Aviv FC",
+              "reason": "teams"
+            },
+            {
+              "title": "מכבי ת״א - הפועל ת״א | מחזור 4 | עונת 26/27 | ליגת העל",
+              "channel": "Maccabi Tel Aviv FC",
+              "reason": "teams"
+            },
+            {
+              "title": "מכבי וקרגו מגיעים עד לאוהדים עם משלוח מיוחד",
+              "channel": "Maccabi Tel Aviv FC",
+              "reason": "teams"
+            },
+            {
+              "title": "יאללה מכבי!",
+              "channel": "Maccabi Tel Aviv FC",
+              "reason": "teams"
+            },
+            {
+              "title": "ללא שדרים | כל השערים נגד באר שבע",
+              "channel": "Maccabi Tel Aviv FC",
+              "reason": "teams"
+            },
+            {
+              "title": "מכבי ת״א - הפועל ב״שׁ | מחזור 3 | עונת 26/27 | ליגת העל",
+              "channel": "Maccabi Tel Aviv FC",
+              "reason": "teams"
+            },
+            {
+              "title": "Chemistry loading… ⏳🤝",
+              "channel": "Maccabi Tel Aviv FC",
+              "reason": "teams"
+            },
+            {
+              "title": "מכבי ת״א - מכבי חיפה | מחזור 2 | עונת 26/27 | ליגת העל",
+              "channel": "Maccabi Tel Aviv FC",
+              "reason": "teams"
+            },
+            {
+              "title": "התפאורה שלכם - הזווית שלנו",
+              "channel": "Maccabi Tel Aviv FC",
+              "reason": "teams"
+            },
+            {
+              "title": "מכבי ת״א - הפועל ירושלים | מחזור 1 - עונת 26/27 | ליגת העל",
+              "channel": "Maccabi Tel Aviv FC",
+              "reason": "teams"
+            }
+          ]
+        },
+        {
+          "bulk": "Maccabi Tel Aviv FC",
+          "channelId": "UC-oWQqnf8B8a_TsmVi0mTUg",
+          "videos": 50
+        },
+        {
+          "bulk": "Maccabi Haifa",
+          "channelId": "UCDZGX5VO_QP03nhbru4PsiA",
+          "videos": 50
+        },
+        {
+          "bulk": "תקצירים",
+          "channelId": "UC2IT1EpmHavZCDiolilh-kg",
+          "videos": 50
+        },
+        {
+          "bulk": "micro recap channel",
+          "channelId": "UCXzSEjpkI1WSlU06tIp92ww",
+          "videos": 9
+        },
+        {
+          "search": "general:he",
+          "fetched": 5,
+          "kept": 4
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,367 @@
+{
+  "slug": "real-madrid-inter-ucl",
+  "label": "Real Madrid 2-1 Inter (UCL)",
+  "request": {
+    "home": "Real Madrid",
+    "away": "Inter",
+    "date": "2026-09-08",
+    "league": "champions-league",
+    "hs": "2",
+    "as": "1",
+    "homeHe": "ריאל מדריד",
+    "awayHe": "אינטר"
+  },
+  "matcherVersion": 3,
+  "recordedAt": "2026-09-17T07:17:46.041718+00:00",
+  "events": [
+    {
+      "type": "batch",
+      "results": [
+        {
+          "id": "yt:QJtpAYWVjWs",
+          "title": "Real Madrid vs Inter Milan Highlights 2-1 | MBAPPÉ & VALVERDE GOALS! 🔥 Champions League Highlights",
+          "url": "https://www.youtube.com/watch?v=QJtpAYWVjWs",
+          "source": "youtube",
+          "videoId": "QJtpAYWVjWs",
+          "thumbnail": "https://i.ytimg.com/vi/QJtpAYWVjWs/mqdefault.jpg",
+          "publishedAt": "2026-09-08T21:00:06Z",
+          "durationSec": 650,
+          "embeddable": true,
+          "audioLang": "en",
+          "blockedInIL": false,
+          "channelName": "Footballia",
+          "lang": "en",
+          "score": 110
+        },
+        {
+          "id": "yt:tMqlpntgCgA",
+          "title": "Real Madrid 2  1Inter Milan 🏆| All Goals & Highlights | UEFA Champions League.",
+          "url": "https://www.youtube.com/watch?v=tMqlpntgCgA",
+          "source": "youtube",
+          "videoId": "tMqlpntgCgA",
+          "thumbnail": "https://i.ytimg.com/vi/tMqlpntgCgA/mqdefault.jpg",
+          "publishedAt": "2026-09-10T18:00:14Z",
+          "durationSec": 605,
+          "embeddable": true,
+          "audioLang": "en",
+          "blockedInIL": false,
+          "channelName": "Furen Animated ",
+          "lang": "en",
+          "score": 70
+        },
+        {
+          "id": "yt:mYalvxwQ1oM",
+          "title": "⚪️Real Madrid vs Inter Milan (2-1) Extended HIGHLIGHTS | UEFA Champions League",
+          "url": "https://www.youtube.com/watch?v=mYalvxwQ1oM",
+          "source": "youtube",
+          "videoId": "mYalvxwQ1oM",
+          "thumbnail": "https://i.ytimg.com/vi/mYalvxwQ1oM/mqdefault.jpg",
+          "publishedAt": "2026-09-08T22:20:47Z",
+          "durationSec": 491,
+          "embeddable": true,
+          "audioLang": "en",
+          "blockedInIL": false,
+          "channelName": "SPORTS EXTRA",
+          "lang": "en",
+          "score": 110
+        },
+        {
+          "id": "yt:WMKHJ3KI_EY",
+          "title": "Real madrid vs Inter milan 2-1 extended highlights and goals UCL 2026 _ Soccer Highlights",
+          "url": "https://www.youtube.com/watch?v=WMKHJ3KI_EY",
+          "source": "youtube",
+          "videoId": "WMKHJ3KI_EY",
+          "thumbnail": "https://i.ytimg.com/vi/WMKHJ3KI_EY/mqdefault.jpg",
+          "publishedAt": "2026-09-09T18:54:25Z",
+          "durationSec": 452,
+          "embeddable": true,
+          "audioLang": "en",
+          "blockedInIL": false,
+          "channelName": "MEDIA SPORTS HD",
+          "lang": "en",
+          "score": 110
+        },
+        {
+          "id": "yt:_LEudVpK508",
+          "title": "Real Madrid 2-1 Inter Milan Highlights • Champions League 2026",
+          "url": "https://www.youtube.com/watch?v=_LEudVpK508",
+          "source": "youtube",
+          "videoId": "_LEudVpK508",
+          "thumbnail": "https://i.ytimg.com/vi/_LEudVpK508/mqdefault.jpg",
+          "publishedAt": "2026-09-09T03:00:25Z",
+          "durationSec": 301,
+          "embeddable": true,
+          "audioLang": "en-US",
+          "blockedInIL": false,
+          "channelName": "Al Faris Production",
+          "lang": "en",
+          "score": 110
+        },
+        {
+          "id": "yt:V6MtmxXIKRg",
+          "title": "REAL MADRID 2-1 INTER Highlights",
+          "url": "https://www.youtube.com/watch?v=V6MtmxXIKRg",
+          "source": "youtube",
+          "videoId": "V6MtmxXIKRg",
+          "thumbnail": "https://i.ytimg.com/vi/V6MtmxXIKRg/mqdefault.jpg",
+          "publishedAt": "2026-09-09T07:29:23Z",
+          "durationSec": 5,
+          "embeddable": true,
+          "audioLang": "en-US",
+          "blockedInIL": false,
+          "channelName": "Stav Law Football",
+          "lang": "en",
+          "score": 80
+        }
+      ],
+      "pending": 0
+    },
+    {
+      "type": "done",
+      "results": [
+        {
+          "id": "yt:QJtpAYWVjWs",
+          "title": "Real Madrid vs Inter Milan Highlights 2-1 | MBAPPÉ & VALVERDE GOALS! 🔥 Champions League Highlights",
+          "url": "https://www.youtube.com/watch?v=QJtpAYWVjWs",
+          "source": "youtube",
+          "videoId": "QJtpAYWVjWs",
+          "thumbnail": "https://i.ytimg.com/vi/QJtpAYWVjWs/mqdefault.jpg",
+          "publishedAt": "2026-09-08T21:00:06Z",
+          "durationSec": 650,
+          "embeddable": true,
+          "audioLang": "en",
+          "blockedInIL": false,
+          "channelName": "Footballia",
+          "lang": "en",
+          "score": 110
+        },
+        {
+          "id": "yt:tMqlpntgCgA",
+          "title": "Real Madrid 2  1Inter Milan 🏆| All Goals & Highlights | UEFA Champions League.",
+          "url": "https://www.youtube.com/watch?v=tMqlpntgCgA",
+          "source": "youtube",
+          "videoId": "tMqlpntgCgA",
+          "thumbnail": "https://i.ytimg.com/vi/tMqlpntgCgA/mqdefault.jpg",
+          "publishedAt": "2026-09-10T18:00:14Z",
+          "durationSec": 605,
+          "embeddable": true,
+          "audioLang": "en",
+          "blockedInIL": false,
+          "channelName": "Furen Animated ",
+          "lang": "en",
+          "score": 70
+        },
+        {
+          "id": "yt:mYalvxwQ1oM",
+          "title": "⚪️Real Madrid vs Inter Milan (2-1) Extended HIGHLIGHTS | UEFA Champions League",
+          "url": "https://www.youtube.com/watch?v=mYalvxwQ1oM",
+          "source": "youtube",
+          "videoId": "mYalvxwQ1oM",
+          "thumbnail": "https://i.ytimg.com/vi/mYalvxwQ1oM/mqdefault.jpg",
+          "publishedAt": "2026-09-08T22:20:47Z",
+          "durationSec": 491,
+          "embeddable": true,
+          "audioLang": "en",
+          "blockedInIL": false,
+          "channelName": "SPORTS EXTRA",
+          "lang": "en",
+          "score": 110
+        },
+        {
+          "id": "yt:WMKHJ3KI_EY",
+          "title": "Real madrid vs Inter milan 2-1 extended highlights and goals UCL 2026 _ Soccer Highlights",
+          "url": "https://www.youtube.com/watch?v=WMKHJ3KI_EY",
+          "source": "youtube",
+          "videoId": "WMKHJ3KI_EY",
+          "thumbnail": "https://i.ytimg.com/vi/WMKHJ3KI_EY/mqdefault.jpg",
+          "publishedAt": "2026-09-09T18:54:25Z",
+          "durationSec": 452,
+          "embeddable": true,
+          "audioLang": "en",
+          "blockedInIL": false,
+          "channelName": "MEDIA SPORTS HD",
+          "lang": "en",
+          "score": 110
+        },
+        {
+          "id": "yt:_LEudVpK508",
+          "title": "Real Madrid 2-1 Inter Milan Highlights • Champions League 2026",
+          "url": "https://www.youtube.com/watch?v=_LEudVpK508",
+          "source": "youtube",
+          "videoId": "_LEudVpK508",
+          "thumbnail": "https://i.ytimg.com/vi/_LEudVpK508/mqdefault.jpg",
+          "publishedAt": "2026-09-09T03:00:25Z",
+          "durationSec": 301,
+          "embeddable": true,
+          "audioLang": "en-US",
+          "blockedInIL": false,
+          "channelName": "Al Faris Production",
+          "lang": "en",
+          "score": 110
+        },
+        {
+          "id": "yt:V6MtmxXIKRg",
+          "title": "REAL MADRID 2-1 INTER Highlights",
+          "url": "https://www.youtube.com/watch?v=V6MtmxXIKRg",
+          "source": "youtube",
+          "videoId": "V6MtmxXIKRg",
+          "thumbnail": "https://i.ytimg.com/vi/V6MtmxXIKRg/mqdefault.jpg",
+          "publishedAt": "2026-09-09T07:29:23Z",
+          "durationSec": 5,
+          "embeddable": true,
+          "audioLang": "en-US",
+          "blockedInIL": false,
+          "channelName": "Stav Law Football",
+          "lang": "en",
+          "score": 80
+        }
+      ],
+      "ytRateLimited": false,
+      "diag": [
+        {
+          "search": "bulk",
+          "fetched": 1050,
+          "kept": 0,
+          "rejected": [
+            {
+              "title": "HIGHLIGHTS | Elche 2-3 Real Madrid | LaLiga #ElcheRealMadrid #LaLigaHighlights",
+              "channel": "Real Madrid",
+              "reason": "language"
+            },
+            {
+              "title": "HIGHLIGHTS | Elche 2-3 Real Madrid | LaLiga",
+              "channel": "Real Madrid",
+              "reason": "language"
+            },
+            {
+              "title": "💪🖐️ #ElcheRealMadrid #RealMadrid #football",
+              "channel": "Real Madrid",
+              "reason": "language"
+            },
+            {
+              "title": "⏱️ MINUTO A MINUTO | Elche CF vs Real Madrid | LaLiga",
+              "channel": "Real Madrid",
+              "reason": "language"
+            },
+            {
+              "title": "🪄🎩🇹🇷 #ElcheRealMadrid #LaLigaHightlights #Futbol",
+              "channel": "Real Madrid",
+              "reason": "language"
+            },
+            {
+              "title": "💜✏️🤳 #ElcheRealMadrid",
+              "channel": "Real Madrid",
+              "reason": "language"
+            },
+            {
+              "title": "✅ #Bellingham first-time finish! #LaLigaHighlights #RealMadrid",
+              "channel": "Real Madrid",
+              "reason": "language"
+            },
+            {
+              "title": "➡️ #Mbappe ➡️ #Carreras 🟰 🤩⚽ #LaLigaHighlights",
+              "channel": "Real Madrid",
+              "reason": "language"
+            },
+            {
+              "title": "⚽⚽ Just Mbappé things. #LaLigaHighlights #RealMadrid #RealMadridRayo #Mbappe",
+              "channel": "Real Madrid",
+              "reason": "language"
+            },
+            {
+              "title": "Midweek football = 😍 #football #realmadrid",
+              "channel": "Real Madrid",
+              "reason": "language"
+            }
+          ]
+        },
+        {
+          "bulk": "Real Madrid",
+          "channelId": "UCWV3obpZVGgJ3j9FVhEjF2Q",
+          "videos": 100
+        },
+        {
+          "bulk": "FC Barcelona",
+          "channelId": "UC14UlmYlSNiQCBe9Eookf_A",
+          "videos": 100
+        },
+        {
+          "bulk": "Liverpool",
+          "channelId": "UC9LQwHZoucFT94I2h6JOcjw",
+          "videos": 100
+        },
+        {
+          "bulk": "Arsenal",
+          "channelId": "UCpryVRk_VDudG8SHXgWcG0w",
+          "videos": 100
+        },
+        {
+          "bulk": "Man City",
+          "channelId": "UCkzCjdRMrW2vXLx8mvPVLdQ",
+          "videos": 50
+        },
+        {
+          "bulk": "Inter",
+          "channelId": "UCvXzEblUa0cfny4HAJ_ZOWw",
+          "videos": 150
+        },
+        {
+          "bulk": "Bayern",
+          "channelId": "UCZkcxFIsqW5htimoUQKA0iA",
+          "videos": 50
+        },
+        {
+          "bulk": "Dortmund",
+          "channelId": "UCK8rTVgp3-MebXkmeJcQb1Q",
+          "videos": 50
+        },
+        {
+          "bulk": "Atletico Madrid",
+          "skipped": "unresolved handle"
+        },
+        {
+          "bulk": "Juventus",
+          "channelId": "UCLzKhsxrExAC6yAdtZ-BOWw",
+          "videos": 100
+        },
+        {
+          "bulk": "Chelsea",
+          "channelId": "UCU2PacFf99vhb3hNiYDmxww",
+          "videos": 50
+        },
+        {
+          "bulk": "PSG",
+          "channelId": "UCt9a_qP9CqHCNwilf-iULag",
+          "videos": 50
+        },
+        {
+          "bulk": "Benfica",
+          "channelId": "UC8zrah5cNf2c3jKKeD_Z3fw",
+          "videos": 50
+        },
+        {
+          "bulk": "Ajax",
+          "channelId": "UCGpf7WX7R1one-NwOvg_PbQ",
+          "videos": 100
+        },
+        {
+          "search": "general:en",
+          "fetched": 10,
+          "kept": 6,
+          "rejected": [
+            {
+              "title": "Real Madrid vs Inter Milan | UCL 26-27 | League Phase Round 1 [FHD] | Extended Highlights [4K] 🔥🔥🔥",
+              "channel": "Omar Football",
+              "reason": "score"
+            },
+            {
+              "title": "Real Madrid vs Inter Resumen y Goles | UEFA Champions League 2026/27",
+              "channel": "فكرة و رسمة",
+              "reason": "language"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,151 @@
+{
+  "slug": "bnei-sakhnin-beitar-il",
+  "label": "Bnei Sakhnin 0-1 Beitar Jerusalem (IL)",
+  "request": {
+    "home": "Bnei Sakhnin",
+    "away": "Beitar Jerusalem",
+    "date": "2026-09-07",
+    "league": "israeli-league",
+    "hs": "0",
+    "as": "1",
+    "homeHe": "בני סכנין",
+    "awayHe": "בית\"ר ירושלים"
+  },
+  "matcherVersion": 3,
+  "recordedAt": "2026-09-17T07:18:08.394617+00:00",
+  "events": [
+    {
+      "type": "batch",
+      "results": [
+        {
+          "id": "yt:x6AFe3AUlJA",
+          "title": "מחזור 3 | המשחק המלא: בני סכנין - בית\"ר ירושלים 1-0",
+          "url": "https://www.youtube.com/watch?v=x6AFe3AUlJA",
+          "source": "youtube",
+          "videoId": "x6AFe3AUlJA",
+          "thumbnail": "https://i.ytimg.com/vi/x6AFe3AUlJA/mqdefault.jpg",
+          "publishedAt": "2026-09-08T17:00:06Z",
+          "durationSec": 6215,
+          "embeddable": true,
+          "audioLang": "iw",
+          "blockedInIL": false,
+          "channelName": "IPFL - מנהלת הליגות לכדורגל",
+          "channelHandle": "Ipflofficial",
+          "lang": "he",
+          "score": 107
+        },
+        {
+          "id": "yt:yS-uNBQn5pA",
+          "title": "מחזור 3 | תקציר מורחב: בני סכנין - בית\"ר ירושלים 1-0",
+          "url": "https://www.youtube.com/watch?v=yS-uNBQn5pA",
+          "source": "youtube",
+          "videoId": "yS-uNBQn5pA",
+          "thumbnail": "https://i.ytimg.com/vi/yS-uNBQn5pA/mqdefault.jpg",
+          "publishedAt": "2026-09-08T17:00:12Z",
+          "durationSec": 901,
+          "embeddable": true,
+          "audioLang": "iw",
+          "blockedInIL": false,
+          "channelName": "IPFL - מנהלת הליגות לכדורגל",
+          "channelHandle": "Ipflofficial",
+          "lang": "he",
+          "score": 142
+        },
+        {
+          "id": "yt:YWiLfwms98g",
+          "title": "מחזור 3 | תקציר: בני סכנין - בית\"ר ירושלים 1-0",
+          "url": "https://www.youtube.com/watch?v=YWiLfwms98g",
+          "source": "youtube",
+          "videoId": "YWiLfwms98g",
+          "thumbnail": "https://i.ytimg.com/vi/YWiLfwms98g/mqdefault.jpg",
+          "publishedAt": "2026-09-08T17:00:15Z",
+          "durationSec": 174,
+          "embeddable": true,
+          "audioLang": "iw",
+          "blockedInIL": false,
+          "channelName": "IPFL - מנהלת הליגות לכדורגל",
+          "channelHandle": "Ipflofficial",
+          "lang": "he",
+          "score": 142
+        }
+      ],
+      "pending": 0
+    },
+    {
+      "type": "done",
+      "results": [
+        {
+          "id": "yt:x6AFe3AUlJA",
+          "title": "מחזור 3 | המשחק המלא: בני סכנין - בית\"ר ירושלים 1-0",
+          "url": "https://www.youtube.com/watch?v=x6AFe3AUlJA",
+          "source": "youtube",
+          "videoId": "x6AFe3AUlJA",
+          "thumbnail": "https://i.ytimg.com/vi/x6AFe3AUlJA/mqdefault.jpg",
+          "publishedAt": "2026-09-08T17:00:06Z",
+          "durationSec": 6215,
+          "embeddable": true,
+          "audioLang": "iw",
+          "blockedInIL": false,
+          "channelName": "IPFL - מנהלת הליגות לכדורגל",
+          "channelHandle": "Ipflofficial",
+          "lang": "he",
+          "score": 107
+        },
+        {
+          "id": "yt:yS-uNBQn5pA",
+          "title": "מחזור 3 | תקציר מורחב: בני סכנין - בית\"ר ירושלים 1-0",
+          "url": "https://www.youtube.com/watch?v=yS-uNBQn5pA",
+          "source": "youtube",
+          "videoId": "yS-uNBQn5pA",
+          "thumbnail": "https://i.ytimg.com/vi/yS-uNBQn5pA/mqdefault.jpg",
+          "publishedAt": "2026-09-08T17:00:12Z",
+          "durationSec": 901,
+          "embeddable": true,
+          "audioLang": "iw",
+          "blockedInIL": false,
+          "channelName": "IPFL - מנהלת הליגות לכדורגל",
+          "channelHandle": "Ipflofficial",
+          "lang": "he",
+          "score": 142
+        },
+        {
+          "id": "yt:YWiLfwms98g",
+          "title": "מחזור 3 | תקציר: בני סכנין - בית\"ר ירושלים 1-0",
+          "url": "https://www.youtube.com/watch?v=YWiLfwms98g",
+          "source": "youtube",
+          "videoId": "YWiLfwms98g",
+          "thumbnail": "https://i.ytimg.com/vi/YWiLfwms98g/mqdefault.jpg",
+          "publishedAt": "2026-09-08T17:00:15Z",
+          "durationSec": 174,
+          "embeddable": true,
+          "audioLang": "iw",
+          "blockedInIL": false,
+          "channelName": "IPFL - מנהלת הליגות לכדורגל",
+          "channelHandle": "Ipflofficial",
+          "lang": "he",
+          "score": 142
+        }
+      ],
+      "ytRateLimited": false,
+      "diag": [
+        {
+          "search": "preferred:Ipflofficial",
+          "fetched": 4,
+          "kept": 3,
+          "rejected": [
+            {
+              "title": "מחזור 1 | תקציר מורחב: הפועל ת\"א - בית\"ר ירושלים 0:3",
+              "channel": "IPFL - מנהלת הליגות לכדורגל",
+              "reason": "teams"
+            }
+          ],
+          "channelId": "UCxjaVFauWASy0CuJfHKZeiw",
+          "q": "בני סכנין בית\"ר ירושלים תקציר"
+        },
+        {
+          "shortCircuited": true
+        }
+      ]
+    }
+  ]
+}

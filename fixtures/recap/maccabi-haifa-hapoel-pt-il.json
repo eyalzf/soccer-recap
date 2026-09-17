@@ -1,0 +1,166 @@
+{
+  "slug": "maccabi-haifa-hapoel-pt-il",
+  "label": "Maccabi Haifa 2-1 Hapoel Petah Tikva (IL)",
+  "request": {
+    "home": "Maccabi Haifa",
+    "away": "Hapoel Petah Tikva",
+    "date": "2026-09-05",
+    "league": "israeli-league",
+    "hs": "2",
+    "as": "1",
+    "homeHe": "מכבי חיפה",
+    "awayHe": "הפועל פתח תקווה"
+  },
+  "matcherVersion": 3,
+  "recordedAt": "2026-09-17T07:18:02.308703+00:00",
+  "events": [
+    {
+      "type": "batch",
+      "results": [
+        {
+          "id": "yt:yzuWBTewQKw",
+          "title": "מחזור 3 | המשחק המלא: מכבי חיפה - הפועל פ\"ת 1-2",
+          "url": "https://www.youtube.com/watch?v=yzuWBTewQKw",
+          "source": "youtube",
+          "videoId": "yzuWBTewQKw",
+          "thumbnail": "https://i.ytimg.com/vi/yzuWBTewQKw/mqdefault.jpg",
+          "publishedAt": "2026-09-07T16:30:21Z",
+          "durationSec": 6282,
+          "embeddable": true,
+          "audioLang": "iw",
+          "blockedInIL": false,
+          "channelName": "IPFL - מנהלת הליגות לכדורגל",
+          "channelHandle": "Ipflofficial",
+          "lang": "he",
+          "score": 97
+        },
+        {
+          "id": "yt:Rp7xtoHOhlw",
+          "title": "מחזור 3 | תקציר מורחב: מכבי חיפה - הפועל פ\"ת 1-2",
+          "url": "https://www.youtube.com/watch?v=Rp7xtoHOhlw",
+          "source": "youtube",
+          "videoId": "Rp7xtoHOhlw",
+          "thumbnail": "https://i.ytimg.com/vi/Rp7xtoHOhlw/mqdefault.jpg",
+          "publishedAt": "2026-09-07T16:00:01Z",
+          "durationSec": 902,
+          "embeddable": true,
+          "audioLang": "iw",
+          "blockedInIL": false,
+          "channelName": "IPFL - מנהלת הליגות לכדורגל",
+          "channelHandle": "Ipflofficial",
+          "lang": "he",
+          "score": 132
+        },
+        {
+          "id": "yt:Y7QRygjKnMI",
+          "title": "מחזור 3 | תקציר: מכבי חיפה - הפועל פ\"ת 1-2",
+          "url": "https://www.youtube.com/watch?v=Y7QRygjKnMI",
+          "source": "youtube",
+          "videoId": "Y7QRygjKnMI",
+          "thumbnail": "https://i.ytimg.com/vi/Y7QRygjKnMI/mqdefault.jpg",
+          "publishedAt": "2026-09-07T16:15:18Z",
+          "durationSec": 216,
+          "embeddable": true,
+          "audioLang": "iw",
+          "blockedInIL": false,
+          "channelName": "IPFL - מנהלת הליגות לכדורגל",
+          "channelHandle": "Ipflofficial",
+          "lang": "he",
+          "score": 132
+        }
+      ],
+      "pending": 0
+    },
+    {
+      "type": "done",
+      "results": [
+        {
+          "id": "yt:yzuWBTewQKw",
+          "title": "מחזור 3 | המשחק המלא: מכבי חיפה - הפועל פ\"ת 1-2",
+          "url": "https://www.youtube.com/watch?v=yzuWBTewQKw",
+          "source": "youtube",
+          "videoId": "yzuWBTewQKw",
+          "thumbnail": "https://i.ytimg.com/vi/yzuWBTewQKw/mqdefault.jpg",
+          "publishedAt": "2026-09-07T16:30:21Z",
+          "durationSec": 6282,
+          "embeddable": true,
+          "audioLang": "iw",
+          "blockedInIL": false,
+          "channelName": "IPFL - מנהלת הליגות לכדורגל",
+          "channelHandle": "Ipflofficial",
+          "lang": "he",
+          "score": 97
+        },
+        {
+          "id": "yt:Rp7xtoHOhlw",
+          "title": "מחזור 3 | תקציר מורחב: מכבי חיפה - הפועל פ\"ת 1-2",
+          "url": "https://www.youtube.com/watch?v=Rp7xtoHOhlw",
+          "source": "youtube",
+          "videoId": "Rp7xtoHOhlw",
+          "thumbnail": "https://i.ytimg.com/vi/Rp7xtoHOhlw/mqdefault.jpg",
+          "publishedAt": "2026-09-07T16:00:01Z",
+          "durationSec": 902,
+          "embeddable": true,
+          "audioLang": "iw",
+          "blockedInIL": false,
+          "channelName": "IPFL - מנהלת הליגות לכדורגל",
+          "channelHandle": "Ipflofficial",
+          "lang": "he",
+          "score": 132
+        },
+        {
+          "id": "yt:Y7QRygjKnMI",
+          "title": "מחזור 3 | תקציר: מכבי חיפה - הפועל פ\"ת 1-2",
+          "url": "https://www.youtube.com/watch?v=Y7QRygjKnMI",
+          "source": "youtube",
+          "videoId": "Y7QRygjKnMI",
+          "thumbnail": "https://i.ytimg.com/vi/Y7QRygjKnMI/mqdefault.jpg",
+          "publishedAt": "2026-09-07T16:15:18Z",
+          "durationSec": 216,
+          "embeddable": true,
+          "audioLang": "iw",
+          "blockedInIL": false,
+          "channelName": "IPFL - מנהלת הליגות לכדורגל",
+          "channelHandle": "Ipflofficial",
+          "lang": "he",
+          "score": 132
+        }
+      ],
+      "ytRateLimited": false,
+      "diag": [
+        {
+          "search": "preferred:Ipflofficial",
+          "fetched": 7,
+          "kept": 3,
+          "rejected": [
+            {
+              "title": "מחזור 3 | תקציר מורחב: מכבי נתניה - הפועל חיפה 1-1",
+              "channel": "IPFL - מנהלת הליגות לכדורגל",
+              "reason": "teams"
+            },
+            {
+              "title": "מחזור 1 | תקציר מורחב: הפועל ת\"א - בית\"ר ירושלים 0:3",
+              "channel": "IPFL - מנהלת הליגות לכדורגל",
+              "reason": "teams"
+            },
+            {
+              "title": "מחזור 2 | המשחק המלא: הפועל חיפה - הפועל ת\"א 0-0",
+              "channel": "IPFL - מנהלת הליגות לכדורגל",
+              "reason": "teams"
+            },
+            {
+              "title": "מחזור 3 | המשחק המלא: הפועל ב\"ש - מכבי ת\"א 4-1",
+              "channel": "IPFL - מנהלת הליגות לכדורגל",
+              "reason": "teams"
+            }
+          ],
+          "channelId": "UCxjaVFauWASy0CuJfHKZeiw",
+          "q": "מכבי חיפה הפועל פתח תקווה תקציר"
+        },
+        {
+          "shortCircuited": true
+        }
+      ]
+    }
+  ]
+}

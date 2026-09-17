@@ -1,0 +1,212 @@
+{
+  "slug": "villarreal-real-betis-laliga",
+  "label": "Villarreal 1-2 Real Betis (La Liga)",
+  "request": {
+    "home": "Villarreal",
+    "away": "Real Betis",
+    "date": "2026-09-14",
+    "league": "la-liga",
+    "hs": "1",
+    "as": "2",
+    "homeHe": "ויאריאל",
+    "awayHe": "ריאל בטיס"
+  },
+  "matcherVersion": 3,
+  "recordedAt": "2026-09-17T07:18:26.888648+00:00",
+  "events": [
+    {
+      "type": "batch",
+      "results": [
+        {
+          "id": "yt:4xks9P7htiQ",
+          "title": "Villarreal vs Real Betis — La Liga — September 14, 2026 #LaLiga #Villarreal #RealBetis #Predictions",
+          "url": "https://www.youtube.com/watch?v=4xks9P7htiQ",
+          "source": "youtube",
+          "videoId": "4xks9P7htiQ",
+          "thumbnail": "https://i.ytimg.com/vi/4xks9P7htiQ/mqdefault.jpg",
+          "publishedAt": "2026-09-14T04:33:03Z",
+          "durationSec": 20,
+          "embeddable": true,
+          "audioLang": "en",
+          "blockedInIL": false,
+          "channelName": "Ivan Korolov",
+          "lang": "en",
+          "score": 25
+        },
+        {
+          "id": "yt:YhVR8HrqYIE",
+          "title": "Villarreal vs Real Betis in the Spanish La Liga #highlights",
+          "url": "https://www.youtube.com/watch?v=YhVR8HrqYIE",
+          "source": "youtube",
+          "videoId": "YhVR8HrqYIE",
+          "thumbnail": "https://i.ytimg.com/vi/YhVR8HrqYIE/mqdefault.jpg",
+          "publishedAt": "2026-09-15T00:00:25Z",
+          "durationSec": 11,
+          "embeddable": true,
+          "audioLang": "en",
+          "blockedInIL": false,
+          "channelName": "Wodyst",
+          "lang": "en",
+          "score": 60
+        }
+      ],
+      "pending": 0
+    },
+    {
+      "type": "done",
+      "results": [
+        {
+          "id": "yt:4xks9P7htiQ",
+          "title": "Villarreal vs Real Betis — La Liga — September 14, 2026 #LaLiga #Villarreal #RealBetis #Predictions",
+          "url": "https://www.youtube.com/watch?v=4xks9P7htiQ",
+          "source": "youtube",
+          "videoId": "4xks9P7htiQ",
+          "thumbnail": "https://i.ytimg.com/vi/4xks9P7htiQ/mqdefault.jpg",
+          "publishedAt": "2026-09-14T04:33:03Z",
+          "durationSec": 20,
+          "embeddable": true,
+          "audioLang": "en",
+          "blockedInIL": false,
+          "channelName": "Ivan Korolov",
+          "lang": "en",
+          "score": 25
+        },
+        {
+          "id": "yt:YhVR8HrqYIE",
+          "title": "Villarreal vs Real Betis in the Spanish La Liga #highlights",
+          "url": "https://www.youtube.com/watch?v=YhVR8HrqYIE",
+          "source": "youtube",
+          "videoId": "YhVR8HrqYIE",
+          "thumbnail": "https://i.ytimg.com/vi/YhVR8HrqYIE/mqdefault.jpg",
+          "publishedAt": "2026-09-15T00:00:25Z",
+          "durationSec": 11,
+          "embeddable": true,
+          "audioLang": "en",
+          "blockedInIL": false,
+          "channelName": "Wodyst",
+          "lang": "en",
+          "score": 60
+        }
+      ],
+      "ytRateLimited": false,
+      "diag": [
+        {
+          "search": "preferred:one-1004",
+          "fetched": 0,
+          "kept": 0,
+          "channelId": "UCgbHJENV6UgIZl1Rp_GXCfw",
+          "q": "ויאריאל ריאל בטיס תקציר"
+        },
+        {
+          "search": "bulk",
+          "fetched": 500,
+          "kept": 0,
+          "rejected": [
+            {
+              "title": "Bellingham y Vinícius",
+              "channel": "LaLiga official",
+              "reason": "language"
+            },
+            {
+              "title": "FC BARCELONA vs R. RACING CLUB | RUEDA DE PRENSA",
+              "channel": "LaLiga official",
+              "reason": "language"
+            },
+            {
+              "title": "FC BARCELONA 7 - 2 R. RACING CLUB | RESUMEN LALIGA EA SPORTS",
+              "channel": "LaLiga official",
+              "reason": "language"
+            },
+            {
+              "title": "ATLÉTICO DE MADRID 4 - 0 CA OSASUNA | RESUMEN LALIGA EA SPORTS",
+              "channel": "LaLiga official",
+              "reason": "language"
+            },
+            {
+              "title": "FC BARCELONA 7 - 2 R. RACING CLUB | RESUMEN LALIGA EA SPORTS",
+              "channel": "LaLiga official",
+              "reason": "language"
+            },
+            {
+              "title": "Mejor llama a Gabriel. ☎️",
+              "channel": "LaLiga official",
+              "reason": "language"
+            },
+            {
+              "title": "WOW🤯",
+              "channel": "LaLiga official",
+              "reason": "language"
+            },
+            {
+              "title": "Agirrezabala ❌ Lamine.",
+              "channel": "LaLiga official",
+              "reason": "language"
+            },
+            {
+              "title": "RAPHINHA x #LALIGAPOTM. 🏆",
+              "channel": "LaLiga official",
+              "reason": "language"
+            },
+            {
+              "title": "Bajo la lluvia, Raphinha. ☔️",
+              "channel": "LaLiga official",
+              "reason": "language"
+            }
+          ]
+        },
+        {
+          "bulk": "LaLiga official",
+          "channelId": "UCTv-XvfzLX3i4IGWAm4sbmA",
+          "videos": 150
+        },
+        {
+          "bulk": "Real Madrid",
+          "channelId": "UCWV3obpZVGgJ3j9FVhEjF2Q",
+          "videos": 100
+        },
+        {
+          "bulk": "Atletico Madrid",
+          "channelId": "UCuzKFwdh7z2GHcIOX_tXgxA",
+          "videos": 50
+        },
+        {
+          "bulk": "Villarreal CF",
+          "channelId": "UC0MLWyQ0L7uEZY8wbkDSTkw",
+          "videos": 50
+        },
+        {
+          "bulk": "Real Betis",
+          "channelId": "UCeB7JZwcar2fVoK2w2f9OwA",
+          "videos": 50
+        },
+        {
+          "bulk": "ESPN FC",
+          "channelId": "UC6c1z7bA__85CIWZ_jpCK-Q",
+          "videos": 100
+        },
+        {
+          "search": "general:en",
+          "fetched": 10,
+          "kept": 2,
+          "rejected": [
+            {
+              "title": "Borussia Dortmund v Villarreal CF | Highlights | UEFA Champions League",
+              "channel": "Borussia Dortmund",
+              "reason": "not-embeddable"
+            },
+            {
+              "title": "Villareal vs Real Betis 1-2 (All Highlights & Goals Resumen y Goles ) LA LIGA 2026",
+              "channel": "LO DE DANY",
+              "reason": "language"
+            },
+            {
+              "title": "Lille vs Real Betis 2-3 • BARTRA GOAL - Highlights Champions League 26/27",
+              "channel": "Antonionne Football",
+              "reason": "teams"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

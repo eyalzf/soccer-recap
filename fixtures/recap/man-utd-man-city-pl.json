@@ -1,0 +1,230 @@
+{
+  "slug": "man-utd-man-city-pl",
+  "label": "Man Utd 0-1 Man City (PL)",
+  "request": {
+    "home": "Manchester United",
+    "away": "Manchester City",
+    "date": "2026-09-13",
+    "league": "premier-league",
+    "hs": "0",
+    "as": "1",
+    "homeHe": "מנצ'סטר יונייטד",
+    "awayHe": "מנצ'סטר סיטי"
+  },
+  "matcherVersion": 3,
+  "recordedAt": "2026-09-17T07:17:53.100895+00:00",
+  "events": [
+    {
+      "type": "batch",
+      "results": [
+        {
+          "id": "yt:ApTrA1NmMuw",
+          "title": "Man Utd 0-1 Man City | Extended Highlights",
+          "url": "https://www.youtube.com/watch?v=ApTrA1NmMuw",
+          "source": "youtube",
+          "videoId": "ApTrA1NmMuw",
+          "publishedAt": "2026-09-14T23:00:14Z",
+          "thumbnail": "https://i.ytimg.com/vi/ApTrA1NmMuw/mqdefault.jpg",
+          "durationSec": 607,
+          "embeddable": true,
+          "audioLang": "en",
+          "blockedInIL": false,
+          "channelName": "Man Utd",
+          "channelHandle": "manutd",
+          "bulk": true,
+          "lang": "en",
+          "score": 125
+        },
+        {
+          "id": "yt:ETHmJMvNgIY",
+          "title": "EXTENDED HIGHLIGHTS | Man United 0-1 Man City | Haaland goal wins Manchester derby for 10-man Blues",
+          "url": "https://www.youtube.com/watch?v=ETHmJMvNgIY",
+          "source": "youtube",
+          "videoId": "ETHmJMvNgIY",
+          "publishedAt": "2026-09-14T23:00:34Z",
+          "thumbnail": "https://i.ytimg.com/vi/ETHmJMvNgIY/mqdefault.jpg",
+          "durationSec": 537,
+          "embeddable": true,
+          "audioLang": "en-GB",
+          "blockedInIL": false,
+          "channelName": "Man City",
+          "channelHandle": "mancity",
+          "bulk": true,
+          "lang": "en",
+          "score": 125
+        },
+        {
+          "id": "yt:De2YdZcJgy0",
+          "title": "Man Utd 0-1 Man City | Highlights",
+          "url": "https://www.youtube.com/watch?v=De2YdZcJgy0",
+          "source": "youtube",
+          "videoId": "De2YdZcJgy0",
+          "publishedAt": "2026-09-13T21:00:10Z",
+          "thumbnail": "https://i.ytimg.com/vi/De2YdZcJgy0/mqdefault.jpg",
+          "durationSec": 126,
+          "embeddable": true,
+          "audioLang": "en",
+          "blockedInIL": false,
+          "channelName": "Man Utd",
+          "channelHandle": "manutd",
+          "bulk": true,
+          "lang": "en",
+          "score": 110
+        }
+      ],
+      "pending": 0
+    },
+    {
+      "type": "done",
+      "results": [
+        {
+          "id": "yt:ApTrA1NmMuw",
+          "title": "Man Utd 0-1 Man City | Extended Highlights",
+          "url": "https://www.youtube.com/watch?v=ApTrA1NmMuw",
+          "source": "youtube",
+          "videoId": "ApTrA1NmMuw",
+          "publishedAt": "2026-09-14T23:00:14Z",
+          "thumbnail": "https://i.ytimg.com/vi/ApTrA1NmMuw/mqdefault.jpg",
+          "durationSec": 607,
+          "embeddable": true,
+          "audioLang": "en",
+          "blockedInIL": false,
+          "channelName": "Man Utd",
+          "channelHandle": "manutd",
+          "bulk": true,
+          "lang": "en",
+          "score": 125
+        },
+        {
+          "id": "yt:ETHmJMvNgIY",
+          "title": "EXTENDED HIGHLIGHTS | Man United 0-1 Man City | Haaland goal wins Manchester derby for 10-man Blues",
+          "url": "https://www.youtube.com/watch?v=ETHmJMvNgIY",
+          "source": "youtube",
+          "videoId": "ETHmJMvNgIY",
+          "publishedAt": "2026-09-14T23:00:34Z",
+          "thumbnail": "https://i.ytimg.com/vi/ETHmJMvNgIY/mqdefault.jpg",
+          "durationSec": 537,
+          "embeddable": true,
+          "audioLang": "en-GB",
+          "blockedInIL": false,
+          "channelName": "Man City",
+          "channelHandle": "mancity",
+          "bulk": true,
+          "lang": "en",
+          "score": 125
+        },
+        {
+          "id": "yt:De2YdZcJgy0",
+          "title": "Man Utd 0-1 Man City | Highlights",
+          "url": "https://www.youtube.com/watch?v=De2YdZcJgy0",
+          "source": "youtube",
+          "videoId": "De2YdZcJgy0",
+          "publishedAt": "2026-09-13T21:00:10Z",
+          "thumbnail": "https://i.ytimg.com/vi/De2YdZcJgy0/mqdefault.jpg",
+          "durationSec": 126,
+          "embeddable": true,
+          "audioLang": "en",
+          "blockedInIL": false,
+          "channelName": "Man Utd",
+          "channelHandle": "manutd",
+          "bulk": true,
+          "lang": "en",
+          "score": 110
+        }
+      ],
+      "ytRateLimited": false,
+      "diag": [
+        {
+          "search": "bulk",
+          "fetched": 353,
+          "kept": 3,
+          "rejected": [
+            {
+              "title": "ZEKOLATSE FUNNY MOMENTS | TRS and Gang hangout with Nelox aka Zekolatse",
+              "channel": "Sky Sports Premier League",
+              "reason": "teams"
+            },
+            {
+              "title": "EUROS SEMIFINAL | BELARUS VS SPAIN | BEST HIGHLIGHTS OF THE MATCH!",
+              "channel": "Sky Sports Premier League",
+              "reason": "teams"
+            },
+            {
+              "title": "TRS EUROS 2024 | Belarus VS Spain | CIS National League",
+              "channel": "Sky Sports Premier League",
+              "reason": "teams"
+            },
+            {
+              "title": "🎶 HE'S IN YOUR HEAD! 🎶 ENZO REACTS TO HIS NEW CHANT! 🩵⚽ #mancity #enzofernandez #premierleague",
+              "channel": "Man City",
+              "reason": "teams"
+            },
+            {
+              "title": "Hugo Viana | Summer Transfer Window Review | Part 1: New Signings",
+              "channel": "Man City",
+              "reason": "teams"
+            },
+            {
+              "title": "LIVE! MANAGER PREVIEW | Enzo Maresca | Man City v Norwich City | Carabao Cup",
+              "channel": "Man City",
+              "reason": "teams"
+            },
+            {
+              "title": "INSIDE CITY 529 | Manchester is Blue!",
+              "channel": "Man City",
+              "reason": "teams"
+            },
+            {
+              "title": "\"Like Crouch and Defoe\" ⚽️🩵 #mancity #football #premierleague #erlinghaaland",
+              "channel": "Man City",
+              "reason": "teams"
+            },
+            {
+              "title": "“What a performance and what a statement!” 💬 ⚽️🩵 #mancity #football #premierleague #erlinghaaland",
+              "channel": "Man City",
+              "reason": "teams"
+            },
+            {
+              "title": "Man United 0-1 Man City | Highlights as 10-man Blues win Manchester derby through Haaland",
+              "channel": "Man City",
+              "reason": "not-embeddable"
+            }
+          ]
+        },
+        {
+          "bulk": "Sky Sports Premier League",
+          "channelId": "UCrGWHOXvTJqE9XSExzELHJw",
+          "videos": 3
+        },
+        {
+          "bulk": "Man City",
+          "channelId": "UCkzCjdRMrW2vXLx8mvPVLdQ",
+          "videos": 50
+        },
+        {
+          "bulk": "Man Utd",
+          "channelId": "UC6yW44UGJJBvYTlfC7CRg2Q",
+          "videos": 50
+        },
+        {
+          "bulk": "Arsenal",
+          "channelId": "UCpryVRk_VDudG8SHXgWcG0w",
+          "videos": 100
+        },
+        {
+          "bulk": "Liverpool",
+          "channelId": "UC9LQwHZoucFT94I2h6JOcjw",
+          "videos": 100
+        },
+        {
+          "bulk": "Chelsea",
+          "channelId": "UCU2PacFf99vhb3hNiYDmxww",
+          "videos": 50
+        },
+        {
+          "shortCircuited": true
+        }
+      ]
+    }
+  ]
+}
