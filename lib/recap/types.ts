@@ -21,6 +21,8 @@ export interface RawCandidate {
   blockedInIL?: boolean;
   channelName?: string;
   channelHandle?: string;
+  /** YouTube channel ID of the uploader (set on search ingestion). */
+  channelId?: string;
   /** Ingested from a curated bulk channel (uploads playlist scan). */
   bulk?: boolean;
   lang: 'he' | 'en';
