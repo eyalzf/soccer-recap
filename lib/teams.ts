@@ -356,7 +356,9 @@ export const CLUBS: ClubEntry[] = [
     en: "Hapoel Tel Aviv",
     he: "הפועל תל אביב",
     enAliases: [],
-    heAliases: ["הפועל ת\"א"],
+    // Narrow sponsor-inserted form used on the club's own channel
+    // ("הפועל IBI ת"א"); not a general abbreviation.
+    heAliases: ["הפועל ת\"א", "הפועל IBI ת\"א"],
   },
   {
     en: "Maccabi Petah Tikva",
