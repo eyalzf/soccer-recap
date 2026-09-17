@@ -50,6 +50,10 @@ export async function pset(key: string, val: unknown): Promise<void> {
     await blobPut(key, JSON.stringify(rec), {
       access: BLOB_ACCESS,
       addRandomSuffix: false,
+      // Required: without this, put() to an existing pathname throws
+      // ("This blob already exists"), so cache refreshes and daily-log
+      // appends after the first write of the day would silently fail.
+      allowOverwrite: true,
       contentType: 'application/json',
     });
   } catch {
