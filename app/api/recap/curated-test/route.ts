@@ -41,10 +41,9 @@ interface ChannelReport {
  * &only=candidate skips the plan tiers and runs just the candidate tier
  * (quota-cheap triage of new channels).
  *
- * NOTE: production's preferred tier uses search.list scoped to the channel
- * (100 quota units); this test scans the channel's uploads playlist instead
- * (1 unit/page, Blob-cached) so the test stays quota-cheap. The matcher and
- * fail reasons are identical; hit counts may differ slightly from live.
+ * NOTE: like production's preferred tier, this test scans the channel's
+ * uploads playlist (1 unit/page, Blob-cached) and matches app-side — the
+ * matcher and fail reasons are identical to live.
  */
 export async function GET(req: NextRequest) {
   const sp = req.nextUrl.searchParams;
@@ -84,7 +83,7 @@ export async function GET(req: NextRequest) {
     if (!channelId) return { label, skipped: 'unresolved handle' };
     let videos;
     try {
-      videos = await getChannelVideos(channelId, olderThanISO);
+      ({ videos } = await getChannelVideos(channelId, olderThanISO));
     } catch (e) {
       const msg = (e as Error)?.message ?? String(e);
       if (msg === 'HTTP 429') ytRateLimited = true;
