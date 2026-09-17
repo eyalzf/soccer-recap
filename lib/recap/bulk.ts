@@ -26,6 +26,8 @@ export interface PlaylistVideo {
   id: string;
   title: string;
   publishedAt: string;
+  /** snippet.thumbnails from playlistItems (no extra quota); absent on old cache entries. */
+  thumbnail?: string;
 }
 
 interface PlaylistCacheVal {
@@ -45,6 +47,7 @@ interface PlaylistPage {
       title?: string;
       publishedAt?: string;
       resourceId?: { videoId?: string };
+      thumbnails?: { medium?: { url?: string }; default?: { url?: string } };
     };
   }>;
   nextPageToken?: string;
@@ -71,7 +74,7 @@ export async function getChannelVideos(
   channelId: string,
   olderThanISO: string
 ): Promise<PlaylistVideo[]> {
-  const inflightKey = `pl/v1/${channelId}`;
+  const inflightKey = `pl/v2/${channelId}`;
   let p = inflightPlaylists.get(inflightKey);
   if (!p) {
     p = getChannelVideosInner(channelId, olderThanISO).finally(() =>
@@ -88,7 +91,7 @@ async function getChannelVideosInner(
   channelId: string,
   olderThanISO: string
 ): Promise<PlaylistVideo[]> {
-  const key = `pl/v1/${channelId}`;
+  const key = `pl/v2/${channelId}`;
   const rec = await pget<PlaylistCacheVal>(key);
   const fresh = rec && Date.now() - rec.fetchedAt < PLAYLIST_TTL ? rec.val : null;
   const oldestCached =
@@ -115,6 +118,8 @@ async function getChannelVideosInner(
         id: vid,
         title: it.snippet?.title ?? '',
         publishedAt: it.snippet?.publishedAt ?? '',
+        thumbnail:
+          it.snippet?.thumbnails?.medium?.url ?? it.snippet?.thumbnails?.default?.url,
       });
     }
     pageToken = page.nextPageToken;
@@ -190,6 +195,7 @@ export async function bulkScan(game: GameInput): Promise<BulkScanResult> {
             source: 'youtube',
             videoId: v.id,
             publishedAt: v.publishedAt,
+            thumbnail: v.thumbnail,
             durationSec: m?.duration,
             embeddable: m?.embeddable ?? undefined,
             audioLang: m?.audioLang ?? undefined,

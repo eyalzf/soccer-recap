@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import type { GameItem } from './GameCard';
+import CompositeThumb from './CompositeThumb';
 import ResumePlayer from './ResumePlayer';
 import { isWatched, progressFraction } from '../lib/playbackProgress';
 
@@ -13,6 +14,7 @@ interface Candidate {
   videoId?: string;
   thumbnail?: string;
   publishedAt?: string;
+  durationSec?: number;
   channelName?: string;
   lang: string;
   score: number;
@@ -24,6 +26,16 @@ const SOURCE_HE: Record<string, string> = {
   sport5: 'ספורט5',
   one: 'ONE',
 };
+
+/** 83 -> "1:23", 3661 -> "1:01:01". */
+function formatDuration(sec: number): string {
+  const s = Math.max(0, Math.round(sec));
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const r = s % 60;
+  const mm = h > 0 ? String(m).padStart(2, '0') : String(m);
+  return `${h > 0 ? h + ':' : ''}${mm}:${String(r).padStart(2, '0')}`;
+}
 
 export default function RecapPanel({
   game,
@@ -44,6 +56,8 @@ export default function RecapPanel({
   const [rateLimited, setRateLimited] = useState(false);
   const [selected, setSelected] = useState<Candidate | null>(null);
   const [, setProgressTick] = useState(0);
+  /** Candidate ids whose YouTube thumbnail failed to load (fall back to crests). */
+  const [brokenThumb, setBrokenThumb] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     setResults([]);
@@ -51,6 +65,7 @@ export default function RecapPanel({
     setStarted(false);
     setFailed(false);
     setRateLimited(false);
+    setBrokenThumb({});
     const q = new URLSearchParams({
       home: game.home,
       away: game.away,
@@ -135,13 +150,35 @@ export default function RecapPanel({
           {results.map((c) => {
             const watched = c.videoId ? isWatched(c.videoId) : false;
             const frac = !watched && c.videoId ? progressFraction(c.videoId) : null;
+            const showThumb = !!c.thumbnail && !brokenThumb[c.id];
             return (
               <button
                 key={c.id}
                 className={'recap-item' + (selected?.id === c.id ? ' selected' : '')}
                 onClick={() => setSelected(c)}
               >
-                {c.thumbnail && <img src={c.thumbnail} alt="" loading="lazy" />}
+                <span className="recap-thumb">
+                  {showThumb ? (
+                    <img
+                      src={c.thumbnail}
+                      alt=""
+                      loading="lazy"
+                      onError={() =>
+                        setBrokenThumb((b) => (b[c.id] ? b : { ...b, [c.id]: true }))
+                      }
+                    />
+                  ) : (
+                    <CompositeThumb
+                      homeBadge={game.homeBadge}
+                      awayBadge={game.awayBadge}
+                      homeHe={game.homeHe}
+                      awayHe={game.awayHe}
+                    />
+                  )}
+                  {c.durationSec != null && c.durationSec > 0 && (
+                    <span className="duration-badge">{formatDuration(c.durationSec)}</span>
+                  )}
+                </span>
                 <span>
                   <span className="recap-title">{c.title}</span>
                   <br />
