@@ -2,8 +2,8 @@
  "league": "la-liga",
  "league_id": 87,
  "season": "2026/2027",
- "updated_at": "2026-09-17T09:45:16.815854+00:00",
- "checked_through": "2026-09-16",
+ "updated_at": "2026-09-18T09:18:49.122001+00:00",
+ "checked_through": "2026-09-17",
  "team_ids": {
   "Villarreal": 10205,
   "Real Betis": 8603,
@@ -27,6 +27,26 @@
   "Valencia": 10267
  },
  "games": [
+  {
+   "id": "5868068",
+   "home": "Málaga",
+   "away": "Villarreal",
+   "dateISO": "2026-09-17T19:30:00.000Z",
+   "homeScore": 1,
+   "awayScore": 3,
+   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9864.png",
+   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10205.png"
+  },
+  {
+   "id": "5868063",
+   "home": "Real Betis",
+   "away": "Getafe",
+   "dateISO": "2026-09-17T17:00:00.000Z",
+   "homeScore": 1,
+   "awayScore": 0,
+   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8603.png",
+   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8305.png"
+  },
   {
    "id": "5868066",
    "home": "Barcelona",
