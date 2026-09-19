@@ -233,3 +233,98 @@ body {
   .games { grid-template-columns: 1fr; }
   .recap-thumb { width: 96px; }
 }
+
+/* ---- Unified games view: filter bar ---- */
+.filterbar {
+  position: sticky; top: 0; z-index: 30;
+  background: var(--bg);
+  padding: 8px 0 4px; margin: 0 -4px 8px;
+}
+.frow {
+  display: flex; gap: 8px; align-items: center;
+  padding: 4px;
+}
+.frow-scroll { overflow-x: auto; scrollbar-width: none; }
+.frow-scroll::-webkit-scrollbar { display: none; }
+.chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--card); border: 1px solid var(--border);
+  color: var(--text); border-radius: 999px;
+  padding: 7px 14px; font-size: 0.92rem; cursor: pointer; white-space: nowrap;
+  font-family: inherit;
+}
+.chip img { width: 20px; height: 20px; object-fit: contain; }
+.chip.active { background: var(--accent2); border-color: var(--accent2); color: #fff; }
+.tchip {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--card); border: 1px solid var(--border);
+  color: var(--text); border-radius: 999px;
+  padding: 5px 12px 5px 14px; font-size: 0.9rem; cursor: pointer; white-space: nowrap;
+  font-family: inherit;
+}
+.tchip-logo { width: 24px; height: 24px; object-fit: contain; border-radius: 50%; }
+.tchip-initial {
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--bg2); color: var(--muted); font-weight: 700;
+  border: 1px solid var(--border);
+}
+.tchip.active { background: var(--accent); border-color: var(--accent); color: #06281a; font-weight: 700; }
+.tchip.active .tchip-initial { background: rgba(255,255,255,0.25); color: #06281a; border-color: transparent; }
+.icon-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  flex: 0 0 auto; width: 36px; height: 36px;
+  background: var(--card); border: 1px solid var(--border);
+  color: var(--muted); border-radius: 50%; cursor: pointer;
+}
+.icon-btn.active { background: var(--accent2); border-color: var(--accent2); color: #fff; }
+.fpanel {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 12px; margin: 4px 4px 8px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.team-search {
+  background: var(--bg2); color: var(--text);
+  border: 1px solid var(--border); border-radius: 8px;
+  padding: 9px 12px; font-size: 1rem; font-family: inherit; width: 100%;
+}
+.search-matches { display: flex; flex-direction: column; gap: 4px; }
+.search-match {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--bg2); border: 1px solid var(--border);
+  color: var(--text); border-radius: 8px; padding: 8px 10px;
+  font-size: 0.95rem; cursor: pointer; font-family: inherit; text-align: right;
+}
+.search-match.active { border-color: var(--accent); }
+.search-empty { color: var(--muted); font-size: 0.9rem; padding: 4px 2px; }
+.check-row {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 0.95rem; cursor: pointer;
+}
+.check-row input { width: 18px; height: 18px; accent-color: var(--accent); }
+.clear-btn {
+  background: none; border: none; color: var(--accent2);
+  font-size: 0.92rem; cursor: pointer; font-family: inherit;
+  align-self: flex-start; padding: 2px 0;
+}
+.active-team {
+  display: flex; align-items: center; gap: 8px;
+  color: var(--muted); font-size: 0.92rem; margin: 0 4px 10px;
+}
+.active-team button {
+  background: var(--card); border: 1px solid var(--border); color: var(--text);
+  border-radius: 50%; width: 24px; height: 24px; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center; font-size: 0.8rem;
+}
+.day-header {
+  font-size: 1.05rem; font-weight: 700; color: var(--text);
+  margin: 18px 4px 10px; padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+.day-header:first-child { margin-top: 4px; }
+.game-watched {
+  background: var(--bg2); color: var(--muted);
+  font-size: 0.72rem; font-weight: 600;
+  border: 1px solid var(--border); border-radius: 999px;
+  padding: 1px 8px; margin-inline-start: 8px; vertical-align: middle;
+}
+.status .clear-btn { align-self: center; margin-top: 8px; }
