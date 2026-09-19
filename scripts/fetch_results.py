@@ -63,6 +63,13 @@ LEAGUES = {
     "champions-league": 42,
 }
 MAX_CATCHUP_DAYS = 14
+RECHECK_DAYS = 3
+# Hardening: FotMob sometimes lacks a league's matches for a date at fetch
+# time (late/partial data, e.g. the Israeli league on 2026-09-18). Re-fetch
+# the trailing RECHECK_DAYS days every run so late-arriving matches
+# self-heal. Merges are idempotent (by id) and the (date, home, away)
+# dedupe collapses any double entries, so this costs only API calls
+# (~RECHECK_DAYS/day), never duplicate games.
 
 # Parse free tier: 5 requests/minute. Pace calls and retry on 429.
 _MIN_INTERVAL = 12.0
@@ -227,9 +234,10 @@ def main():
             # name -> FotMob team id, accumulated for badge backfill.
             "team_ids": dict(existing.get("team_ids") or {}),
             "season": season,
-            # Last date fully pulled via get_matches_by_date. Never
-            # re-fetch at or before this date: each calendar date costs
-            # an API call, so every date is fetched at most once.
+            # Last date fully pulled via get_matches_by_date. Unchecked
+            # dates are fetched exactly once; the trailing RECHECK_DAYS
+            # window is additionally re-fetched every run (without moving
+            # this watermark) so late upstream data self-heals.
             "checked_through": existing.get("checked_through"),
         }
         print(f"{slug}: loaded {len(games)} stored games "
@@ -250,6 +258,16 @@ def main():
         while d <= yesterday and (d - start).days <= MAX_CATCHUP_DAYS:
             wanted.setdefault(d, set()).add(slug)
             d += datetime.timedelta(days=1)
+
+    # Trailing re-check: the last RECHECK_DAYS days are re-fetched every
+    # run for every league, catching matches FotMob added late. Dates
+    # already in `wanted` are fetched there instead.
+    recheck = set()
+    d = yesterday
+    for _ in range(RECHECK_DAYS):
+        if d not in wanted:
+            recheck.add(d)
+        d -= datetime.timedelta(days=1)
 
     payloads = {}
     for d in sorted(wanted):
@@ -274,6 +292,24 @@ def main():
     print(f"incremental: fetched {len(payloads)}/{len(wanted)} dates",
           flush=True)
 
+    recheck_payloads = {}
+    for d in sorted(recheck):
+        ds = d.strftime("%Y%m%d")
+        try:
+            payload = ok_data(call("get_matches_by_date", {"date": ds}),
+                              "get_matches_by_date")
+        except RuntimeError as e:
+            print(f"recheck {ds} failed: {e}", flush=True)
+            continue
+        leagues = payload.get("leagues") if isinstance(payload, dict) else None
+        if not leagues:
+            print(f"recheck {ds}: empty leagues in response; skipping",
+                  flush=True)
+            continue
+        recheck_payloads[d] = payload
+    print(f"recheck: fetched {len(recheck_payloads)}/{len(recheck)} dates",
+          flush=True)
+
     for slug, st in states.items():
         cur = datetime.date.fromisoformat(st["checked_through"])
         for d in sorted(wanted):
@@ -286,6 +322,15 @@ def main():
             if added:
                 print(f"{slug}: {d} +{added} games", flush=True)
             cur = d
+        # Trailing re-check: merge late-arriving data for every league.
+        # The watermark does NOT move here: these dates were already
+        # checked once, and harvest_daily + the (date, home, away) dedupe
+        # below make the merge idempotent.
+        for d in sorted(recheck_payloads):
+            added = harvest_daily(recheck_payloads[d], st["lid"],
+                                  st["games"], st["team_ids"])
+            if added:
+                print(f"{slug}: recheck {d} +{added} games", flush=True)
         st["checked_through"] = cur.isoformat()
 
     # Cold start: a league whose team-id map is still empty never saw its
