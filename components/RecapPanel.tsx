@@ -5,6 +5,7 @@ import type { GameItem } from './GameCard';
 import CompositeThumb from './CompositeThumb';
 import ResumePlayer from './ResumePlayer';
 import { isWatched, progressFraction } from '../lib/playbackProgress';
+import { recordGameView } from '../lib/watch';
 
 interface Candidate {
   id: string;
@@ -55,6 +56,12 @@ export default function RecapPanel({
   const [rateLimited, setRateLimited] = useState(false);
   const [selected, setSelected] = useState<Candidate | null>(null);
   const [, setProgressTick] = useState(0);
+
+  /** A view counts when the user SELECTS a video — watching it fully is not required. */
+  const selectCandidate = (c: Candidate) => {
+    recordGameView(game.id, game.home, game.away);
+    setSelected(c);
+  };
   /** Candidate ids whose YouTube thumbnail failed to load (fall back to crests). */
   const [brokenThumb, setBrokenThumb] = useState<Record<string, boolean>>({});
 
@@ -153,7 +160,7 @@ export default function RecapPanel({
               <button
                 key={c.id}
                 className={'recap-item' + (selected?.id === c.id ? ' selected' : '')}
-                onClick={() => setSelected(c)}
+                onClick={() => selectCandidate(c)}
               >
                 <span className="recap-thumb">
                   {showThumb ? (
