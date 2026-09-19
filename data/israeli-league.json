@@ -2,7 +2,7 @@
  "league": "israeli-league",
  "league_id": 127,
  "season": "2026/2027",
- "updated_at": "2026-09-19T08:06:06.885843+00:00",
+ "updated_at": "2026-09-19T10:27:14.745097+00:00",
  "checked_through": "2026-09-18",
  "team_ids": {
   "Hapoel Haifa": 8301,
@@ -17,6 +17,16 @@
   "Hapoel Beer Sheva": 9754
  },
  "games": [
+  {
+   "id": "manual-20260918-hapoel-tel-aviv-hapoel-petah-tikva",
+   "home": "Hapoel Tel Aviv",
+   "away": "Hapoel Petah Tikva",
+   "dateISO": "2026-09-18T12:45:00.000Z",
+   "homeScore": 3,
+   "awayScore": 0,
+   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10181.png",
+   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9755.png"
+  },
   {
    "id": "manual-20260915-ironi-tiberias-hapoel-jerusalem-fc",
    "home": "Ironi Tiberias",
