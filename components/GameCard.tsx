@@ -4,6 +4,8 @@ import CompositeThumb from './CompositeThumb';
 
 export interface GameItem {
   id: string;
+  league: string;
+  leagueHe: string;
   home: string;
   away: string;
   homeHe: string;
@@ -28,9 +30,12 @@ function formatDate(iso: string): string {
 
 export default function GameCard({
   game,
+  watched,
   onSelect,
 }: {
   game: GameItem;
+  /** The user has opened a recap for this game (view, not necessarily finished). */
+  watched?: boolean;
   onSelect: (g: GameItem) => void;
 }) {
   return (
@@ -50,6 +55,7 @@ export default function GameCard({
       <div className="game-body">
         <div className="game-teams">
           {game.homeHe} נגד {game.awayHe}
+          {watched && <span className="game-watched">נצפה</span>}
         </div>
         <div className="game-meta">
           <span>{formatDate(game.dateISO)}</span>
