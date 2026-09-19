@@ -10,9 +10,33 @@ const PAGE_SIZE = 10;
 
 export async function GET(req: NextRequest) {
   const sp = req.nextUrl.searchParams;
-  const league = (sp.get('league') || 'premier-league') as LeagueSlug;
+  const leagueParam = sp.get('league') || 'premier-league';
   const page = Math.max(0, parseInt(sp.get('page') || '0', 10) || 0);
   const nocache = sp.get('nocache') === '1';
+
+  // Unified view: every game from every league, newest first, no pagination
+  // (the total is ~150 games — small enough for one response; the client
+  // filters by league/team locally for instant filtering).
+  if (leagueParam === 'all') {
+    if (nocache) for (const def of LEAGUES) cacheDel(`games:${def.slug}`);
+    const items = [];
+    for (const def of LEAGUES) {
+      const games = await getLeagueGames(def.slug);
+      for (const g of games.games) {
+        items.push({
+          ...g,
+          league: def.slug,
+          leagueHe: def.hebrewName,
+          homeHe: toHebrew(g.home),
+          awayHe: toHebrew(g.away),
+        });
+      }
+    }
+    items.sort((a, b) => (a.dateISO < b.dateISO ? 1 : -1));
+    return NextResponse.json({ league: 'all', total: items.length, items });
+  }
+
+  const league = leagueParam as LeagueSlug;
   const def = getLeague(league) ?? LEAGUES[0];
 
   // Bypass the server cache when the user hits refresh.
@@ -24,6 +48,8 @@ export async function GET(req: NextRequest) {
     .slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE)
     .map((g) => ({
       ...g,
+      league: def.slug,
+      leagueHe: def.hebrewName,
       homeHe: toHebrew(g.home),
       awayHe: toHebrew(g.away),
     }));

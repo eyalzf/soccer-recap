@@ -53,6 +53,8 @@ export default function FixturesPage() {
     const req = d.request;
     const game: GameItem = {
       id: `fixture:${slug}`,
+      league: req.league,
+      leagueHe: req.league,
       home: req.home,
       away: req.away,
       homeHe: req.homeHe || req.home,
