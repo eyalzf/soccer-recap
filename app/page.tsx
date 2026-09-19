@@ -1,16 +1,19 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import GameCard, { type GameItem } from '@/components/GameCard';
 import RecapPanel from '@/components/RecapPanel';
-import { LEAGUES, type LeagueSlug } from '@/lib/leagues';
+import FilterBar, { type LeagueFilter } from '@/components/FilterBar';
+import {
+  buildTeamRegistry,
+  entryFor,
+  quickTeams,
+} from '@/lib/teamRegistry';
+import { getTeamViews, getWatchedGameIds, teamKey } from '@/lib/watch';
 
 interface GamesResponse {
-  leagueHe: string;
-  leagueBadge: string | null;
-  page: number;
+  league: string;
   total: number;
-  hasMore: boolean;
   items: GameItem[];
 }
 
@@ -20,22 +23,31 @@ interface LeagueMeta {
   badge: string | null;
 }
 
+function dayLabel(iso: string): string {
+  const d = new Date(iso);
+  const now = new Date();
+  const dayStart = (x: Date) => new Date(x.getFullYear(), x.getMonth(), x.getDate()).getTime();
+  const diffDays = Math.round((dayStart(now) - dayStart(d)) / 86400000);
+  if (diffDays === 0) return 'היום';
+  if (diffDays === 1) return 'אתמול';
+  return d.toLocaleDateString('he-IL', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'numeric',
+  });
+}
+
 export default function Home() {
-  const [league, setLeague] = useState<LeagueSlug>('premier-league');
-  const [items, setItems] = useState<GameItem[]>([]);
-  const [total, setTotal] = useState(0);
-  /** Next page index to fetch. */
-  const [nextPage, setNextPage] = useState(0);
-  const [hasMore, setHasMore] = useState(false);
-  const [leagues, setLeagues] = useState<LeagueMeta[]>([]);
+  const [games, setGames] = useState<GameItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [loadingMore, setLoadingMore] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [leagues, setLeagues] = useState<LeagueMeta[]>([]);
+  const [league, setLeague] = useState<LeagueFilter>('all');
+  const [team, setTeam] = useState<string | null>(null);
+  const [hideWatched, setHideWatched] = useState(false);
   const [selected, setSelected] = useState<GameItem | null>(null);
-  const sentinelRef = useRef<HTMLDivElement | null>(null);
-  // Mutable snapshot so the intersection callback never reads stale state.
-  const stateRef = useRef({ league, nextPage, hasMore, loading, loadingMore });
-  stateRef.current = { league, nextPage, hasMore, loading, loadingMore };
+  /** Bumped when the recap modal closes so watch-derived state refreshes. */
+  const [watchTick, setWatchTick] = useState(0);
 
   useEffect(() => {
     fetch('/api/leagues')
@@ -44,83 +56,63 @@ export default function Home() {
       .catch(() => {});
   }, []);
 
-  const fetchPage = useCallback(async (lg: LeagueSlug, pg: number, force = false) => {
-    const res = await fetch(
-      `/api/games?league=${lg}&page=${pg}${force ? '&nocache=1' : ''}`,
-      { cache: 'no-store' }
-    );
-    return (await res.json()) as GamesResponse;
+  const load = useCallback(async (force = false) => {
+    if (force) setRefreshing(true);
+    else setLoading(true);
+    try {
+      const res = await fetch(`/api/games?league=all${force ? '&nocache=1' : ''}`, {
+        cache: 'no-store',
+      });
+      const j = (await res.json()) as GamesResponse;
+      setGames(j.items ?? []);
+    } catch {
+      setGames([]);
+    }
+    setLoading(false);
+    setRefreshing(false);
   }, []);
 
-  /** Load the first page, replacing the list (initial load, league switch, refresh). */
-  const loadFirst = useCallback(
-    async (lg: LeagueSlug, force = false) => {
-      if (force) setRefreshing(true);
-      else setLoading(true);
-      try {
-        const j = await fetchPage(lg, 0, force);
-        setItems(j.items);
-        setTotal(j.total);
-        setHasMore(j.hasMore);
-        setNextPage(1);
-      } catch {
-        setItems([]);
-        setHasMore(false);
-      }
-      setLoading(false);
-      setRefreshing(false);
-    },
-    [fetchPage]
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  const views = useMemo(() => getTeamViews(), [watchTick]);
+  const watchedIds = useMemo(() => getWatchedGameIds(), [watchTick]);
+  const registry = useMemo(() => buildTeamRegistry(games), [games]);
+  const quick = useMemo(() => quickTeams(registry, views, 10), [registry, views]);
+
+  const filtered = useMemo(
+    () =>
+      games.filter(
+        (g) =>
+          (league === 'all' || g.league === league) &&
+          (!team || teamKey(g.home) === team || teamKey(g.away) === team) &&
+          (!hideWatched || !watchedIds.has(g.id))
+      ),
+    [games, league, team, hideWatched, watchedIds]
   );
 
-  /** Append the next page when the bottom sentinel scrolls into view. */
-  const loadMore = useCallback(async () => {
-    const s = stateRef.current;
-    if (s.loading || s.loadingMore || !s.hasMore) return;
-    setLoadingMore(true);
-    try {
-      const j = await fetchPage(s.league, s.nextPage);
-      setItems((prev) => {
-        const seen = new Set(prev.map((g) => g.id));
-        return [...prev, ...j.items.filter((g) => !seen.has(g.id))];
-      });
-      setTotal(j.total);
-      setHasMore(j.hasMore);
-      setNextPage(s.nextPage + 1);
-    } catch {
-      /* keep the list as-is; the sentinel stays and can retry */
+  // Group by calendar day, preserving the API's newest-first order.
+  const groups = useMemo(() => {
+    const map = new Map<string, GameItem[]>();
+    for (const g of filtered) {
+      const k = g.dateISO.slice(0, 10);
+      const arr = map.get(k);
+      if (arr) arr.push(g);
+      else map.set(k, [g]);
     }
-    setLoadingMore(false);
-  }, [fetchPage]);
-
-  useEffect(() => {
-    loadFirst(league);
-  }, [league, loadFirst]);
-
-  useEffect(() => {
-    // Runs again when loading finishes / items change, because the sentinel
-    // only exists in the DOM after the first page renders.
-    const el = sentinelRef.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) loadMore();
-      },
-      { rootMargin: '600px' }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, [loadMore, loading, items.length]);
-
-  const switchLeague = (lg: LeagueSlug) => {
-    if (lg === league) return;
-    setLeague(lg);
-    setSelected(null);
-    window.scrollTo(0, 0);
-  };
+    return [...map.entries()];
+  }, [filtered]);
 
   const badgeFor = (slug: string): string | null =>
     leagues.find((l) => l.slug === slug)?.badge ?? null;
+
+  const closeModal = () => {
+    setSelected(null);
+    setWatchTick((t) => t + 1);
+  };
+
+  const teamHe = team ? entryFor(team, registry).he : '';
 
   return (
     <div className="app">
@@ -129,48 +121,74 @@ export default function Home() {
         <button
           className="refresh-btn"
           disabled={refreshing}
-          onClick={() => loadFirst(league, true)}
+          onClick={() => load(true)}
         >
           {refreshing ? 'מרענן…' : 'רענן'}
         </button>
       </div>
 
-      <nav className="tabs">
-        {LEAGUES.map((l) => (
-          <button
-            key={l.slug}
-            className={'tab' + (league === l.slug ? ' active' : '')}
-            onClick={() => switchLeague(l.slug)}
-          >
-            {badgeFor(l.slug) && <img src={badgeFor(l.slug) as string} alt="" />}
-            {leagues.find((x) => x.slug === l.slug)?.hebrewName ?? l.hebrewName}
+      <FilterBar
+        league={league}
+        onLeague={(l) => {
+          setLeague(l);
+          window.scrollTo(0, 0);
+        }}
+        teams={quick}
+        teamKey={team}
+        onTeamKey={(k) => {
+          setTeam(k);
+          window.scrollTo(0, 0);
+        }}
+        registry={registry}
+        hideWatched={hideWatched}
+        onHideWatched={setHideWatched}
+        leagueBadgeFor={badgeFor}
+      />
+
+      {team && (
+        <div className="active-team">
+          מציג משחקים של <strong>{teamHe}</strong>
+          <button onClick={() => setTeam(null)} aria-label="נקה סינון קבוצה">
+            ✕
           </button>
-        ))}
-      </nav>
+        </div>
+      )}
 
       {loading ? (
         <div className="status">טוען משחקים…</div>
-      ) : items.length === 0 ? (
-        <div className="status">אין משחקים להצגה</div>
+      ) : filtered.length === 0 ? (
+        <div className="status">
+          אין משחקים להצגה
+          <br />
+          <button className="clear-btn" onClick={() => { setLeague('all'); setTeam(null); setHideWatched(false); }}>
+            נקה את כל הסינונים
+          </button>
+        </div>
       ) : (
-        <>
-          <div className="games">
-            {items.map((g) => (
-              <GameCard key={g.id} game={g} onSelect={setSelected} />
-            ))}
+        <div className="games-unified">
+          {groups.map(([day, dayGames]) => (
+            <section key={day}>
+              <h2 className="day-header">{dayLabel(dayGames[0].dateISO)}</h2>
+              <div className="games">
+                {dayGames.map((g) => (
+                  <GameCard
+                    key={g.id}
+                    game={g}
+                    watched={watchedIds.has(g.id)}
+                    onSelect={setSelected}
+                  />
+                ))}
+              </div>
+            </section>
+          ))}
+          <div className="status slim">
+            הוצגו {filtered.length} מתוך {games.length} משחקים
           </div>
-          <div ref={sentinelRef} className="infinite-sentinel" aria-hidden="true" />
-          {loadingMore && <div className="status slim">טוען עוד משחקים…</div>}
-          {!hasMore && !loadingMore && items.length > 0 && (
-            <div className="status slim">
-              הוצגו {items.length} מתוך {total} משחקים
-            </div>
-          )}
-        </>
+        </div>
       )}
 
       {selected && (
-        <RecapPanel game={selected} league={league} onClose={() => setSelected(null)} />
+        <RecapPanel game={selected} league={selected.league} onClose={closeModal} />
       )}
 
       <footer className="attribution">
