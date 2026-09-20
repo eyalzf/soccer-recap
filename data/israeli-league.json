@@ -2,7 +2,7 @@
  "league": "israeli-league",
  "league_id": 127,
  "season": "2026/2027",
- "updated_at": "2026-09-20T05:29:21.412429+00:00",
+ "updated_at": "2026-09-20T05:53:41.063560+00:00",
  "checked_through": "2026-09-19",
  "team_ids": {
   "Hapoel Haifa": 8301,
@@ -17,6 +17,66 @@
   "Hapoel Beer Sheva": 9754
  },
  "games": [
+  {
+   "id": "manual-20260919-beitar-jerusalem-hapoel-haifa",
+   "home": "Beitar Jerusalem",
+   "away": "Hapoel Haifa",
+   "dateISO": "2026-09-19T17:30:00.000Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/lsg64h1781239463.png",
+   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8301.png"
+  },
+  {
+   "id": "manual-20260919-maccabi-haifa-ironi-tiberias",
+   "home": "Maccabi Haifa",
+   "away": "Ironi Tiberias",
+   "dateISO": "2026-09-19T17:00:00.000Z",
+   "homeScore": 3,
+   "awayScore": 2,
+   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10185.png",
+   "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/78q5ez1656067666.png"
+  },
+  {
+   "id": "manual-20260919-bnei-sakhnin-hapoel-ramat-gan",
+   "home": "Bnei Sakhnin",
+   "away": "Hapoel Ramat Gan",
+   "dateISO": "2026-09-19T16:30:00.000Z",
+   "homeScore": 1,
+   "awayScore": 0,
+   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8718.png",
+   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/89753.png"
+  },
+  {
+   "id": "manual-20260919-hapoel-beer-sheva-hapoel-ironi-kiryat-shmona",
+   "home": "Hapoel Beer Sheva",
+   "away": "Hapoel Ironi Kiryat Shmona",
+   "dateISO": "2026-09-19T15:15:00.000Z",
+   "homeScore": 1,
+   "awayScore": 0,
+   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9754.png",
+   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/2095.png"
+  },
+  {
+   "id": "manual-20260919-maccabi-netanya-maccabi-tel-aviv",
+   "home": "Maccabi Netanya",
+   "away": "Maccabi Tel Aviv",
+   "dateISO": "2026-09-19T15:00:00.000Z",
+   "homeScore": 1,
+   "awayScore": 2,
+   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/1832.png",
+   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/7855.png"
+  },
+  {
+   "id": "manual-20260919-maccabi-petach-tikva-hapoel-jerusalem-fc",
+   "home": "Maccabi Petach Tikva",
+   "away": "Hapoel Jerusalem FC",
+   "dateISO": "2026-09-19T14:30:00.000Z",
+   "homeScore": 2,
+   "awayScore": 4,
+   "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/3bvby91720417514.png",
+   "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/cvh4ec1639431062.png"
+  },
   {
    "id": "manual-20260918-hapoel-tel-aviv-hapoel-petah-tikva",
    "home": "Hapoel Tel Aviv",
