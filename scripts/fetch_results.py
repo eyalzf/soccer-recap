@@ -195,6 +195,36 @@ def harvest_daily(data, lid, games_by_id, team_ids):
     return added
 
 
+def diag_leagues(payload, league_ids, ds, tag):
+    """Zero-quota visibility into the raw payload: for each of our leagues
+    log whether its entry exists and how many raw matches it carries
+    (before finished/status filtering). This distinguishes 'league absent
+    from FotMob response' from 'matches present but filtered out'."""
+    by_id = {}
+    for lg in (payload.get("leagues") or []):
+        try:
+            by_id[int(lg.get("id", -1))] = lg
+        except (TypeError, ValueError):
+            continue
+    for slug, lid in league_ids.items():
+        lg = by_id.get(lid)
+        if lg is None:
+            print(f"diag {tag} {ds}: {slug} (id {lid}) ABSENT from payload",
+                  flush=True)
+        else:
+            print(f"diag {tag} {ds}: {slug} (id {lid}) present, "
+                  f"{len(lg.get('matches') or [])} raw matches", flush=True)
+
+
+def dump_payload(payload, ds):
+    """Persist the raw payload for post-run inspection. The workflow
+    uploads data/raw/ as an artifact; the commit step only adds the four
+    league files, so dumps never pollute the repo."""
+    os.makedirs("data/raw", exist_ok=True)
+    with open(f"data/raw/{ds}.json", "w", encoding="utf-8") as f:
+        json.dump(payload, f, ensure_ascii=False)
+
+
 def main():
     os.makedirs("data", exist_ok=True)
     now_iso = datetime.datetime.now(datetime.timezone.utc).isoformat()
@@ -289,6 +319,8 @@ def main():
                   f"not marking checked, will retry next run", flush=True)
             continue
         payloads[d] = payload
+        dump_payload(payload, ds)
+        diag_leagues(payload, league_ids, ds, "daily")
     print(f"incremental: fetched {len(payloads)}/{len(wanted)} dates",
           flush=True)
 
@@ -307,6 +339,8 @@ def main():
                   flush=True)
             continue
         recheck_payloads[d] = payload
+        dump_payload(payload, ds)
+        diag_leagues(payload, league_ids, ds, "recheck")
     print(f"recheck: fetched {len(recheck_payloads)}/{len(recheck)} dates",
           flush=True)
 
