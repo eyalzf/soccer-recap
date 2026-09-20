@@ -98,14 +98,21 @@ export function rankCandidates(list: RawCandidate[], game: GameInput): RankedCan
     seen.add(key);
     out.push({ ...c, score: scoreCandidate(c, game) });
   }
-  // Relevance tier first (extended > standard > rest), then longest
-  // first within each tier; relevance score breaks remaining ties.
-  // Videos with unknown duration sort last within their tier.
-  out.sort(
-    (a, b) =>
-      highlightTier(a.title) - highlightTier(b.title) ||
-      (b.durationSec ?? -1) - (a.durationSec ?? -1) ||
-      b.score - a.score
-  );
+  // Relevance tier first (extended > standard > rest). Within the
+  // non-highlight tier (news, punditry, …) Hebrew outranks longer
+  // non-Hebrew videos; otherwise longest first within each tier;
+  // relevance score breaks remaining ties. Videos with unknown duration
+  // sort last within their tier.
+  out.sort((a, b) => {
+    const ta = highlightTier(a.title);
+    const tb = highlightTier(b.title);
+    if (ta !== tb) return ta - tb;
+    if (ta === 2) {
+      const ha = videoLang(a) === 'he' ? 0 : 1;
+      const hb = videoLang(b) === 'he' ? 0 : 1;
+      if (ha !== hb) return ha - hb;
+    }
+    return (b.durationSec ?? -1) - (a.durationSec ?? -1) || b.score - a.score;
+  });
   return out;
 }

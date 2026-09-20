@@ -325,6 +325,22 @@ check(
   tierRanked.map((r) => r.id).join(',')
 );
 
+// Tier 2 (non-highlights: news, punditry, …): Hebrew outranks longer
+// non-Hebrew videos; highlights tiers keep longest-first.
+const langRanked = rankCandidates(
+  [
+    mkTier('news-en-long', 'Arsenal 2-0 Chelsea | Post-match reactions', 900),
+    mkTier('news-he-short', 'ארסנל נגד צ׳לסי | תגובות אחרי המשחק', 300),
+    mkTier('std-en', 'Arsenal 2-0 Chelsea | Highlights', 600),
+  ],
+  tierGame
+);
+check(
+  'tier2 hebrew-first',
+  langRanked.map((r) => r.id).join(',') === 'std-en,news-he-short,news-en-long',
+  langRanked.map((r) => r.id).join(',')
+);
+
 // --------------------------------- v5: language veto lift + exclusions ---
 // Curated tiers (preferred/bulk/candidate): language is a ranking preference,
 // not a veto. General search keeps the hard veto.

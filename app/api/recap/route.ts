@@ -85,7 +85,7 @@ function parseGame(sp: URLSearchParams): GameInput | null {
  *  season). Versioned so matcher/policy changes auto-invalidate. */
 function gameCacheKey(game: GameInput): string {
   const seg = (s: string) => encodeURIComponent(s).replace(/[%().]/g, '_');
-  return `game/v7/${game.league}/${seg(game.home)}-${seg(game.away)}-${seg(game.dateISO)}`;
+  return `game/v8/${game.league}/${seg(game.home)}-${seg(game.away)}-${seg(game.dateISO)}`;
 }
 
 interface CachedGame {
