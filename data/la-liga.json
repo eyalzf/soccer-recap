@@ -2,8 +2,8 @@
  "league": "la-liga",
  "league_id": 87,
  "season": "2026/2027",
- "updated_at": "2026-09-19T08:06:06.885843+00:00",
- "checked_through": "2026-09-18",
+ "updated_at": "2026-09-20T05:29:21.412429+00:00",
+ "checked_through": "2026-09-19",
  "team_ids": {
   "Villarreal": 10205,
   "Real Betis": 8603,
@@ -27,6 +27,46 @@
   "Valencia": 10267
  },
  "games": [
+  {
+   "id": "5868078",
+   "home": "Sevilla",
+   "away": "Barcelona",
+   "dateISO": "2026-09-19T19:00:00.000Z",
+   "homeScore": 1,
+   "awayScore": 3,
+   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8302.png",
+   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8634.png"
+  },
+  {
+   "id": "5868073",
+   "home": "Celta Vigo",
+   "away": "Racing Santander",
+   "dateISO": "2026-09-19T16:30:00.000Z",
+   "homeScore": 5,
+   "awayScore": 0,
+   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9910.png",
+   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8696.png"
+  },
+  {
+   "id": "5868071",
+   "home": "Athletic Club",
+   "away": "Deportivo Alavés",
+   "dateISO": "2026-09-19T14:15:00.000Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8315.png",
+   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9866.png"
+  },
+  {
+   "id": "5868077",
+   "home": "Osasuna",
+   "away": "Rayo Vallecano",
+   "dateISO": "2026-09-19T12:00:00.000Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8371.png",
+   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8370.png"
+  },
   {
    "id": "5868075",
    "home": "Espanyol",

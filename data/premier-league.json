@@ -2,8 +2,8 @@
  "league": "premier-league",
  "league_id": 47,
  "season": "2026/2027",
- "updated_at": "2026-09-19T08:06:06.885843+00:00",
- "checked_through": "2026-09-18",
+ "updated_at": "2026-09-20T05:29:21.412429+00:00",
+ "checked_through": "2026-09-19",
  "team_ids": {
   "Leeds United": 8463,
   "Newcastle United": 10261,
@@ -27,6 +27,56 @@
   "Arsenal": 9825
  },
  "games": [
+  {
+   "id": "5795463",
+   "home": "Nottingham Forest",
+   "away": "Coventry City",
+   "dateISO": "2026-09-19T16:30:00.000Z",
+   "homeScore": 0,
+   "awayScore": 1,
+   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10203.png",
+   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8669.png"
+  },
+  {
+   "id": "5795457",
+   "home": "Brighton & Hove Albion",
+   "away": "Arsenal",
+   "dateISO": "2026-09-19T14:00:00.000Z",
+   "homeScore": 3,
+   "awayScore": 0,
+   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10204.png",
+   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9825.png"
+  },
+  {
+   "id": "5795458",
+   "home": "Everton",
+   "away": "Ipswich Town",
+   "dateISO": "2026-09-19T14:00:00.000Z",
+   "homeScore": 1,
+   "awayScore": 0,
+   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8668.png",
+   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9902.png"
+  },
+  {
+   "id": "5795462",
+   "home": "Newcastle United",
+   "away": "Hull City",
+   "dateISO": "2026-09-19T14:00:00.000Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10261.png",
+   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8667.png"
+  },
+  {
+   "id": "5795464",
+   "home": "Tottenham Hotspur",
+   "away": "Aston Villa",
+   "dateISO": "2026-09-19T11:30:00.000Z",
+   "homeScore": 2,
+   "awayScore": 3,
+   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8586.png",
+   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10252.png"
+  },
   {
    "id": "5795456",
    "home": "Brentford",
