@@ -1,671 +1,721 @@
 {
- "league": "la-liga",
- "league_id": 87,
- "season": "2026/2027",
- "updated_at": "2026-09-20T05:29:21.412429+00:00",
- "checked_through": "2026-09-19",
- "team_ids": {
-  "Villarreal": 10205,
-  "Real Betis": 8603,
-  "Celta Vigo": 9910,
-  "Málaga": 9864,
-  "Levante": 8581,
-  "Barcelona": 8634,
-  "Getafe": 8305,
-  "Deportivo A Coruña": 9783,
-  "Real Sociedad": 8560,
-  "Atlético Madrid": 9906,
-  "Racing Santander": 8696,
-  "Deportivo Alavés": 9866,
-  "Osasuna": 8371,
-  "Espanyol": 8558,
-  "Athletic Club": 8315,
-  "Elche": 10268,
-  "Real Madrid": 8633,
-  "Rayo Vallecano": 8370,
-  "Sevilla": 8302,
-  "Valencia": 10267
- },
- "games": [
-  {
-   "id": "5868078",
-   "home": "Sevilla",
-   "away": "Barcelona",
-   "dateISO": "2026-09-19T19:00:00.000Z",
-   "homeScore": 1,
-   "awayScore": 3,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8302.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8634.png"
+  "league": "la-liga",
+  "league_id": 87,
+  "season": "2026/2027",
+  "updated_at": "2026-09-21T03:02:20.503339+00:00",
+  "checked_through": "2026-09-19",
+  "team_ids": {
+    "Villarreal": 10205,
+    "Real Betis": 8603,
+    "Celta Vigo": 9910,
+    "Málaga": 9864,
+    "Levante": 8581,
+    "Barcelona": 8634,
+    "Getafe": 8305,
+    "Deportivo A Coruña": 9783,
+    "Real Sociedad": 8560,
+    "Atlético Madrid": 9906,
+    "Racing Santander": 8696,
+    "Deportivo Alavés": 9866,
+    "Osasuna": 8371,
+    "Espanyol": 8558,
+    "Athletic Club": 8315,
+    "Elche": 10268,
+    "Real Madrid": 8633,
+    "Rayo Vallecano": 8370,
+    "Sevilla": 8302,
+    "Valencia": 10267
   },
-  {
-   "id": "5868073",
-   "home": "Celta Vigo",
-   "away": "Racing Santander",
-   "dateISO": "2026-09-19T16:30:00.000Z",
-   "homeScore": 5,
-   "awayScore": 0,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9910.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8696.png"
-  },
-  {
-   "id": "5868071",
-   "home": "Athletic Club",
-   "away": "Deportivo Alavés",
-   "dateISO": "2026-09-19T14:15:00.000Z",
-   "homeScore": 0,
-   "awayScore": 0,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8315.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9866.png"
-  },
-  {
-   "id": "5868077",
-   "home": "Osasuna",
-   "away": "Rayo Vallecano",
-   "dateISO": "2026-09-19T12:00:00.000Z",
-   "homeScore": 1,
-   "awayScore": 1,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8371.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8370.png"
-  },
-  {
-   "id": "5868075",
-   "home": "Espanyol",
-   "away": "Elche",
-   "dateISO": "2026-09-18T19:00:00.000Z",
-   "homeScore": 1,
-   "awayScore": 3,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8558.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10268.png"
-  },
-  {
-   "id": "5868068",
-   "home": "Málaga",
-   "away": "Villarreal",
-   "dateISO": "2026-09-17T19:30:00.000Z",
-   "homeScore": 1,
-   "awayScore": 3,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9864.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10205.png"
-  },
-  {
-   "id": "5868063",
-   "home": "Real Betis",
-   "away": "Getafe",
-   "dateISO": "2026-09-17T17:00:00.000Z",
-   "homeScore": 1,
-   "awayScore": 0,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8603.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8305.png"
-  },
-  {
-   "id": "5868066",
-   "home": "Barcelona",
-   "away": "Racing Santander",
-   "dateISO": "2026-09-16T19:30:00.000Z",
-   "homeScore": 7,
-   "awayScore": 2,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8634.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8696.png"
-  },
-  {
-   "id": "5868062",
-   "home": "Atlético Madrid",
-   "away": "Osasuna",
-   "dateISO": "2026-09-16T17:00:00.000Z",
-   "homeScore": 4,
-   "awayScore": 0,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9906.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8371.png"
-  },
-  {
-   "id": "5868064",
-   "home": "Deportivo A Coruña",
-   "away": "Sevilla",
-   "dateISO": "2026-09-16T17:00:00.000Z",
-   "homeScore": 0,
-   "awayScore": 1,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9783.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8302.png"
-  },
-  {
-   "id": "manual-20260915-elche-real-madrid",
-   "home": "Elche",
-   "away": "Real Madrid",
-   "dateISO": "2026-09-15T19:30:00.000Z",
-   "homeScore": 2,
-   "awayScore": 3,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10268.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8633.png"
-  },
-  {
-   "id": "manual-20260915-rayo-vallecano-espanyol",
-   "home": "Rayo Vallecano",
-   "away": "Espanyol",
-   "dateISO": "2026-09-15T17:00:00.000Z",
-   "homeScore": 2,
-   "awayScore": 1,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8370.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8558.png"
-  },
-  {
-   "id": "manual-20260915-deportivo-alaves-valencia",
-   "home": "Deportivo Alavés",
-   "away": "Valencia",
-   "dateISO": "2026-09-15T17:00:00.000Z",
-   "homeScore": 0,
-   "awayScore": 1,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9866.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10267.png"
-  },
-  {
-   "id": "5868060",
-   "home": "Villarreal",
-   "away": "Real Betis",
-   "dateISO": "2026-09-14T19:00:00.000Z",
-   "homeScore": 1,
-   "awayScore": 2,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10205.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8603.png"
-  },
-  {
-   "id": "5868058",
-   "home": "Real Sociedad",
-   "away": "Atlético Madrid",
-   "dateISO": "2026-09-13T19:00:00.000Z",
-   "homeScore": 0,
-   "awayScore": 3,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8560.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9906.png"
-  },
-  {
-   "id": "5868053",
-   "home": "Getafe",
-   "away": "Deportivo A Coruña",
-   "dateISO": "2026-09-13T16:30:00.000Z",
-   "homeScore": 1,
-   "awayScore": 1,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8305.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9783.png"
-  },
-  {
-   "id": "5868054",
-   "home": "Levante",
-   "away": "Barcelona",
-   "dateISO": "2026-09-13T14:15:00.000Z",
-   "homeScore": 2,
-   "awayScore": 4,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8581.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8634.png"
-  },
-  {
-   "id": "5868052",
-   "home": "Celta Vigo",
-   "away": "Málaga",
-   "dateISO": "2026-09-13T12:00:00.000Z",
-   "homeScore": 1,
-   "awayScore": 1,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9910.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9864.png"
-  },
-  {
-   "id": "5868057",
-   "home": "Real Madrid",
-   "away": "Rayo Vallecano",
-   "dateISO": "2026-09-12T19:00:00.000Z",
-   "homeScore": 4,
-   "awayScore": 1,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8633.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8370.png"
-  },
-  {
-   "id": "5868051",
-   "home": "Athletic Club",
-   "away": "Elche",
-   "dateISO": "2026-09-12T16:30:00.000Z",
-   "homeScore": 1,
-   "awayScore": 1,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8315.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10268.png"
-  },
-  {
-   "id": "5868055",
-   "home": "Osasuna",
-   "away": "Espanyol",
-   "dateISO": "2026-09-12T14:15:00.000Z",
-   "homeScore": 0,
-   "awayScore": 2,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8371.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8558.png"
-  },
-  {
-   "id": "5868056",
-   "home": "Racing Santander",
-   "away": "Deportivo Alavés",
-   "dateISO": "2026-09-12T12:00:00.000Z",
-   "homeScore": 2,
-   "awayScore": 1,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8696.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9866.png"
-  },
-  {
-   "id": "5868059",
-   "home": "Sevilla",
-   "away": "Valencia",
-   "dateISO": "2026-09-11T19:00:00.000Z",
-   "homeScore": 1,
-   "awayScore": 0,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8302.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10267.png"
-  },
-  {
-   "id": "5868044",
-   "home": "Elche",
-   "away": "Real Sociedad",
-   "dateISO": "2026-09-07T19:30:00.000Z",
-   "homeScore": 2,
-   "awayScore": 3,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10268.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8560.png"
-  },
-  {
-   "id": "5868046",
-   "home": "Getafe",
-   "away": "Celta Vigo",
-   "dateISO": "2026-09-07T17:00:00.000Z",
-   "homeScore": 1,
-   "awayScore": 1,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8305.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9910.png"
-  },
-  {
-   "id": "5868045",
-   "home": "Espanyol",
-   "away": "Sevilla",
-   "dateISO": "2026-09-06T19:00:00.000Z",
-   "homeScore": 1,
-   "awayScore": 1,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8558.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8302.png"
-  },
-  {
-   "id": "5868041",
-   "home": "Deportivo Alavés",
-   "away": "Osasuna",
-   "dateISO": "2026-09-06T16:30:00.000Z",
-   "homeScore": 5,
-   "awayScore": 2,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9866.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8371.png"
-  },
-  {
-   "id": "5868047",
-   "home": "Málaga",
-   "away": "Levante",
-   "dateISO": "2026-09-06T16:30:00.000Z",
-   "homeScore": 0,
-   "awayScore": 0,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9864.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8581.png"
-  },
-  {
-   "id": "5868049",
-   "home": "Valencia",
-   "away": "Barcelona",
-   "dateISO": "2026-09-06T14:15:00.000Z",
-   "homeScore": 0,
-   "awayScore": 5,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10267.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8634.png"
-  },
-  {
-   "id": "5868050",
-   "home": "Villarreal",
-   "away": "Deportivo A Coruña",
-   "dateISO": "2026-09-05T19:00:00.000Z",
-   "homeScore": 2,
-   "awayScore": 3,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10205.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9783.png"
-  },
-  {
-   "id": "5868048",
-   "home": "Rayo Vallecano",
-   "away": "Racing Santander",
-   "dateISO": "2026-09-05T16:30:00.000Z",
-   "homeScore": 3,
-   "awayScore": 2,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8370.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8696.png"
-  },
-  {
-   "id": "5868042",
-   "home": "Athletic Club",
-   "away": "Atlético Madrid",
-   "dateISO": "2026-09-05T14:15:00.000Z",
-   "homeScore": 3,
-   "awayScore": 0,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8315.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9906.png"
-  },
-  {
-   "id": "5868043",
-   "home": "Real Betis",
-   "away": "Real Madrid",
-   "dateISO": "2026-09-04T19:00:00.000Z",
-   "homeScore": 1,
-   "awayScore": 0,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8603.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8633.png"
-  },
-  {
-   "id": "5868070",
-   "home": "Real Sociedad",
-   "away": "Celta Vigo",
-   "dateISO": "2026-09-03T19:00:00.000Z",
-   "homeScore": 0,
-   "awayScore": 0,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8560.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9910.png"
-  },
-  {
-   "id": "5868034",
-   "home": "Barcelona",
-   "away": "Rayo Vallecano",
-   "dateISO": "2026-08-31T19:30:00.000Z",
-   "homeScore": 5,
-   "awayScore": 2,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8634.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8370.png"
-  },
-  {
-   "id": "5868036",
-   "home": "Osasuna",
-   "away": "Getafe",
-   "dateISO": "2026-08-31T17:30:00.000Z",
-   "homeScore": 1,
-   "awayScore": 0,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8371.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8305.png"
-  },
-  {
-   "id": "5868032",
-   "home": "Celta Vigo",
-   "away": "Athletic Club",
-   "dateISO": "2026-08-30T19:30:00.000Z",
-   "homeScore": 0,
-   "awayScore": 2,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9910.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8315.png"
-  },
-  {
-   "id": "5868033",
-   "home": "Deportivo A Coruña",
-   "away": "Valencia",
-   "dateISO": "2026-08-30T17:30:00.000Z",
-   "homeScore": 3,
-   "awayScore": 1,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9783.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10267.png"
-  },
-  {
-   "id": "5868038",
-   "home": "Real Madrid",
-   "away": "Málaga",
-   "dateISO": "2026-08-30T15:00:00.000Z",
-   "homeScore": 4,
-   "awayScore": 0,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8633.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9864.png"
-  },
-  {
-   "id": "5868040",
-   "home": "Sevilla",
-   "away": "Atlético Madrid",
-   "dateISO": "2026-08-29T19:30:00.000Z",
-   "homeScore": 1,
-   "awayScore": 3,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8302.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9906.png"
-  },
-  {
-   "id": "5868039",
-   "home": "Real Sociedad",
-   "away": "Espanyol",
-   "dateISO": "2026-08-29T17:00:00.000Z",
-   "homeScore": 2,
-   "awayScore": 1,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8560.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8558.png"
-  },
-  {
-   "id": "5868035",
-   "home": "Levante",
-   "away": "Real Betis",
-   "dateISO": "2026-08-29T15:00:00.000Z",
-   "homeScore": 5,
-   "awayScore": 2,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8581.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8603.png"
-  },
-  {
-   "id": "5868031",
-   "home": "Deportivo Alavés",
-   "away": "Villarreal",
-   "dateISO": "2026-08-28T19:30:00.000Z",
-   "homeScore": 1,
-   "awayScore": 0,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9866.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10205.png"
-  },
-  {
-   "id": "5868037",
-   "home": "Racing Santander",
-   "away": "Elche",
-   "dateISO": "2026-08-28T17:00:00.000Z",
-   "homeScore": 3,
-   "awayScore": 2,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8696.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10268.png"
-  },
-  {
-   "id": "5868016",
-   "home": "Barcelona",
-   "away": "Athletic Club",
-   "dateISO": "2026-08-27T19:00:00.000Z",
-   "homeScore": 2,
-   "awayScore": 0,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8634.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8315.png"
-  },
-  {
-   "id": "5868013",
-   "home": "Celta Vigo",
-   "away": "Osasuna",
-   "dateISO": "2026-08-27T18:30:00.000Z",
-   "homeScore": 1,
-   "awayScore": 2,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9910.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8371.png"
-  },
-  {
-   "id": "5868018",
-   "home": "Real Madrid",
-   "away": "Real Sociedad",
-   "dateISO": "2026-08-26T19:00:00.000Z",
-   "homeScore": 4,
-   "awayScore": 1,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8633.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8560.png"
-  },
-  {
-   "id": "5868020",
-   "home": "Valencia",
-   "away": "Real Betis",
-   "dateISO": "2026-08-25T19:00:00.000Z",
-   "homeScore": 0,
-   "awayScore": 1,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10267.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8603.png"
-  },
-  {
-   "id": "5868027",
-   "home": "Málaga",
-   "away": "Deportivo A Coruña",
-   "dateISO": "2026-08-24T19:30:00.000Z",
-   "homeScore": 1,
-   "awayScore": 1,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9864.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9783.png"
-  },
-  {
-   "id": "5868028",
-   "home": "Osasuna",
-   "away": "Levante",
-   "dateISO": "2026-08-24T17:30:00.000Z",
-   "homeScore": 0,
-   "awayScore": 0,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8371.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8581.png"
-  },
-  {
-   "id": "5868024",
-   "home": "Elche",
-   "away": "Barcelona",
-   "dateISO": "2026-08-23T19:30:00.000Z",
-   "homeScore": 0,
-   "awayScore": 5,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10268.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8634.png"
-  },
-  {
-   "id": "5868026",
-   "home": "Getafe",
-   "away": "Racing Santander",
-   "dateISO": "2026-08-23T17:30:00.000Z",
-   "homeScore": 1,
-   "awayScore": 0,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8305.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8696.png"
-  },
-  {
-   "id": "5868022",
-   "home": "Atlético Madrid",
-   "away": "Villarreal",
-   "dateISO": "2026-08-23T15:00:00.000Z",
-   "homeScore": 2,
-   "awayScore": 2,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9906.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10205.png"
-  },
-  {
-   "id": "5868025",
-   "home": "Espanyol",
-   "away": "Real Madrid",
-   "dateISO": "2026-08-22T19:30:00.000Z",
-   "homeScore": 1,
-   "awayScore": 2,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8558.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8633.png"
-  },
-  {
-   "id": "5868030",
-   "home": "Valencia",
-   "away": "Celta Vigo",
-   "dateISO": "2026-08-22T17:30:00.000Z",
-   "homeScore": 0,
-   "awayScore": 0,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10267.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9910.png"
-  },
-  {
-   "id": "5868021",
-   "home": "Athletic Club",
-   "away": "Sevilla",
-   "dateISO": "2026-08-22T15:00:00.000Z",
-   "homeScore": 1,
-   "awayScore": 3,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8315.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8302.png"
-  },
-  {
-   "id": "5868023",
-   "home": "Real Betis",
-   "away": "Real Sociedad",
-   "dateISO": "2026-08-21T19:00:00.000Z",
-   "homeScore": 1,
-   "awayScore": 0,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8603.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8560.png"
-  },
-  {
-   "id": "5868029",
-   "home": "Rayo Vallecano",
-   "away": "Deportivo Alaves",
-   "dateISO": "2026-08-20T19:00:00.000Z",
-   "homeScore": 1,
-   "awayScore": 1,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8370.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9866.png"
-  },
-  {
-   "id": "5868012",
-   "home": "Atletico Madrid",
-   "away": "Malaga",
-   "dateISO": "2026-08-19T19:05:00.000Z",
-   "homeScore": 2,
-   "awayScore": 0,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9906.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9864.png"
-  },
-  {
-   "id": "5868014",
-   "home": "Deportivo A Coruña",
-   "away": "Elche",
-   "dateISO": "2026-08-17T19:00:00.000Z",
-   "homeScore": 1,
-   "awayScore": 1,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9783.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10268.png"
-  },
-  {
-   "id": "5868015",
-   "home": "Espanyol",
-   "away": "Levante",
-   "dateISO": "2026-08-16T17:00:00.000Z",
-   "homeScore": 3,
-   "awayScore": 0,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8558.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8581.png"
-  },
-  {
-   "id": "5868017",
-   "home": "Racing Santander",
-   "away": "Villarreal",
-   "dateISO": "2026-08-16T15:00:00.000Z",
-   "homeScore": 2,
-   "awayScore": 2,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8696.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10205.png"
-  },
-  {
-   "id": "5868019",
-   "home": "Sevilla",
-   "away": "Rayo Vallecano",
-   "dateISO": "2026-08-15T19:30:00.000Z",
-   "homeScore": 2,
-   "awayScore": 1,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8302.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8370.png"
-  },
-  {
-   "id": "5868011",
-   "home": "Deportivo Alavés",
-   "away": "Getafe",
-   "dateISO": "2026-08-15T17:30:00.000Z",
-   "homeScore": 3,
-   "awayScore": 0,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9866.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8305.png"
-  }
- ]
+  "games": [
+    {
+      "id": "manual-20260920-valencia-real-sociedad",
+      "home": "Valencia",
+      "away": "Real Sociedad",
+      "dateISO": "2026-09-20T19:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 3,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10267.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8560.png"
+    },
+    {
+      "id": "manual-20260920-deportivo-a-coruna-real-betis",
+      "home": "Deportivo A Coruña",
+      "away": "Real Betis",
+      "dateISO": "2026-09-20T16:30:00.000Z",
+      "homeScore": 1,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9783.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8603.png"
+    },
+    {
+      "id": "manual-20260920-villarreal-levante",
+      "home": "Villarreal",
+      "away": "Levante",
+      "dateISO": "2026-09-20T16:30:00.000Z",
+      "homeScore": 3,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10205.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8581.png"
+    },
+    {
+      "id": "manual-20260920-atletico-madrid-real-madrid",
+      "home": "Atlético Madrid",
+      "away": "Real Madrid",
+      "dateISO": "2026-09-20T14:15:00.000Z",
+      "homeScore": 2,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9906.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8633.png"
+    },
+    {
+      "id": "manual-20260920-getafe-malaga",
+      "home": "Getafe",
+      "away": "Málaga",
+      "dateISO": "2026-09-20T12:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8305.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9864.png"
+    },
+    {
+      "id": "5868078",
+      "home": "Sevilla",
+      "away": "Barcelona",
+      "dateISO": "2026-09-19T19:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 3,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8302.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8634.png"
+    },
+    {
+      "id": "5868073",
+      "home": "Celta Vigo",
+      "away": "Racing Santander",
+      "dateISO": "2026-09-19T16:30:00.000Z",
+      "homeScore": 5,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9910.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8696.png"
+    },
+    {
+      "id": "5868071",
+      "home": "Athletic Club",
+      "away": "Deportivo Alavés",
+      "dateISO": "2026-09-19T14:15:00.000Z",
+      "homeScore": 0,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8315.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9866.png"
+    },
+    {
+      "id": "5868077",
+      "home": "Osasuna",
+      "away": "Rayo Vallecano",
+      "dateISO": "2026-09-19T12:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8371.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8370.png"
+    },
+    {
+      "id": "5868075",
+      "home": "Espanyol",
+      "away": "Elche",
+      "dateISO": "2026-09-18T19:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 3,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8558.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10268.png"
+    },
+    {
+      "id": "5868068",
+      "home": "Málaga",
+      "away": "Villarreal",
+      "dateISO": "2026-09-17T19:30:00.000Z",
+      "homeScore": 1,
+      "awayScore": 3,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9864.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10205.png"
+    },
+    {
+      "id": "5868063",
+      "home": "Real Betis",
+      "away": "Getafe",
+      "dateISO": "2026-09-17T17:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8603.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8305.png"
+    },
+    {
+      "id": "5868066",
+      "home": "Barcelona",
+      "away": "Racing Santander",
+      "dateISO": "2026-09-16T19:30:00.000Z",
+      "homeScore": 7,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8634.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8696.png"
+    },
+    {
+      "id": "5868062",
+      "home": "Atlético Madrid",
+      "away": "Osasuna",
+      "dateISO": "2026-09-16T17:00:00.000Z",
+      "homeScore": 4,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9906.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8371.png"
+    },
+    {
+      "id": "5868064",
+      "home": "Deportivo A Coruña",
+      "away": "Sevilla",
+      "dateISO": "2026-09-16T17:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9783.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8302.png"
+    },
+    {
+      "id": "manual-20260915-elche-real-madrid",
+      "home": "Elche",
+      "away": "Real Madrid",
+      "dateISO": "2026-09-15T19:30:00.000Z",
+      "homeScore": 2,
+      "awayScore": 3,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10268.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8633.png"
+    },
+    {
+      "id": "manual-20260915-rayo-vallecano-espanyol",
+      "home": "Rayo Vallecano",
+      "away": "Espanyol",
+      "dateISO": "2026-09-15T17:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8370.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8558.png"
+    },
+    {
+      "id": "manual-20260915-deportivo-alaves-valencia",
+      "home": "Deportivo Alavés",
+      "away": "Valencia",
+      "dateISO": "2026-09-15T17:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9866.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10267.png"
+    },
+    {
+      "id": "5868060",
+      "home": "Villarreal",
+      "away": "Real Betis",
+      "dateISO": "2026-09-14T19:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10205.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8603.png"
+    },
+    {
+      "id": "5868058",
+      "home": "Real Sociedad",
+      "away": "Atlético Madrid",
+      "dateISO": "2026-09-13T19:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 3,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8560.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9906.png"
+    },
+    {
+      "id": "5868053",
+      "home": "Getafe",
+      "away": "Deportivo A Coruña",
+      "dateISO": "2026-09-13T16:30:00.000Z",
+      "homeScore": 1,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8305.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9783.png"
+    },
+    {
+      "id": "5868054",
+      "home": "Levante",
+      "away": "Barcelona",
+      "dateISO": "2026-09-13T14:15:00.000Z",
+      "homeScore": 2,
+      "awayScore": 4,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8581.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8634.png"
+    },
+    {
+      "id": "5868052",
+      "home": "Celta Vigo",
+      "away": "Málaga",
+      "dateISO": "2026-09-13T12:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9910.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9864.png"
+    },
+    {
+      "id": "5868057",
+      "home": "Real Madrid",
+      "away": "Rayo Vallecano",
+      "dateISO": "2026-09-12T19:00:00.000Z",
+      "homeScore": 4,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8633.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8370.png"
+    },
+    {
+      "id": "5868051",
+      "home": "Athletic Club",
+      "away": "Elche",
+      "dateISO": "2026-09-12T16:30:00.000Z",
+      "homeScore": 1,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8315.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10268.png"
+    },
+    {
+      "id": "5868055",
+      "home": "Osasuna",
+      "away": "Espanyol",
+      "dateISO": "2026-09-12T14:15:00.000Z",
+      "homeScore": 0,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8371.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8558.png"
+    },
+    {
+      "id": "5868056",
+      "home": "Racing Santander",
+      "away": "Deportivo Alavés",
+      "dateISO": "2026-09-12T12:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8696.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9866.png"
+    },
+    {
+      "id": "5868059",
+      "home": "Sevilla",
+      "away": "Valencia",
+      "dateISO": "2026-09-11T19:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8302.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10267.png"
+    },
+    {
+      "id": "5868044",
+      "home": "Elche",
+      "away": "Real Sociedad",
+      "dateISO": "2026-09-07T19:30:00.000Z",
+      "homeScore": 2,
+      "awayScore": 3,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10268.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8560.png"
+    },
+    {
+      "id": "5868046",
+      "home": "Getafe",
+      "away": "Celta Vigo",
+      "dateISO": "2026-09-07T17:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8305.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9910.png"
+    },
+    {
+      "id": "5868045",
+      "home": "Espanyol",
+      "away": "Sevilla",
+      "dateISO": "2026-09-06T19:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8558.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8302.png"
+    },
+    {
+      "id": "5868041",
+      "home": "Deportivo Alavés",
+      "away": "Osasuna",
+      "dateISO": "2026-09-06T16:30:00.000Z",
+      "homeScore": 5,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9866.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8371.png"
+    },
+    {
+      "id": "5868047",
+      "home": "Málaga",
+      "away": "Levante",
+      "dateISO": "2026-09-06T16:30:00.000Z",
+      "homeScore": 0,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9864.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8581.png"
+    },
+    {
+      "id": "5868049",
+      "home": "Valencia",
+      "away": "Barcelona",
+      "dateISO": "2026-09-06T14:15:00.000Z",
+      "homeScore": 0,
+      "awayScore": 5,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10267.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8634.png"
+    },
+    {
+      "id": "5868050",
+      "home": "Villarreal",
+      "away": "Deportivo A Coruña",
+      "dateISO": "2026-09-05T19:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 3,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10205.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9783.png"
+    },
+    {
+      "id": "5868048",
+      "home": "Rayo Vallecano",
+      "away": "Racing Santander",
+      "dateISO": "2026-09-05T16:30:00.000Z",
+      "homeScore": 3,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8370.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8696.png"
+    },
+    {
+      "id": "5868042",
+      "home": "Athletic Club",
+      "away": "Atlético Madrid",
+      "dateISO": "2026-09-05T14:15:00.000Z",
+      "homeScore": 3,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8315.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9906.png"
+    },
+    {
+      "id": "5868043",
+      "home": "Real Betis",
+      "away": "Real Madrid",
+      "dateISO": "2026-09-04T19:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8603.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8633.png"
+    },
+    {
+      "id": "5868070",
+      "home": "Real Sociedad",
+      "away": "Celta Vigo",
+      "dateISO": "2026-09-03T19:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8560.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9910.png"
+    },
+    {
+      "id": "5868034",
+      "home": "Barcelona",
+      "away": "Rayo Vallecano",
+      "dateISO": "2026-08-31T19:30:00.000Z",
+      "homeScore": 5,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8634.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8370.png"
+    },
+    {
+      "id": "5868036",
+      "home": "Osasuna",
+      "away": "Getafe",
+      "dateISO": "2026-08-31T17:30:00.000Z",
+      "homeScore": 1,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8371.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8305.png"
+    },
+    {
+      "id": "5868032",
+      "home": "Celta Vigo",
+      "away": "Athletic Club",
+      "dateISO": "2026-08-30T19:30:00.000Z",
+      "homeScore": 0,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9910.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8315.png"
+    },
+    {
+      "id": "5868033",
+      "home": "Deportivo A Coruña",
+      "away": "Valencia",
+      "dateISO": "2026-08-30T17:30:00.000Z",
+      "homeScore": 3,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9783.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10267.png"
+    },
+    {
+      "id": "5868038",
+      "home": "Real Madrid",
+      "away": "Málaga",
+      "dateISO": "2026-08-30T15:00:00.000Z",
+      "homeScore": 4,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8633.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9864.png"
+    },
+    {
+      "id": "5868040",
+      "home": "Sevilla",
+      "away": "Atlético Madrid",
+      "dateISO": "2026-08-29T19:30:00.000Z",
+      "homeScore": 1,
+      "awayScore": 3,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8302.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9906.png"
+    },
+    {
+      "id": "5868039",
+      "home": "Real Sociedad",
+      "away": "Espanyol",
+      "dateISO": "2026-08-29T17:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8560.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8558.png"
+    },
+    {
+      "id": "5868035",
+      "home": "Levante",
+      "away": "Real Betis",
+      "dateISO": "2026-08-29T15:00:00.000Z",
+      "homeScore": 5,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8581.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8603.png"
+    },
+    {
+      "id": "5868031",
+      "home": "Deportivo Alavés",
+      "away": "Villarreal",
+      "dateISO": "2026-08-28T19:30:00.000Z",
+      "homeScore": 1,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9866.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10205.png"
+    },
+    {
+      "id": "5868037",
+      "home": "Racing Santander",
+      "away": "Elche",
+      "dateISO": "2026-08-28T17:00:00.000Z",
+      "homeScore": 3,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8696.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10268.png"
+    },
+    {
+      "id": "5868016",
+      "home": "Barcelona",
+      "away": "Athletic Club",
+      "dateISO": "2026-08-27T19:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8634.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8315.png"
+    },
+    {
+      "id": "5868013",
+      "home": "Celta Vigo",
+      "away": "Osasuna",
+      "dateISO": "2026-08-27T18:30:00.000Z",
+      "homeScore": 1,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9910.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8371.png"
+    },
+    {
+      "id": "5868018",
+      "home": "Real Madrid",
+      "away": "Real Sociedad",
+      "dateISO": "2026-08-26T19:00:00.000Z",
+      "homeScore": 4,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8633.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8560.png"
+    },
+    {
+      "id": "5868020",
+      "home": "Valencia",
+      "away": "Real Betis",
+      "dateISO": "2026-08-25T19:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10267.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8603.png"
+    },
+    {
+      "id": "5868027",
+      "home": "Málaga",
+      "away": "Deportivo A Coruña",
+      "dateISO": "2026-08-24T19:30:00.000Z",
+      "homeScore": 1,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9864.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9783.png"
+    },
+    {
+      "id": "5868028",
+      "home": "Osasuna",
+      "away": "Levante",
+      "dateISO": "2026-08-24T17:30:00.000Z",
+      "homeScore": 0,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8371.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8581.png"
+    },
+    {
+      "id": "5868024",
+      "home": "Elche",
+      "away": "Barcelona",
+      "dateISO": "2026-08-23T19:30:00.000Z",
+      "homeScore": 0,
+      "awayScore": 5,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10268.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8634.png"
+    },
+    {
+      "id": "5868026",
+      "home": "Getafe",
+      "away": "Racing Santander",
+      "dateISO": "2026-08-23T17:30:00.000Z",
+      "homeScore": 1,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8305.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8696.png"
+    },
+    {
+      "id": "5868022",
+      "home": "Atlético Madrid",
+      "away": "Villarreal",
+      "dateISO": "2026-08-23T15:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9906.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10205.png"
+    },
+    {
+      "id": "5868025",
+      "home": "Espanyol",
+      "away": "Real Madrid",
+      "dateISO": "2026-08-22T19:30:00.000Z",
+      "homeScore": 1,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8558.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8633.png"
+    },
+    {
+      "id": "5868030",
+      "home": "Valencia",
+      "away": "Celta Vigo",
+      "dateISO": "2026-08-22T17:30:00.000Z",
+      "homeScore": 0,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10267.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9910.png"
+    },
+    {
+      "id": "5868021",
+      "home": "Athletic Club",
+      "away": "Sevilla",
+      "dateISO": "2026-08-22T15:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 3,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8315.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8302.png"
+    },
+    {
+      "id": "5868023",
+      "home": "Real Betis",
+      "away": "Real Sociedad",
+      "dateISO": "2026-08-21T19:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8603.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8560.png"
+    },
+    {
+      "id": "5868029",
+      "home": "Rayo Vallecano",
+      "away": "Deportivo Alaves",
+      "dateISO": "2026-08-20T19:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8370.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9866.png"
+    },
+    {
+      "id": "5868012",
+      "home": "Atletico Madrid",
+      "away": "Malaga",
+      "dateISO": "2026-08-19T19:05:00.000Z",
+      "homeScore": 2,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9906.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9864.png"
+    },
+    {
+      "id": "5868014",
+      "home": "Deportivo A Coruña",
+      "away": "Elche",
+      "dateISO": "2026-08-17T19:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9783.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10268.png"
+    },
+    {
+      "id": "5868015",
+      "home": "Espanyol",
+      "away": "Levante",
+      "dateISO": "2026-08-16T17:00:00.000Z",
+      "homeScore": 3,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8558.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8581.png"
+    },
+    {
+      "id": "5868017",
+      "home": "Racing Santander",
+      "away": "Villarreal",
+      "dateISO": "2026-08-16T15:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8696.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10205.png"
+    },
+    {
+      "id": "5868019",
+      "home": "Sevilla",
+      "away": "Rayo Vallecano",
+      "dateISO": "2026-08-15T19:30:00.000Z",
+      "homeScore": 2,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8302.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8370.png"
+    },
+    {
+      "id": "5868011",
+      "home": "Deportivo Alavés",
+      "away": "Getafe",
+      "dateISO": "2026-08-15T17:30:00.000Z",
+      "homeScore": 3,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9866.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8305.png"
+    }
+  ]
 }
