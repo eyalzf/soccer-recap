@@ -1,491 +1,531 @@
 {
- "league": "premier-league",
- "league_id": 47,
- "season": "2026/2027",
- "updated_at": "2026-09-20T05:29:21.412429+00:00",
- "checked_through": "2026-09-19",
- "team_ids": {
-  "Leeds United": 8463,
-  "Newcastle United": 10261,
-  "Coventry City": 8669,
-  "Brighton & Hove Albion": 10204,
-  "Manchester United": 10260,
-  "Manchester City": 8456,
-  "AFC Bournemouth": 8678,
-  "Brentford": 9937,
-  "Aston Villa": 10252,
-  "Nottingham Forest": 10203,
-  "Chelsea": 8455,
-  "Hull City": 8667,
-  "Crystal Palace": 9826,
-  "Ipswich Town": 9902,
-  "Liverpool": 8650,
-  "Fulham": 9879,
-  "Tottenham Hotspur": 8586,
-  "Everton": 8668,
-  "Sunderland": 8472,
-  "Arsenal": 9825
- },
- "games": [
-  {
-   "id": "5795463",
-   "home": "Nottingham Forest",
-   "away": "Coventry City",
-   "dateISO": "2026-09-19T16:30:00.000Z",
-   "homeScore": 0,
-   "awayScore": 1,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10203.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8669.png"
+  "league": "premier-league",
+  "league_id": 47,
+  "season": "2026/2027",
+  "updated_at": "2026-09-21T03:01:57.566850+00:00",
+  "checked_through": "2026-09-19",
+  "team_ids": {
+    "Leeds United": 8463,
+    "Newcastle United": 10261,
+    "Coventry City": 8669,
+    "Brighton & Hove Albion": 10204,
+    "Manchester United": 10260,
+    "Manchester City": 8456,
+    "AFC Bournemouth": 8678,
+    "Brentford": 9937,
+    "Aston Villa": 10252,
+    "Nottingham Forest": 10203,
+    "Chelsea": 8455,
+    "Hull City": 8667,
+    "Crystal Palace": 9826,
+    "Ipswich Town": 9902,
+    "Liverpool": 8650,
+    "Fulham": 9879,
+    "Tottenham Hotspur": 8586,
+    "Everton": 8668,
+    "Sunderland": 8472,
+    "Arsenal": 9825
   },
-  {
-   "id": "5795457",
-   "home": "Brighton & Hove Albion",
-   "away": "Arsenal",
-   "dateISO": "2026-09-19T14:00:00.000Z",
-   "homeScore": 3,
-   "awayScore": 0,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10204.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9825.png"
-  },
-  {
-   "id": "5795458",
-   "home": "Everton",
-   "away": "Ipswich Town",
-   "dateISO": "2026-09-19T14:00:00.000Z",
-   "homeScore": 1,
-   "awayScore": 0,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8668.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9902.png"
-  },
-  {
-   "id": "5795462",
-   "home": "Newcastle United",
-   "away": "Hull City",
-   "dateISO": "2026-09-19T14:00:00.000Z",
-   "homeScore": 2,
-   "awayScore": 1,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10261.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8667.png"
-  },
-  {
-   "id": "5795464",
-   "home": "Tottenham Hotspur",
-   "away": "Aston Villa",
-   "dateISO": "2026-09-19T11:30:00.000Z",
-   "homeScore": 2,
-   "awayScore": 3,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8586.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10252.png"
-  },
-  {
-   "id": "5795456",
-   "home": "Brentford",
-   "away": "Chelsea",
-   "dateISO": "2026-09-18T19:00:00.000Z",
-   "homeScore": 3,
-   "awayScore": 0,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9937.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8455.png"
-  },
-  {
-   "id": "5795450",
-   "home": "Leeds United",
-   "away": "Newcastle United",
-   "dateISO": "2026-09-14T19:00:00.000Z",
-   "homeScore": 4,
-   "awayScore": 1,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8463.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10261.png"
-  },
-  {
-   "id": "5795452",
-   "home": "Manchester United",
-   "away": "Manchester City",
-   "dateISO": "2026-09-13T15:30:00.000Z",
-   "homeScore": 0,
-   "awayScore": 1,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10260.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8456.png"
-  },
-  {
-   "id": "5795448",
-   "home": "Coventry City",
-   "away": "Brighton & Hove Albion",
-   "dateISO": "2026-09-13T13:00:00.000Z",
-   "homeScore": 0,
-   "awayScore": 5,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8669.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10204.png"
-  },
-  {
-   "id": "5795453",
-   "home": "Sunderland",
-   "away": "Arsenal",
-   "dateISO": "2026-09-12T19:00:00.000Z",
-   "homeScore": 0,
-   "awayScore": 2,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8472.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9825.png"
-  },
-  {
-   "id": "5795454",
-   "home": "Tottenham Hotspur",
-   "away": "Everton",
-   "dateISO": "2026-09-12T16:30:00.000Z",
-   "homeScore": 0,
-   "awayScore": 0,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8586.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8668.png"
-  },
-  {
-   "id": "5795445",
-   "home": "AFC Bournemouth",
-   "away": "Brentford",
-   "dateISO": "2026-09-12T14:00:00.000Z",
-   "homeScore": 2,
-   "awayScore": 2,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8678.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9937.png"
-  },
-  {
-   "id": "5795446",
-   "home": "Aston Villa",
-   "away": "Nottingham Forest",
-   "dateISO": "2026-09-12T14:00:00.000Z",
-   "homeScore": 1,
-   "awayScore": 2,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10252.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10203.png"
-  },
-  {
-   "id": "5795447",
-   "home": "Chelsea",
-   "away": "Hull City",
-   "dateISO": "2026-09-12T14:00:00.000Z",
-   "homeScore": 2,
-   "awayScore": 2,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8455.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8667.png"
-  },
-  {
-   "id": "5795449",
-   "home": "Crystal Palace",
-   "away": "Ipswich Town",
-   "dateISO": "2026-09-12T14:00:00.000Z",
-   "homeScore": 2,
-   "awayScore": 3,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9826.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9902.png"
-  },
-  {
-   "id": "5795451",
-   "home": "Liverpool",
-   "away": "Fulham",
-   "dateISO": "2026-09-12T14:00:00.000Z",
-   "homeScore": 0,
-   "awayScore": 0,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8650.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9879.png"
-  },
-  {
-   "id": "5795435",
-   "home": "Arsenal",
-   "away": "Chelsea",
-   "dateISO": "2026-09-06T15:30:00.000Z",
-   "homeScore": 2,
-   "awayScore": 1,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9825.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8455.png"
-  },
-  {
-   "id": "5795438",
-   "home": "Everton",
-   "away": "Manchester United",
-   "dateISO": "2026-09-06T13:00:00.000Z",
-   "homeScore": 2,
-   "awayScore": 2,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8668.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10260.png"
-  },
-  {
-   "id": "5795440",
-   "home": "Hull City",
-   "away": "Aston Villa",
-   "dateISO": "2026-09-05T16:30:00.000Z",
-   "homeScore": 0,
-   "awayScore": 0,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8667.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10252.png"
-  },
-  {
-   "id": "5795436",
-   "home": "Brentford",
-   "away": "Sunderland",
-   "dateISO": "2026-09-05T14:00:00.000Z",
-   "homeScore": 1,
-   "awayScore": 1,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9937.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8472.png"
-  },
-  {
-   "id": "5795437",
-   "home": "Brighton & Hove Albion",
-   "away": "Leeds United",
-   "dateISO": "2026-09-05T14:00:00.000Z",
-   "homeScore": 1,
-   "awayScore": 1,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10204.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8463.png"
-  },
-  {
-   "id": "5795439",
-   "home": "Fulham",
-   "away": "Crystal Palace",
-   "dateISO": "2026-09-05T14:00:00.000Z",
-   "homeScore": 2,
-   "awayScore": 3,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9879.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9826.png"
-  },
-  {
-   "id": "5795442",
-   "home": "Manchester City",
-   "away": "Coventry City",
-   "dateISO": "2026-09-05T14:00:00.000Z",
-   "homeScore": 1,
-   "awayScore": 0,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8456.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8669.png"
-  },
-  {
-   "id": "5795444",
-   "home": "Nottingham Forest",
-   "away": "Tottenham Hotspur",
-   "dateISO": "2026-09-05T14:00:00.000Z",
-   "homeScore": 0,
-   "awayScore": 0,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10203.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8586.png"
-  },
-  {
-   "id": "5795443",
-   "home": "Newcastle United",
-   "away": "AFC Bournemouth",
-   "dateISO": "2026-09-05T11:30:00.000Z",
-   "homeScore": 2,
-   "awayScore": 2,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10261.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8678.png"
-  },
-  {
-   "id": "5795441",
-   "home": "Ipswich Town",
-   "away": "Liverpool",
-   "dateISO": "2026-09-04T19:00:00.000Z",
-   "homeScore": 0,
-   "awayScore": 2,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9902.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8650.png"
-  },
-  {
-   "id": "5795426",
-   "home": "Aston Villa",
-   "away": "Arsenal",
-   "dateISO": "2026-08-31T19:00:00.000Z",
-   "homeScore": 0,
-   "awayScore": 1,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10252.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9825.png"
-  },
-  {
-   "id": "5795432",
-   "home": "Manchester United",
-   "away": "Ipswich Town",
-   "dateISO": "2026-08-30T15:30:00.000Z",
-   "homeScore": 5,
-   "awayScore": 2,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10260.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9902.png"
-  },
-  {
-   "id": "5795427",
-   "home": "Chelsea",
-   "away": "Brighton & Hove Albion",
-   "dateISO": "2026-08-30T13:00:00.000Z",
-   "homeScore": 4,
-   "awayScore": 3,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8455.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10204.png"
-  },
-  {
-   "id": "5795430",
-   "home": "Leeds United",
-   "away": "Brentford",
-   "dateISO": "2026-08-30T13:00:00.000Z",
-   "homeScore": 1,
-   "awayScore": 1,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8463.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9937.png"
-  },
-  {
-   "id": "5795433",
-   "home": "Sunderland",
-   "away": "Fulham",
-   "dateISO": "2026-08-30T13:00:00.000Z",
-   "homeScore": 1,
-   "awayScore": 0,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8472.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9879.png"
-  },
-  {
-   "id": "5795434",
-   "home": "Tottenham Hotspur",
-   "away": "Newcastle United",
-   "dateISO": "2026-08-29T16:30:00.000Z",
-   "homeScore": 0,
-   "awayScore": 2,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8586.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10261.png"
-  },
-  {
-   "id": "5795425",
-   "home": "AFC Bournemouth",
-   "away": "Everton",
-   "dateISO": "2026-08-29T14:00:00.000Z",
-   "homeScore": 1,
-   "awayScore": 1,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8678.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8668.png"
-  },
-  {
-   "id": "5795428",
-   "home": "Coventry City",
-   "away": "Hull City",
-   "dateISO": "2026-08-29T14:00:00.000Z",
-   "homeScore": 0,
-   "awayScore": 1,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8669.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8667.png"
-  },
-  {
-   "id": "5795431",
-   "home": "Liverpool",
-   "away": "Nottingham Forest",
-   "dateISO": "2026-08-29T11:30:00.000Z",
-   "homeScore": 2,
-   "awayScore": 2,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8650.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10203.png"
-  },
-  {
-   "id": "5795429",
-   "home": "Crystal Palace",
-   "away": "Manchester City",
-   "dateISO": "2026-08-28T19:00:00.000Z",
-   "homeScore": 1,
-   "awayScore": 4,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9826.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8456.png"
-  },
-  {
-   "id": "5795372",
-   "home": "Fulham",
-   "away": "Chelsea",
-   "dateISO": "2026-08-24T19:00:00.000Z",
-   "homeScore": 2,
-   "awayScore": 3,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9879.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8455.png"
-  },
-  {
-   "id": "5795371",
-   "home": "Newcastle United",
-   "away": "Liverpool",
-   "dateISO": "2026-08-23T15:30:00.000Z",
-   "homeScore": 2,
-   "awayScore": 2,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10261.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8650.png"
-  },
-  {
-   "id": "5795369",
-   "home": "Brighton & Hove Albion",
-   "away": "Aston Villa",
-   "dateISO": "2026-08-23T13:00:00.000Z",
-   "homeScore": 4,
-   "awayScore": 0,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10204.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10252.png"
-  },
-  {
-   "id": "5795370",
-   "home": "Manchester City",
-   "away": "AFC Bournemouth",
-   "dateISO": "2026-08-23T13:00:00.000Z",
-   "homeScore": 2,
-   "awayScore": 1,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8456.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8678.png"
-  },
-  {
-   "id": "5795368",
-   "home": "Brentford",
-   "away": "Tottenham Hotspur",
-   "dateISO": "2026-08-22T16:30:00.000Z",
-   "homeScore": 3,
-   "awayScore": 0,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9937.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8586.png"
-  },
-  {
-   "id": "5795365",
-   "home": "Everton",
-   "away": "Crystal Palace",
-   "dateISO": "2026-08-22T14:00:00.000Z",
-   "homeScore": 2,
-   "awayScore": 0,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8668.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9826.png"
-  },
-  {
-   "id": "5795366",
-   "home": "Ipswich Town",
-   "away": "Sunderland",
-   "dateISO": "2026-08-22T14:00:00.000Z",
-   "homeScore": 2,
-   "awayScore": 1,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9902.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8472.png"
-  },
-  {
-   "id": "5795367",
-   "home": "Nottingham Forest",
-   "away": "Leeds United",
-   "dateISO": "2026-08-22T14:00:00.000Z",
-   "homeScore": 0,
-   "awayScore": 1,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10203.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8463.png"
-  },
-  {
-   "id": "5795364",
-   "home": "Hull City",
-   "away": "Manchester United",
-   "dateISO": "2026-08-22T11:30:00.000Z",
-   "homeScore": 2,
-   "awayScore": 0,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8667.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10260.png"
-  },
-  {
-   "id": "5795363",
-   "home": "Arsenal",
-   "away": "Coventry City",
-   "dateISO": "2026-08-21T19:00:00.000Z",
-   "homeScore": 3,
-   "awayScore": 0,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9825.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8669.png"
-  }
- ]
+  "games": [
+    {
+      "id": "manual-20260920-fulham-manchester-united",
+      "home": "Fulham",
+      "away": "Manchester United",
+      "dateISO": "2026-09-20T15:30:00.000Z",
+      "homeScore": 1,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9879.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10260.png"
+    },
+    {
+      "id": "manual-20260920-afc-bournemouth-liverpool",
+      "home": "AFC Bournemouth",
+      "away": "Liverpool",
+      "dateISO": "2026-09-20T13:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8678.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8650.png"
+    },
+    {
+      "id": "manual-20260920-leeds-united-crystal-palace",
+      "home": "Leeds United",
+      "away": "Crystal Palace",
+      "dateISO": "2026-09-20T13:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8463.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9826.png"
+    },
+    {
+      "id": "manual-20260920-manchester-city-sunderland",
+      "home": "Manchester City",
+      "away": "Sunderland",
+      "dateISO": "2026-09-20T13:00:00.000Z",
+      "homeScore": 5,
+      "awayScore": 3,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8456.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8472.png"
+    },
+    {
+      "id": "5795463",
+      "home": "Nottingham Forest",
+      "away": "Coventry City",
+      "dateISO": "2026-09-19T16:30:00.000Z",
+      "homeScore": 0,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10203.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8669.png"
+    },
+    {
+      "id": "5795457",
+      "home": "Brighton & Hove Albion",
+      "away": "Arsenal",
+      "dateISO": "2026-09-19T14:00:00.000Z",
+      "homeScore": 3,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10204.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9825.png"
+    },
+    {
+      "id": "5795458",
+      "home": "Everton",
+      "away": "Ipswich Town",
+      "dateISO": "2026-09-19T14:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8668.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9902.png"
+    },
+    {
+      "id": "5795462",
+      "home": "Newcastle United",
+      "away": "Hull City",
+      "dateISO": "2026-09-19T14:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10261.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8667.png"
+    },
+    {
+      "id": "5795464",
+      "home": "Tottenham Hotspur",
+      "away": "Aston Villa",
+      "dateISO": "2026-09-19T11:30:00.000Z",
+      "homeScore": 2,
+      "awayScore": 3,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8586.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10252.png"
+    },
+    {
+      "id": "5795456",
+      "home": "Brentford",
+      "away": "Chelsea",
+      "dateISO": "2026-09-18T19:00:00.000Z",
+      "homeScore": 3,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9937.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8455.png"
+    },
+    {
+      "id": "5795450",
+      "home": "Leeds United",
+      "away": "Newcastle United",
+      "dateISO": "2026-09-14T19:00:00.000Z",
+      "homeScore": 4,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8463.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10261.png"
+    },
+    {
+      "id": "5795452",
+      "home": "Manchester United",
+      "away": "Manchester City",
+      "dateISO": "2026-09-13T15:30:00.000Z",
+      "homeScore": 0,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10260.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8456.png"
+    },
+    {
+      "id": "5795448",
+      "home": "Coventry City",
+      "away": "Brighton & Hove Albion",
+      "dateISO": "2026-09-13T13:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 5,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8669.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10204.png"
+    },
+    {
+      "id": "5795453",
+      "home": "Sunderland",
+      "away": "Arsenal",
+      "dateISO": "2026-09-12T19:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8472.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9825.png"
+    },
+    {
+      "id": "5795454",
+      "home": "Tottenham Hotspur",
+      "away": "Everton",
+      "dateISO": "2026-09-12T16:30:00.000Z",
+      "homeScore": 0,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8586.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8668.png"
+    },
+    {
+      "id": "5795445",
+      "home": "AFC Bournemouth",
+      "away": "Brentford",
+      "dateISO": "2026-09-12T14:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8678.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9937.png"
+    },
+    {
+      "id": "5795446",
+      "home": "Aston Villa",
+      "away": "Nottingham Forest",
+      "dateISO": "2026-09-12T14:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10252.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10203.png"
+    },
+    {
+      "id": "5795447",
+      "home": "Chelsea",
+      "away": "Hull City",
+      "dateISO": "2026-09-12T14:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8455.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8667.png"
+    },
+    {
+      "id": "5795449",
+      "home": "Crystal Palace",
+      "away": "Ipswich Town",
+      "dateISO": "2026-09-12T14:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 3,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9826.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9902.png"
+    },
+    {
+      "id": "5795451",
+      "home": "Liverpool",
+      "away": "Fulham",
+      "dateISO": "2026-09-12T14:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8650.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9879.png"
+    },
+    {
+      "id": "5795435",
+      "home": "Arsenal",
+      "away": "Chelsea",
+      "dateISO": "2026-09-06T15:30:00.000Z",
+      "homeScore": 2,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9825.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8455.png"
+    },
+    {
+      "id": "5795438",
+      "home": "Everton",
+      "away": "Manchester United",
+      "dateISO": "2026-09-06T13:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8668.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10260.png"
+    },
+    {
+      "id": "5795440",
+      "home": "Hull City",
+      "away": "Aston Villa",
+      "dateISO": "2026-09-05T16:30:00.000Z",
+      "homeScore": 0,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8667.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10252.png"
+    },
+    {
+      "id": "5795436",
+      "home": "Brentford",
+      "away": "Sunderland",
+      "dateISO": "2026-09-05T14:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9937.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8472.png"
+    },
+    {
+      "id": "5795437",
+      "home": "Brighton & Hove Albion",
+      "away": "Leeds United",
+      "dateISO": "2026-09-05T14:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10204.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8463.png"
+    },
+    {
+      "id": "5795439",
+      "home": "Fulham",
+      "away": "Crystal Palace",
+      "dateISO": "2026-09-05T14:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 3,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9879.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9826.png"
+    },
+    {
+      "id": "5795442",
+      "home": "Manchester City",
+      "away": "Coventry City",
+      "dateISO": "2026-09-05T14:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8456.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8669.png"
+    },
+    {
+      "id": "5795444",
+      "home": "Nottingham Forest",
+      "away": "Tottenham Hotspur",
+      "dateISO": "2026-09-05T14:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10203.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8586.png"
+    },
+    {
+      "id": "5795443",
+      "home": "Newcastle United",
+      "away": "AFC Bournemouth",
+      "dateISO": "2026-09-05T11:30:00.000Z",
+      "homeScore": 2,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10261.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8678.png"
+    },
+    {
+      "id": "5795441",
+      "home": "Ipswich Town",
+      "away": "Liverpool",
+      "dateISO": "2026-09-04T19:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9902.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8650.png"
+    },
+    {
+      "id": "5795426",
+      "home": "Aston Villa",
+      "away": "Arsenal",
+      "dateISO": "2026-08-31T19:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10252.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9825.png"
+    },
+    {
+      "id": "5795432",
+      "home": "Manchester United",
+      "away": "Ipswich Town",
+      "dateISO": "2026-08-30T15:30:00.000Z",
+      "homeScore": 5,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10260.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9902.png"
+    },
+    {
+      "id": "5795427",
+      "home": "Chelsea",
+      "away": "Brighton & Hove Albion",
+      "dateISO": "2026-08-30T13:00:00.000Z",
+      "homeScore": 4,
+      "awayScore": 3,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8455.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10204.png"
+    },
+    {
+      "id": "5795430",
+      "home": "Leeds United",
+      "away": "Brentford",
+      "dateISO": "2026-08-30T13:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8463.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9937.png"
+    },
+    {
+      "id": "5795433",
+      "home": "Sunderland",
+      "away": "Fulham",
+      "dateISO": "2026-08-30T13:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8472.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9879.png"
+    },
+    {
+      "id": "5795434",
+      "home": "Tottenham Hotspur",
+      "away": "Newcastle United",
+      "dateISO": "2026-08-29T16:30:00.000Z",
+      "homeScore": 0,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8586.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10261.png"
+    },
+    {
+      "id": "5795425",
+      "home": "AFC Bournemouth",
+      "away": "Everton",
+      "dateISO": "2026-08-29T14:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8678.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8668.png"
+    },
+    {
+      "id": "5795428",
+      "home": "Coventry City",
+      "away": "Hull City",
+      "dateISO": "2026-08-29T14:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8669.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8667.png"
+    },
+    {
+      "id": "5795431",
+      "home": "Liverpool",
+      "away": "Nottingham Forest",
+      "dateISO": "2026-08-29T11:30:00.000Z",
+      "homeScore": 2,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8650.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10203.png"
+    },
+    {
+      "id": "5795429",
+      "home": "Crystal Palace",
+      "away": "Manchester City",
+      "dateISO": "2026-08-28T19:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 4,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9826.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8456.png"
+    },
+    {
+      "id": "5795372",
+      "home": "Fulham",
+      "away": "Chelsea",
+      "dateISO": "2026-08-24T19:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 3,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9879.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8455.png"
+    },
+    {
+      "id": "5795371",
+      "home": "Newcastle United",
+      "away": "Liverpool",
+      "dateISO": "2026-08-23T15:30:00.000Z",
+      "homeScore": 2,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10261.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8650.png"
+    },
+    {
+      "id": "5795369",
+      "home": "Brighton & Hove Albion",
+      "away": "Aston Villa",
+      "dateISO": "2026-08-23T13:00:00.000Z",
+      "homeScore": 4,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10204.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10252.png"
+    },
+    {
+      "id": "5795370",
+      "home": "Manchester City",
+      "away": "AFC Bournemouth",
+      "dateISO": "2026-08-23T13:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8456.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8678.png"
+    },
+    {
+      "id": "5795368",
+      "home": "Brentford",
+      "away": "Tottenham Hotspur",
+      "dateISO": "2026-08-22T16:30:00.000Z",
+      "homeScore": 3,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9937.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8586.png"
+    },
+    {
+      "id": "5795365",
+      "home": "Everton",
+      "away": "Crystal Palace",
+      "dateISO": "2026-08-22T14:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8668.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9826.png"
+    },
+    {
+      "id": "5795366",
+      "home": "Ipswich Town",
+      "away": "Sunderland",
+      "dateISO": "2026-08-22T14:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9902.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8472.png"
+    },
+    {
+      "id": "5795367",
+      "home": "Nottingham Forest",
+      "away": "Leeds United",
+      "dateISO": "2026-08-22T14:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10203.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8463.png"
+    },
+    {
+      "id": "5795364",
+      "home": "Hull City",
+      "away": "Manchester United",
+      "dateISO": "2026-08-22T11:30:00.000Z",
+      "homeScore": 2,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8667.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10260.png"
+    },
+    {
+      "id": "5795363",
+      "home": "Arsenal",
+      "away": "Coventry City",
+      "dateISO": "2026-08-21T19:00:00.000Z",
+      "homeScore": 3,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9825.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8669.png"
+    }
+  ]
 }
