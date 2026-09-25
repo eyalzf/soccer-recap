@@ -247,6 +247,7 @@ async function scanChannel(
       blockedInIL: m?.blockedInIL,
       channelName: label,
       channelHandle: entry.handle,
+      channelId,
       bulk: opts.bulk ?? false,
       lang: opts.lang ?? (/[֐-׿]/.test(v.title) ? 'he' : 'en'),
     };
@@ -265,12 +266,13 @@ async function scanChannel(
  * instead of search.list (100 units). Matched app-side by the caller.
  */
 export async function scanPriorityChannel(
-  src: { handle: string; lang: 'he' | 'en'; pages?: number; teams?: string[] },
+  src: { handle?: string; channelId?: string; lang: 'he' | 'en'; pages?: number; teams?: string[] },
   game: GameInput
 ): Promise<PriorityScanResult> {
   const olderThanISO = new Date(Date.parse(game.dateISO) - 2 * DAY).toISOString();
+  const label = src.handle ?? src.channelId ?? 'preferred';
   return scanChannel(
-    { handle: src.handle, label: src.handle },
+    { handle: src.handle, channelId: src.channelId, label },
     game,
     olderThanISO,
     src.pages ?? 3,
