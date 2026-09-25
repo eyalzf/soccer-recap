@@ -1,12 +1,22 @@
 'use client';
 
 import { useState } from 'react';
-import { LEAGUES, type LeagueSlug } from '@/lib/leagues';
-import { matchTeams, type TeamEntry } from '@/lib/teamRegistry';
+import type { LeagueSlug, NationalCompetitionSlug } from '@/lib/leagues';
+import { matchTeams, matchNations, type TeamEntry } from '@/lib/teamRegistry';
 
-export type LeagueFilter = 'all' | LeagueSlug;
+export type LeagueFilter = 'all' | LeagueSlug | NationalCompetitionSlug;
+export type Mode = 'clubs' | 'nations';
+
+export interface CompetitionChip {
+  slug: string;
+  hebrewName: string;
+}
 
 interface FilterBarProps {
+  mode: Mode;
+  onMode: (m: Mode) => void;
+  /** Competition chips for the current mode (clubs: leagues, nations: visible national competitions). */
+  competitions: CompetitionChip[];
   league: LeagueFilter;
   onLeague: (l: LeagueFilter) => void;
   /** Quick-pick teams (up to 10): most-viewed first, fallback list otherwise. */
@@ -27,6 +37,9 @@ function TeamLogo({ team }: { team: TeamEntry }) {
 }
 
 export default function FilterBar({
+  mode,
+  onMode,
+  competitions,
   league,
   onLeague,
   teams,
@@ -39,7 +52,8 @@ export default function FilterBar({
 }: FilterBarProps) {
   const [panelOpen, setPanelOpen] = useState(false);
   const [query, setQuery] = useState('');
-  const matches = matchTeams(query, registry);
+  const matches =
+    mode === 'nations' ? matchNations(query, registry) : matchTeams(query, registry);
 
   const hasActive = league !== 'all' || teamKey !== null || hideWatched;
   const clearAll = () => {
@@ -52,33 +66,61 @@ export default function FilterBar({
     onTeamKey(teamKey === key ? null : key);
     setQuery('');
   };
+  const switchMode = (m: Mode) => {
+    if (m === mode) return;
+    onMode(m);
+    setQuery('');
+  };
+
+  const unitHe = mode === 'nations' ? 'נבחרת' : 'קבוצה';
+  const unitsHe = mode === 'nations' ? 'נבחרות' : 'קבוצות';
 
   return (
     <div className="filterbar">
-      {/* League filter */}
-      <div className="frow frow-scroll" role="group" aria-label="סינון לפי ליגה">
+      {/* Collapsed clubs/nations toggle: compact segmented control, clubs default */}
+      <div className="frow" role="group" aria-label="מעבר בין קבוצות לנבחרות">
+        <div className="mode-toggle">
+          <button
+            className={'mode-opt' + (mode === 'clubs' ? ' active' : '')}
+            onClick={() => switchMode('clubs')}
+            aria-pressed={mode === 'clubs'}
+          >
+            קבוצות
+          </button>
+          <button
+            className={'mode-opt' + (mode === 'nations' ? ' active' : '')}
+            onClick={() => switchMode('nations')}
+            aria-pressed={mode === 'nations'}
+          >
+            נבחרות
+          </button>
+        </div>
+      </div>
+
+      {/* Competition filter */}
+      <div className="frow frow-scroll" role="group" aria-label="סינון לפי תחרות">
         <button
           className={'chip' + (league === 'all' ? ' active' : '')}
           onClick={() => onLeague('all')}
         >
           הכל
         </button>
-        {LEAGUES.map((l) => (
+        {competitions.map((c) => (
           <button
-            key={l.slug}
-            className={'chip' + (league === l.slug ? ' active' : '')}
-            onClick={() => onLeague(l.slug)}
+            key={c.slug}
+            className={'chip' + (league === c.slug ? ' active' : '')}
+            onClick={() => onLeague(c.slug as LeagueFilter)}
           >
-            {leagueBadgeFor(l.slug) && (
-              <img src={leagueBadgeFor(l.slug) as string} alt="" loading="lazy" />
+            {leagueBadgeFor(c.slug) && (
+              <img src={leagueBadgeFor(c.slug) as string} alt="" loading="lazy" />
             )}
-            {l.hebrewName}
+            {c.hebrewName}
           </button>
         ))}
       </div>
 
       {/* Quick team filter */}
-      <div className="frow frow-scroll" role="group" aria-label="בחירת קבוצה מהירה">
+      <div className="frow frow-scroll" role="group" aria-label={`בחירת ${unitHe} מהירה`}>
         {teams.map((t) => (
           <button
             key={t.key}
@@ -113,13 +155,13 @@ export default function FilterBar({
             className="team-search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="חיפוש קבוצה…"
-            aria-label="חיפוש קבוצה"
+            placeholder={`חיפוש ${unitHe}…`}
+            aria-label={`חיפוש ${unitHe}`}
           />
           {query.trim() !== '' && (
             <div className="search-matches">
               {matches.length === 0 ? (
-                <div className="search-empty">לא נמצאו קבוצות</div>
+                <div className="search-empty">לא נמצאו {unitsHe}</div>
               ) : (
                 matches.map((m) => (
                   <button
