@@ -17,6 +17,8 @@ export interface GameItem {
   homeBadge: string | null;
   awayBadge: string | null;
   leagueBadge: string | null;
+  /** Competition stage label (national competitions), e.g. "שלב הבתים". */
+  stage?: string | null;
 }
 
 function formatDate(iso: string): string {
@@ -62,6 +64,7 @@ export default function GameCard({
           <span className="game-score">
             {game.awayScore} - {game.homeScore}
           </span>
+          {game.stage && <span className="game-stage">{game.stage}</span>}
           {game.leagueBadge && <img className="league-logo" src={game.leagueBadge} alt="" />}
         </div>
       </div>
