@@ -6,7 +6,8 @@ export const dynamic = 'force-dynamic';
 
 /**
  * League/competition tabs metadata (Hebrew names + logos). Club logos come
- * from FotMob's image CDN; national competitions are text-only for now.
+ * from FotMob's image CDN; national competition logos are official emblems
+ * via Wikimedia.
  */
 export async function GET() {
   const cached = cacheGet('league-meta');
