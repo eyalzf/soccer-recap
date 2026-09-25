@@ -1,201 +1,219 @@
 {
- "league": "champions-league",
- "league_id": 42,
- "season": "2026/2027",
- "updated_at": "2026-09-20T05:29:21.412429+00:00",
- "checked_through": "2026-09-19",
- "team_ids": {
-  "Arsenal": 9825,
-  "Aston Villa": 10252,
-  "Atlético Madrid": 9906,
-  "Barcelona": 8634,
-  "Liverpool": 8650,
-  "Manchester City": 8456,
-  "Manchester United": 10260,
-  "Real Betis": 8603,
-  "Real Madrid": 8633,
-  "Villarreal": 10205
- },
- "games": [
-  {
-   "id": "6106240",
-   "home": "Bayern München",
-   "away": "Bodø/Glimt",
-   "dateISO": "2026-09-10T19:00:00.000Z",
-   "homeScore": 5,
-   "awayScore": 0,
-   "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/01ogkh1716960412.png",
-   "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/uqpwwx1449165943.png"
+  "league": "champions-league",
+  "league_id": 42,
+  "season": "2026/2027",
+  "updated_at": "2026-09-20T05:29:21.412429+00:00",
+  "checked_through": "2026-09-19",
+  "team_ids": {
+    "Arsenal": 9825,
+    "Aston Villa": 10252,
+    "Atlético Madrid": 9906,
+    "Barcelona": 8634,
+    "Liverpool": 8650,
+    "Manchester City": 8456,
+    "Manchester United": 10260,
+    "Real Betis": 8603,
+    "Real Madrid": 8633,
+    "Villarreal": 10205
   },
-  {
-   "id": "6106411",
-   "home": "Como",
-   "away": "RB Leipzig",
-   "dateISO": "2026-09-10T19:00:00.000Z",
-   "homeScore": 4,
-   "awayScore": 1,
-   "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/02x81t1627405841.png",
-   "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/zjgapo1594244951.png"
-  },
-  {
-   "id": "6106293",
-   "home": "Manchester United",
-   "away": "Sabah FK",
-   "dateISO": "2026-09-10T19:00:00.000Z",
-   "homeScore": 4,
-   "awayScore": 0,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10260.png",
-   "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/dug7wr1614888756.png"
-  },
-  {
-   "id": "6106392",
-   "home": "Slavia Prague",
-   "away": "Lens",
-   "dateISO": "2026-09-10T19:00:00.000Z",
-   "homeScore": 2,
-   "awayScore": 3,
-   "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/l7kl4n1759252139.png",
-   "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/3pxoum1598797195.png"
-  },
-  {
-   "id": "6106331",
-   "home": "Fenerbahçe",
-   "away": "Roma",
-   "dateISO": "2026-09-10T16:45:00.000Z",
-   "homeScore": 1,
-   "awayScore": 1,
-   "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/twxxvs1448199691.png",
-   "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/jwro2s1760820674.png"
-  },
-  {
-   "id": "6106304",
-   "home": "PSV Eindhoven",
-   "away": "Shakhtar Donetsk",
-   "dateISO": "2026-09-10T16:45:00.000Z",
-   "homeScore": 1,
-   "awayScore": 1,
-   "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/xfsz6i1721297428.png",
-   "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/sqrxsr1421791799.png"
-  },
-  {
-   "id": "6106246",
-   "home": "Liverpool",
-   "away": "Atlético Madrid",
-   "dateISO": "2026-09-09T19:00:00.000Z",
-   "homeScore": 2,
-   "awayScore": 1,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8650.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9906.png"
-  },
-  {
-   "id": "6106237",
-   "home": "Paris Saint-Germain",
-   "away": "Slovan Bratislava",
-   "dateISO": "2026-09-09T19:00:00.000Z",
-   "homeScore": 6,
-   "awayScore": 1,
-   "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/rwqrrq1473504808.png",
-   "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/uzkg701781199823.png"
-  },
-  {
-   "id": "6106280",
-   "home": "Sporting CP",
-   "away": "Galatasaray",
-   "dateISO": "2026-09-09T19:00:00.000Z",
-   "homeScore": 3,
-   "awayScore": 1,
-   "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/5hiuk71783137875.png",
-   "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/io7jk21767941298.png"
-  },
-  {
-   "id": "6106318",
-   "home": "Napoli",
-   "away": "Arsenal",
-   "dateISO": "2026-09-09T19:00:00.000Z",
-   "homeScore": 0,
-   "awayScore": 1,
-   "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/l8qyxv1742982541.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9825.png"
-  },
-  {
-   "id": "6106264",
-   "home": "Barcelona",
-   "away": "Feyenoord",
-   "dateISO": "2026-09-09T16:45:00.000Z",
-   "homeScore": 5,
-   "awayScore": 1,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8634.png",
-   "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/uturtx1473534803.png"
-  },
-  {
-   "id": "6106400",
-   "home": "VfB Stuttgart",
-   "away": "Viking",
-   "dateISO": "2026-09-09T16:45:00.000Z",
-   "homeScore": 3,
-   "awayScore": 1,
-   "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/yppyux1473454085.png",
-   "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/9mzq961590148192.png"
-  },
-  {
-   "id": "6106272",
-   "home": "Borussia Dortmund",
-   "away": "Villarreal",
-   "dateISO": "2026-09-08T19:00:00.000Z",
-   "homeScore": 3,
-   "awayScore": 2,
-   "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/tqo8ge1716960353.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10205.png"
-  },
-  {
-   "id": "6106286",
-   "home": "FC Porto",
-   "away": "Manchester City",
-   "dateISO": "2026-09-08T19:00:00.000Z",
-   "homeScore": 0,
-   "awayScore": 2,
-   "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/xu47rb1628855600.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8456.png"
-  },
-  {
-   "id": "6106311",
-   "home": "Lille",
-   "away": "Real Betis",
-   "dateISO": "2026-09-08T19:00:00.000Z",
-   "homeScore": 2,
-   "awayScore": 3,
-   "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/2giize1534005340.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8603.png"
-  },
-  {
-   "id": "6106242",
-   "home": "Real Madrid",
-   "away": "Inter",
-   "dateISO": "2026-09-08T19:00:00.000Z",
-   "homeScore": 2,
-   "awayScore": 1,
-   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8633.png",
-   "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/ryhu6d1617113103.png"
-  },
-  {
-   "id": "6106404",
-   "home": "AEK Athens",
-   "away": "LASK",
-   "dateISO": "2026-09-08T16:45:00.000Z",
-   "homeScore": 1,
-   "awayScore": 0,
-   "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/4nogst1602773624.png",
-   "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/oox26l1683556395.png"
-  },
-  {
-   "id": "6106295",
-   "home": "Club Brugge",
-   "away": "Aston Villa",
-   "dateISO": "2026-09-08T16:45:00.000Z",
-   "homeScore": 2,
-   "awayScore": 3,
-   "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/mz8y0q1771129880.png",
-   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10252.png"
-  }
- ]
+  "games": [
+    {
+      "id": "6106240",
+      "home": "Bayern München",
+      "away": "Bodø/Glimt",
+      "dateISO": "2026-09-10T19:00:00.000Z",
+      "homeScore": 5,
+      "awayScore": 0,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/01ogkh1716960412.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/uqpwwx1449165943.png",
+      "stage": "שלב הליגה · מחזור 1"
+    },
+    {
+      "id": "6106411",
+      "home": "Como",
+      "away": "RB Leipzig",
+      "dateISO": "2026-09-10T19:00:00.000Z",
+      "homeScore": 4,
+      "awayScore": 1,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/02x81t1627405841.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/zjgapo1594244951.png",
+      "stage": "שלב הליגה · מחזור 1"
+    },
+    {
+      "id": "6106293",
+      "home": "Manchester United",
+      "away": "Sabah FK",
+      "dateISO": "2026-09-10T19:00:00.000Z",
+      "homeScore": 4,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10260.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/dug7wr1614888756.png",
+      "stage": "שלב הליגה · מחזור 1"
+    },
+    {
+      "id": "6106392",
+      "home": "Slavia Prague",
+      "away": "Lens",
+      "dateISO": "2026-09-10T19:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 3,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/l7kl4n1759252139.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/3pxoum1598797195.png",
+      "stage": "שלב הליגה · מחזור 1"
+    },
+    {
+      "id": "6106331",
+      "home": "Fenerbahçe",
+      "away": "Roma",
+      "dateISO": "2026-09-10T16:45:00.000Z",
+      "homeScore": 1,
+      "awayScore": 1,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/twxxvs1448199691.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/jwro2s1760820674.png",
+      "stage": "שלב הליגה · מחזור 1"
+    },
+    {
+      "id": "6106304",
+      "home": "PSV Eindhoven",
+      "away": "Shakhtar Donetsk",
+      "dateISO": "2026-09-10T16:45:00.000Z",
+      "homeScore": 1,
+      "awayScore": 1,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/xfsz6i1721297428.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/sqrxsr1421791799.png",
+      "stage": "שלב הליגה · מחזור 1"
+    },
+    {
+      "id": "6106246",
+      "home": "Liverpool",
+      "away": "Atlético Madrid",
+      "dateISO": "2026-09-09T19:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8650.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9906.png",
+      "stage": "שלב הליגה · מחזור 1"
+    },
+    {
+      "id": "6106237",
+      "home": "Paris Saint-Germain",
+      "away": "Slovan Bratislava",
+      "dateISO": "2026-09-09T19:00:00.000Z",
+      "homeScore": 6,
+      "awayScore": 1,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/rwqrrq1473504808.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/uzkg701781199823.png",
+      "stage": "שלב הליגה · מחזור 1"
+    },
+    {
+      "id": "6106280",
+      "home": "Sporting CP",
+      "away": "Galatasaray",
+      "dateISO": "2026-09-09T19:00:00.000Z",
+      "homeScore": 3,
+      "awayScore": 1,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/5hiuk71783137875.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/io7jk21767941298.png",
+      "stage": "שלב הליגה · מחזור 1"
+    },
+    {
+      "id": "6106318",
+      "home": "Napoli",
+      "away": "Arsenal",
+      "dateISO": "2026-09-09T19:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 1,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/l8qyxv1742982541.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9825.png",
+      "stage": "שלב הליגה · מחזור 1"
+    },
+    {
+      "id": "6106264",
+      "home": "Barcelona",
+      "away": "Feyenoord",
+      "dateISO": "2026-09-09T16:45:00.000Z",
+      "homeScore": 5,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8634.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/uturtx1473534803.png",
+      "stage": "שלב הליגה · מחזור 1"
+    },
+    {
+      "id": "6106400",
+      "home": "VfB Stuttgart",
+      "away": "Viking",
+      "dateISO": "2026-09-09T16:45:00.000Z",
+      "homeScore": 3,
+      "awayScore": 1,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/yppyux1473454085.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/9mzq961590148192.png",
+      "stage": "שלב הליגה · מחזור 1"
+    },
+    {
+      "id": "6106272",
+      "home": "Borussia Dortmund",
+      "away": "Villarreal",
+      "dateISO": "2026-09-08T19:00:00.000Z",
+      "homeScore": 3,
+      "awayScore": 2,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/tqo8ge1716960353.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10205.png",
+      "stage": "שלב הליגה · מחזור 1"
+    },
+    {
+      "id": "6106286",
+      "home": "FC Porto",
+      "away": "Manchester City",
+      "dateISO": "2026-09-08T19:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 2,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/xu47rb1628855600.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8456.png",
+      "stage": "שלב הליגה · מחזור 1"
+    },
+    {
+      "id": "6106311",
+      "home": "Lille",
+      "away": "Real Betis",
+      "dateISO": "2026-09-08T19:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 3,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/2giize1534005340.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8603.png",
+      "stage": "שלב הליגה · מחזור 1"
+    },
+    {
+      "id": "6106242",
+      "home": "Real Madrid",
+      "away": "Inter",
+      "dateISO": "2026-09-08T19:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8633.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/ryhu6d1617113103.png",
+      "stage": "שלב הליגה · מחזור 1"
+    },
+    {
+      "id": "6106404",
+      "home": "AEK Athens",
+      "away": "LASK",
+      "dateISO": "2026-09-08T16:45:00.000Z",
+      "homeScore": 1,
+      "awayScore": 0,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/4nogst1602773624.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/oox26l1683556395.png",
+      "stage": "שלב הליגה · מחזור 1"
+    },
+    {
+      "id": "6106295",
+      "home": "Club Brugge",
+      "away": "Aston Villa",
+      "dateISO": "2026-09-08T16:45:00.000Z",
+      "homeScore": 2,
+      "awayScore": 3,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/mz8y0q1771129880.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10252.png",
+      "stage": "שלב הליגה · מחזור 1"
+    }
+  ]
 }
