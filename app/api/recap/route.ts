@@ -256,17 +256,18 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
   for (const src of channelsForGame(plan.preferred, game)) {
     if (ytRateLimited) break;
     const scan = await scanPriorityChannel(src, game);
+    const srcLabel = src.handle ?? src.channelId ?? 'preferred';
     if (scan.error) {
       if (scan.error === 'HTTP 429') ytRateLimited = true;
-      if (debug) diag.push({ search: 'preferred:' + src.handle, skipped: scan.error });
-      sources.push({ label: src.handle, kind: 'preferred', cached: false, fetched: 0, kept: 0 });
+      if (debug) diag.push({ search: 'preferred:' + srcLabel, skipped: scan.error });
+      sources.push({ label: srcLabel, kind: 'preferred', cached: false, fetched: 0, kept: 0 });
       continue;
     }
     logEntry.preferred.ran += 1;
-    const kept = ingest('preferred:' + src.handle, scan.candidates);
+    const kept = ingest('preferred:' + srcLabel, scan.candidates);
     logEntry.preferred.kept += kept;
     sources.push({
-      label: src.handle,
+      label: srcLabel,
       kind: 'preferred',
       cached: scan.cached,
       fetched: scan.fetched,
