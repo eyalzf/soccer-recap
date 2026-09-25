@@ -52,6 +52,7 @@ body {
   gap: 12px; margin-bottom: 16px;
 }
 .topbar h1 { margin: 0; font-size: 2rem; font-weight: 800; }
+.title-with-toggle { display: flex; align-items: center; gap: 14px; min-width: 0; }
 
 .refresh-btn {
   background: var(--card); color: var(--text);
