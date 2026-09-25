@@ -5,14 +5,22 @@
 // resume position and finished ("נצפה ✓") state.
 
 import { lookupClubEn } from './teamIndex';
+import { lookupNationEn } from './nationIndex';
 
 const TEAM_VIEWS_KEY = 'sr-team-views-v1';
 const WATCHED_GAMES_KEY = 'sr-watched-games-v1';
+/** Nations quick filter has its own view counts, independent from clubs. */
+const NATION_VIEWS_KEY = 'sr-nation-views-v1';
 const MAX_ENTRIES = 1000;
 
 /** Canonical team key: the curated English name when known, else the raw name. */
 export function teamKey(enName: string): string {
   return lookupClubEn(enName)?.en ?? enName;
+}
+
+/** Canonical nation key: the curated English nation name when known, else raw. */
+export function nationKey(enName: string): string {
+  return lookupNationEn(enName)?.en ?? enName;
 }
 
 function readNumMap(key: string): Record<string, number> {
@@ -69,6 +77,35 @@ export function recordGameView(
 /** Canonical team key -> view count. */
 export function getTeamViews(): Record<string, number> {
   return readNumMap(TEAM_VIEWS_KEY);
+}
+
+/** Record that the user selected a recap video for a national-team game. */
+export function recordNationGameView(
+  gameId: string,
+  homeEn: string,
+  awayEn: string
+): void {
+  if (typeof window === 'undefined' || !gameId) return;
+  try {
+    const watched = readNumMap(WATCHED_GAMES_KEY);
+    watched[gameId] = Date.now();
+    writeNumMap(WATCHED_GAMES_KEY, watched);
+
+    const views = readNumMap(NATION_VIEWS_KEY);
+    for (const name of [homeEn, awayEn]) {
+      if (!name) continue;
+      const k = nationKey(name);
+      views[k] = (views[k] ?? 0) + 1;
+    }
+    writeNumMap(NATION_VIEWS_KEY, views);
+  } catch {
+    // ignore
+  }
+}
+
+/** Canonical nation key -> view count (independent from club counts). */
+export function getNationViews(): Record<string, number> {
+  return readNumMap(NATION_VIEWS_KEY);
 }
 
 /** Game ids the user has opened a recap for. */
