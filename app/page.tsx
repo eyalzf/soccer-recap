@@ -3,13 +3,27 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import GameCard, { type GameItem } from '@/components/GameCard';
 import RecapPanel from '@/components/RecapPanel';
-import FilterBar, { type LeagueFilter } from '@/components/FilterBar';
+import FilterBar, {
+  type LeagueFilter,
+  type Mode,
+  type CompetitionChip,
+} from '@/components/FilterBar';
 import {
   buildTeamRegistry,
+  buildNationRegistry,
   entryFor,
   quickTeams,
+  FALLBACK_TOP_TEAMS,
+  FALLBACK_TOP_NATIONS,
 } from '@/lib/teamRegistry';
-import { getTeamViews, getWatchedGameIds, teamKey } from '@/lib/watch';
+import {
+  getTeamViews,
+  getNationViews,
+  getWatchedGameIds,
+  teamKey,
+  nationKey,
+} from '@/lib/watch';
+import { NATIONAL_COMPETITIONS, isNationalSlug } from '@/lib/leagues';
 
 interface GamesResponse {
   league: string;
@@ -21,6 +35,7 @@ interface LeagueMeta {
   slug: string;
   hebrewName: string;
   badge: string | null;
+  kind: 'club' | 'national';
 }
 
 function dayLabel(iso: string): string {
@@ -42,6 +57,8 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [leagues, setLeagues] = useState<LeagueMeta[]>([]);
+  /** Clubs by default; the נבחרות toggle is collapsed in the filter bar. */
+  const [mode, setMode] = useState<Mode>('clubs');
   const [league, setLeague] = useState<LeagueFilter>('all');
   const [team, setTeam] = useState<string | null>(null);
   const [hideWatched, setHideWatched] = useState(false);
@@ -76,20 +93,57 @@ export default function Home() {
     load();
   }, [load]);
 
-  const views = useMemo(() => getTeamViews(), [watchTick]);
-  const watchedIds = useMemo(() => getWatchedGameIds(), [watchTick]);
-  const registry = useMemo(() => buildTeamRegistry(games), [games]);
-  const quick = useMemo(() => quickTeams(registry, views, 10), [registry, views]);
+  const isNations = mode === 'nations';
+  const clubGames = useMemo(() => games.filter((g) => !isNationalSlug(g.league)), [games]);
+  const nationGames = useMemo(() => games.filter((g) => isNationalSlug(g.league)), [games]);
+  const modeGames = isNations ? nationGames : clubGames;
 
+  const views = useMemo(
+    () => (isNations ? getNationViews() : getTeamViews()),
+    [watchTick, isNations]
+  );
+  const watchedIds = useMemo(() => getWatchedGameIds(), [watchTick]);
+  const registry = useMemo(
+    () =>
+      isNations ? buildNationRegistry(nationGames) : buildTeamRegistry(clubGames),
+    [nationGames, clubGames, isNations]
+  );
+  const quick = useMemo(
+    () =>
+      quickTeams(
+        registry,
+        views,
+        10,
+        isNations ? FALLBACK_TOP_NATIONS : FALLBACK_TOP_TEAMS
+      ),
+    [registry, views, isNations]
+  );
+
+  /** Competition chips for the current mode. National competitions with no
+   * games in the last 3 months are hidden from selection until they have
+   * games again (the API already prunes them, so presence == visible). */
+  const competitions: CompetitionChip[] = useMemo(() => {
+    if (isNations) {
+      const withGames = new Set(nationGames.map((g) => g.league));
+      return NATIONAL_COMPETITIONS.filter((c) => withGames.has(c.slug)).map(
+        (c) => ({ slug: c.slug, hebrewName: c.hebrewName })
+      );
+    }
+    return leagues
+      .filter((l) => l.kind !== 'national')
+      .map((l) => ({ slug: l.slug, hebrewName: l.hebrewName }));
+  }, [leagues, nationGames, isNations]);
+
+  const keyFn = isNations ? nationKey : teamKey;
   const filtered = useMemo(
     () =>
-      games.filter(
+      modeGames.filter(
         (g) =>
           (league === 'all' || g.league === league) &&
-          (!team || teamKey(g.home) === team || teamKey(g.away) === team) &&
+          (!team || keyFn(g.home) === team || keyFn(g.away) === team) &&
           (!hideWatched || !watchedIds.has(g.id))
       ),
-    [games, league, team, hideWatched, watchedIds]
+    [modeGames, league, team, hideWatched, watchedIds, keyFn]
   );
 
   // Group by calendar day, preserving the API's newest-first order.
@@ -107,12 +161,20 @@ export default function Home() {
   const badgeFor = (slug: string): string | null =>
     leagues.find((l) => l.slug === slug)?.badge ?? null;
 
+  const switchMode = (m: Mode) => {
+    setMode(m);
+    setLeague('all');
+    setTeam(null);
+    window.scrollTo(0, 0);
+  };
+
   const closeModal = () => {
     setSelected(null);
     setWatchTick((t) => t + 1);
   };
 
   const teamHe = team ? entryFor(team, registry).he : '';
+  const noGamesAtAll = !loading && modeGames.length === 0;
 
   return (
     <div className="app">
@@ -128,6 +190,9 @@ export default function Home() {
       </div>
 
       <FilterBar
+        mode={mode}
+        onMode={switchMode}
+        competitions={competitions}
         league={league}
         onLeague={(l) => {
           setLeague(l);
@@ -148,7 +213,7 @@ export default function Home() {
       {team && (
         <div className="active-team">
           מציג משחקים של <strong>{teamHe}</strong>
-          <button onClick={() => setTeam(null)} aria-label="נקה סינון קבוצה">
+          <button onClick={() => setTeam(null)} aria-label={isNations ? 'נקה סינון נבחרת' : 'נקה סינון קבוצה'}>
             ✕
           </button>
         </div>
@@ -156,6 +221,10 @@ export default function Home() {
 
       {loading ? (
         <div className="status">טוען משחקים…</div>
+      ) : noGamesAtAll && isNations ? (
+        <div className="status">
+          אין כרגע משחקי נבחרות — התחרויות יופיעו כאן כשייפתחו
+        </div>
       ) : filtered.length === 0 ? (
         <div className="status">
           אין משחקים להצגה
@@ -182,7 +251,7 @@ export default function Home() {
             </section>
           ))}
           <div className="status slim">
-            הוצגו {filtered.length} מתוך {games.length} משחקים
+            הוצגו {filtered.length} מתוך {modeGames.length} משחקים
           </div>
         </div>
       )}
@@ -193,9 +262,15 @@ export default function Home() {
 
       <footer className="attribution">
         <span>מקור נתוני המשחקים: </span>
-        <a href="https://www.fotmob.com" target="_blank" rel="noopener noreferrer">
-          FotMob
-        </a>
+        {isNations ? (
+          <a href="https://www.uefa.com/uefanationsleague/" target="_blank" rel="noopener noreferrer">
+            UEFA
+          </a>
+        ) : (
+          <a href="https://www.fotmob.com" target="_blank" rel="noopener noreferrer">
+            FotMob
+          </a>
+        )}
       </footer>
     </div>
   );
