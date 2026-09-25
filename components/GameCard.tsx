@@ -17,7 +17,7 @@ export interface GameItem {
   homeBadge: string | null;
   awayBadge: string | null;
   leagueBadge: string | null;
-  /** Competition stage label (national competitions), e.g. "שלב הבתים". */
+  /** Competition stage/round label, e.g. "שלב הבתים" or "מחזור 5". */
   stage?: string | null;
 }
 
