@@ -40,15 +40,35 @@ export type NationalCompetitionSlug =
 export interface NationalCompetitionDef {
   slug: NationalCompetitionSlug;
   hebrewName: string;
-  /** No FotMob league-logo equivalent; chips render text-only for now. */
+  /** Official competition logo (Wikimedia; verified HTTP 200). */
   badge: string | null;
 }
 
 export const NATIONAL_COMPETITIONS: NationalCompetitionDef[] = [
-  { slug: 'world-cup', hebrewName: 'מונדיאל', badge: null },
-  { slug: 'euros', hebrewName: 'יורו', badge: null },
-  { slug: 'copa-america', hebrewName: 'קופה אמריקה', badge: null },
-  { slug: 'nations-league', hebrewName: 'ליגת האומות', badge: null },
+  {
+    slug: 'world-cup',
+    hebrewName: 'מונדיאל',
+    badge:
+      'https://commons.wikimedia.org/wiki/Special:FilePath/2026%20FIFA%20World%20Cup%20emblem.svg',
+  },
+  {
+    slug: 'euros',
+    hebrewName: 'יורו',
+    badge:
+      'https://en.wikipedia.org/wiki/Special:FilePath/UEFA_Euro_2028_Logo.svg',
+  },
+  {
+    slug: 'copa-america',
+    hebrewName: 'קופה אמריקה',
+    badge:
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Conmebol%20Copa%20America%202024%20Logo.svg',
+  },
+  {
+    slug: 'nations-league',
+    hebrewName: 'ליגת האומות',
+    badge:
+      'https://en.wikipedia.org/wiki/Special:FilePath/UEFA_Nations_League.svg',
+  },
 ];
 
 export function getNationalCompetition(
