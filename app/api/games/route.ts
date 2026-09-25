@@ -1,6 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cacheDel } from '@/lib/cache';
-import { getLeague, LEAGUES, type LeagueSlug } from '@/lib/leagues';
+import {
+  getLeague,
+  getNationalCompetition,
+  LEAGUES,
+  NATIONAL_COMPETITIONS,
+  type LeagueSlug,
+  type NationalCompetitionSlug,
+} from '@/lib/leagues';
 import { getLeagueGames } from '@/lib/results';
 import { toHebrew } from '@/lib/teamIndex';
 
@@ -14,14 +21,20 @@ export async function GET(req: NextRequest) {
   const page = Math.max(0, parseInt(sp.get('page') || '0', 10) || 0);
   const nocache = sp.get('nocache') === '1';
 
-  // Unified view: every game from every league, newest first, no pagination
-  // (the total is ~150 games — small enough for one response; the client
-  // filters by league/team locally for instant filtering).
+  // Unified view: every game from every club league and every national
+  // competition, newest first, no pagination (the total is small enough for
+  // one response; the client filters by mode/league/team locally for
+  // instant filtering). National competitions with no games in the last
+  // 3 months contribute nothing and their chips stay hidden client-side.
   if (leagueParam === 'all') {
-    if (nocache) for (const def of LEAGUES) cacheDel(`games:${def.slug}`);
+    if (nocache)
+      for (const def of [...LEAGUES, ...NATIONAL_COMPETITIONS])
+        cacheDel(`games:${def.slug}`);
     const items = [];
-    for (const def of LEAGUES) {
-      const games = await getLeagueGames(def.slug);
+    for (const def of [...LEAGUES, ...NATIONAL_COMPETITIONS]) {
+      const games = await getLeagueGames(
+        def.slug as LeagueSlug | NationalCompetitionSlug
+      );
       for (const g of games.games) {
         items.push({
           ...g,
@@ -36,8 +49,9 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ league: 'all', total: items.length, items });
   }
 
-  const league = leagueParam as LeagueSlug;
-  const def = getLeague(league) ?? LEAGUES[0];
+  const league = leagueParam as LeagueSlug | NationalCompetitionSlug;
+  const def =
+    getLeague(league) ?? getNationalCompetition(league) ?? LEAGUES[0];
 
   // Bypass the server cache when the user hits refresh.
   if (nocache) cacheDel(`games:${def.slug}`);
