@@ -26,3 +26,38 @@ export const LEAGUES: LeagueDef[] = [
 export function getLeague(slug: string): LeagueDef | undefined {
   return LEAGUES.find((l) => l.slug === slug);
 }
+
+// ---------------------------------------------------------------------------
+// National teams (נבחרות)
+// ---------------------------------------------------------------------------
+
+export type NationalCompetitionSlug =
+  | 'world-cup'
+  | 'euros'
+  | 'copa-america'
+  | 'nations-league';
+
+export interface NationalCompetitionDef {
+  slug: NationalCompetitionSlug;
+  hebrewName: string;
+  /** No FotMob league-logo equivalent; chips render text-only for now. */
+  badge: string | null;
+}
+
+export const NATIONAL_COMPETITIONS: NationalCompetitionDef[] = [
+  { slug: 'world-cup', hebrewName: 'מונדיאל', badge: null },
+  { slug: 'euros', hebrewName: 'יורו', badge: null },
+  { slug: 'copa-america', hebrewName: 'קופה אמריקה', badge: null },
+  { slug: 'nations-league', hebrewName: 'ליגת האומות', badge: null },
+];
+
+export function getNationalCompetition(
+  slug: string
+): NationalCompetitionDef | undefined {
+  return NATIONAL_COMPETITIONS.find((c) => c.slug === slug);
+}
+
+/** True for the four national-competition slugs (vs the club league slugs). */
+export function isNationalSlug(slug: string): boolean {
+  return NATIONAL_COMPETITIONS.some((c) => c.slug === slug);
+}
