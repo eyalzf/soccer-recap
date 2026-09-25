@@ -18,11 +18,16 @@ import {
  * files from GitHub (always current within minutes of the daily update),
  * falling back to the copy bundled with the deployment if that fetch fails.
  *
+ * The branch is deployment-aware: preview deployments read the branch they
+ * were built from (so preview data changes are visible in preview), while
+ * production reads `main`. GITHUB_DATA_BRANCH overrides when set.
+ *
  * File shape: { league, league_id, season, updated_at, games: StoredGame[] }
  */
 
-const DATA_BASE =
-  'https://raw.githubusercontent.com/eyalzf/soccer-recap/main/data';
+const DATA_BRANCH =
+  process.env.GITHUB_DATA_BRANCH || process.env.VERCEL_GIT_COMMIT_REF || 'main';
+const DATA_BASE = `https://raw.githubusercontent.com/eyalzf/soccer-recap/${DATA_BRANCH}/data`;
 const FIVE_HOURS_MS = 5 * 3600 * 1000;
 
 export interface GameRecord {
