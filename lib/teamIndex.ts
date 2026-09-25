@@ -1,4 +1,5 @@
 import { CLUBS, type ClubEntry } from './teams';
+import { lookupNationEn } from './nationIndex';
 
 function normEn(s: string): string {
   return s
@@ -30,9 +31,11 @@ for (const club of CLUBS) {
   }
 }
 
-/** Find a club by an English name or alias (case/punctuation insensitive). */
+/** Find a team (club or nation) by an English name or alias.
+ * Clubs win ties; nations are the fallback. NationEntry is structurally a
+ * ClubEntry (plus `iso`), so every matcher call site works unchanged. */
 export function lookupClubEn(name: string): ClubEntry | undefined {
-  return enIndex.get(normEn(name));
+  return enIndex.get(normEn(name)) ?? lookupNationEn(name);
 }
 
 /** Find a club by an exact Hebrew name or alias. */
