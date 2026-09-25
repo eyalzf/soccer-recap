@@ -1,7 +1,13 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { cacheGet, cacheSet } from './cache';
-import { getLeague, type LeagueSlug } from './leagues';
+import {
+  getLeague,
+  getNationalCompetition,
+  isNationalSlug,
+  type LeagueSlug,
+  type NationalCompetitionSlug,
+} from './leagues';
 
 /**
  * Listings data source: per-league JSON files built by the daily
@@ -31,6 +37,8 @@ export interface GameRecord {
   homeBadge: string | null;
   awayBadge: string | null;
   leagueBadge: string | null;
+  /** Competition stage label, e.g. "שלב הבתים" (national competitions only). */
+  stage: string | null;
 }
 
 export interface LeagueGamesResult {
@@ -48,6 +56,7 @@ interface StoredGame {
   awayScore?: number | null;
   homeBadge?: string | null;
   awayBadge?: string | null;
+  stage?: string | null;
 }
 
 interface StoredFile {
@@ -66,7 +75,7 @@ async function fetchJson(url: string, timeoutMs = 15000): Promise<unknown> {
   }
 }
 
-async function loadLeagueFile(slug: LeagueSlug): Promise<StoredFile | null> {
+async function loadLeagueFile(slug: string): Promise<StoredFile | null> {
   const cacheKey = `datafile:${slug}`;
   const cached = cacheGet<StoredFile>(cacheKey);
   if (cached) return cached;
@@ -99,15 +108,21 @@ async function loadLeagueFile(slug: LeagueSlug): Promise<StoredFile | null> {
 /**
  * Current-season games for a league, most recent first.
  * Only includes finished games that kicked off at least 5 hours ago.
+ *
+ * National competitions additionally prune games older than 3 months, so a
+ * competition chip with no recent games disappears from selection until it
+ * has games again (per the נבחרות visibility rule).
  */
-export async function getLeagueGames(slug: LeagueSlug): Promise<LeagueGamesResult> {
+export async function getLeagueGames(
+  slug: LeagueSlug | NationalCompetitionSlug
+): Promise<LeagueGamesResult> {
   const cacheKey = `games:${slug}`;
   const cached = cacheGet<GameRecord[]>(cacheKey);
   // An empty cached entry is a brief negative-cache marker from a failed fetch:
   // fall through and retry instead of serving it as a real result.
   if (cached && cached.length > 0) return { games: cached, error: null };
 
-  const league = getLeague(slug);
+  const league = getLeague(slug) ?? getNationalCompetition(slug);
   if (!league) return { games: [], error: `unknown league ${slug}` };
 
   const file = await loadLeagueFile(slug);
@@ -117,6 +132,9 @@ export async function getLeagueGames(slug: LeagueSlug): Promise<LeagueGamesResul
   }
 
   const now = Date.now();
+  // National competitions: hide games older than 3 months (visibility rule).
+  const national = isNationalSlug(slug);
+  const MAX_AGE_MS = 90 * 24 * 3600 * 1000;
   const games: GameRecord[] = [];
   for (const g of file.games ?? []) {
     if (!g.home || !g.away || !g.dateISO) continue;
@@ -124,6 +142,7 @@ export async function getLeagueGames(slug: LeagueSlug): Promise<LeagueGamesResul
     const ts = Date.parse(g.dateISO);
     if (Number.isNaN(ts)) continue;
     if (now - ts < FIVE_HOURS_MS) continue; // kicked off less than 5 hours ago
+    if (national && now - ts > MAX_AGE_MS) continue; // older than 3 months
     const homeScore = g.homeScore;
     const awayScore = g.awayScore;
     if (!Number.isInteger(homeScore) || !Number.isInteger(awayScore)) continue;
@@ -140,6 +159,7 @@ export async function getLeagueGames(slug: LeagueSlug): Promise<LeagueGamesResul
       homeBadge: g.homeBadge || null,
       awayBadge: g.awayBadge || null,
       leagueBadge: league.badge,
+      stage: g.stage || null,
     });
   }
   games.sort((a, b) => (a.dateISO < b.dateISO ? 1 : -1));
