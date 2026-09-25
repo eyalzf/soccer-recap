@@ -1,4 +1,5 @@
 import { CLUBS, type ClubEntry } from '../teams';
+import { NATIONS } from '../nations';
 import { lookupClubEn } from '../teamIndex';
 import type { GameInput, RawCandidate } from './types';
 import { LEAGUE_SEARCH_PLANS } from './leaguePlans';
@@ -29,7 +30,7 @@ function normHeCompare(s: string): string {
  * another club's multi-word name is attributed to that club, not ours.
  */
 const MULTIWORD_VARIANTS: Array<{ club: ClubEntry; text: string }> = [];
-for (const club of CLUBS) {
+for (const club of [...CLUBS, ...NATIONS]) {
   for (const v of [club.en, ...club.enAliases]) {
     const vv = v.toLowerCase().trim();
     if (vv.includes(' ')) MULTIWORD_VARIANTS.push({ club, text: vv });
@@ -129,6 +130,37 @@ const CONTRADICTIONS: Record<string, string[]> = {
     'premier league', 'פרמייר ליג', 'la liga', 'לה ליגה', 'ligue 1',
     'serie a', 'סרייה א', 'bundesliga', 'בונדסליגה', 'fa cup', 'גביע אנגלי',
     'copa del rey', 'גביע המלך', 'eredivisie', 'ליגת העל',
+  ],
+  // National-team competitions: club competitions contradict, as do the
+  // other national competitions. NB: bare 'euro' is NOT used — it matches
+  // inside 'europe'/'european qualifiers' (e.g. "World Cup European
+  // Qualifiers"). 'יורו' and 'european championship' are safe.
+  'nations-league': [
+    'world cup', 'מונדיאל', 'מוקדמות המונדיאל',
+    'יורו', 'european championship', 'euro 2028', 'euro 2024',
+    'copa américa', 'copa america', 'קופה אמריקה',
+    'premier league', 'פרמייר ליג', 'la liga', 'לה ליגה', 'serie a',
+    'bundesliga', 'בונדסליגה', 'ligue 1', 'champions league', 'ליגת האלופות',
+    'europa league', 'fa cup', 'copa del rey', 'ליגת העל',
+  ],
+  'world-cup': [
+    'nations league', 'ליגת האומות',
+    'יורו', 'european championship', 'euro 2028', 'euro 2024',
+    'copa américa', 'copa america', 'קופה אמריקה',
+    'premier league', 'פרמייר ליג', 'la liga', 'לה ליגה',
+    'champions league', 'ליגת האלופות', 'europa league',
+  ],
+  'euros': [
+    'world cup', 'מונדיאל', 'מוקדמות המונדיאל',
+    'nations league', 'ליגת האומות',
+    'copa américa', 'copa america', 'קופה אמריקה',
+    'premier league', 'פרמייר ליג', 'champions league', 'ליגת האלופות',
+  ],
+  'copa-america': [
+    'world cup', 'מונדיאל', 'מוקדמות המונדיאל',
+    'nations league', 'ליגת האומות',
+    'יורו', 'european championship', 'euro 2028', 'euro 2024',
+    'premier league', 'פרמייר ליג', 'champions league', 'ליגת האלופות',
   ],
 };
 
@@ -243,7 +275,17 @@ export const TRUSTED_YT_HANDLES: string[] = [
   ...new Set(
     Object.values(LEAGUE_SEARCH_PLANS)
       .flatMap((p) => p.preferred.map((s) => s.handle))
+      .filter((h): h is string => !!h)
       .map((h) => h.toLowerCase().replace(/^@/, ''))
+  ),
+];
+
+/** Preferred channels identified by raw channel ID (no @handle). */
+export const TRUSTED_CHANNEL_IDS: string[] = [
+  ...new Set(
+    Object.values(LEAGUE_SEARCH_PLANS)
+      .flatMap((p) => p.preferred.map((s) => s.channelId))
+      .filter((id): id is string => !!id)
   ),
 ];
 
@@ -252,6 +294,7 @@ export const TRUSTED_YT_HANDLES: string[] = [
 /** Trusted Hebrew sources: official IPFL / ONE YouTube channels, Sport1/Sport5/ONE sites. */
 export function isTrusted(c: RawCandidate): boolean {
   if (c.source !== 'youtube') return true;
+  if (c.channelId && TRUSTED_CHANNEL_IDS.includes(c.channelId)) return true;
   const h = (c.channelHandle || '').toLowerCase().replace(/^@/, '');
   if (TRUSTED_YT_HANDLES.includes(h)) return true;
   const name = (c.channelName || '').toLowerCase();
