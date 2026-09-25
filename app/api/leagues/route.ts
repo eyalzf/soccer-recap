@@ -1,19 +1,31 @@
 import { NextResponse } from 'next/server';
 import { cacheGet, cacheSet } from '@/lib/cache';
-import { LEAGUES } from '@/lib/leagues';
+import { LEAGUES, NATIONAL_COMPETITIONS } from '@/lib/leagues';
 
 export const dynamic = 'force-dynamic';
 
-/** League tabs metadata (Hebrew names + logos). Logos come from FotMob's image CDN. */
+/**
+ * League/competition tabs metadata (Hebrew names + logos). Club logos come
+ * from FotMob's image CDN; national competitions are text-only for now.
+ */
 export async function GET() {
   const cached = cacheGet('league-meta');
   if (cached) return NextResponse.json(cached);
 
-  const out = LEAGUES.map((l) => ({
-    slug: l.slug,
-    hebrewName: l.hebrewName,
-    badge: l.badge,
-  }));
+  const out = [
+    ...LEAGUES.map((l) => ({
+      slug: l.slug,
+      hebrewName: l.hebrewName,
+      badge: l.badge,
+      kind: 'club' as const,
+    })),
+    ...NATIONAL_COMPETITIONS.map((c) => ({
+      slug: c.slug,
+      hebrewName: c.hebrewName,
+      badge: c.badge,
+      kind: 'national' as const,
+    })),
+  ];
 
   cacheSet('league-meta', out, 24 * 3600 * 1000);
   return NextResponse.json(out);
