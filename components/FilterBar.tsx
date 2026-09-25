@@ -14,7 +14,6 @@ export interface CompetitionChip {
 
 interface FilterBarProps {
   mode: Mode;
-  onMode: (m: Mode) => void;
   /** Competition chips for the current mode (clubs: leagues, nations: visible national competitions). */
   competitions: CompetitionChip[];
   league: LeagueFilter;
@@ -38,7 +37,6 @@ function TeamLogo({ team }: { team: TeamEntry }) {
 
 export default function FilterBar({
   mode,
-  onMode,
   competitions,
   league,
   onLeague,
@@ -66,37 +64,12 @@ export default function FilterBar({
     onTeamKey(teamKey === key ? null : key);
     setQuery('');
   };
-  const switchMode = (m: Mode) => {
-    if (m === mode) return;
-    onMode(m);
-    setQuery('');
-  };
 
   const unitHe = mode === 'nations' ? 'נבחרת' : 'קבוצה';
   const unitsHe = mode === 'nations' ? 'נבחרות' : 'קבוצות';
 
   return (
     <div className="filterbar">
-      {/* Collapsed clubs/nations toggle: compact segmented control, clubs default */}
-      <div className="frow" role="group" aria-label="מעבר בין קבוצות לנבחרות">
-        <div className="mode-toggle">
-          <button
-            className={'mode-opt' + (mode === 'clubs' ? ' active' : '')}
-            onClick={() => switchMode('clubs')}
-            aria-pressed={mode === 'clubs'}
-          >
-            קבוצות
-          </button>
-          <button
-            className={'mode-opt' + (mode === 'nations' ? ' active' : '')}
-            onClick={() => switchMode('nations')}
-            aria-pressed={mode === 'nations'}
-          >
-            נבחרות
-          </button>
-        </div>
-      </div>
-
       {/* Competition filter */}
       <div className="frow frow-scroll" role="group" aria-label="סינון לפי תחרות">
         <button
