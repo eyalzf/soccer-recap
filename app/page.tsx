@@ -179,7 +179,25 @@ export default function Home() {
   return (
     <div className="app">
       <div className="topbar">
-        <h1>תקצירים</h1>
+        <div className="title-with-toggle">
+          <h1>תקצירים</h1>
+          <div className="mode-toggle" role="group" aria-label="מעבר בין קבוצות לנבחרות">
+            <button
+              className={'mode-opt' + (mode === 'clubs' ? ' active' : '')}
+              onClick={() => switchMode('clubs')}
+              aria-pressed={mode === 'clubs'}
+            >
+              קבוצות
+            </button>
+            <button
+              className={'mode-opt' + (mode === 'nations' ? ' active' : '')}
+              onClick={() => switchMode('nations')}
+              aria-pressed={mode === 'nations'}
+            >
+              נבחרות
+            </button>
+          </div>
+        </div>
         <button
           className="refresh-btn"
           disabled={refreshing}
@@ -190,8 +208,8 @@ export default function Home() {
       </div>
 
       <FilterBar
+        key={mode}
         mode={mode}
-        onMode={switchMode}
         competitions={competitions}
         league={league}
         onLeague={(l) => {
