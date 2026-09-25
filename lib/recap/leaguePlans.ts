@@ -19,7 +19,9 @@
  */
 export interface PreferredChannel {
   /** YouTube handle without the leading @, e.g. 'Ipflofficial'. */
-  handle: string;
+  handle?: string;
+  /** Raw UC channel ID (alternative when the handle is unknown). */
+  channelId?: string;
   /** Query language for searches scoped to this channel. */
   lang: 'he' | 'en';
   /**
@@ -177,6 +179,83 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
       { channelId: 'UCeOCuVSSweaEj6oVtJZEKQw', label: 'AFC Bournemouth', teams: ['Bournemouth'] },
     ],
     fallbackLangs: ['en'],
+  },
+
+  // ---- National teams (2026-09-25) -------------------------------------
+  // Channel research: ~/workspace/nations-channel-research.md (zero quota
+  // spent). Only channels with public evidence are listed; unresolved
+  // identifiers are marked TODO(verify) and skipped silently when the
+  // handle doesn't resolve. Geo-blocking in Israel for official
+  // competition channels (@fifa/@UEFA) was NOT verified — search-index
+  // presence is not proof of playability.
+  'world-cup': {
+    preferred: [
+      // כאן 11 — Israel's World Cup broadcaster; proven Hebrew per-match
+      // "תקציר" uploads for WC 2026. Modern @handle unresolved; the
+      // classic youtube.com/KAN11 URL is verified via Kan's own app
+      // listing. TODO(verify): confirm the handle/channel ID.
+      { handle: 'KAN11', lang: 'he' },
+      // IFA official channel: Hebrew recaps of Israel's qualifiers
+      // (e.g. Moldova–Israel, Israel–Moldova, Norway–Israel).
+      // Team-scoped: only scanned for Israel's games.
+      { channelId: 'UC-5AVLhL2v04-lfbVzejRZQ', lang: 'he', teams: ['Israel'] },
+    ],
+    bulk: [
+      { handle: 'fifa', label: 'FIFA' },
+      { channelId: 'UCNT2e7Og56vm5_V-yJWvglA', label: 'England', teams: ['England'] },
+      { handle: 'sportsextra', label: 'SPORTS EXTRA' },
+      { handle: 'foxsports', label: 'FOX Sports' },
+    ],
+    fallbackLangs: ['he', 'en'],
+  },
+  euros: {
+    // No Hebrew priority channel could be verified for the Euros.
+    preferred: [],
+    bulk: [
+      { handle: 'UEFA', label: 'UEFA' },
+      // DFB: proven per-match Nations League output; Euro tournament
+      // cadence still needs direct confirmation.
+      { channelId: 'UC7am34-1rGU_ky1vWYnoOJQ', label: 'Germany / DFB', teams: ['Germany'] },
+      { channelId: 'UCNT2e7Og56vm5_V-yJWvglA', label: 'England', teams: ['England'] },
+      { handle: 'OnsOranje', label: 'Netherlands / OnsOranje', teams: ['Netherlands'] },
+      { handle: 'sportsextra', label: 'SPORTS EXTRA' },
+      { handle: 'foxsports', label: 'FOX Sports' },
+      // TODO(verify): Belgium RBFA (subscribe link bit.ly/rbfayoutube,
+      // handle unresolved; proven per-match output incl. UNL playoffs).
+    ],
+    fallbackLangs: ['en'],
+  },
+  'copa-america': {
+    // No Hebrew priority channel could be verified for Copa América.
+    preferred: [],
+    bulk: [
+      // Official Copa América channel identifier unresolved (legacy path
+      // /copaamerica; official site links per-match 2024 highlight
+      // videos). TODO(verify): resolve handle/channel ID.
+      // Aggregators below post international highlights; Copa-specific
+      // coverage cadence unverified.
+      { handle: 'sportsextra', label: 'SPORTS EXTRA' },
+      { handle: 'foxsports', label: 'FOX Sports' },
+    ],
+    fallbackLangs: ['en'],
+  },
+  'nations-league': {
+    // No Hebrew priority channel could be verified for the Nations League
+    // (the Austria 3-1 Israel recap's uploader is unknown).
+    preferred: [],
+    bulk: [
+      { handle: 'UEFA', label: 'UEFA' },
+      { channelId: 'UC7am34-1rGU_ky1vWYnoOJQ', label: 'Germany / DFB', teams: ['Germany'] },
+      { channelId: 'UCNT2e7Og56vm5_V-yJWvglA', label: 'England', teams: ['England'] },
+      { handle: 'OnsOranje', label: 'Netherlands / OnsOranje', teams: ['Netherlands'] },
+      // IFA covers all Israeli national teams; no Nations League upload
+      // tied to the channel yet, so bulk (not preferred) for Israel games.
+      { channelId: 'UC-5AVLhL2v04-lfbVzejRZQ', label: 'ההתאחדות לכדורגל / IFA', teams: ['Israel'] },
+      { handle: 'sportsextra', label: 'SPORTS EXTRA' },
+      { handle: 'foxsports', label: 'FOX Sports' },
+      // TODO(verify): Belgium RBFA (handle unresolved).
+    ],
+    fallbackLangs: ['he', 'en'],
   },
 };
 
