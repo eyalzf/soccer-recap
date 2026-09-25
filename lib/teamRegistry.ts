@@ -6,7 +6,6 @@ import { CLUBS } from './teams';
 import { NATIONS } from './nations';
 import { lookupClubEn } from './teamIndex';
 import { lookupNationEn, nationFlag } from './nationIndex';
-
 export interface TeamEntry {
   /** Canonical key: curated English name, or the raw name when unknown. */
   key: string;
@@ -93,10 +92,12 @@ export function buildNationRegistry(games: RegistryGame[]): Map<string, TeamEntr
   return reg;
 }
 
-/** TeamEntry for any canonical key (falls back to the curated Hebrew name, no badge). */
+/** TeamEntry for any canonical key (falls back to the curated Hebrew name; nations get their flag). */
 export function entryFor(key: string, reg: Map<string, TeamEntry>): TeamEntry {
   const hit = reg.get(key);
   if (hit) return hit;
+  const nation = lookupNationEn(key);
+  if (nation) return { key, he: nation.he, badge: nationFlag(key) };
   return { key, he: lookupClubEn(key)?.he ?? key, badge: null };
 }
 
