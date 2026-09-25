@@ -5,7 +5,8 @@ import type { GameItem } from './GameCard';
 import CompositeThumb from './CompositeThumb';
 import ResumePlayer from './ResumePlayer';
 import { isWatched, progressFraction } from '../lib/playbackProgress';
-import { recordGameView } from '../lib/watch';
+import { recordGameView, recordNationGameView } from '../lib/watch';
+import { isNationalSlug } from '../lib/leagues';
 
 interface Candidate {
   id: string;
@@ -59,7 +60,8 @@ export default function RecapPanel({
 
   /** A view counts when the user SELECTS a video — watching it fully is not required. */
   const selectCandidate = (c: Candidate) => {
-    recordGameView(game.id, game.home, game.away);
+    if (isNationalSlug(league)) recordNationGameView(game.id, game.home, game.away);
+    else recordGameView(game.id, game.home, game.away);
     setSelected(c);
   };
   /** Candidate ids whose YouTube thumbnail failed to load (fall back to crests). */
