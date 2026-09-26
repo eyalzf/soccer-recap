@@ -1,0 +1,251 @@
+{
+  "games": [
+    {
+      "away": "Gabon",
+      "awayBadge": "https://flagcdn.com/w80/ga.png",
+      "awayScore": 0,
+      "dateISO": "2026-09-25T19:00:00Z",
+      "home": "Morocco",
+      "homeBadge": "https://flagcdn.com/w80/ma.png",
+      "homeScore": 2,
+      "id": "nat-20260925-morocco-gabon",
+      "stage": "מוקדמות"
+    },
+    {
+      "away": "Angola",
+      "awayBadge": "https://flagcdn.com/w80/ao.png",
+      "awayScore": 0,
+      "dateISO": "2026-09-25T19:00:00Z",
+      "home": "Egypt",
+      "homeBadge": "https://flagcdn.com/w80/eg.png",
+      "homeScore": 0,
+      "id": "nat-20260925-egypt-angola",
+      "stage": "מוקדמות"
+    },
+    {
+      "away": "Benin",
+      "awayBadge": "https://flagcdn.com/w80/bj.png",
+      "awayScore": 1,
+      "dateISO": "2026-09-25T19:00:00Z",
+      "home": "Burkina Faso",
+      "homeBadge": "https://flagcdn.com/w80/bf.png",
+      "homeScore": 1,
+      "id": "nat-20260925-burkina-faso-benin",
+      "stage": "מוקדמות"
+    },
+    {
+      "away": "Zambia",
+      "awayBadge": "https://flagcdn.com/w80/zm.png",
+      "awayScore": 1,
+      "dateISO": "2026-09-25T19:00:00Z",
+      "home": "Algeria",
+      "homeBadge": "https://flagcdn.com/w80/dz.png",
+      "homeScore": 3,
+      "id": "nat-20260925-algeria-zambia",
+      "stage": "מוקדמות"
+    },
+    {
+      "away": "Mozambique",
+      "awayBadge": "https://flagcdn.com/w80/mz.png",
+      "awayScore": 1,
+      "dateISO": "2026-09-25T19:00:00Z",
+      "home": "Senegal",
+      "homeBadge": "https://flagcdn.com/w80/sn.png",
+      "homeScore": 1,
+      "id": "nat-20260925-senegal-mozambique",
+      "stage": "מוקדמות"
+    },
+    {
+      "away": "Cape Verde",
+      "awayBadge": "https://flagcdn.com/w80/cv.png",
+      "awayScore": 1,
+      "dateISO": "2026-09-25T19:00:00Z",
+      "home": "Mali",
+      "homeBadge": "https://flagcdn.com/w80/ml.png",
+      "homeScore": 3,
+      "id": "nat-20260925-mali-cape-verde",
+      "stage": "מוקדמות"
+    },
+    {
+      "away": "South Sudan",
+      "awayBadge": "https://flagcdn.com/w80/ss.png",
+      "awayScore": 1,
+      "dateISO": "2026-09-25T16:00:00Z",
+      "home": "Malawi",
+      "homeBadge": "https://flagcdn.com/w80/mw.png",
+      "homeScore": 2,
+      "id": "nat-20260925-malawi-south-sudan",
+      "stage": "מוקדמות"
+    },
+    {
+      "away": "Somalia",
+      "awayBadge": "https://flagcdn.com/w80/so.png",
+      "awayScore": 1,
+      "dateISO": "2026-09-25T16:00:00Z",
+      "home": "Gambia",
+      "homeBadge": "https://flagcdn.com/w80/gm.png",
+      "homeScore": 2,
+      "id": "nat-20260925-gambia-somalia",
+      "stage": "מוקדמות"
+    },
+    {
+      "away": "Burundi",
+      "awayBadge": "https://flagcdn.com/w80/bi.png",
+      "awayScore": 0,
+      "dateISO": "2026-09-25T16:00:00Z",
+      "home": "Togo",
+      "homeBadge": "https://flagcdn.com/w80/tg.png",
+      "homeScore": 1,
+      "id": "nat-20260925-togo-burundi",
+      "stage": "מוקדמות"
+    },
+    {
+      "away": "Ethiopia",
+      "awayBadge": "https://flagcdn.com/w80/et.png",
+      "awayScore": 0,
+      "dateISO": "2026-09-25T16:00:00Z",
+      "home": "Sudan",
+      "homeBadge": "https://flagcdn.com/w80/sd.png",
+      "homeScore": 1,
+      "id": "nat-20260925-sudan-ethiopia",
+      "stage": "מוקדמות"
+    },
+    {
+      "away": "Liberia",
+      "awayBadge": "https://flagcdn.com/w80/lr.png",
+      "awayScore": 1,
+      "dateISO": "2026-09-25T16:00:00Z",
+      "home": "Rwanda",
+      "homeBadge": "https://flagcdn.com/w80/rw.png",
+      "homeScore": 3,
+      "id": "nat-20260925-rwanda-liberia",
+      "stage": "מוקדמות"
+    },
+    {
+      "away": "Madagascar",
+      "awayBadge": "https://flagcdn.com/w80/mg.png",
+      "awayScore": 1,
+      "dateISO": "2026-09-25T16:00:00Z",
+      "home": "Nigeria",
+      "homeBadge": "https://flagcdn.com/w80/ng.png",
+      "homeScore": 2,
+      "id": "nat-20260925-nigeria-madagascar",
+      "stage": "מוקדמות"
+    },
+    {
+      "away": "Lesotho",
+      "awayBadge": "https://flagcdn.com/w80/ls.png",
+      "awayScore": 1,
+      "dateISO": "2026-09-25T15:00:00Z",
+      "home": "Niger",
+      "homeBadge": "https://flagcdn.com/w80/ne.png",
+      "homeScore": 2,
+      "id": "nat-20260925-niger-lesotho",
+      "stage": "מוקדמות"
+    },
+    {
+      "away": "Guinea-Bissau",
+      "awayBadge": "https://flagcdn.com/w80/gw.png",
+      "awayScore": 2,
+      "dateISO": "2026-09-25T13:00:00Z",
+      "home": "Tanzania",
+      "homeBadge": "https://flagcdn.com/w80/tz.png",
+      "homeScore": 0,
+      "id": "nat-20260925-tanzania-guinea-bissau",
+      "stage": "מוקדמות"
+    },
+    {
+      "away": "Zimbabwe",
+      "awayBadge": "https://flagcdn.com/w80/zw.png",
+      "awayScore": 3,
+      "dateISO": "2026-09-24T19:00:00Z",
+      "home": "Sierra Leone",
+      "homeBadge": "https://flagcdn.com/w80/sl.png",
+      "homeScore": 2,
+      "id": "nat-20260924-sierra-leone-zimbabwe",
+      "stage": "מוקדמות"
+    },
+    {
+      "away": "Ghana",
+      "awayBadge": "https://flagcdn.com/w80/gh.png",
+      "awayScore": 0,
+      "dateISO": "2026-09-24T19:00:00Z",
+      "home": "Ivory Coast",
+      "homeBadge": "https://flagcdn.com/w80/ci.png",
+      "homeScore": 2,
+      "id": "nat-20260924-ivory-coast-ghana",
+      "stage": "מוקדמות"
+    },
+    {
+      "away": "Comoros",
+      "awayBadge": "https://flagcdn.com/w80/km.png",
+      "awayScore": 1,
+      "dateISO": "2026-09-24T19:00:00Z",
+      "home": "Cameroon",
+      "homeBadge": "https://flagcdn.com/w80/cm.png",
+      "homeScore": 3,
+      "id": "nat-20260924-cameroon-comoros",
+      "stage": "מוקדמות"
+    },
+    {
+      "away": "Uganda",
+      "awayBadge": "https://flagcdn.com/w80/ug.png",
+      "awayScore": 1,
+      "dateISO": "2026-09-24T19:00:00Z",
+      "home": "Tunisia",
+      "homeBadge": "https://flagcdn.com/w80/tn.png",
+      "homeScore": 1,
+      "id": "nat-20260924-tunisia-uganda",
+      "stage": "מוקדמות"
+    },
+    {
+      "away": "Equatorial Guinea",
+      "awayBadge": "https://flagcdn.com/w80/gq.png",
+      "awayScore": 0,
+      "dateISO": "2026-09-24T16:00:00Z",
+      "home": "DR Congo",
+      "homeBadge": "https://flagcdn.com/w80/cd.png",
+      "homeScore": 2,
+      "id": "nat-20260924-dr-congo-equatorial-guinea",
+      "stage": "מוקדמות"
+    },
+    {
+      "away": "Central African Republic",
+      "awayBadge": "https://flagcdn.com/w80/cf.png",
+      "awayScore": 1,
+      "dateISO": "2026-09-24T16:00:00Z",
+      "home": "Mauritania",
+      "homeBadge": "https://flagcdn.com/w80/mr.png",
+      "homeScore": 3,
+      "id": "nat-20260924-mauritania-central-african-republic",
+      "stage": "מוקדמות"
+    },
+    {
+      "away": "Botswana",
+      "awayBadge": "https://flagcdn.com/w80/bw.png",
+      "awayScore": 2,
+      "dateISO": "2026-09-24T16:00:00Z",
+      "home": "Libya",
+      "homeBadge": "https://flagcdn.com/w80/ly.png",
+      "homeScore": 2,
+      "id": "nat-20260924-libya-botswana",
+      "stage": "מוקדמות"
+    },
+    {
+      "away": "Congo",
+      "awayBadge": "https://flagcdn.com/w80/cg.png",
+      "awayScore": 0,
+      "dateISO": "2026-09-24T13:00:00Z",
+      "home": "Namibia",
+      "homeBadge": "https://flagcdn.com/w80/na.png",
+      "homeScore": 1,
+      "id": "nat-20260924-namibia-congo",
+      "stage": "מוקדמות"
+    }
+  ],
+  "league": "afcon",
+  "league_he": "גביע אפריקה",
+  "season": "2027",
+  "source": "cafonline.com",
+  "updated_at": "2026-09-26T06:30:00Z"
+}
