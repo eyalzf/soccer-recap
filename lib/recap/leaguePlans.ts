@@ -257,6 +257,44 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
     ],
     fallbackLangs: ['he', 'en'],
   },
+  afcon: {
+    // No Hebrew priority channel could be verified for AFCON.
+    preferred: [],
+    bulk: [
+      // CAF TV: classic youtube.com/user/MyAfricanFootball URL is verified
+      // via CAF's own video descriptions (AFCON 2025 highlights); the
+      // modern @handle is unresolved — skipped silently until it resolves.
+      // TODO(verify): confirm the handle/channel ID and per-match output.
+      { handle: 'MyAfricanFootball', label: 'CAF TV' },
+      { handle: 'sportsextra', label: 'SPORTS EXTRA' },
+      { handle: 'foxsports', label: 'FOX Sports' },
+    ],
+    fallbackLangs: ['en'],
+  },
+  'gold-cup': {
+    // No Hebrew priority channel could be verified for the Gold Cup.
+    preferred: [],
+    bulk: [
+      // CONCACAF official channel: classic youtube.com/concacaf URL is
+      // verified via official Gold Cup highlight video descriptions
+      // (per-match "Extended Highlights"). Israel geo-blocking unverified.
+      // TODO(verify): confirm the @handle resolves.
+      { handle: 'concacaf', label: 'CONCACAF' },
+      { handle: 'sportsextra', label: 'SPORTS EXTRA' },
+      { handle: 'foxsports', label: 'FOX Sports' },
+    ],
+    fallbackLangs: ['en'],
+  },
+  'concacaf-nations-league': {
+    // No Hebrew priority channel could be verified.
+    preferred: [],
+    bulk: [
+      { handle: 'concacaf', label: 'CONCACAF' },
+      { handle: 'sportsextra', label: 'SPORTS EXTRA' },
+      { handle: 'foxsports', label: 'FOX Sports' },
+    ],
+    fallbackLangs: ['en'],
+  },
 };
 
 /** Unknown league slugs get English general search only. */
