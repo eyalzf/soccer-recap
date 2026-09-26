@@ -35,7 +35,10 @@ export type NationalCompetitionSlug =
   | 'world-cup'
   | 'euros'
   | 'copa-america'
-  | 'nations-league';
+  | 'nations-league'
+  | 'afcon'
+  | 'gold-cup'
+  | 'concacaf-nations-league';
 
 export interface NationalCompetitionDef {
   slug: NationalCompetitionSlug;
@@ -69,6 +72,24 @@ export const NATIONAL_COMPETITIONS: NationalCompetitionDef[] = [
     badge:
       'https://en.wikipedia.org/wiki/Special:FilePath/UEFA_Nations_League.svg',
   },
+  {
+    slug: 'afcon',
+    hebrewName: 'גביע אפריקה',
+    badge:
+      'https://en.wikipedia.org/wiki/Special:FilePath/2025_Africa_Cup_of_Nations_logo.svg',
+  },
+  {
+    slug: 'gold-cup',
+    hebrewName: 'גביע הזהב',
+    badge:
+      'https://commons.wikimedia.org/wiki/Special:FilePath/CONCACAF_-_Gold_Cup.svg',
+  },
+  {
+    slug: 'concacaf-nations-league',
+    hebrewName: 'ליגת האומות CONCACAF',
+    badge:
+      'https://en.wikipedia.org/wiki/Special:FilePath/CONCACAF_Nations_League_(2026).svg',
+  },
 ];
 
 export function getNationalCompetition(
@@ -77,7 +98,7 @@ export function getNationalCompetition(
   return NATIONAL_COMPETITIONS.find((c) => c.slug === slug);
 }
 
-/** True for the four national-competition slugs (vs the club league slugs). */
+/** True for the national-competition slugs (vs the club league slugs). */
 export function isNationalSlug(slug: string): boolean {
   return NATIONAL_COMPETITIONS.some((c) => c.slug === slug);
 }
