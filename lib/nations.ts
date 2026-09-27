@@ -128,6 +128,11 @@ export const NATIONS: NationEntry[] = [
   { en: 'Turks and Caicos Islands', he: 'איי טורקס וקאיקוס', enAliases: ['TCI'], heAliases: [], iso: 'tc' },
   { en: 'Montserrat', he: 'מונטסראט', enAliases: ['MSR'], heAliases: [], iso: 'ms' },
   { en: 'Saint Martin', he: 'סן מרטן', enAliases: ['SMT', 'St Martin'], heAliases: [], iso: 'mf' },
+  { en: 'U.S. Virgin Islands', he: 'איי הבתולה האמריקניים', enAliases: ['US Virgin Islands', 'VIR'], heAliases: [], iso: 'vi' },
+  { en: 'British Virgin Islands', he: 'איי הבתולה הבריטיים', enAliases: ['VGB'], heAliases: [], iso: 'vg' },
+  { en: 'Anguilla', he: 'אנגווילה', enAliases: ['AIA'], heAliases: [], iso: 'ai' },
+  { en: 'Saint Vincent and the Grenadines', he: 'סנט וינסנט והגרנדינים', enAliases: ['St Vincent and the Grenadines', 'VIN'], heAliases: [], iso: 'vc' },
+  { en: 'French Guiana', he: 'גיאנה הצרפתית', enAliases: ['GUF'], heAliases: [], iso: 'gf' },
   // ----------------------------------------------------------------- AFC
   { en: 'Japan', he: 'יפן', enAliases: ['JPN'], heAliases: [], iso: 'jp' },
   { en: 'Korea Republic', he: 'דרום קוריאה', enAliases: ['South Korea', 'Korea', 'KOR'], heAliases: [], iso: 'kr' },
@@ -183,6 +188,9 @@ export const NATIONS: NationEntry[] = [
   { en: 'Mozambique', he: 'מוזמביק', enAliases: ['MOZ'], heAliases: [], iso: 'mz' },
   { en: 'Mali', he: 'מאלי', enAliases: ['MLI'], heAliases: [], iso: 'ml' },
   { en: 'Cape Verde', he: 'כף ורדה', enAliases: ['Cabo Verde', 'CPV'], heAliases: [], iso: 'cv' },
+  { en: 'Kenya', he: 'קניה', enAliases: ['KEN'], heAliases: [], iso: 'ke' },
+  { en: 'Eritrea', he: 'אריתריאה', enAliases: ['ERI'], heAliases: [], iso: 'er' },
+  { en: 'Guinea', he: 'גינאה', enAliases: ['GUI'], heAliases: [], iso: 'gn' },
   // ----------------------------------------------------------------- OFC
   { en: 'New Zealand', he: 'ניו זילנד', enAliases: ['NZL'], heAliases: [], iso: 'nz' },
 ];
