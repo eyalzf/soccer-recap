@@ -1,6 +1,50 @@
 {
   "games": [
     {
+      "id": "nat-20260926-antigua-and-barbuda-anguilla",
+      "home": "Antigua and Barbuda",
+      "away": "Anguilla",
+      "dateISO": "2026-09-26T23:00:00.000Z",
+      "homeScore": 5,
+      "awayScore": 0,
+      "homeBadge": "https://flagcdn.com/w80/ag.png",
+      "awayBadge": null,
+      "stage": "שלב הבתים"
+    },
+    {
+      "id": "nat-20260926-saint-vincent-and-the-grenadines-french-guiana",
+      "home": "Saint Vincent and the Grenadines",
+      "away": "French Guiana",
+      "dateISO": "2026-09-26T21:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 1,
+      "homeBadge": null,
+      "awayBadge": null,
+      "stage": "שלב הבתים"
+    },
+    {
+      "id": "nat-20260926-saint-martin-us-virgin-islands",
+      "home": "Saint Martin",
+      "away": "U.S. Virgin Islands",
+      "dateISO": "2026-09-26T20:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 2,
+      "homeBadge": "https://flagcdn.com/w80/mf.png",
+      "awayBadge": null,
+      "stage": "שלב הבתים"
+    },
+    {
+      "id": "nat-20260926-montserrat-british-virgin-islands",
+      "home": "Montserrat",
+      "away": "British Virgin Islands",
+      "dateISO": "2026-09-26T19:00:00.000Z",
+      "homeScore": 3,
+      "awayScore": 0,
+      "homeBadge": "https://flagcdn.com/w80/ms.png",
+      "awayBadge": null,
+      "stage": "שלב הבתים"
+    },
+    {
       "away": "Martinique",
       "awayBadge": "https://flagcdn.com/w80/mq.png",
       "awayScore": 1,
@@ -170,5 +214,5 @@
   "league_he": "ליגת האומות (צפון אמריקה)",
   "season": "2026/27",
   "source": "concacaf.com",
-  "updated_at": "2026-09-26T07:00:00Z"
+  "updated_at": "2026-09-27T03:03:12.000Z"
 }
