@@ -4,6 +4,7 @@ import {
   writeOps,
   type ChannelDecision,
 } from '@/lib/recap/channelCandidates';
+import { getDenySet, isDeniedChannel } from '@/lib/recap/denyList';
 
 export const dynamic = 'force-dynamic';
 
@@ -55,6 +56,10 @@ export async function POST(req: NextRequest) {
     ops.pending = dropKey(ops.pending);
   } else if (action === 'add') {
     if (!cand) return NextResponse.json({ error: 'candidate not found' }, { status: 404 });
+    const deny = await getDenySet();
+    if (isDeniedChannel({ channelId: cand.channelId, channelHandle: null }, deny)) {
+      return NextResponse.json({ error: 'channel is deny-listed' }, { status: 409 });
+    }
     const teams = body.teams?.length ? body.teams : cand.scope.teams;
     ops.pending = dropKey(ops.pending);
     ops.pending.push({
