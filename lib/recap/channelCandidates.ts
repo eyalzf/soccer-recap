@@ -9,7 +9,7 @@
  * (Blob-only, no external services). A discard zeroes the count: the
  * channel re-surfaces only after 3 NEW hits beyond the discard point.
  */
-import { readSearchLog, type KeptChannel } from './searchLog';
+import { readSearchLog, type KeptChannel, type SearchLogDay } from './searchLog';
 import { searchPlanFor } from './leaguePlans';
 import { pget, pset } from './persist';
 
@@ -134,6 +134,17 @@ interface Agg {
 export async function getChannelCandidates(): Promise<CandidatesResult> {
   const days = await readSearchLog(LOG_DAYS);
   const ops = await readOps();
+  return aggregateCandidates(days, ops);
+}
+
+/**
+ * Pure aggregation: general-tier channel wins -> candidate suggestions.
+ * Exported for zero-quota unit testing.
+ */
+export function aggregateCandidates(
+  days: SearchLogDay[],
+  ops: ChannelOpsState
+): CandidatesResult {
   const aggs = new Map<string, Agg>();
   let searchesSeen = 0;
 
