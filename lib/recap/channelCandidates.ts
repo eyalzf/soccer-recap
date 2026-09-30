@@ -12,6 +12,7 @@
 import { readSearchLog, type KeptChannel, type SearchLogDay } from './searchLog';
 import { searchPlanFor } from './leaguePlans';
 import { pget, pset } from './persist';
+import { isDeniedChannel, getDenySet, type DenySet } from './denyList';
 
 export const CANDIDATE_HIT_THRESHOLD = 3;
 const LOG_DAYS = 14;
@@ -134,7 +135,8 @@ interface Agg {
 export async function getChannelCandidates(): Promise<CandidatesResult> {
   const days = await readSearchLog(LOG_DAYS);
   const ops = await readOps();
-  return aggregateCandidates(days, ops);
+  const deny = await getDenySet();
+  return aggregateCandidates(days, ops, deny);
 }
 
 /**
@@ -143,7 +145,8 @@ export async function getChannelCandidates(): Promise<CandidatesResult> {
  */
 export function aggregateCandidates(
   days: SearchLogDay[],
-  ops: ChannelOpsState
+  ops: ChannelOpsState,
+  denied?: DenySet
 ): CandidatesResult {
   const aggs = new Map<string, Agg>();
   let searchesSeen = 0;
@@ -187,6 +190,12 @@ export function aggregateCandidates(
   for (const [key, a] of aggs) {
     if (a.hits < CANDIDATE_HIT_THRESHOLD) continue;
     if (alreadyCurated(a.league, a.channel, a.channelId)) continue;
+    // A deny-listed channel must never be proposed for the bulk pool.
+    if (
+      denied &&
+      isDeniedChannel({ channelId: a.channelId, channelHandle: null }, denied)
+    )
+      continue;
     const dec = decided.get(key);
     if (dec) {
       if (dec.countAtDiscard != null) {
