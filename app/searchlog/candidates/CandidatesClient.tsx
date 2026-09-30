@@ -5,6 +5,7 @@ import type {
   CandidatesResult,
   ChannelCandidate,
 } from '@/lib/recap/channelCandidates';
+import SweepClient from './SweepClient';
 
 interface Props {
   leagueHe: Record<string, string>;
@@ -93,6 +94,7 @@ function CandidateRow({
 }
 
 export default function CandidatesClient({ leagueHe }: Props) {
+  const [tab, setTab] = useState<'candidates' | 'sweep'>('candidates');
   const [data, setData] = useState<CandidatesResult | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -139,6 +141,27 @@ export default function CandidatesClient({ leagueHe }: Props) {
 
   return (
     <div>
+      <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+        <button
+          className="refresh-btn"
+          onClick={() => setTab('candidates')}
+          style={tab === 'candidates' ? { fontWeight: 700 } : { opacity: 0.6 }}
+        >
+          מועמדים להוספה
+        </button>
+        <button
+          className="refresh-btn"
+          onClick={() => setTab('sweep')}
+          style={tab === 'sweep' ? { fontWeight: 700 } : { opacity: 0.6 }}
+        >
+          סריקת תקינות
+        </button>
+      </div>
+
+      {tab === 'sweep' ? (
+        <SweepClient leagueHe={leagueHe} />
+      ) : (
+        <>
       <p className="empty" style={{ textAlign: 'right' }}>
         ערוצים שניצחו {hitThreshold}+ תוצאות בחיפוש הכללי ב־14 הימים האחרונים (
         {searchesSeen} חיפושים חדשים נסרקו) ואינם במאגר הערוצים.
@@ -229,6 +252,8 @@ export default function CandidatesClient({ leagueHe }: Props) {
               ))}
             </tbody>
           </table>
+        </>
+      )}
         </>
       )}
     </div>
