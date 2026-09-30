@@ -3,6 +3,7 @@ import { searchPlanFor } from '@/lib/recap/leaguePlans';
 import { getChannelVideos } from '@/lib/recap/bulk';
 import { channelIdForHandle, ytVideoMeta } from '@/lib/recap/sources';
 import { filterCandidate, hasHighlightIntent } from '@/lib/recap/match';
+import { getDenySet } from '@/lib/recap/denyList';
 import type { GameInput, RawCandidate } from '@/lib/recap/types';
 
 export const dynamic = 'force-dynamic';
@@ -63,6 +64,7 @@ export async function GET(req: NextRequest) {
   }
 
   const plan = searchPlanFor(game.league);
+  const denySet = await getDenySet();
   const olderThanISO = new Date(Date.parse(game.dateISO) - 2 * DAY).toISOString();
   let ytRateLimited = false;
   const tiers: Array<{ tier: string; channels: ChannelReport[] }> = [];
@@ -121,7 +123,7 @@ export async function GET(req: NextRequest) {
         bulk: tierName === 'bulk' || tierName === 'candidate',
         lang: /[֐-׿]/.test(v.title) ? 'he' : 'en',
       };
-      const f = filterCandidate(c, game);
+      const f = filterCandidate(c, game, denySet);
       if (f.keep) {
         keptCount += 1;
         if (keptTitles.length < 5) keptTitles.push(v.title);
