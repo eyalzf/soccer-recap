@@ -3,7 +3,7 @@ import { LEAGUES, NATIONAL_COMPETITIONS } from '@/lib/leagues';
 import CandidatesClient from './CandidatesClient';
 
 export const dynamic = 'force-dynamic';
-export const metadata = { title: 'ערוצים מועמדים למאגר' };
+export const metadata = { title: 'ניהול ערוצים' };
 
 export default function CandidatesPage() {
   const leagueHe: Record<string, string> = Object.fromEntries([
@@ -13,7 +13,7 @@ export default function CandidatesPage() {
   return (
     <div className="app">
       <div className="topbar">
-        <h1>ערוצים מועמדים למאגר</h1>
+        <h1>ניהול ערוצים</h1>
         <Link href="/searchlog" className="refresh-btn">
           חזרה ליומן
         </Link>
