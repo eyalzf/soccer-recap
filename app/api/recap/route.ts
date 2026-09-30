@@ -10,6 +10,7 @@ import { emptyTierStats, logSearch } from '@/lib/recap/searchLog';
 import type { KeptChannel, SearchWinner, SourceAccess } from '@/lib/recap/searchLog';
 import { loadFixture, MATCHER_VERSION } from '@/lib/recap/fixtures';
 import type { GameInput, RankedCandidate, RawCandidate } from '@/lib/recap/types';
+import { getDenySet, isDeniedPlanEntry } from '@/lib/recap/denyList';
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
@@ -201,6 +202,10 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
     return pref.some((c) => hasHighlightIntent(c.title)) ? pref : list;
   };
   const plan = searchPlanFor(game.league);
+  // Deny-listed channels are suppressed everywhere: their videos are
+  // rejected by filterCandidate, and plan entries are skipped before any
+  // quota is spent scanning them.
+  const denySet = await getDenySet();
   // "Proper" = an accepted candidate with highlight intent. A preferred
   // channel returning only punditry does not count and does not stop the
   // search. (Deliberately stricter than the doc's "non-empty filtered
@@ -223,7 +228,7 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
     for (const c of raw) {
       if (seen.has(c.id)) continue;
       seen.add(c.id);
-      const f = filterCandidate(c, game);
+      const f = filterCandidate(c, game, denySet);
       if (f.keep) {
         accepted.push(c);
         kept += 1;
@@ -271,7 +276,9 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
   // channel with a proper highlight result. A 429 means the rate limiter
   // is engaged: further calls would fail too, so stop.
   let winner: SearchWinner = 'none';
-  for (const src of channelsForGame(plan.preferred, game)) {
+  for (const src of channelsForGame(plan.preferred, game).filter(
+    (s) => !isDeniedPlanEntry(s, denySet)
+  )) {
     if (ytRateLimited) break;
     const scan = await scanPriorityChannel(src, game);
     const srcLabel = src.handle ?? src.channelId ?? 'preferred';
