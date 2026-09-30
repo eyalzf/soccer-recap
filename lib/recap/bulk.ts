@@ -20,6 +20,7 @@ import { lookupClubEn } from '../teamIndex';
 import { searchPlanFor } from './leaguePlans';
 import type { LeagueSearchPlan } from './leaguePlans';
 import type { GameInput, RawCandidate } from './types';
+import { getDenySet, isDeniedPlanEntry } from './denyList';
 
 const DAY = 86400000;
 const PLAYLIST_TTL = 3600 * 1000;
@@ -289,7 +290,12 @@ export async function scanPriorityChannel(
  */
 export async function bulkScan(game: GameInput): Promise<BulkScanResult> {
   const plan: LeagueSearchPlan = searchPlanFor(game.league);
-  const entries = channelsForGame(plan.bulk, game);
+  // Deny-listed plan entries are skipped entirely: no quota spent scanning
+  // a channel whose videos would be rejected anyway.
+  const deny = await getDenySet();
+  const entries = channelsForGame(plan.bulk, game).filter(
+    (e) => !isDeniedPlanEntry(e, deny)
+  );
   const maxPages = plan.bulkPages ?? MAX_PAGES;
   const olderThanISO = new Date(Date.parse(game.dateISO) - 2 * DAY).toISOString();
   const candidates: RawCandidate[] = [];
