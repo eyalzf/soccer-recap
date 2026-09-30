@@ -1,1 +1,1 @@
-{"crons":[{"path":"/api/recap/prune","schedule":"0 3 * * 0"}]}
+{"crons":[{"path":"/api/recap/prune","schedule":"0 3 * * 0"},{"path":"/api/recap/sweep","schedule":"0 4 * * 0"}]}
