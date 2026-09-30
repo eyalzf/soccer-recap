@@ -2,16 +2,15 @@ import Link from 'next/link';
 import { readSearchLog } from '@/lib/recap/searchLog';
 import type { SearchLogEntry, SearchWinner } from '@/lib/recap/searchLog';
 import { toHebrew } from '@/lib/teamIndex';
+import { LEAGUES, NATIONAL_COMPETITIONS } from '@/lib/leagues';
 
 export const dynamic = 'force-dynamic';
 export const metadata = { title: 'יומן חיפושי תקצירים' };
 
-const LEAGUE_HE: Record<string, string> = {
-  'israeli-league': 'ליגת העל',
-  'premier-league': 'פרמייר ליג',
-  'la-liga': 'לה ליגה',
-  'champions-league': 'ליגת האלופות',
-};
+const LEAGUE_HE: Record<string, string> = Object.fromEntries([
+  ...LEAGUES.map((l) => [l.slug, l.hebrewName]),
+  ...NATIONAL_COMPETITIONS.map((l) => [l.slug, l.hebrewName]),
+]);
 
 const WINNER_HE: Record<SearchWinner, string> = {
   preferred: 'ערוץ מועדף',
@@ -102,15 +101,24 @@ export default async function SearchLogPage() {
     <div className="app">
       <div className="topbar">
         <h1>יומן חיפושי תקצירים</h1>
-        <Link href="/" className="refresh-btn">
-          חזרה
-        </Link>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <Link href="/searchlog/candidates" className="refresh-btn">
+            ערוצים מועמדים
+          </Link>
+          <Link href="/" className="refresh-btn">
+            חזרה
+          </Link>
+        </div>
       </div>
 
       <div className="log-summary">
         <div className="log-card">
+          <div className="log-num">{entries.length}</div>
+          <div className="log-label">סה״כ רשומות (7 ימים)</div>
+        </div>
+        <div className="log-card">
           <div className="log-num">{searched.length}</div>
-          <div className="log-label">חיפושים (7 ימים)</div>
+          <div className="log-label">חיפושים חדשים</div>
         </div>
         <div className="log-card">
           <div className="log-num">{cached}</div>

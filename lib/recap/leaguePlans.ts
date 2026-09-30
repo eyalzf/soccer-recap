@@ -177,6 +177,10 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
       // Leeds / Bournemouth: handles unconfirmed; use verified channel IDs.
       { channelId: 'UCRHkt-FUeYUG-ybo1Koh2WA', label: 'Leeds United', teams: ['Leeds United'] },
       { channelId: 'UCeOCuVSSweaEj6oVtJZEKQw', label: 'AFC Bournemouth', teams: ['Bournemouth'] },
+      // 2026-09-30: verified via /api/recap/curated-test on Newcastle–Hull
+      // (kept 4, proper highlight incl. "City's fightback nearly enough!
+      // Newcastle United 2-1 Hull City | Premier League Highlights").
+      { handle: 'hullcityofficial', label: 'Hull City', teams: ['Hull City'] },
     ],
     fallbackLangs: ['en'],
   },

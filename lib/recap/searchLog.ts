@@ -35,6 +35,25 @@ export interface SourceAccess {
   kept: number;
 }
 
+/**
+ * One kept (post-matcher) result with its channel. Recorded so winning
+ * channels — especially from the general-search fallback — can be
+ * reviewed as bulk-channel candidates. Capped per entry; old entries
+ * simply lack this field.
+ */
+export interface KeptChannel {
+  /** video id (or internal candidate id when unknown) */
+  v: string;
+  /** channel title as returned by YouTube */
+  ch: string;
+  /** YouTube channel ID when known */
+  chId?: string;
+  /** tier that kept the candidate */
+  tier: 'preferred' | 'bulk' | 'general';
+  /** candidate title, truncated (for review) */
+  t: string;
+}
+
 export interface SearchLogEntry {
   t: number;
   home: string;
@@ -50,6 +69,8 @@ export interface SearchLogEntry {
   general: TierStats;
   /** per raw data source access (empty on cache hits / old entries) */
   sources?: SourceAccess[];
+  /** kept results with their channels (absent on cache hits / old entries) */
+  channels?: KeptChannel[];
   results: number;
   rateLimited: boolean;
 }

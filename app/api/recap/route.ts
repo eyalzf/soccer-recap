@@ -7,7 +7,7 @@ import { searchPlanFor } from '@/lib/recap/leaguePlans';
 import { bulkScan, channelsForGame, scanPriorityChannel } from '@/lib/recap/bulk';
 import { pget, pset } from '@/lib/recap/persist';
 import { emptyTierStats, logSearch } from '@/lib/recap/searchLog';
-import type { SearchWinner, SourceAccess } from '@/lib/recap/searchLog';
+import type { KeptChannel, SearchWinner, SourceAccess } from '@/lib/recap/searchLog';
 import { loadFixture, MATCHER_VERSION } from '@/lib/recap/fixtures';
 import type { GameInput, RankedCandidate, RawCandidate } from '@/lib/recap/types';
 
@@ -148,6 +148,7 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
     bulk: emptyTierStats(),
     general: emptyTierStats(),
     sources,
+    channels: [] as KeptChannel[],
   };
   const logCached = async (rec: { val: CachedGame }) => {
     // Cache hit: no tier ran. Still logged so fallback frequency is
@@ -209,7 +210,14 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
   // Per-channel kept counts, so bulk per-channel stats can report
   // fetched vs matched per raw data source (design-doc logging).
   const keptByChannel = new Map<string, number>();
-  const ingest = (label: string, raw: RawCandidate[]): number => {
+  // Cap the per-entry kept-channel record: enough for curation review,
+  // small enough to keep daily log blobs lean.
+  const MAX_KEPT_CHANNEL_LOG = 15;
+  const ingest = (
+    label: string,
+    raw: RawCandidate[],
+    tier: 'preferred' | 'bulk' | 'general'
+  ): number => {
     let kept = 0;
     const rejected: Array<{ title: string; channel?: string; reason: string }> = [];
     for (const c of raw) {
@@ -221,6 +229,16 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
         kept += 1;
         if (c.channelName)
           keptByChannel.set(c.channelName, (keptByChannel.get(c.channelName) ?? 0) + 1);
+        // Record the winning channel for bulk-candidate review.
+        if (logEntry.channels.length < MAX_KEPT_CHANNEL_LOG) {
+          logEntry.channels.push({
+            v: c.videoId ?? c.id,
+            ch: c.channelName ?? label,
+            chId: c.channelId,
+            tier,
+            t: c.title.slice(0, 120),
+          });
+        }
       } else if (debug && rejected.length < 10) {
         rejected.push({ title: c.title, channel: c.channelName, reason: f.reason });
       }
@@ -236,7 +254,7 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
   ): Promise<{ kept: number; fetched: number }> => {
     try {
       const raw = await youtubeSearch(game, job);
-      const kept = ingest(label, raw);
+      const kept = ingest(label, raw, 'general');
       if (debug) Object.assign(diag[diag.length - 1], diagExtra);
       return { kept, fetched: raw.length };
     } catch (e) {
@@ -264,7 +282,7 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
       continue;
     }
     logEntry.preferred.ran += 1;
-    const kept = ingest('preferred:' + srcLabel, scan.candidates);
+    const kept = ingest('preferred:' + srcLabel, scan.candidates, 'preferred');
     logEntry.preferred.kept += kept;
     sources.push({
       label: srcLabel,
@@ -291,7 +309,7 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
     if (bulk.ytRateLimited) ytRateLimited = true;
     logEntry.bulk.ran += 1;
     const keptBefore = new Map(keptByChannel);
-    logEntry.bulk.kept += ingest('bulk', bulk.candidates);
+    logEntry.bulk.kept += ingest('bulk', bulk.candidates, 'bulk');
     for (const ch of bulk.perChannel) {
       const kept =
         (keptByChannel.get(ch.label) ?? 0) - (keptBefore.get(ch.label) ?? 0);
