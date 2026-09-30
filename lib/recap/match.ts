@@ -3,6 +3,7 @@ import { NATIONS } from '../nations';
 import { lookupClubEn } from '../teamIndex';
 import type { GameInput, RawCandidate } from './types';
 import { LEAGUE_SEARCH_PLANS } from './leaguePlans';
+import { isDeniedChannel, type DenySet } from './denyList';
 
 export const hasHebrew = (s: string): boolean => /[\u0590-\u05FF]/.test(s);
 
@@ -389,10 +390,19 @@ export interface FilterResult {
  * Simplified matching: both teams + date are the primary identifiers.
  * Score is a signal with two vetoes; competition contradictions are rejected.
  */
-export function filterCandidate(c: RawCandidate, game: GameInput): FilterResult {
+export function filterCandidate(
+  c: RawCandidate,
+  game: GameInput,
+  denied?: DenySet
+): FilterResult {
   const home = lookupClubEn(game.home);
   const away = lookupClubEn(game.away);
   if (!home || !away) return { keep: false, reason: 'unknown-team' };
+
+  // Deny-listed "known offender" channel: never surface its videos, in any
+  // tier. (The weekly sweep proposes entries; the user approves them.)
+  if (denied && isDeniedChannel(c, denied))
+    return { keep: false, reason: 'deny-listed' };
 
   // Press conferences and prematch shows are never recaps, in any tier.
   // (Matters most for the curated club-channel pool, which is full of them.)
