@@ -58,7 +58,10 @@ async function ytSearch(
     part: 'snippet',
     type: 'video',
     order: 'relevance',
-    maxResults: '10',
+    // Over-fetch on purpose: search.list costs a flat 100 quota units
+    // regardless of page size (up to 50), and deny-listed/dead candidates
+    // filtered downstream must not crowd usable results out of the page.
+    maxResults: '25',
     q,
     publishedAfter: opts.after,
     publishedBefore: opts.before,
