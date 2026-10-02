@@ -28,6 +28,7 @@ const check = (name: string, cond: boolean, extra?: unknown) => {
 const def = getNationalCompetition('national-friendlies');
 check('registry entry exists', !!def);
 check('hebrew name', def?.hebrewName === 'משחקי ידידות', def?.hebrewName);
+check('badge is the custom friendlies icon', def?.badge === '/friendlies-icon.svg', def?.badge);
 check('isNationalSlug', isNationalSlug('national-friendlies'));
 
 // 2. Search plan.
