@@ -13,6 +13,7 @@ const LEAGUE_HE: Record<string, string> = Object.fromEntries([
 ]);
 
 const WINNER_HE: Record<SearchWinner, string> = {
+  sport1: 'ספורט1',
   preferred: 'ערוץ מועדף',
   bulk: 'מאגר ערוצים',
   general: 'חיפוש כללי',
@@ -22,6 +23,7 @@ const WINNER_HE: Record<SearchWinner, string> = {
 
 interface Agg {
   n: number;
+  sport1: number;
   preferred: number;
   bulk: number;
   general: number;
@@ -29,12 +31,13 @@ interface Agg {
   fallback: number;
 }
 
-const emptyAgg = (): Agg => ({ n: 0, preferred: 0, bulk: 0, general: 0, none: 0, fallback: 0 });
+const emptyAgg = (): Agg => ({ n: 0, sport1: 0, preferred: 0, bulk: 0, general: 0, none: 0, fallback: 0 });
 
 function bump(a: Agg, e: SearchLogEntry): void {
   a.n += 1;
   const w = e.winner ?? 'none';
-  if (w === 'preferred') a.preferred += 1;
+  if (w === 'sport1') a.sport1 += 1;
+  else if (w === 'preferred') a.preferred += 1;
   else if (w === 'bulk') a.bulk += 1;
   else if (w === 'general') a.general += 1;
   else a.none += 1;
@@ -44,6 +47,7 @@ function bump(a: Agg, e: SearchLogEntry): void {
 const pct = (a: number, b: number): string => (b ? `${Math.round((a / b) * 100)}%` : '—');
 
 const KIND_HE: Record<string, string> = {
+  sport1: 'ספורט1',
   preferred: 'מועדף',
   bulk: 'מאגר',
   general: 'כללי',
@@ -138,6 +142,7 @@ export default async function SearchLogPage() {
           <tr>
             <th>ליגה</th>
             <th>חיפושים</th>
+            <th>ספורט1</th>
             <th>מועדף</th>
             <th>מאגר</th>
             <th>חיפוש כללי</th>
@@ -150,6 +155,7 @@ export default async function SearchLogPage() {
             <tr key={league}>
               <td>{LEAGUE_HE[league] ?? league}</td>
               <td>{a.n}</td>
+              <td>{a.sport1}</td>
               <td>{a.preferred}</td>
               <td>{a.bulk}</td>
               <td>{a.general}</td>
@@ -159,7 +165,7 @@ export default async function SearchLogPage() {
           ))}
           {byLeague.size === 0 && (
             <tr>
-              <td colSpan={7} className="empty">
+              <td colSpan={8} className="empty">
                 אין חיפושים מתועדים עדיין — היומן מתמלא החל מהחיפוש הבא
               </td>
             </tr>

@@ -65,7 +65,7 @@ export const NATIONS: NationEntry[] = [
   { en: 'Netherlands', he: 'הולנד', enAliases: ['Holland', 'NED'], heAliases: [], iso: 'nl' },
   { en: 'North Macedonia', he: 'צפון מקדוניה', enAliases: ['Macedonia', 'MKD'], heAliases: ['מקדוניה'], iso: 'mk' },
   { en: 'Northern Ireland', he: 'צפון אירלנד', enAliases: ['NIR'], heAliases: [], iso: 'gb-nir' },
-  { en: 'Norway', he: 'נורווגיה', enAliases: ['NOR'], heAliases: [], iso: 'no' },
+  { en: 'Norway', he: 'נורווגיה', enAliases: ['NOR'], heAliases: ['נורבגיה'], iso: 'no' },
   { en: 'Poland', he: 'פולין', enAliases: ['POL'], heAliases: [], iso: 'pl' },
   { en: 'Portugal', he: 'פורטוגל', enAliases: ['POR'], heAliases: [], iso: 'pt' },
   { en: 'Republic of Ireland', he: 'אירלנד', enAliases: ['Ireland', 'IRL', 'ROI'], heAliases: [], iso: 'ie' },
@@ -81,7 +81,7 @@ export const NATIONS: NationEntry[] = [
   { en: 'Switzerland', he: 'שווייץ', enAliases: ['SUI'], heAliases: [], iso: 'ch' },
   { en: 'Türkiye', he: 'טורקיה', enAliases: ['Turkey', 'TUR'], heAliases: [], iso: 'tr' },
   { en: 'Ukraine', he: 'אוקראינה', enAliases: ['UKR'], heAliases: [], iso: 'ua' },
-  { en: 'Wales', he: 'וויילס', enAliases: ['WAL'], heAliases: ['ויילס'], iso: 'gb-wls' },
+  { en: 'Wales', he: 'וויילס', enAliases: ['WAL'], heAliases: ['ויילס', 'ווילס'], iso: 'gb-wls' },
   // ------------------------------------------------------------- CONMEBOL
   { en: 'Argentina', he: 'ארגנטינה', enAliases: ['ARG'], heAliases: [], iso: 'ar' },
   { en: 'Bolivia', he: 'בוליביה', enAliases: ['BOL'], heAliases: [], iso: 'bo' },

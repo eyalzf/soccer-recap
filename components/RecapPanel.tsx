@@ -14,6 +14,7 @@ interface Candidate {
   url: string;
   source: string;
   videoId?: string;
+  embedUrl?: string;
   thumbnail?: string;
   publishedAt?: string;
   durationSec?: number;
@@ -135,6 +136,18 @@ export default function RecapPanel({
             title={selected.title}
             onProgress={() => setProgressTick((n) => n + 1)}
           />
+        ) : selected?.embedUrl ? (
+          // Sport1 (Walla) player: iframe-only embed, no JS API — no resume
+          // or progress tracking, but watched-on-select still applies.
+          <div className="player-wrap">
+            <iframe
+              key={selected.id}
+              src={selected.embedUrl}
+              title={selected.title}
+              allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
+              allowFullScreen
+            />
+          </div>
         ) : selected ? (
           <a
             className="source-link"

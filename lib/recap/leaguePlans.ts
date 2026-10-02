@@ -64,6 +64,14 @@ export interface LeagueSearchPlan {
   bulkPages?: number;
   /** General-search fallback, tried in order when tiers 1+2 find nothing. */
   fallbackLangs: Array<'he' | 'en'>;
+  /**
+   * Sport1 (Maariv/Walla site) as a priority source: checked before every
+   * YouTube tier; any result it yields for a game ends the search (no
+   * other source is consulted). Consumes no quota (plain REST + page
+   * fetches). Enabled only where the user approved it (UEFA Nations
+   * League).
+   */
+  sport1?: boolean;
 }
 
 export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
@@ -244,8 +252,12 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
     fallbackLangs: ['en'],
   },
   'nations-league': {
-    // No Hebrew priority channel could be verified for the Nations League
-    // (the Austria 3-1 Israel recap's uploader is unknown).
+    // Sport1 (ספורט 1 web) is the priority source: official Hebrew
+    // broadcaster recaps, checked before any YouTube tier (user decision
+    // 2026-10-02). No Hebrew priority YouTube channel could be verified
+    // for the Nations League (the Austria 3-1 Israel recap's uploader is
+    // unknown), so preferred stays empty.
+    sport1: true,
     preferred: [],
     bulk: [
       { handle: 'UEFA', label: 'UEFA' },

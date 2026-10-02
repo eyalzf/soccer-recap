@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server';
 import { filterCandidate, hasHighlightIntent, isPreferredChannel } from '@/lib/recap/match';
 import { rankCandidates } from '@/lib/recap/rank';
-import { englishQuery, hebrewQuery, youtubeSearch } from '@/lib/recap/sources';
+import { englishQuery, hebrewQuery, sport1Search, youtubeSearch } from '@/lib/recap/sources';
 import type { YouTubeSearchJob } from '@/lib/recap/sources';
 import { searchPlanFor } from '@/lib/recap/leaguePlans';
 import { bulkScan, channelsForGame, scanPriorityChannel } from '@/lib/recap/bulk';
@@ -86,7 +86,7 @@ function parseGame(sp: URLSearchParams): GameInput | null {
  *  season). Versioned so matcher/policy changes auto-invalidate. */
 function gameCacheKey(game: GameInput): string {
   const seg = (s: string) => encodeURIComponent(s).replace(/[%().]/g, '_');
-  return `game/v8/${game.league}/${seg(game.home)}-${seg(game.away)}-${seg(game.dateISO)}`;
+  return `game/v9/${game.league}/${seg(game.home)}-${seg(game.away)}-${seg(game.dateISO)}`;
 }
 
 interface CachedGame {
@@ -145,6 +145,7 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
     away: game.away,
     league: game.league,
     date: game.dateISO,
+    sport1: emptyTierStats(),
     preferred: emptyTierStats(),
     bulk: emptyTierStats(),
     general: emptyTierStats(),
@@ -221,7 +222,7 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
   const ingest = (
     label: string,
     raw: RawCandidate[],
-    tier: 'preferred' | 'bulk' | 'general'
+    tier: 'sport1' | 'preferred' | 'bulk' | 'general'
   ): number => {
     let kept = 0;
     const rejected: Array<{ title: string; channel?: string; reason: string }> = [];
@@ -271,15 +272,33 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
     }
   };
 
+  let winner: SearchWinner = 'none';
+
+  // Tier 0: Sport1 web (per-league opt-in; Nations League). Sport1 is the
+  // priority source: any result it yields for the game ends the search —
+  // no YouTube tier runs and no quota is spent (user decision 2026-10-02:
+  // "when results are identified it should not continue to other sources").
+  if (plan.sport1) {
+    try {
+      const raw = await sport1Search(game);
+      logEntry.sport1.ran += 1;
+      const kept = ingest('sport1', raw, 'sport1');
+      logEntry.sport1.kept += kept;
+      sources.push({ label: 'sport1', kind: 'sport1', cached: false, fetched: raw.length, kept });
+    } catch (e) {
+      if (debug) diag.push({ search: 'sport1', error: (e as Error)?.message ?? String(e) });
+    }
+    if (logEntry.sport1.kept > 0) winner = 'sport1';
+  }
+
   // Tier 1: preferred channels in priority order, scanned via their
   // uploads playlists (cheap) and matched app-side. Stop at the first
   // channel with a proper highlight result. A 429 means the rate limiter
   // is engaged: further calls would fail too, so stop.
-  let winner: SearchWinner = 'none';
   for (const src of channelsForGame(plan.preferred, game).filter(
     (s) => !isDeniedPlanEntry(s, denySet)
   )) {
-    if (ytRateLimited) break;
+    if (winner !== 'none' || ytRateLimited) break;
     const scan = await scanPriorityChannel(src, game);
     const srcLabel = src.handle ?? src.channelId ?? 'preferred';
     if (scan.error) {
@@ -308,7 +327,7 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
       });
     if (hasProperHighlight()) break;
   }
-  if (hasProperHighlight()) winner = 'preferred';
+  if (winner === 'none' && hasProperHighlight()) winner = 'preferred';
 
   // Tier 2: curated bulk pool (uploads playlists, app-side matching).
   if (!ytRateLimited && winner === 'none' && plan.bulk.length > 0) {
