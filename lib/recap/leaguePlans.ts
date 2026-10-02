@@ -1,5 +1,15 @@
 /**
- * Per-league YouTube search plans.
+ * Per-league search plans: ALL league-specific configuration for the
+ * recap pipeline lives here — which channels/sources serve the league,
+ * how the preferred tier stops, which title keywords contradict the
+ * competition, which global exclusions are waived, and which
+ * competition names earn a ranking boost.
+ *
+ * The pipeline code (matcher, ranker, bulk scanner, API route) is
+ * league-agnostic: it reads these plans and applies one rule set to
+ * every league. Adding or reconfiguring a league must only ever
+ * require editing this file (plus the league registry and fixtures
+ * data) — never the business logic.
  *
  * Three tiers, tried in order:
  *  1. `preferred` — trusted channels, scanned via their uploads playlists
@@ -65,6 +75,35 @@ export interface LeagueSearchPlan {
   /** General-search fallback, tried in order when tiers 1+2 find nothing. */
   fallbackLangs: Array<'he' | 'en'>;
   /**
+   * How the preferred tier stops the cascade:
+   *  - 'highlight' (default): only a proper highlight result stops the
+   *    cascade, and preferred results are exclusive only when one of them
+   *    is a proper highlight.
+   *  - 'any': the first preferred channel with ANY kept result stops the
+   *    cascade, and preferred results are exclusive (every other result —
+   *    including cached ones — is dropped). For a league whose preferred
+   *    channel's per-game upload is reliably the best recap even without
+   *    highlight wording (LaLiga / ONE; user decision 2026-10-02).
+   */
+  preferredStopRule?: 'any' | 'highlight';
+  /**
+   * Title keywords (lowercase substrings) that contradict this
+   * competition: a title naming another competition is vetoed. League
+   * configuration for the matcher — the matcher itself is league-agnostic.
+   */
+  contradictions?: string[];
+  /**
+   * Terms from the matcher's global excluded-categories list that do NOT
+   * apply in this league (e.g. friendlies waive 'friendly' / 'ידידות',
+   * which every legitimate title carries there).
+   */
+  excludedWaivers?: string[];
+  /**
+   * Competition-name variants (lowercase substrings) that earn a ranking
+   * boost when named in a title. League configuration for the ranker.
+   */
+  competitionTerms?: string[];
+  /**
    * Sport1 (Maariv/Walla site) as a priority source: checked before every
    * YouTube tier; any result it yields for a game ends the search (no
    * other source is consulted). Consumes no quota (plain REST + page
@@ -76,6 +115,13 @@ export interface LeagueSearchPlan {
 
 export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
   'israeli-league': {
+    contradictions: [
+      'גביע המדינה', 'גביע הטוטו', 'state cup', 'toto cup',
+      'champions league', 'ליגת האלופות', 'conference league', 'קונפרנס ליג',
+    ],
+    competitionTerms: [
+      'ליגת העל', 'ligat haal',
+    ],
     preferred: [
       { handle: 'Ipflofficial', lang: 'he' },
       // NOTE: @FootballYom1 is stale (repurposed as a gaming channel since
@@ -102,9 +148,21 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
     fallbackLangs: ['he', 'en'],
   },
   'la-liga': {
+    contradictions: [
+      'copa del rey', 'גביע המלך', 'supercopa', 'סופר קאפ',
+      'champions league', 'ליגת האלופות', 'europa league', 'הליגה האירופית',
+    ],
+    competitionTerms: [
+      'la liga', 'לה ליגה',
+    ],
     preferred: [{ handle: 'one-1004', lang: 'he' }],
+    // ONE's per-game upload is consistently the best La Liga recap even
+    // when its title carries no highlight wording, so any kept ONE result
+    // stops the cascade and is exclusive (user decision 2026-10-02).
+    preferredStopRule: 'any',
     bulk: [
-      { handle: 'laliga', label: 'LaLiga official' },
+      // LaLiga official (@laliga) is on the deny list — its videos are
+      // embedding-blocked (user report 2026-10-02). Do not re-add here.
       { handle: 'FCBarcelona', label: 'FC Barcelona', teams: ['Barcelona'] },
       { handle: 'realmadrid', label: 'Real Madrid', teams: ['Real Madrid'] },
       { handle: 'atleticodemadrid', label: 'Atletico Madrid', teams: ['Atletico Madrid'] },
@@ -126,6 +184,14 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
     fallbackLangs: ['en'],
   },
   'champions-league': {
+    contradictions: [
+      'premier league', 'פרמייר ליג', 'la liga', 'לה ליגה', 'ligue 1',
+      'serie a', 'סרייה א', 'bundesliga', 'בונדסליגה', 'fa cup', 'גביע אנגלי',
+      'copa del rey', 'גביע המלך', 'eredivisie', 'ליגת העל',
+    ],
+    competitionTerms: [
+      'champions league', 'ליגת האלופות', 'ucl',
+    ],
     // No suitable universal priority channel: CBS Sports Golazo and TNT
     // Sports are geo-blocked in Israel, beIN SPORTS posts Arabic commentary
     // only, and SPORTS EXTRA proved unreliable. Official club channels are
@@ -166,6 +232,14 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
     fallbackLangs: ['en'],
   },
   'premier-league': {
+    contradictions: [
+      'fa cup', 'גביע אנגלי', 'גביע האנגלי', 'carabao', 'efl cup',
+      'champions league', 'ליגת האלופות', 'europa league', 'הליגה האירופית',
+      'community shield',
+    ],
+    competitionTerms: [
+      'premier league', 'פרמייר ליג', 'פרמיירליג',
+    ],
     preferred: [],
     bulk: [
       // User-verified 2026-09-17: @skysportspremierleague is the active
@@ -201,6 +275,15 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
   // competition channels (@fifa/@UEFA) was NOT verified — search-index
   // presence is not proof of playability.
   'world-cup': {
+    contradictions: [
+      'nations league', 'ליגת האומות',
+      'יורו', 'european championship', 'euro 2028', 'euro 2024',
+      'copa américa', 'copa america', 'קופה אמריקה',
+      'afcon', 'africa cup', 'גביע אפריקה',
+      'gold cup', 'גביע הזהב', 'concacaf nations league',
+      'premier league', 'פרמייר ליג', 'la liga', 'לה ליגה',
+      'champions league', 'ליגת האלופות', 'europa league',
+    ],
     preferred: [
       // כאן 11 — Israel's World Cup broadcaster; proven Hebrew per-match
       // "תקציר" uploads for WC 2026. Modern @handle unresolved; the
@@ -221,6 +304,14 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
     fallbackLangs: ['he', 'en'],
   },
   euros: {
+    contradictions: [
+      'world cup', 'מונדיאל', 'מוקדמות המונדיאל',
+      'nations league', 'ליגת האומות',
+      'copa américa', 'copa america', 'קופה אמריקה',
+      'afcon', 'africa cup', 'גביע אפריקה',
+      'gold cup', 'גביע הזהב', 'concacaf nations league',
+      'premier league', 'פרמייר ליג', 'champions league', 'ליגת האלופות',
+    ],
     // No Hebrew priority channel could be verified for the Euros.
     preferred: [],
     bulk: [
@@ -238,6 +329,14 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
     fallbackLangs: ['en'],
   },
   'copa-america': {
+    contradictions: [
+      'world cup', 'מונדיאל', 'מוקדמות המונדיאל',
+      'nations league', 'ליגת האומות',
+      'יורו', 'european championship', 'euro 2028', 'euro 2024',
+      'afcon', 'africa cup', 'גביע אפריקה',
+      'gold cup', 'גביע הזהב', 'concacaf nations league',
+      'premier league', 'פרמייר ליג', 'champions league', 'ליגת האלופות',
+    ],
     // No Hebrew priority channel could be verified for Copa América.
     preferred: [],
     bulk: [
@@ -252,6 +351,16 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
     fallbackLangs: ['en'],
   },
   'nations-league': {
+    contradictions: [
+      'world cup', 'מונדיאל', 'מוקדמות המונדיאל',
+      'יורו', 'european championship', 'euro 2028', 'euro 2024',
+      'copa américa', 'copa america', 'קופה אמריקה',
+      'afcon', 'africa cup', 'גביע אפריקה',
+      'gold cup', 'גביע הזהב', 'concacaf nations league',
+      'premier league', 'פרמייר ליג', 'la liga', 'לה ליגה', 'serie a',
+      'bundesliga', 'בונדסליגה', 'ligue 1', 'champions league', 'ליגת האלופות',
+      'europa league', 'fa cup', 'copa del rey', 'ליגת העל',
+    ],
     // Sport1 (ספורט 1 web) is the priority source: official Hebrew
     // broadcaster recaps, checked before any YouTube tier (user decision
     // 2026-10-02). No Hebrew priority YouTube channel could be verified
@@ -274,6 +383,15 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
     fallbackLangs: ['he', 'en'],
   },
   afcon: {
+    contradictions: [
+      'world cup', 'מונדיאל', 'מוקדמות המונדיאל',
+      'nations league', 'ליגת האומות',
+      'יורו', 'european championship', 'euro 2028', 'euro 2024',
+      'copa américa', 'copa america', 'קופה אמריקה',
+      'gold cup', 'גביע הזהב', 'concacaf nations league',
+      'premier league', 'פרמייר ליג', 'la liga', 'לה ליגה',
+      'champions league', 'ליגת האלופות', 'europa league',
+    ],
     // No Hebrew priority channel could be verified for AFCON.
     preferred: [],
     bulk: [
@@ -288,6 +406,16 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
     fallbackLangs: ['en'],
   },
   'gold-cup': {
+    contradictions: [
+      'world cup', 'מונדיאל', 'מוקדמות המונדיאל',
+      'nations league', 'ליגת האומות',
+      'יורו', 'european championship', 'euro 2028', 'euro 2024',
+      'copa américa', 'copa america', 'קופה אמריקה',
+      'afcon', 'africa cup', 'גביע אפריקה',
+      'concacaf nations league',
+      'premier league', 'פרמייר ליג',
+      'champions league', 'ליגת האלופות',
+    ],
     // No Hebrew priority channel could be verified for the Gold Cup.
     preferred: [],
     bulk: [
@@ -302,6 +430,18 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
     fallbackLangs: ['en'],
   },
   'concacaf-nations-league': {
+    contradictions: [
+      'world cup', 'מונדיאל', 'מוקדמות המונדיאל',
+      // NB: bare 'nations league' is NOT used — it matches inside this,
+      // competition's own name ("Concacaf Nations League").,
+      'uefa nations league', 'ליגת האומות',
+      'יורו', 'european championship', 'euro 2028', 'euro 2024',
+      'copa américa', 'copa america', 'קופה אמריקה',
+      'afcon', 'africa cup', 'גביע אפריקה',
+      'gold cup', 'גביע הזהב',
+      'premier league', 'פרמייר ליג',
+      'champions league', 'ליגת האלופות',
+    ],
     // No Hebrew priority channel could be verified.
     preferred: [],
     bulk: [
@@ -312,6 +452,21 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
     fallbackLangs: ['en'],
   },
   'national-friendlies': {
+    contradictions: [
+      'world cup', 'מונדיאל', 'מוקדמות המונדיאל', 'qualifier', 'qualifiers',
+      'nations league', 'ליגת האומות', 'concacaf nations league',
+      'יורו', 'european championship', 'euro 2028', 'euro 2024',
+      'copa américa', 'copa america', 'קופה אמריקה',
+      'afcon', 'africa cup', 'גביע אפריקה',
+      'gold cup', 'גביע הזהב',
+      'premier league', 'פרמייר ליג', 'la liga', 'לה ליגה', 'serie a',
+      'bundesliga', 'בונדסליגה', 'ligue 1', 'champions league', 'ליגת האלופות',
+      'europa league', 'fa cup', 'copa del rey', 'ליגת העל',
+    ],
+    // 'friendly'/'ידידות' appear in every legitimate friendly title, so
+    // the global excluded-category veto on them is waived for this
+    // league (all other exclusions still apply).
+    excludedWaivers: ['friendly', 'ידידות'],
     // General search Hebrew -> English. No Sport1 priority: Sport1 only
     // covers Israel friendlies and Israel plays very few of them (user,
     // 2026-10-02), so it is not worth stopping the cascade for. No curated
