@@ -10,7 +10,7 @@ import { emptyTierStats, logSearch } from '@/lib/recap/searchLog';
 import type { KeptChannel, SearchWinner, SourceAccess } from '@/lib/recap/searchLog';
 import { loadFixture, MATCHER_VERSION } from '@/lib/recap/fixtures';
 import type { GameInput, RankedCandidate, RawCandidate } from '@/lib/recap/types';
-import { getDenySet, isDeniedPlanEntry } from '@/lib/recap/denyList';
+import { getDenySet, isDeniedPlanEntry, dropDeniedCandidates } from '@/lib/recap/denyList';
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
@@ -152,7 +152,7 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
     sources,
     channels: [] as KeptChannel[],
   };
-  const logCached = async (rec: { val: CachedGame }) => {
+  const logCached = async (count: number) => {
     // Cache hit: no tier ran. Still logged so fallback frequency is
     // measured against real searches, not cache serves. Awaited: on
     // Vercel a fire-and-forget write may never run after the response
@@ -161,10 +161,15 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
       ...logEntry,
       cached: true,
       winner: 'cache' as SearchWinner,
-      results: rec.val.results.length,
+      results: count,
       rateLimited: false,
     });
   };
+  // Deny-listed channels are suppressed everywhere: filterCandidate
+  // rejects their videos in fresh searches, plan entries are skipped
+  // before scanning, and cached results are deny-filtered on read so a
+  // denial takes effect immediately instead of at the next weekly sweep.
+  const denySet = await getDenySet();
   let prevResults: RankedCandidate[] = [];
   if (!debug) {
     const rec = await pget<CachedGame>(key);
@@ -176,6 +181,7 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
     if (rec) {
       const cacheAge = now - rec.fetchedAt;
       const gameAge = now - Date.parse(game.dateISO);
+      const cachedResults = dropDeniedCandidates(rec.val.results, denySet);
       // Design-doc retrieval logic: <=1h serve cached; game <3d old
       // re-fetch; otherwise always serve cached. Negative backoff keeps
       // highlight-less games from re-running the pipeline hourly.
@@ -183,11 +189,13 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
         cacheAge <= SERVE_MS ||
         gameAge >= REFRESH_WINDOW ||
         (rec.val.empty && cacheAge <= NEGATIVE_TTL);
-      if (serveCached) {
-        await logCached(rec);
-        return { results: rec.val.results, ytRateLimited: false, diag: [] };
+      // If denying emptied a non-empty cache, don't serve the empty list:
+      // fall through to a fresh search so allowed channels can refill it.
+      if (serveCached && (cachedResults.length > 0 || rec.val.results.length === 0)) {
+        await logCached(cachedResults.length);
+        return { results: cachedResults, ytRateLimited: false, diag: [] };
       }
-      prevResults = rec.val.results;
+      prevResults = cachedResults;
     }
   }
 
@@ -203,10 +211,9 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
     return pref.some((c) => hasHighlightIntent(c.title)) ? pref : list;
   };
   const plan = searchPlanFor(game.league);
-  // Deny-listed channels are suppressed everywhere: their videos are
-  // rejected by filterCandidate, and plan entries are skipped before any
-  // quota is spent scanning them.
-  const denySet = await getDenySet();
+  // Deny-listed plan entries are skipped before any quota is spent
+  // scanning them (the denySet itself is loaded before the cache read,
+  // above).
   // "Proper" = an accepted candidate with highlight intent. A preferred
   // channel returning only punditry does not count and does not stop the
   // search. (Deliberately stricter than the doc's "non-empty filtered
