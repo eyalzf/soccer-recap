@@ -87,7 +87,7 @@ export const NATIONAL_COMPETITIONS: NationalCompetitionDef[] = [
   },
   {
     slug: 'concacaf-nations-league',
-    hebrewName: 'ליגת האומות (צפון אמריקה)',
+    hebrewName: 'ליגת האומות (אמריקה)',
     badge:
       'https://en.wikipedia.org/wiki/Special:FilePath/CONCACAF_Nations_League_(2026).svg',
   },
