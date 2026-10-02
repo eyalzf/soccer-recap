@@ -296,7 +296,8 @@ function decodeWpTitle(s: string): string {
 /**
  * Sport1 (sport1.maariv.co.il) per-game recap lookup via the site's public
  * WordPress REST API — no key, no quota:
- *  1. `wp/v2/search` with both Hebrew team names finds the video post
+ *  1. `wp/v2/search` (every Hebrew spelling variant of each team +
+ *     תקציר; spellings differ across sources) finds the video post
  *     ("תקציר: דנמרק – פורטוגל 4:2") among news/results noise.
  *  2. `wp/v2/vod/<id>` gives the post date (date-proximity filtering).
  *  3. The article page HTML carries the Walla player embed; the media ID
@@ -310,21 +311,43 @@ export async function sport1Search(game: GameInput): Promise<RawCandidate[]> {
   const home = lookupClubEn(game.home);
   const away = lookupClubEn(game.away);
   if (!home || !away) return [];
-  const homeHe = hebrewVariants(game.home)[0];
-  const awayHe = hebrewVariants(game.away)[0];
+  // Sport1's Hebrew spellings don't always match our canonical names
+  // (ווילס vs וויילס, נורבגיה vs נורווגיה), and WordPress search is
+  // spelling-sensitive — so query every known Hebrew variant of each
+  // team (name + תקציר) plus the both-names query, union the hits, and
+  // let the shared matcher do the precision work app-side.
+  const homeVariants = hebrewVariants(game.home);
+  const awayVariants = hebrewVariants(game.away);
+  const queries = [
+    `${homeVariants[0]} ${awayVariants[0]} תקציר`,
+    ...homeVariants.map((v) => `${v} תקציר`),
+    ...awayVariants.map((v) => `${v} תקציר`),
+  ];
   try {
-    const p = new URLSearchParams({
-      search: `${homeHe} ${awayHe}`,
-      per_page: '12',
-    });
-    const hits = (await fetchJson(
-      'https://sport1.maariv.co.il/wp-json/wp/v2/search?' + p.toString()
-    )) as WpSearchHit[];
-    const videoHits = (Array.isArray(hits) ? hits : [])
-      .filter((h) => h.subtype === 'video' && h.id && h.url)
-      .slice(0, 6);
+    const hitLists = await Promise.all(
+      [...new Set(queries)].map(async (q) => {
+        const p = new URLSearchParams({ search: q, per_page: '15' });
+        try {
+          return (await fetchJson(
+            'https://sport1.maariv.co.il/wp-json/wp/v2/search?' + p.toString()
+          )) as WpSearchHit[];
+        } catch {
+          return [] as WpSearchHit[];
+        }
+      })
+    );
+    const byId = new Map<number, WpSearchHit>();
+    for (const list of hitLists) {
+      for (const h of Array.isArray(list) ? list : []) {
+        if (h.subtype === 'video' && h.id && h.url && !byId.has(h.id))
+          byId.set(h.id, h);
+      }
+    }
     const out: RawCandidate[] = [];
-    for (const hit of videoHits) {
+    for (const hit of byId.values()) {
+      // Cap the per-post work (date + article + media fetches); matching
+      // hits are rare, so 4 kept candidates is generous.
+      if (out.length >= 4) break;
       // Pre-filter on the (already plain) search title before spending
       // fetches; the shared matcher re-checks everything downstream.
       if (!teamMentioned(hit.title, home) || !teamMentioned(hit.title, away))
