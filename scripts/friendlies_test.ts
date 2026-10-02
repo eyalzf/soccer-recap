@@ -32,7 +32,7 @@ check('isNationalSlug', isNationalSlug('national-friendlies'));
 
 // 2. Search plan.
 const plan = searchPlanFor('national-friendlies');
-check('plan enables Sport1', plan.sport1 === true);
+check('plan does NOT enable Sport1', plan.sport1 !== true);
 check('plan fallback he->en', plan.fallbackLangs.join(',') === 'he,en', plan.fallbackLangs);
 
 // 3. excludedCategory league waiver.
