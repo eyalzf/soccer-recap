@@ -311,6 +311,16 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
     ],
     fallbackLangs: ['en'],
   },
+  'national-friendlies': {
+    // Sport1 covers Israel friendlies (priority, same as Nations League);
+    // for everyone else, general search in Hebrew then English. No curated
+    // YouTube channels: friendlies are too scattered across FA channels to
+    // justify bulk scanning, and the narrow nation list keeps volume low.
+    sport1: true,
+    preferred: [],
+    bulk: [],
+    fallbackLangs: ['he', 'en'],
+  },
 };
 
 /** Unknown league slugs get English general search only. */
