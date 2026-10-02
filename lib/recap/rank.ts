@@ -1,4 +1,5 @@
 import { lookupClubEn } from '../teamIndex';
+import { searchPlanFor } from './leaguePlans';
 import {
   dateProximity,
   extractScore,
@@ -10,13 +11,6 @@ import {
   mentionIndex,
 } from './match';
 import type { GameInput, RankedCandidate, RawCandidate } from './types';
-
-const COMPETITION_POSITIVE: Record<string, string[]> = {
-  'premier-league': ['premier league', 'פרמייר ליג', 'פרמיירליג'],
-  'la-liga': ['la liga', 'לה ליגה'],
-  'israeli-league': ['ליגת העל', 'ligat haal'],
-  'champions-league': ['champions league', 'ליגת האלופות', 'ucl'],
-};
 
 /**
  * The video's own language: title script first, uploader tag second, query
@@ -77,9 +71,9 @@ export function scoreCandidate(c: RawCandidate, game: GameInput): number {
     else if (c.durationSec < 90) s -= 5;
   }
 
-  // Correct competition mentioned.
+  // Correct competition mentioned (league-configured name variants).
   const t = c.title.toLowerCase();
-  for (const kw of COMPETITION_POSITIVE[game.league] ?? []) {
+  for (const kw of searchPlanFor(game.league).competitionTerms ?? []) {
     if (t.includes(kw)) {
       s += 10;
       break;

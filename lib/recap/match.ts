@@ -2,7 +2,7 @@ import { CLUBS, type ClubEntry } from '../teams';
 import { NATIONS } from '../nations';
 import { lookupClubEn } from '../teamIndex';
 import type { GameInput, RawCandidate } from './types';
-import { LEAGUE_SEARCH_PLANS } from './leaguePlans';
+import { LEAGUE_SEARCH_PLANS, searchPlanFor } from './leaguePlans';
 import { isDeniedChannel, type DenySet } from './denyList';
 
 export const hasHebrew = (s: string): boolean => /[\u0590-\u05FF]/.test(s);
@@ -112,115 +112,14 @@ export function mentionIndex(title: string, club: ClubEntry): number {
   return best;
 }
 
-// Competition keywords that CONTRADICT the game's league -> reject the result.
-const CONTRADICTIONS: Record<string, string[]> = {
-  'premier-league': [
-    'fa cup', 'גביע אנגלי', 'גביע האנגלי', 'carabao', 'efl cup',
-    'champions league', 'ליגת האלופות', 'europa league', 'הליגה האירופית',
-    'community shield',
-  ],
-  'la-liga': [
-    'copa del rey', 'גביע המלך', 'supercopa', 'סופר קאפ',
-    'champions league', 'ליגת האלופות', 'europa league', 'הליגה האירופית',
-  ],
-  'israeli-league': [
-    'גביע המדינה', 'גביע הטוטו', 'state cup', 'toto cup',
-    'champions league', 'ליגת האלופות', 'conference league', 'קונפרנס ליג',
-  ],
-  'champions-league': [
-    'premier league', 'פרמייר ליג', 'la liga', 'לה ליגה', 'ligue 1',
-    'serie a', 'סרייה א', 'bundesliga', 'בונדסליגה', 'fa cup', 'גביע אנגלי',
-    'copa del rey', 'גביע המלך', 'eredivisie', 'ליגת העל',
-  ],
-  // National-team competitions: club competitions contradict, as do the
-  // other national competitions. NB: bare 'euro' is NOT used — it matches
-  // inside 'europe'/'european qualifiers' (e.g. "World Cup European
-  // Qualifiers"). 'יורו' and 'european championship' are safe.
-  'nations-league': [
-    'world cup', 'מונדיאל', 'מוקדמות המונדיאל',
-    'יורו', 'european championship', 'euro 2028', 'euro 2024',
-    'copa américa', 'copa america', 'קופה אמריקה',
-    'afcon', 'africa cup', 'גביע אפריקה',
-    'gold cup', 'גביע הזהב', 'concacaf nations league',
-    'premier league', 'פרמייר ליג', 'la liga', 'לה ליגה', 'serie a',
-    'bundesliga', 'בונדסליגה', 'ligue 1', 'champions league', 'ליגת האלופות',
-    'europa league', 'fa cup', 'copa del rey', 'ליגת העל',
-  ],
-  'world-cup': [
-    'nations league', 'ליגת האומות',
-    'יורו', 'european championship', 'euro 2028', 'euro 2024',
-    'copa américa', 'copa america', 'קופה אמריקה',
-    'afcon', 'africa cup', 'גביע אפריקה',
-    'gold cup', 'גביע הזהב', 'concacaf nations league',
-    'premier league', 'פרמייר ליג', 'la liga', 'לה ליגה',
-    'champions league', 'ליגת האלופות', 'europa league',
-  ],
-  'euros': [
-    'world cup', 'מונדיאל', 'מוקדמות המונדיאל',
-    'nations league', 'ליגת האומות',
-    'copa américa', 'copa america', 'קופה אמריקה',
-    'afcon', 'africa cup', 'גביע אפריקה',
-    'gold cup', 'גביע הזהב', 'concacaf nations league',
-    'premier league', 'פרמייר ליג', 'champions league', 'ליגת האלופות',
-  ],
-  'copa-america': [
-    'world cup', 'מונדיאל', 'מוקדמות המונדיאל',
-    'nations league', 'ליגת האומות',
-    'יורו', 'european championship', 'euro 2028', 'euro 2024',
-    'afcon', 'africa cup', 'גביע אפריקה',
-    'gold cup', 'גביע הזהב', 'concacaf nations league',
-    'premier league', 'פרמייר ליג', 'champions league', 'ליגת האלופות',
-  ],
-  'afcon': [
-    'world cup', 'מונדיאל', 'מוקדמות המונדיאל',
-    'nations league', 'ליגת האומות',
-    'יורו', 'european championship', 'euro 2028', 'euro 2024',
-    'copa américa', 'copa america', 'קופה אמריקה',
-    'gold cup', 'גביע הזהב', 'concacaf nations league',
-    'premier league', 'פרמייר ליג', 'la liga', 'לה ליגה',
-    'champions league', 'ליגת האלופות', 'europa league',
-  ],
-  'gold-cup': [
-    'world cup', 'מונדיאל', 'מוקדמות המונדיאל',
-    'nations league', 'ליגת האומות',
-    'יורו', 'european championship', 'euro 2028', 'euro 2024',
-    'copa américa', 'copa america', 'קופה אמריקה',
-    'afcon', 'africa cup', 'גביע אפריקה',
-    'concacaf nations league',
-    'premier league', 'פרמייר ליג',
-    'champions league', 'ליגת האלופות',
-  ],
-  'concacaf-nations-league': [
-    'world cup', 'מונדיאל', 'מוקדמות המונדיאל',
-    // NB: bare 'nations league' is NOT used — it matches inside this
-    // competition's own name ("Concacaf Nations League").
-    'uefa nations league', 'ליגת האומות',
-    'יורו', 'european championship', 'euro 2028', 'euro 2024',
-    'copa américa', 'copa america', 'קופה אמריקה',
-    'afcon', 'africa cup', 'גביע אפריקה',
-    'gold cup', 'גביע הזהב',
-    'premier league', 'פרמייר ליג',
-    'champions league', 'ליגת האלופות',
-  ],
-  // Friendlies: any actual competition contradicts. 'qualifier' guards the
-  // main confusion risk (the same teams also meet in WCQ). Bare 'euro' is
-  // not used (same reasoning as above); 'יורו'/'european championship' are.
-  'national-friendlies': [
-    'world cup', 'מונדיאל', 'מוקדמות המונדיאל', 'qualifier', 'qualifiers',
-    'nations league', 'ליגת האומות', 'concacaf nations league',
-    'יורו', 'european championship', 'euro 2028', 'euro 2024',
-    'copa américa', 'copa america', 'קופה אמריקה',
-    'afcon', 'africa cup', 'גביע אפריקה',
-    'gold cup', 'גביע הזהב',
-    'premier league', 'פרמייר ליג', 'la liga', 'לה ליגה', 'serie a',
-    'bundesliga', 'בונדסליגה', 'ligue 1', 'champions league', 'ליגת האלופות',
-    'europa league', 'fa cup', 'copa del rey', 'ליגת העל',
-  ],
-};
-
+/**
+ * Does the title name a competition that contradicts the game's league?
+ * The keyword lists are league configuration (see `contradictions` in
+ * lib/recap/leaguePlans.ts); this matcher is league-agnostic.
+ */
 export function competitionContradiction(title: string, league: string): string | null {
   const t = title.toLowerCase();
-  for (const kw of CONTRADICTIONS[league] ?? []) {
+  for (const kw of searchPlanFor(league).contradictions ?? []) {
     if (kw && t.includes(kw.toLowerCase())) return kw;
   }
   return null;
@@ -291,14 +190,13 @@ export function nonRecapFormat(title: string): 'press-conference' | 'prematch' |
 
 export function excludedCategory(title: string, league?: string): string | null {
   const t = title.toLowerCase();
+  // League-declared waivers (plan configuration): terms that reject
+  // pre-season club junk elsewhere but are legitimate in this league —
+  // e.g. 'friendly'/'ידידות' in the friendlies competition, where every
+  // title carries them.
+  const waivers = league ? searchPlanFor(league).excludedWaivers ?? [] : [];
   for (const kw of EXCLUDED) {
-    // 'friendly'/'ידידות' reject pre-season club junk everywhere EXCEPT the
-    // friendlies competition itself, where every title carries them.
-    if (
-      league === 'national-friendlies' &&
-      (kw === 'friendly' || kw === 'ידידות')
-    )
-      continue;
+    if (waivers.includes(kw)) continue;
     if (t.includes(kw.toLowerCase())) return kw;
   }
   // Standalone "live" (word boundary): catches "LIVE:", "(Live)", "live

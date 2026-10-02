@@ -4,6 +4,7 @@ import { rankCandidates } from '@/lib/recap/rank';
 import { englishQuery, hebrewQuery, sport1Search, youtubeSearch } from '@/lib/recap/sources';
 import type { YouTubeSearchJob } from '@/lib/recap/sources';
 import { searchPlanFor } from '@/lib/recap/leaguePlans';
+import type { BulkChannel } from '@/lib/recap/leaguePlans';
 import { bulkScan, channelsForGame, scanPriorityChannel } from '@/lib/recap/bulk';
 import { pget, pset } from '@/lib/recap/persist';
 import { emptyTierStats, logSearch } from '@/lib/recap/searchLog';
@@ -170,6 +171,21 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
   // before scanning, and cached results are deny-filtered on read so a
   // denial takes effect immediately instead of at the next weekly sweep.
   const denySet = await getDenySet();
+  const plan = searchPlanFor(game.league);
+  // Preferred-channel exclusivity: when a preferred channel (IPFL / ONE)
+  // has results for a game, everything else is excluded as lower quality.
+  // By default this triggers only on a proper highlight (punditry/news
+  // from those channels does not count); a league may declare
+  // `preferredStopRule: 'any'` in its plan, making ANY kept preferred
+  // result exclusive (LaLiga / ONE). Applied to fresh results and to
+  // cached results on read, so plan changes take effect immediately
+  // instead of waiting for caches to age out.
+  const visible = <T extends RawCandidate>(list: T[]): T[] => {
+    const pref = list.filter(isPreferredChannel);
+    if (!pref.length) return list;
+    if (pref.some((c) => hasHighlightIntent(c.title))) return pref;
+    return plan.preferredStopRule === 'any' ? pref : list;
+  };
   let prevResults: RankedCandidate[] = [];
   if (!debug) {
     const rec = await pget<CachedGame>(key);
@@ -181,7 +197,10 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
     if (rec) {
       const cacheAge = now - rec.fetchedAt;
       const gameAge = now - Date.parse(game.dateISO);
-      const cachedResults = dropDeniedCandidates(rec.val.results, denySet);
+      // Cached results get the same read-path treatment as fresh ones:
+      // deny-listed channels dropped, and preferred-channel exclusivity
+      // applied — both take effect immediately on read.
+      const cachedResults = visible(dropDeniedCandidates(rec.val.results, denySet));
       // Design-doc retrieval logic: <=1h serve cached; game <3d old
       // re-fetch; otherwise always serve cached. Negative backoff keeps
       // highlight-less games from re-running the pipeline hourly.
@@ -203,14 +222,6 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
   const seen = new Set<string>();
   const diag: Array<Record<string, unknown>> = [];
   let ytRateLimited = false;
-  // When preferred channels (IPFL / ONE on YouTube) have an actual
-  // highlights video for the game, everything else is excluded as lower
-  // quality. Punditry/news from those channels does not trigger this.
-  const visible = (list: RawCandidate[]): RawCandidate[] => {
-    const pref = list.filter(isPreferredChannel);
-    return pref.some((c) => hasHighlightIntent(c.title)) ? pref : list;
-  };
-  const plan = searchPlanFor(game.league);
   // Deny-listed plan entries are skipped before any quota is spent
   // scanning them (the denySet itself is loaded before the cache read,
   // above).
@@ -332,29 +343,53 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
         kept,
         cached: scan.cached,
       });
-    if (hasProperHighlight()) break;
+    // Plan-declared stop rule: 'highlight' (default) stops only on a
+    // proper highlight; 'any' stops on this channel's first kept result.
+    if (plan.preferredStopRule === 'any' ? kept > 0 : hasProperHighlight()) break;
   }
-  if (winner === 'none' && hasProperHighlight()) winner = 'preferred';
+  if (
+    winner === 'none' &&
+    (plan.preferredStopRule === 'any'
+      ? logEntry.preferred.kept > 0
+      : hasProperHighlight())
+  )
+    winner = 'preferred';
 
   // Tier 2: curated bulk pool (uploads playlists, app-side matching).
+  // Team-scoped channels (club / FA channels) are scanned FIRST: when
+  // they yield a proper highlight, league-wide channels are not scanned
+  // at all. When they yield only non-highlight results, those are kept
+  // and the league-wide channels run too. This is the general rule for
+  // every league, driven purely by the plan's `teams` tags (user
+  // decision 2026-10-02: team channels first; league channels only when
+  // there is no suitable team-channel result).
   if (!ytRateLimited && winner === 'none' && plan.bulk.length > 0) {
-    const bulk = await bulkScan(game);
-    if (bulk.ytRateLimited) ytRateLimited = true;
-    logEntry.bulk.ran += 1;
-    const keptBefore = new Map(keptByChannel);
-    logEntry.bulk.kept += ingest('bulk', bulk.candidates, 'bulk');
-    for (const ch of bulk.perChannel) {
-      const kept =
-        (keptByChannel.get(ch.label) ?? 0) - (keptBefore.get(ch.label) ?? 0);
-      sources.push({
-        label: ch.label,
-        kind: 'bulk',
-        cached: ch.cached,
-        fetched: ch.fetched,
-        kept,
-      });
+    const runBulkPhase = async (entries: BulkChannel[]) => {
+      const bulk = await bulkScan(game, entries);
+      if (bulk.ytRateLimited) ytRateLimited = true;
+      logEntry.bulk.ran += 1;
+      const keptBefore = new Map(keptByChannel);
+      logEntry.bulk.kept += ingest('bulk', bulk.candidates, 'bulk');
+      for (const ch of bulk.perChannel) {
+        const kept =
+          (keptByChannel.get(ch.label) ?? 0) - (keptBefore.get(ch.label) ?? 0);
+        sources.push({
+          label: ch.label,
+          kind: 'bulk',
+          cached: ch.cached,
+          fetched: ch.fetched,
+          kept,
+        });
+      }
+      if (debug) diag.push(...bulk.diag);
+    };
+    const applicable = channelsForGame(plan.bulk, game);
+    const teamEntries = applicable.filter((e) => e.teams?.length);
+    const leagueEntries = applicable.filter((e) => !e.teams?.length);
+    if (teamEntries.length > 0) await runBulkPhase(teamEntries);
+    if (!ytRateLimited && !hasProperHighlight() && leagueEntries.length > 0) {
+      await runBulkPhase(leagueEntries);
     }
-    if (debug) diag.push(...bulk.diag);
     if (hasProperHighlight()) winner = 'bulk';
   }
 
@@ -375,8 +410,10 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
 
   const finalRanked = rankCandidates(visible(accepted), game);
   // Append-only: merge into the previous cached results; consecutive runs
-  // only add, never remove.
-  const merged = mergeResults(prevResults, finalRanked, game);
+  // only add, never remove. Exclusivity is applied to the merged set too,
+  // so a preferred result arriving in a later refresh displaces older
+  // non-preferred results instead of accumulating alongside them.
+  const merged = visible(mergeResults(prevResults, finalRanked, game));
   // Log which tiers ran and which one won. Awaited together with the
   // game-cache write below so the Blob write completes before the response
   // is sent (a fire-and-forget write may never run on Vercel).
