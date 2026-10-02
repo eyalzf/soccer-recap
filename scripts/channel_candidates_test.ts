@@ -150,5 +150,57 @@ const emptyOps = (): ChannelOpsState => ({ discarded: [], pending: [], added: []
   check('preferred-tier channels ignored', res.candidates.length === 0);
 }
 
+// 7. Dominant-team scope: 3 of 4 wins involve Germany (75%, not unanimous).
+{
+  const days = [
+    entry('nations-league', 'Germany', 'France', [ch('v1', 'DFB Fan TV', 'UCFFF', 't1')]),
+    entry('nations-league', 'Germany', 'Spain', [ch('v2', 'DFB Fan TV', 'UCFFF', 't2')]),
+    entry('nations-league', 'Italy', 'Germany', [ch('v3', 'DFB Fan TV', 'UCFFF', 't3')]),
+    entry('nations-league', 'France', 'Spain', [ch('v4', 'DFB Fan TV', 'UCFFF', 't4')]),
+  ];
+  const res = aggregateCandidates(days, emptyOps());
+  const c = res.candidates.find((x) => x.channelId === 'UCFFF');
+  check('dominant team scope suggested', !!c && c.scope.teams?.length === 1 && c.scope.teams[0] === 'Germany', c?.scope);
+  check(
+    'teamWins counts games per team',
+    !!c && c.teamWins[0].team === 'Germany' && c.teamWins[0].games === 3,
+    c?.teamWins
+  );
+}
+
+// 8. Top-pair scope: Germany+Netherlands jointly cover 6 of 7 wins (86%).
+{
+  const days = [
+    entry('nations-league', 'Germany', 'France', [ch('v1', 'Dual TV', 'UCGGG', 't1')]),
+    entry('nations-league', 'Germany', 'Spain', [ch('v2', 'Dual TV', 'UCGGG', 't2')]),
+    entry('nations-league', 'Netherlands', 'France', [ch('v3', 'Dual TV', 'UCGGG', 't3')]),
+    entry('nations-league', 'Netherlands', 'Spain', [ch('v4', 'Dual TV', 'UCGGG', 't4')]),
+    entry('nations-league', 'Germany', 'Netherlands', [ch('v5', 'Dual TV', 'UCGGG', 't5')]),
+    entry('nations-league', 'Italy', 'Spain', [ch('v6', 'Dual TV', 'UCGGG', 't6')]),
+    entry('nations-league', 'Germany', 'Italy', [ch('v7', 'Dual TV', 'UCGGG', 't7')]),
+  ];
+  const res = aggregateCandidates(days, emptyOps());
+  const c = res.candidates.find((x) => x.channelId === 'UCGGG');
+  check(
+    'top-pair scope suggested',
+    !!c && c.scope.teams?.length === 2 && c.scope.teams.includes('Germany') && c.scope.teams.includes('Netherlands'),
+    c?.scope
+  );
+}
+
+// 9. Single game (3 hits, 1 game) never suggests team scope.
+{
+  const days = [
+    entry('nations-league', 'Germany', 'France', [
+      ch('v1', 'One Game TV', 'UCHHH', 't1'),
+      ch('v2', 'One Game TV', 'UCHHH', 't2'),
+      ch('v3', 'One Game TV', 'UCHHH', 't3'),
+    ]),
+  ];
+  const res = aggregateCandidates(days, emptyOps());
+  const c = res.candidates.find((x) => x.channelId === 'UCHHH');
+  check('single game stays league-wide', !!c && !c.scope.teams, c?.scope);
+}
+
 console.log(failures === 0 ? '\nALL PASS' : `\n${failures} FAILURES`);
 process.exit(failures === 0 ? 0 : 1);

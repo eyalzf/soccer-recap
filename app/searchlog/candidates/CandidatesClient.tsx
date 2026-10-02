@@ -11,7 +11,7 @@ interface Props {
   leagueHe: Record<string, string>;
 }
 
-type ScopeSel = { mode: 'league' } | { mode: 'team'; team: string };
+type ScopeSel = string[]; // empty = league-wide
 
 function CandidateRow({
   c,
@@ -24,11 +24,16 @@ function CandidateRow({
   onAction: (action: 'add' | 'discard', key: string, teams?: string[]) => void;
   busy: boolean;
 }) {
-  const [scope, setScope] = useState<ScopeSel>(
-    c.scope.teams?.length === 1
-      ? { mode: 'team', team: c.scope.teams[0] }
-      : { mode: 'league' }
-  );
+  const [sel, setSel] = useState<ScopeSel>(c.scope.teams ?? []);
+  const leagueName = leagueHe[c.league] ?? c.league;
+  const dest = sel.length
+    ? `${leagueName} · ${sel.join(' + ')} בלבד`
+    : `${leagueName} · כל הליגה`;
+  const suggested = c.scope.teams?.length
+    ? `${leagueName} · ${c.scope.teams.join(' + ')} בלבד`
+    : `${leagueName} · כל הליגה`;
+  const toggle = (team: string) =>
+    setSel((s) => (s.includes(team) ? s.filter((t) => t !== team) : [...s, team]));
   return (
     <tr>
       <td>
@@ -39,7 +44,7 @@ function CandidateRow({
           </div>
         )}
       </td>
-      <td>{leagueHe[c.league] ?? c.league}</td>
+      <td>{leagueName}</td>
       <td>{c.hits}</td>
       <td>{c.games}</td>
       <td>
@@ -52,37 +57,41 @@ function CandidateRow({
         </div>
       </td>
       <td>
-        <select
-          value={scope.mode === 'team' ? `team:${scope.team}` : 'league'}
-          onChange={(e) => {
-            const v = e.target.value;
-            setScope(v === 'league' ? { mode: 'league' } : { mode: 'team', team: v.slice(5) });
-          }}
-          style={{ maxWidth: 160 }}
-          disabled={busy}
-        >
-          <option value="league">כל הליגה</option>
-          {c.teams.map((t) => (
-            <option key={t} value={`team:${t}`}>
-              {t} בלבד
-            </option>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 3, fontSize: 12 }}>
+          {c.teamWins.map((tw) => (
+            <label key={tw.team} style={{ display: 'flex', gap: 5, alignItems: 'center' }}>
+              <input
+                type="checkbox"
+                checked={sel.includes(tw.team)}
+                onChange={() => toggle(tw.team)}
+                disabled={busy}
+              />
+              <span>
+                {tw.team} ({tw.games})
+              </span>
+            </label>
           ))}
-        </select>
+          {sel.length > 0 && (
+            <button
+              className="refresh-btn"
+              disabled={busy}
+              onClick={() => setSel([])}
+              style={{ alignSelf: 'flex-start', fontSize: 11 }}
+            >
+              נקה = כל הליגה
+            </button>
+          )}
+          <div style={{ opacity: 0.65 }}>מומלץ: {suggested}</div>
+        </div>
       </td>
       <td>
         <div style={{ display: 'flex', gap: 6 }}>
           <button
             className="refresh-btn"
             disabled={busy}
-            onClick={() =>
-              onAction(
-                'add',
-                c.key,
-                scope.mode === 'team' ? [scope.team] : undefined
-              )
-            }
+            onClick={() => onAction('add', c.key, sel.length ? sel : undefined)}
           >
-            הוסף
+            הוסף ל־{dest}
           </button>
           <button className="refresh-btn" disabled={busy} onClick={() => onAction('discard', c.key)}>
             דחה
@@ -210,7 +219,7 @@ export default function CandidatesClient({ leagueHe }: Props) {
                   <td>{p.channel}</td>
                   <td>
                     {(leagueHe[p.league] ?? p.league) +
-                      (p.teams?.length ? ` · ${p.teams.join(', ')}` : ' · כל הליגה')}
+                      (p.teams?.length ? ` · ${p.teams.join(' + ')} בלבד` : ' · כל הליגה')}
                   </td>
                   <td>
                     <button
