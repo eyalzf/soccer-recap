@@ -18,7 +18,7 @@ import { channelIdForHandle, ytApiGet, ytVideoMeta } from './sources';
 import { pget, pset } from './persist';
 import { lookupClubEn } from '../teamIndex';
 import { searchPlanFor } from './leaguePlans';
-import type { LeagueSearchPlan } from './leaguePlans';
+import type { BulkChannel, LeagueSearchPlan } from './leaguePlans';
 import type { GameInput, RawCandidate } from './types';
 import { getDenySet, isDeniedPlanEntry } from './denyList';
 
@@ -282,18 +282,26 @@ export async function scanPriorityChannel(
 }
 
 /**
- * Scan the league's bulk channels for one game and return enriched
- * candidates (unfiltered — the caller applies filterCandidate + ranking).
+ * Scan bulk channels for one game and return enriched candidates
+ * (unfiltered — the caller applies filterCandidate + ranking).
  * Team-scoped channels are only scanned for their own club's games.
  * Channels are scanned in small parallel groups; a 429 stops the scan
  * immediately.
+ *
+ * `onlyEntries` restricts the scan to a subset of the plan's bulk pool
+ * (already game-filtered by the caller) — the route uses it to scan
+ * team-scoped channels before league-wide ones. Deny-listed entries are
+ * still skipped here as well, so no quota is spent on them either way.
  */
-export async function bulkScan(game: GameInput): Promise<BulkScanResult> {
+export async function bulkScan(
+  game: GameInput,
+  onlyEntries?: BulkChannel[]
+): Promise<BulkScanResult> {
   const plan: LeagueSearchPlan = searchPlanFor(game.league);
   // Deny-listed plan entries are skipped entirely: no quota spent scanning
   // a channel whose videos would be rejected anyway.
   const deny = await getDenySet();
-  const entries = channelsForGame(plan.bulk, game).filter(
+  const entries = (onlyEntries ?? channelsForGame(plan.bulk, game)).filter(
     (e) => !isDeniedPlanEntry(e, deny)
   );
   const maxPages = plan.bulkPages ?? MAX_PAGES;
