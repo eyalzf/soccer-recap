@@ -4,6 +4,7 @@
  * filterCandidate). Run: npx tsx scripts/deny_list_test.ts
  */
 import {
+  dropDeniedCandidates,
   isDeniedChannel,
   isDeniedPlanEntry,
   normHandle,
@@ -168,6 +169,28 @@ const stats = (
   );
   const noSet = filterCandidate(cand('UCBADCHANNEL'), game);
   check('no deny set -> no deny filtering', noSet.reason !== 'deny-listed', noSet.reason);
+}
+
+// 6. dropDeniedCandidates: cached-result filtering (route serve path).
+{
+  const list = [
+    { id: 'a', channelId: 'UCBADCHANNEL' },
+    { id: 'b', channelId: 'UCCLEAN', channelHandle: '@clean' },
+    { id: 'c', channelId: 'UCOTHER', channelHandle: '@BadHandle' },
+    { id: 'd' },
+    { id: 'e', channelId: null, channelHandle: null },
+  ];
+  const out = dropDeniedCandidates(list, denySet());
+  check(
+    'dropDenied removes by id and by handle, keeps the rest',
+    out.map((x) => x.id).join(',') === 'b,d,e',
+    out.map((x) => x.id)
+  );
+  const empty: DenySet = { ids: new Set(), handles: new Set() };
+  check(
+    'dropDenied with empty set returns the list untouched',
+    dropDeniedCandidates(list, empty) === list
+  );
 }
 
 if (failures > 0) {
