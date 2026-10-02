@@ -202,6 +202,20 @@ const CONTRADICTIONS: Record<string, string[]> = {
     'premier league', 'פרמייר ליג',
     'champions league', 'ליגת האלופות',
   ],
+  // Friendlies: any actual competition contradicts. 'qualifier' guards the
+  // main confusion risk (the same teams also meet in WCQ). Bare 'euro' is
+  // not used (same reasoning as above); 'יורו'/'european championship' are.
+  'national-friendlies': [
+    'world cup', 'מונדיאל', 'מוקדמות המונדיאל', 'qualifier', 'qualifiers',
+    'nations league', 'ליגת האומות', 'concacaf nations league',
+    'יורו', 'european championship', 'euro 2028', 'euro 2024',
+    'copa américa', 'copa america', 'קופה אמריקה',
+    'afcon', 'africa cup', 'גביע אפריקה',
+    'gold cup', 'גביע הזהב',
+    'premier league', 'פרמייר ליג', 'la liga', 'לה ליגה', 'serie a',
+    'bundesliga', 'בונדסליגה', 'ligue 1', 'champions league', 'ליגת האלופות',
+    'europa league', 'fa cup', 'copa del rey', 'ליגת העל',
+  ],
 };
 
 export function competitionContradiction(title: string, league: string): string | null {
@@ -275,9 +289,16 @@ export function nonRecapFormat(title: string): 'press-conference' | 'prematch' |
   return null;
 }
 
-export function excludedCategory(title: string): string | null {
+export function excludedCategory(title: string, league?: string): string | null {
   const t = title.toLowerCase();
   for (const kw of EXCLUDED) {
+    // 'friendly'/'ידידות' reject pre-season club junk everywhere EXCEPT the
+    // friendlies competition itself, where every title carries them.
+    if (
+      league === 'national-friendlies' &&
+      (kw === 'friendly' || kw === 'ידידות')
+    )
+      continue;
     if (t.includes(kw.toLowerCase())) return kw;
   }
   // Standalone "live" (word boundary): catches "LIVE:", "(Live)", "live
@@ -441,7 +462,7 @@ export function filterCandidate(
   const contra = competitionContradiction(c.title, game.league);
   if (contra) return { keep: false, reason: 'competition' };
 
-  const excl = excludedCategory(c.title);
+  const excl = excludedCategory(c.title, game.league);
   if (excl) return { keep: false, reason: 'excluded' };
 
   const prox = dateProximity(c.publishedAt, game.dateISO);
