@@ -48,7 +48,7 @@
       "id": "nat-20261001-british-virgin-islands-montserrat",
       "home": "British Virgin Islands",
       "away": "Montserrat",
-      "dateISO": "2026-10-01T19:00:00.000Z",
+      "dateISO": "2026-10-01T20:00:00.000Z",
       "homeScore": 0,
       "awayScore": 2,
       "homeBadge": "https://flagcdn.com/w80/vg.png",
@@ -467,5 +467,5 @@
   "league_he": "ליגת האומות (צפון אמריקה)",
   "season": "2026/27",
   "source": "concacaf.com",
-  "updated_at": "2026-10-02T03:01:04.457490Z"
+  "updated_at": "2026-10-02T04:34:17.000Z"
 }
