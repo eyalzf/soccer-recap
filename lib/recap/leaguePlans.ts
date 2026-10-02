@@ -311,6 +311,17 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
     ],
     fallbackLangs: ['en'],
   },
+  'national-friendlies': {
+    // General search Hebrew -> English. No Sport1 priority: Sport1 only
+    // covers Israel friendlies and Israel plays very few of them (user,
+    // 2026-10-02), so it is not worth stopping the cascade for. No curated
+    // YouTube channels either: friendlies are too scattered across FA
+    // channels to justify bulk scanning, and the narrow nation list keeps
+    // volume low.
+    preferred: [],
+    bulk: [],
+    fallbackLangs: ['he', 'en'],
+  },
 };
 
 /** Unknown league slugs get English general search only. */

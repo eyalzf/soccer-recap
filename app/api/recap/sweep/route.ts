@@ -190,6 +190,7 @@ async function runSweep(): Promise<SweepReport> {
     channelId?: string;
     handle?: string;
     game: string;
+    league: string;
   }
   const seen = new Map<string, SeenInfo>();
   for (const g of games) {
@@ -202,6 +203,7 @@ async function runSweep(): Promise<SweepReport> {
         channelId: r.channelId,
         handle: r.channelHandle,
         game: gameLabelFromKey(g.key),
+        league: g.key.slice(GAME_PREFIX.length).split('/')[0] ?? '',
       });
     }
   }
@@ -258,7 +260,7 @@ async function runSweep(): Promise<SweepReport> {
       { channelId: info.channelId ?? null, channelHandle: info.handle ?? null },
       denySet
     );
-    const vetoKw = denied ? null : excludedCategory(info.title);
+    const vetoKw = denied ? null : excludedCategory(info.title, info.league);
     if (denied || vetoKw) {
       report.removed.push({
         videoId: id,

@@ -38,7 +38,8 @@ export type NationalCompetitionSlug =
   | 'nations-league'
   | 'afcon'
   | 'gold-cup'
-  | 'concacaf-nations-league';
+  | 'concacaf-nations-league'
+  | 'national-friendlies';
 
 export interface NationalCompetitionDef {
   slug: NationalCompetitionSlug;
@@ -86,9 +87,17 @@ export const NATIONAL_COMPETITIONS: NationalCompetitionDef[] = [
   },
   {
     slug: 'concacaf-nations-league',
-    hebrewName: 'ליגת האומות (צפון אמריקה)',
+    hebrewName: 'ליגת האומות (אמריקה)',
     badge:
       'https://en.wikipedia.org/wiki/Special:FilePath/CONCACAF_Nations_League_(2026).svg',
+  },
+  {
+    // International friendlies, narrow scope: Israel + top-tier nations
+    // (at least one side in the curated list; see the fixtures cron).
+    // No official logo exists for friendlies — custom icon in public/.
+    slug: 'national-friendlies',
+    hebrewName: 'משחקי ידידות',
+    badge: '/friendlies-icon.svg',
   },
 ];
 
