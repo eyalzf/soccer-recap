@@ -3,7 +3,7 @@
  *
  * Blob has no TTL, so each record stores its own `fetchedAt` and callers
  * enforce staleness. Keys are pathnames like `pl/v2/<channelId>` or
- * `game/v8/<league>/<home>-<away>-<date>`.
+ * `game/v9/<league>/<home>-<away>-<date>`.
  *
  * When BLOB_READ_WRITE_TOKEN is absent (local dev, or the Blob store hasn't
  * been created in the Vercel dashboard yet), everything falls back to the
