@@ -115,3 +115,15 @@ export function isDeniedPlanEntry(
     deny
   );
 }
+
+/**
+ * Drop deny-listed channels' videos from an existing result list. Applied
+ * to cached game results on read, so a denial takes effect immediately
+ * instead of waiting for the weekly sweep to purge the caches.
+ */
+export function dropDeniedCandidates<
+  T extends { channelId?: string | null; channelHandle?: string | null },
+>(list: T[], deny: DenySet): T[] {
+  if (deny.ids.size === 0 && deny.handles.size === 0) return list;
+  return list.filter((c) => !isDeniedChannel(c, deny));
+}
