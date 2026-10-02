@@ -94,9 +94,10 @@ export const NATIONAL_COMPETITIONS: NationalCompetitionDef[] = [
   {
     // International friendlies, narrow scope: Israel + top-tier nations
     // (at least one side in the curated list; see the fixtures cron).
+    // No official logo exists for friendlies — custom icon in public/.
     slug: 'national-friendlies',
     hebrewName: 'משחקי ידידות',
-    badge: null,
+    badge: '/friendlies-icon.svg',
   },
 ];
 
