@@ -86,7 +86,7 @@ function parseGame(sp: URLSearchParams): GameInput | null {
  *  season). Versioned so matcher/policy changes auto-invalidate. */
 function gameCacheKey(game: GameInput): string {
   const seg = (s: string) => encodeURIComponent(s).replace(/[%().]/g, '_');
-  return `game/v8/${game.league}/${seg(game.home)}-${seg(game.away)}-${seg(game.dateISO)}`;
+  return `game/v9/${game.league}/${seg(game.home)}-${seg(game.away)}-${seg(game.dateISO)}`;
 }
 
 interface CachedGame {
@@ -274,10 +274,10 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
 
   let winner: SearchWinner = 'none';
 
-  // Tier 0: Sport1 web (per-league opt-in; Nations League). A proper
-  // תקציר from the official broadcaster wins outright — no YouTube quota
-  // is spent at all. Non-highlight Sport1 items (e.g. goals-only clips)
-  // stay as ranked candidates and the cascade proceeds.
+  // Tier 0: Sport1 web (per-league opt-in; Nations League). Sport1 is the
+  // priority source: any result it yields for the game ends the search —
+  // no YouTube tier runs and no quota is spent (user decision 2026-10-02:
+  // "when results are identified it should not continue to other sources").
   if (plan.sport1) {
     try {
       const raw = await sport1Search(game);
@@ -285,11 +285,10 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
       const kept = ingest('sport1', raw, 'sport1');
       logEntry.sport1.kept += kept;
       sources.push({ label: 'sport1', kind: 'sport1', cached: false, fetched: raw.length, kept });
-      if (debug) diag.push({ search: 'sport1', fetched: raw.length, kept });
     } catch (e) {
       if (debug) diag.push({ search: 'sport1', error: (e as Error)?.message ?? String(e) });
     }
-    if (hasProperHighlight()) winner = 'sport1';
+    if (logEntry.sport1.kept > 0) winner = 'sport1';
   }
 
   // Tier 1: preferred channels in priority order, scanned via their
