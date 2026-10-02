@@ -228,6 +228,8 @@ const EXCLUDED = [
   'season review',
   // Live streams / live broadcasts are not recaps.
   'שידור חי', 'שידור ישיר', 'לייב', 'livestream',
+  // Video-game simulations / recreations are not the real match.
+  'simulat', 'recreation', 're-creation', 'סימולציה', 'הדמיה',
 ];
 
 /**
