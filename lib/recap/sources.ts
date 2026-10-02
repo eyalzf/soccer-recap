@@ -1,5 +1,6 @@
 import { cacheGet, cacheSet } from '../cache';
-import { hebrewVariants } from '../teamIndex';
+import { hebrewVariants, lookupClubEn } from '../teamIndex';
+import { teamMentioned } from './match';
 import type { GameInput, RawCandidate, SourceKind } from './types';
 
 const YT_KEY = process.env.YOUTUBE_API_KEY || '';
@@ -262,6 +263,121 @@ export async function youtubeSearch(
       lang: job.lang,
     } satisfies RawCandidate;
   });
+}
+
+// ---------- Sport1 (Maariv/Walla WordPress REST) ----------
+
+interface WpSearchHit {
+  id: number;
+  title: string;
+  url: string;
+  subtype?: string;
+}
+
+interface WpVodPost {
+  id: number;
+  date?: string;
+  date_gmt?: string;
+}
+
+/** WordPress title (numeric entities like &#8211;, stray tags) -> plain text. */
+function decodeWpTitle(s: string): string {
+  return decodeHtml(
+    s
+      .replace(/&#(\d+);/g, (_m, n: string) =>
+        String.fromCharCode(parseInt(n, 10))
+      )
+      .replace(/<[^>]+>/g, ' ')
+  )
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+/**
+ * Sport1 (sport1.maariv.co.il) per-game recap lookup via the site's public
+ * WordPress REST API — no key, no quota:
+ *  1. `wp/v2/search` with both Hebrew team names finds the video post
+ *     ("תקציר: דנמרק – פורטוגל 4:2") among news/results noise.
+ *  2. `wp/v2/vod/<id>` gives the post date (date-proximity filtering).
+ *  3. The article page HTML carries the Walla player embed; the media ID
+ *     extracted from it builds the iframe URL the app renders.
+ *  4. `dal.walla.co.il/media/<id>` gives the clip duration.
+ * Title matching itself stays with the shared matcher (filterCandidate in
+ * the recap route); this only produces raw candidates. Best-effort: any
+ * failure returns [] and the YouTube cascade proceeds as before.
+ */
+export async function sport1Search(game: GameInput): Promise<RawCandidate[]> {
+  const home = lookupClubEn(game.home);
+  const away = lookupClubEn(game.away);
+  if (!home || !away) return [];
+  const homeHe = hebrewVariants(game.home)[0];
+  const awayHe = hebrewVariants(game.away)[0];
+  try {
+    const p = new URLSearchParams({
+      search: `${homeHe} ${awayHe}`,
+      per_page: '12',
+    });
+    const hits = (await fetchJson(
+      'https://sport1.maariv.co.il/wp-json/wp/v2/search?' + p.toString()
+    )) as WpSearchHit[];
+    const videoHits = (Array.isArray(hits) ? hits : [])
+      .filter((h) => h.subtype === 'video' && h.id && h.url)
+      .slice(0, 6);
+    const out: RawCandidate[] = [];
+    for (const hit of videoHits) {
+      // Pre-filter on the (already plain) search title before spending
+      // fetches; the shared matcher re-checks everything downstream.
+      if (!teamMentioned(hit.title, home) || !teamMentioned(hit.title, away))
+        continue;
+      let publishedAt: string | undefined;
+      try {
+        const post = (await fetchJson(
+          `https://sport1.maariv.co.il/wp-json/wp/v2/vod/${hit.id}`
+        )) as WpVodPost;
+        if (post.date_gmt) publishedAt = post.date_gmt + 'Z';
+        else if (post.date) publishedAt = post.date;
+      } catch {
+        /* undated: the matcher fails open on date */
+      }
+      const html = await fetchHtml(hit.url);
+      const m = html?.match(
+        /player\.maariv\.co\.il\/public\/player\.html\?[^"'\s]*?[?&]media=(\d+)/
+      );
+      if (!m) continue;
+      const mediaId = m[1];
+      // Duration from the media API (too-long veto + duration badge use
+      // it). Unknown duration fails open downstream, so best-effort.
+      let durationSec: number | undefined;
+      try {
+        const media = (await fetchJson(
+          'https://dal.walla.co.il/media/' + mediaId
+        )) as { data?: { video?: { duration?: string } } };
+        const d = parseInt(media?.data?.video?.duration ?? '', 10);
+        if (Number.isFinite(d) && d > 0) durationSec = d;
+      } catch {
+        /* best effort */
+      }
+      out.push({
+        id: 'sport1:' + hit.id,
+        title: decodeWpTitle(hit.title),
+        url: hit.url,
+        source: 'sport1' as SourceKind,
+        embedUrl:
+          'https://player.maariv.co.il/public/player.html?player=sport1-desktop&media=' +
+          mediaId +
+          '&url=' +
+          hit.url,
+        ...(publishedAt ? { publishedAt } : {}),
+        ...(durationSec != null ? { durationSec } : {}),
+        // The media API URL content-negotiates: an <img> gets the poster.
+        thumbnail: 'https://dal.walla.co.il/media/' + mediaId,
+        lang: 'he' as const,
+      });
+    }
+    return out;
+  } catch {
+    return [];
+  }
 }
 
 // ---------- Sport1 / Sport5 / ONE (best-effort) ----------
