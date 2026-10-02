@@ -5,8 +5,11 @@ import { channelIdForHandle, ytApiGet } from '@/lib/recap/sources';
 import {
   addToDenyList,
   getDenyList,
+  getDenySet,
+  isDeniedChannel,
   normHandle,
 } from '@/lib/recap/denyList';
+import { excludedCategory } from '@/lib/recap/match';
 import { searchPlanFor } from '@/lib/recap/leaguePlans';
 import { LEAGUES, NATIONAL_COMPETITIONS } from '@/lib/leagues';
 import {
@@ -208,6 +211,24 @@ async function runSweep(): Promise<SweepReport> {
   // 4. Fresh liveness checks.
   const checks = await checkVideosFresh(ids);
   const deadByGame = new Map<string, Set<string>>();
+  const purgeByGame = new Map<string, Set<string>>();
+  // Policy purges (no YouTube quota): videos from deny-listed channels and
+  // titles matching the current EXCLUDED policy (e.g. simulation footage)
+  // must also leave the caches — otherwise the append-only game cache keeps
+  // serving them long after the deny/policy decision was made.
+  const denySet = await getDenySet();
+  const markPurge = (vid: string) => {
+    for (const g of games) {
+      if (g.results.some((r) => r.videoId === vid)) {
+        let set = purgeByGame.get(g.key);
+        if (!set) {
+          set = new Set();
+          purgeByGame.set(g.key, set);
+        }
+        set.add(vid);
+      }
+    }
+  };
   const stats = new Map<string, ChannelDeathStats & { _key: string }>();
   const statFor = (info: SeenInfo) => {
     const key = info.channelId ?? (info.handle ? `h:${info.handle}` : `t:${info.channel}`);
@@ -228,11 +249,35 @@ async function runSweep(): Promise<SweepReport> {
     }
     return s;
   };
+  let deadCount = 0;
   for (const [id, info] of seen) {
+    // Purged videos (deny-listed channel or vetoed title) leave the cache
+    // without feeding the death-stats population — the channel is either
+    // already dealt with or the video was never a real recap.
+    const denied = isDeniedChannel(
+      { channelId: info.channelId ?? null, channelHandle: info.handle ?? null },
+      denySet
+    );
+    const vetoKw = denied ? null : excludedCategory(info.title);
+    if (denied || vetoKw) {
+      report.removed.push({
+        videoId: id,
+        title: info.title,
+        channel: info.channel,
+        channelId: info.channelId,
+        game: info.game,
+        reason: denied ? 'deny-listed' : `veto:${vetoKw}`,
+      });
+      if (denied) report.deniedRemoved += 1;
+      else report.vetoedRemoved += 1;
+      markPurge(id);
+      continue;
+    }
     const s = statFor(info);
     s.total += 1;
     const chk = checks.get(id);
     if (chk?.dead) {
+      deadCount += 1;
       s.dead += 1;
       if (s.sampleTitles.length < 3) s.sampleTitles.push(info.title);
       if (!s.games.includes(info.game)) s.games.push(info.game);
@@ -256,16 +301,21 @@ async function runSweep(): Promise<SweepReport> {
     }
   }
 
-  // 5. Rewrite affected game blobs minus the dead videos.
-  for (const [key, deadIds] of deadByGame) {
+  // 5. Rewrite affected game blobs minus dead and policy-purged videos.
+  const rewriteKeys = new Set([...deadByGame.keys(), ...purgeByGame.keys()]);
+  for (const key of rewriteKeys) {
+    const drop = new Set([
+      ...(deadByGame.get(key) ?? []),
+      ...(purgeByGame.get(key) ?? []),
+    ]);
     const rec = await pget<{ results?: RankedCandidate[] }>(key);
     if (!rec?.val?.results) continue;
-    const kept = rec.val.results.filter((r) => !deadIds.has(r.videoId ?? ''));
+    const kept = rec.val.results.filter((r) => !drop.has(r.videoId ?? ''));
     if (kept.length !== rec.val.results.length) {
       await pset(key, { ...rec.val, results: kept });
     }
   }
-  report.deadRemoved = report.removed.length;
+  report.deadRemoved = deadCount;
 
   // 6. Deny-list proposals.
   const qualifiers: ChannelDeathStats[] = [];
@@ -358,6 +408,8 @@ export async function GET(req: NextRequest) {
         gamesScanned: report.gamesScanned,
         videosChecked: report.videosChecked,
         deadRemoved: report.deadRemoved,
+        deniedRemoved: report.deniedRemoved,
+        vetoedRemoved: report.vetoedRemoved,
         pendingProposals: pending,
       });
     } catch (e) {
@@ -384,6 +436,8 @@ export async function GET(req: NextRequest) {
     gamesScanned: report.gamesScanned,
     videosChecked: report.videosChecked,
     deadRemoved: report.deadRemoved,
+    deniedRemoved: report.deniedRemoved,
+    vetoedRemoved: report.vetoedRemoved,
     pendingProposals: report.proposals.filter((p) => p.status === 'pending')
       .length,
     deniedChannels: deny.length,
