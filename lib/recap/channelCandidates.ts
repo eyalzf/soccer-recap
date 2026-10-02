@@ -20,8 +20,14 @@ const OPS_KEY = 'channel-ops/decisions.json';
 
 export interface SuggestedScope {
   league: string;
-  /** When every winning game involved the same team: team-scoped addition. */
+  /** Team-scoped addition when the wins concentrate on one or two teams. */
   teams?: string[];
+}
+
+/** Distinct games a channel won per team, strongest first. */
+export interface TeamWin {
+  team: string;
+  games: number;
 }
 
 export interface ChannelCandidate {
@@ -37,8 +43,10 @@ export interface ChannelCandidate {
   games: number;
   /** up to 3 sample result titles */
   sampleTitles: string[];
-  /** teams involved in the winning games (capped; for scope override) */
+  /** teams involved in the winning games (strongest first; for scope override) */
   teams: string[];
+  /** wins per team (distinct games), strongest first */
+  teamWins: TeamWin[];
   scope: SuggestedScope;
 }
 
@@ -73,6 +81,37 @@ const norm = (s: string): string =>
   s.toLowerCase().replace(/[^a-z0-9\u0590-\u05ff]/g, '');
 
 const channelKeyPart = (c: KeptChannel): string => c.chId ?? `t:${norm(c.ch)}`;
+
+/** Share of a channel's games one team must cover to suggest team scope. */
+export const SCOPE_DOMINANT_SHARE = 0.7;
+/** Share the top two teams must jointly cover to suggest a two-team scope. */
+export const SCOPE_PAIR_SHARE = 0.85;
+
+/**
+ * Scope suggestion from the per-team win distribution (user-approved
+ * 2026-10-02): one dominant team -> that team; two teams jointly covering
+ * almost everything -> both; otherwise league-wide. Always overridable in
+ * the UI. A single game never suggests team scope.
+ */
+function suggestScope(league: string, teamWins: TeamWin[], a: Agg): SuggestedScope {
+  const total = a.games.size;
+  if (total >= 2 && teamWins.length > 0) {
+    const [t1, t2] = teamWins;
+    if (t1.games / total >= SCOPE_DOMINANT_SHARE) {
+      return { league, teams: [t1.team] };
+    }
+    if (t2) {
+      const covered = new Set([
+        ...(a.teamGames.get(t1.team) ?? []),
+        ...(a.teamGames.get(t2.team) ?? []),
+      ]);
+      if (covered.size / total >= SCOPE_PAIR_SHARE) {
+        return { league, teams: [t1.team, t2.team] };
+      }
+    }
+  }
+  return { league };
+}
 
 /** All curated channel identities for a league (preferred + bulk). */
 function planIdentities(league: string): Set<string> {
@@ -130,6 +169,8 @@ interface Agg {
   games: Map<string, AggGame>;
   titles: string[];
   teamSet: Set<string>;
+  /** team -> distinct game ids the channel won involving that team */
+  teamGames: Map<string, Set<string>>;
 }
 
 export async function getChannelCandidates(): Promise<CandidatesResult> {
@@ -169,6 +210,7 @@ export function aggregateCandidates(
             games: new Map(),
             titles: [],
             teamSet: new Set(),
+            teamGames: new Map(),
           };
           aggs.set(key, a);
         }
@@ -176,6 +218,14 @@ export function aggregateCandidates(
         if (!a.games.has(gameId)) a.games.set(gameId, { home: e.home, away: e.away });
         a.teamSet.add(e.home);
         a.teamSet.add(e.away);
+        for (const t of [e.home, e.away]) {
+          let s = a.teamGames.get(t);
+          if (!s) {
+            s = new Set();
+            a.teamGames.set(t, s);
+          }
+          s.add(gameId);
+        }
         if (a.titles.length < 3) a.titles.push(c.t);
       }
     }
@@ -205,22 +255,12 @@ export function aggregateCandidates(
         continue; // pending approval or already added
       }
     }
-    // Scope inference: team-scoped when every winning game involved the
-    // same single team; otherwise league-wide (user can override).
-    let common: Set<string> | null = null;
-    for (const g of a.games.values()) {
-      const s = new Set([g.home, g.away]);
-      if (common === null) {
-        common = s;
-      } else {
-        const prev: Set<string> = common;
-        common = new Set([...prev].filter((t) => s.has(t)));
-      }
-    }
-    const scope: SuggestedScope =
-      common && common.size === 1
-        ? { league: a.league, teams: [...common] }
-        : { league: a.league };
+    // Per-team win distribution + scope suggestion (dominant team / top
+    // pair -> team scope; otherwise league-wide). User can override.
+    const teamWins: TeamWin[] = [...a.teamGames.entries()]
+      .map(([team, s]) => ({ team, games: s.size }))
+      .sort((x, y) => y.games - x.games || (x.team < y.team ? -1 : x.team > y.team ? 1 : 0));
+    const scope = suggestScope(a.league, teamWins, a);
     candidates.push({
       key,
       channel: a.channel,
@@ -229,7 +269,8 @@ export function aggregateCandidates(
       hits: a.hits,
       games: a.games.size,
       sampleTitles: a.titles,
-      teams: [...a.teamSet].slice(0, 12),
+      teams: teamWins.map((t) => t.team).slice(0, 12),
+      teamWins: teamWins.slice(0, 8),
       scope,
     });
   }
