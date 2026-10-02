@@ -66,9 +66,10 @@ export interface LeagueSearchPlan {
   fallbackLangs: Array<'he' | 'en'>;
   /**
    * Sport1 (Maariv/Walla site) as a priority source: checked before every
-   * YouTube tier; a proper תקציר wins outright and no YouTube quota is
-   * spent. Consumes no quota (plain REST + page fetches). Enabled only
-   * where the user approved it (UEFA Nations League).
+   * YouTube tier; any result it yields for a game ends the search (no
+   * other source is consulted). Consumes no quota (plain REST + page
+   * fetches). Enabled only where the user approved it (UEFA Nations
+   * League).
    */
   sport1?: boolean;
 }
