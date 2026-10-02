@@ -6,6 +6,14 @@ export interface RawCandidate {
   url: string;
   source: SourceKind;
   videoId?: string;
+  /**
+   * Direct iframe embed URL for non-YouTube sources whose player supports
+   * embedding (Sport1's Walla player). When set, the UI renders an inline
+   * player instead of an "open at source" link. No JS API exists for this
+   * player, so resume/progress tracking does not apply (watched-on-select
+   * still records the game view, as with every source).
+   */
+  embedUrl?: string;
   thumbnail?: string;
   /** ISO datetime */
   publishedAt?: string;
