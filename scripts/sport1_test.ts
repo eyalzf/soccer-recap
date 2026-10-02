@@ -87,6 +87,19 @@ async function main(): Promise<void> {
   );
   check('old meeting rejected by date', !oldMeeting.keep && oldMeeting.reason === 'date', oldMeeting.reason);
 
+  // Sport1 spells Wales ווילס and Norway נורבגיה; both must match so the
+  // ווילס–נורבגיה תקציר is found and kept (user report 2026-10-02).
+  const WALES: GameInput = {
+    home: 'Wales',
+    away: 'Norway',
+    dateISO: '2026-10-01',
+    league: 'nations-league',
+    homeScore: 2,
+    awayScore: 1,
+  };
+  const walesRecap = s1('תקציר: ווילס – נורבגיה 1:2', { durationSec: 170 });
+  check('Sport1-spelled ווילס–נורבגיה recap kept', filterCandidate(walesRecap, WALES).keep);
+
   // ---- Part 2: live retrieval ----
   const cands = await sport1Search(GAME);
   console.log(`live retrieval returned ${cands.length} candidate(s)`);
@@ -99,6 +112,14 @@ async function main(): Promise<void> {
     check('live: highlight intent (would win the cascade)', hasHighlightIntent(den.title));
     check('live: duration ~158s', den.durationSec != null && Math.abs(den.durationSec - 158) <= 5, String(den.durationSec));
   }
+
+  // Wales–Norway: missed at first because Sport1 writes ווילס (not our
+  // canonical וויילס) — the variant-query retrieval must now find it.
+  const walesCands = await sport1Search(WALES);
+  console.log(`live Wales retrieval returned ${walesCands.length} candidate(s)`);
+  for (const c of walesCands) console.log('  ·', c.title, '|', c.durationSec + 's');
+  const walesKept = walesCands.filter((c) => filterCandidate(c, WALES).keep);
+  check('live: Wales–Norway recap found and kept', walesKept.length >= 1);
 
   console.log(`\nsport1 tests: ${pass} pass, ${fail} fail`);
   process.exit(fail ? 1 : 0);
