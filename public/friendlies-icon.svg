@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="International friendly">
+  <!-- flag poles -->
+  <line x1="29" y1="14" x2="29" y2="90" stroke="#8a6d3b" stroke-width="3.5" stroke-linecap="round"/>
+  <line x1="71" y1="14" x2="71" y2="90" stroke="#8a6d3b" stroke-width="3.5" stroke-linecap="round"/>
+  <!-- flags: two nations meeting at the center -->
+  <path d="M29 17 Q39.5 15 49 20 L49 29 Q39.5 31 29 32 Z" fill="#2563eb"/>
+  <path d="M71 17 Q60.5 15 51 20 L51 29 Q60.5 31 71 32 Z" fill="#dc2626"/>
+  <!-- finials -->
+  <circle cx="29" cy="12" r="3.2" fill="#e3b341"/>
+  <circle cx="71" cy="12" r="3.2" fill="#e3b341"/>
+  <!-- football -->
+  <circle cx="50" cy="71" r="16" fill="#ffffff" stroke="#1f2937" stroke-width="2"/>
+  <clipPath id="ballClip"><circle cx="50" cy="71" r="15"/></clipPath>
+  <g clip-path="url(#ballClip)" stroke="#1f2937" stroke-width="1.4">
+    <line x1="50" y1="65.8" x2="50" y2="55.5"/>
+    <line x1="54.9" y1="69.4" x2="63.4" y2="65.1"/>
+    <line x1="53.1" y1="75.2" x2="58.4" y2="85.4"/>
+    <line x1="46.9" y1="75.2" x2="41.6" y2="85.4"/>
+    <line x1="45.1" y1="69.4" x2="36.6" y2="65.1"/>
+  </g>
+  <polygon points="50,65.8 54.9,69.4 53.1,75.2 46.9,75.2 45.1,69.4" fill="#1f2937"/>
+</svg>
