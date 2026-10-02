@@ -60,12 +60,18 @@ export interface SweepReport {
   gamesScanned: number;
   videosChecked: number;
   deadRemoved: number;
+  /** Videos purged because their channel is deny-listed. */
+  deniedRemoved: number;
+  /** Videos purged because their title matches the EXCLUDED policy. */
+  vetoedRemoved: number;
   removed: Array<{
     videoId: string;
     title: string;
     channel: string;
     channelId?: string;
     game: string;
+    /** 'deny-listed' | 'veto:<keyword>'; undefined for dead videos. */
+    reason?: string;
   }>;
   proposals: SweepProposal[];
 }
@@ -76,6 +82,8 @@ export const emptyReport = (): SweepReport => ({
   gamesScanned: 0,
   videosChecked: 0,
   deadRemoved: 0,
+  deniedRemoved: 0,
+  vetoedRemoved: 0,
   removed: [],
   proposals: [],
 });
