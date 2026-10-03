@@ -74,12 +74,15 @@ eq(
   true
 );
 
-// 4. Preferred stop rule: LaLiga only ('any'), default everywhere else.
+// 4. Preferred stop rule: LaLiga + both CONCACAF competitions ('any'),
+// default everywhere else.
 eq('la-liga stop rule', searchPlanFor('la-liga').preferredStopRule, 'any');
+eq('concacaf-nl stop rule', searchPlanFor('concacaf-nations-league').preferredStopRule, 'any');
+eq('gold-cup stop rule', searchPlanFor('gold-cup').preferredStopRule, 'any');
 eq(
-  'only la-liga opts in',
+  'only la-liga/concacaf opt in',
   Object.entries(LEAGUE_SEARCH_PLANS)
-    .filter(([slug]) => slug !== 'la-liga')
+    .filter(([slug]) => !['la-liga', 'concacaf-nations-league', 'gold-cup'].includes(slug))
     .every(([, p]) => (p.preferredStopRule ?? 'highlight') === 'highlight'),
   true
 );
