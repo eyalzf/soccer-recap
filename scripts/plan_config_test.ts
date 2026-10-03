@@ -6,7 +6,7 @@
  * ranking terms, preferred stop rule) so a future edit can't silently
  * drop a league's rules.
  */
-import { LEAGUE_SEARCH_PLANS, searchPlanFor } from '../lib/recap/leaguePlans';
+import { CLUB_CHANNELS, LEAGUE_SEARCH_PLANS, clubChannel, searchPlanFor } from '../lib/recap/leaguePlans';
 import { competitionContradiction, excludedCategory } from '../lib/recap/match';
 import { channelsForGame } from '../lib/recap/bulk';
 import type { GameInput } from '../lib/recap/types';
@@ -122,6 +122,59 @@ ok(
   leagueEntries.some((e) => /sky/i.test(e.label))
 );
 ok('no foreign club channels', teamEntries.every((e) => ['Arsenal', 'Chelsea'].includes(e.label)));
+
+
+// 7. Club channels: defined once in CLUB_CHANNELS, shared across leagues.
+// In the club leagues every team-scoped bulk entry must resolve through
+// the registry (national-team entries in the nations plans live outside
+// it by design), and the same club must resolve identically everywhere.
+for (const slug of ['israeli-league', 'la-liga', 'champions-league', 'premier-league']) {
+  for (const entry of searchPlanFor(slug).bulk) {
+    if (!entry.teams?.length) continue;
+    eq(`${slug} ${entry.label}: single team`, entry.teams.length, 1);
+    const def = CLUB_CHANNELS[entry.teams[0]];
+    ok(`${slug} ${entry.label}: in registry`, !!def);
+    if (def) {
+      eq(`${slug} ${entry.label}: same handle`, entry.handle, def.handle);
+      eq(`${slug} ${entry.label}: same channelId`, entry.channelId, def.channelId);
+      eq(`${slug} ${entry.label}: same label`, entry.label, def.label);
+    }
+  }
+}
+eq(
+  'real madrid identical across leagues',
+  searchPlanFor('la-liga').bulk.find((e) => e.teams?.[0] === 'Real Madrid'),
+  searchPlanFor('champions-league').bulk.find((e) => e.teams?.[0] === 'Real Madrid')
+);
+eq(
+  'arsenal identical across leagues',
+  searchPlanFor('premier-league').bulk.find((e) => e.teams?.[0] === 'Arsenal'),
+  searchPlanFor('champions-league').bulk.find((e) => e.teams?.[0] === 'Arsenal')
+);
+// Every registry def carries a label and exactly one locator.
+ok(
+  'registry defs well-formed',
+  Object.values(CLUB_CHANNELS).every((d) => !!d.label && !!d.handle !== !!d.channelId)
+);
+// Unknown club names fail loudly instead of silently dropping coverage.
+let clubThrew = false;
+try {
+  clubChannel('No Such Club FC');
+} catch {
+  clubThrew = true;
+}
+ok('clubChannel unknown throws', clubThrew);
+// Newly validated club channels (2026-10-02 curated-test, multiple games).
+ok(
+  'la-liga has sevilla + espanyol',
+  ['Sevilla FC', 'RCD Espanyol'].every((label) =>
+    searchPlanFor('la-liga').bulk.some((e) => e.label === label && e.teams?.length === 1)
+  )
+);
+ok(
+  'premier-league has everton',
+  searchPlanFor('premier-league').bulk.some((e) => e.label === 'Everton' && e.teams?.[0] === 'Everton')
+);
 
 console.log(`\nplan_config_test: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
