@@ -26,6 +26,15 @@
  * list. Bulk entries take a `handle` (without @) or a raw `channelId`
  * (use when the handle is unknown). If a handle doesn't resolve to a
  * channel, the source is skipped silently.
+ *
+ * Club channels are defined ONCE in CLUB_CHANNELS below (keyed by the
+ * club's English team name) and referenced from league plans via
+ * clubChannel('Team'). The definition — handle or channel ID — lives in
+ * exactly one place even when the club plays in several of the app's
+ * competitions (e.g. Real Madrid in La Liga and the Champions League),
+ * so a handle change or a newly validated club channel lands everywhere
+ * at once. League-wide channels (aggregators, broadcasters) stay as
+ * plain bulk literals in the plans: they are not tied to one club.
  */
 export interface PreferredChannel {
   /** YouTube handle without the leading @, e.g. 'Ipflofficial'. */
@@ -113,6 +122,93 @@ export interface LeagueSearchPlan {
   sport1?: boolean;
 }
 
+export interface ClubChannelDef {
+  /** YouTube handle without the leading @ (preferred). */
+  handle?: string;
+  /** Raw UC channel ID (alternative when the handle is unknown). */
+  channelId?: string;
+  /** Human label for diagnostics. */
+  label: string;
+}
+
+/**
+ * Official club channels, defined ONCE and shared by every league plan
+ * (see the file header). Keyed by the club's English team name as used in
+ * the fixtures data. Most entries were verified in the 2026-09-17
+ * curation rounds (language veto lifted for curated tiers; press-
+ * conference exclusion added); later additions carry their own
+ * verification note. A channel lands here only after it kept proper
+ * highlights for its own club across several real games (validated via
+ * /api/recap/curated-test) — a channel that posts for many clubs belongs
+ * in a league plan as a league-wide literal instead.
+ */
+export const CLUB_CHANNELS: Record<string, ClubChannelDef> = {
+  // Israel
+  'Maccabi Tel Aviv': { channelId: 'UC-oWQqnf8B8a_TsmVi0mTUg', label: 'Maccabi Tel Aviv FC' },
+  'Maccabi Haifa': { handle: 'mhfootballclub', label: 'Maccabi Haifa' },
+  'Hapoel Tel Aviv': { handle: 'HapoelTelAvivFC', label: 'Hapoel Tel Aviv' },
+  // Spain
+  Barcelona: { handle: 'FCBarcelona', label: 'FC Barcelona' },
+  'Real Madrid': { handle: 'realmadrid', label: 'Real Madrid' },
+  'Atletico Madrid': { handle: 'atleticodemadrid', label: 'Atletico Madrid' },
+  Villarreal: { handle: 'villarrealcf', label: 'Villarreal CF' },
+  // Real Betis: legacy user URL; handle unconfirmed.
+  'Real Betis': { channelId: 'UCeB7JZwcar2fVoK2w2f9OwA', label: 'Real Betis' },
+  // Sevilla / Espanyol: validated 2026-10-02 via curated-test — proper
+  // highlight kept in 5/5 (Sevilla FC) and 3/3 (RCD Espanyol) of their
+  // own La Liga games; nothing kept for other clubs' games.
+  Sevilla: { handle: 'SevillaFC', label: 'Sevilla FC' },
+  Espanyol: { handle: 'rcdespanyol', label: 'RCD Espanyol' },
+  'Athletic Club': { handle: 'AthleticClubTV', label: 'Athletic Club' },
+  Getafe: { handle: 'GetafeCFmedia', label: 'Getafe CF' },
+  'Real Sociedad': { handle: 'realsociedadtv', label: 'Real Sociedad' },
+  // Celta: handle unconfirmed; use the verified channel ID.
+  Celta: { channelId: 'UCCJLVZYqRb_85b2Flpg04cg', label: 'RC Celta' },
+  // England
+  'Manchester City': { handle: 'mancity', label: 'Man City' },
+  'Manchester United': { handle: 'manutd', label: 'Man Utd' },
+  Arsenal: { handle: 'Arsenal', label: 'Arsenal' },
+  Liverpool: { handle: 'LiverpoolFC', label: 'Liverpool' },
+  Chelsea: { handle: 'chelseafc', label: 'Chelsea' },
+  'Tottenham Hotspur': { handle: 'tottenhamhotspur', label: 'Tottenham Hotspur' },
+  Sunderland: { handle: 'sunderlandafc', label: 'Sunderland AFC' },
+  'Nottingham Forest': { handle: 'NottinghamForestFC', label: 'Nottingham Forest' },
+  'Aston Villa': { handle: 'avfcofficial', label: 'Aston Villa' },
+  // Leeds / Bournemouth: handles unconfirmed; use verified channel IDs.
+  'Leeds United': { channelId: 'UCRHkt-FUeYUG-ybo1Koh2WA', label: 'Leeds United' },
+  Bournemouth: { channelId: 'UCeOCuVSSweaEj6oVtJZEKQw', label: 'AFC Bournemouth' },
+  // 2026-09-30: verified via /api/recap/curated-test on Newcastle–Hull
+  // (kept 4, proper highlight incl. "City's fightback nearly enough!
+  // Newcastle United 2-1 Hull City | Premier League Highlights").
+  'Hull City': { handle: 'hullcityofficial', label: 'Hull City' },
+  // Everton: validated 2026-10-02 via curated-test — proper highlight
+  // kept in 3/3 of Everton's Premier League games.
+  Everton: { handle: 'Everton', label: 'Everton' },
+  // Italy / Germany / France / Portugal / Netherlands / Belgium
+  Inter: { handle: 'Inter', label: 'Inter' },
+  Juventus: { handle: 'Juventus', label: 'Juventus' },
+  'Bayern Munich': { handle: 'FCBayern', label: 'Bayern' },
+  'Borussia Dortmund': { handle: 'BVB', label: 'Dortmund' },
+  'Paris Saint-Germain': { handle: 'PSG', label: 'PSG' },
+  Benfica: { handle: 'SLBenfica', label: 'Benfica' },
+  Ajax: { handle: 'AFCAjax', label: 'Ajax' },
+  'Sporting CP': { handle: 'SportingCP', label: 'Sporting CP' },
+  'PSV Eindhoven': { handle: 'PSV', label: 'PSV Eindhoven' },
+  'Club Brugge': { handle: 'clubbrugge', label: 'Club Brugge' },
+};
+
+/**
+ * Resolve a club's shared channel definition into a team-scoped bulk
+ * entry for one league plan. Throws on an unknown club name: plan
+ * entries are code, so a typo must fail loudly in tests rather than
+ * silently drop coverage in production.
+ */
+export function clubChannel(team: string): BulkChannel {
+  const def = CLUB_CHANNELS[team];
+  if (!def) throw new Error(`clubChannel: no club channel defined for '${team}'`);
+  return { ...def, teams: [team] };
+}
+
 export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
   'israeli-league': {
     contradictions: [
@@ -130,10 +226,11 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
     ],
     bulk: [
       // Official club channels (Hebrew recap coverage for big clubs).
-      // Team-scoped: only scanned for their own club's games.
-      { channelId: 'UC-oWQqnf8B8a_TsmVi0mTUg', label: 'Maccabi Tel Aviv FC', teams: ['Maccabi Tel Aviv'] },
-      { handle: 'mhfootballclub', label: 'Maccabi Haifa', teams: ['Maccabi Haifa'] },
-      { handle: 'HapoelTelAvivFC', label: 'Hapoel Tel Aviv', teams: ['Hapoel Tel Aviv'] },
+      // Team-scoped: only scanned for their own club's games. Definitions
+      // live in CLUB_CHANNELS (see above).
+      clubChannel('Maccabi Tel Aviv'),
+      clubChannel('Maccabi Haifa'),
+      clubChannel('Hapoel Tel Aviv'),
       // Hebrew recap aggregators (last resort: takedown risk, verify
       // Israel availability + recency after quota reset).
       { handle: 'Taktzirim0', label: 'תקצירים' },
@@ -163,21 +260,20 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
     bulk: [
       // LaLiga official (@laliga) is on the deny list — its videos are
       // embedding-blocked (user report 2026-10-02). Do not re-add here.
-      { handle: 'FCBarcelona', label: 'FC Barcelona', teams: ['Barcelona'] },
-      { handle: 'realmadrid', label: 'Real Madrid', teams: ['Real Madrid'] },
-      { handle: 'atleticodemadrid', label: 'Atletico Madrid', teams: ['Atletico Madrid'] },
-      { handle: 'villarrealcf', label: 'Villarreal CF', teams: ['Villarreal'] },
-      // Real Betis: legacy user URL; handle unconfirmed.
-      { channelId: 'UCeB7JZwcar2fVoK2w2f9OwA', label: 'Real Betis', teams: ['Real Betis'] },
+      // Club channels first (team-scoped, from CLUB_CHANNELS), then the
+      // league-wide ESPN FC.
+      clubChannel('Barcelona'),
+      clubChannel('Real Madrid'),
+      clubChannel('Atletico Madrid'),
+      clubChannel('Villarreal'),
+      clubChannel('Real Betis'),
+      clubChannel('Sevilla'),
+      clubChannel('Espanyol'),
       { handle: 'ESPNFC', label: 'ESPN FC' },
-      // Club channels verified in the 2026-09-17 curation round (language
-      // veto lifted for curated tiers; press-conference exclusion added).
-      // Team-scoped: only scanned for their own club's games.
-      { handle: 'AthleticClubTV', label: 'Athletic Club', teams: ['Athletic Club'] },
-      { handle: 'GetafeCFmedia', label: 'Getafe CF', teams: ['Getafe'] },
-      { handle: 'realsociedadtv', label: 'Real Sociedad', teams: ['Real Sociedad'] },
-      // Celta: handle unconfirmed; use the verified channel ID.
-      { channelId: 'UCCJLVZYqRb_85b2Flpg04cg', label: 'RC Celta', teams: ['Celta'] },
+      clubChannel('Athletic Club'),
+      clubChannel('Getafe'),
+      clubChannel('Real Sociedad'),
+      clubChannel('Celta'),
       // TODO(verify): Premier Sports, Sky Sports Football, FC Barcelona
       // (LaLiga rights block club highlights), beIN regional (geo-blocked).
     ],
@@ -198,26 +294,23 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
     // the curated pool instead.
     preferred: [],
     bulk: [
-      { handle: 'realmadrid', label: 'Real Madrid', teams: ['Real Madrid'] },
-      { handle: 'FCBarcelona', label: 'FC Barcelona', teams: ['Barcelona'] },
-      { handle: 'LiverpoolFC', label: 'Liverpool', teams: ['Liverpool'] },
-      { handle: 'Arsenal', label: 'Arsenal', teams: ['Arsenal'] },
-      { handle: 'ManCity', label: 'Man City', teams: ['Manchester City'] },
-      { handle: 'Inter', label: 'Inter', teams: ['Inter'] },
-      { handle: 'FCBayern', label: 'Bayern', teams: ['Bayern Munich'] },
-      { handle: 'BVB', label: 'Dortmund', teams: ['Borussia Dortmund'] },
-      { handle: 'atleticodemadrid', label: 'Atletico Madrid', teams: ['Atletico Madrid'] },
-      { handle: 'Juventus', label: 'Juventus', teams: ['Juventus'] },
-      { handle: 'ChelseaFC', label: 'Chelsea', teams: ['Chelsea'] },
-      { handle: 'PSG', label: 'PSG', teams: ['Paris Saint-Germain'] },
-      { handle: 'SLBenfica', label: 'Benfica', teams: ['Benfica'] },
-      { handle: 'AFCAjax', label: 'Ajax', teams: ['Ajax'] },
-      // Club channels verified in the 2026-09-17 curation round (language
-      // veto lifted for curated tiers; press-conference exclusion added).
-      // Team-scoped: only scanned for their own club's games.
-      { handle: 'SportingCP', label: 'Sporting CP', teams: ['Sporting CP'] },
-      { handle: 'PSV', label: 'PSV Eindhoven', teams: ['PSV Eindhoven'] },
-      { handle: 'clubbrugge', label: 'Club Brugge', teams: ['Club Brugge'] },
+      clubChannel('Real Madrid'),
+      clubChannel('Barcelona'),
+      clubChannel('Liverpool'),
+      clubChannel('Arsenal'),
+      clubChannel('Manchester City'),
+      clubChannel('Inter'),
+      clubChannel('Bayern Munich'),
+      clubChannel('Borussia Dortmund'),
+      clubChannel('Atletico Madrid'),
+      clubChannel('Juventus'),
+      clubChannel('Chelsea'),
+      clubChannel('Paris Saint-Germain'),
+      clubChannel('Benfica'),
+      clubChannel('Ajax'),
+      clubChannel('Sporting CP'),
+      clubChannel('PSV Eindhoven'),
+      clubChannel('Club Brugge'),
       // Aggregator channels verified in the 2026-09-17 round-2 curation
       // (proper-highlight coverage on 10-game tests): CHEFON FF 9/10,
       // Al Faris Production 7/10, FranSports 6/10, Franq Media 6/10.
@@ -245,24 +338,19 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
       // User-verified 2026-09-17: @skysportspremierleague is the active
       // channel (the old 'SkySportsPL' handle resolves to a near-dead one).
       { handle: 'skysportspremierleague', label: 'Sky Sports Premier League' },
-      { handle: 'mancity', label: 'Man City', teams: ['Manchester City'] },
-      { handle: 'manutd', label: 'Man Utd', teams: ['Manchester United'] },
-      { handle: 'Arsenal', label: 'Arsenal', teams: ['Arsenal'] },
-      { handle: 'LiverpoolFC', label: 'Liverpool', teams: ['Liverpool'] },
-      { handle: 'chelseafc', label: 'Chelsea', teams: ['Chelsea'] },
-      // Club channels verified in the 2026-09-17 curation round.
-      // Team-scoped: only scanned for their own club's games.
-      { handle: 'tottenhamhotspur', label: 'Tottenham Hotspur', teams: ['Tottenham Hotspur'] },
-      { handle: 'sunderlandafc', label: 'Sunderland AFC', teams: ['Sunderland'] },
-      { handle: 'NottinghamForestFC', label: 'Nottingham Forest', teams: ['Nottingham Forest'] },
-      { handle: 'avfcofficial', label: 'Aston Villa', teams: ['Aston Villa'] },
-      // Leeds / Bournemouth: handles unconfirmed; use verified channel IDs.
-      { channelId: 'UCRHkt-FUeYUG-ybo1Koh2WA', label: 'Leeds United', teams: ['Leeds United'] },
-      { channelId: 'UCeOCuVSSweaEj6oVtJZEKQw', label: 'AFC Bournemouth', teams: ['Bournemouth'] },
-      // 2026-09-30: verified via /api/recap/curated-test on Newcastle–Hull
-      // (kept 4, proper highlight incl. "City's fightback nearly enough!
-      // Newcastle United 2-1 Hull City | Premier League Highlights").
-      { handle: 'hullcityofficial', label: 'Hull City', teams: ['Hull City'] },
+      clubChannel('Manchester City'),
+      clubChannel('Manchester United'),
+      clubChannel('Arsenal'),
+      clubChannel('Liverpool'),
+      clubChannel('Chelsea'),
+      clubChannel('Tottenham Hotspur'),
+      clubChannel('Sunderland'),
+      clubChannel('Nottingham Forest'),
+      clubChannel('Aston Villa'),
+      clubChannel('Leeds United'),
+      clubChannel('Bournemouth'),
+      clubChannel('Hull City'),
+      clubChannel('Everton'),
     ],
     fallbackLangs: ['en'],
   },
