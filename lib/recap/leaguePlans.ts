@@ -90,9 +90,10 @@ export interface LeagueSearchPlan {
    *    is a proper highlight.
    *  - 'any': the first preferred channel with ANY kept result stops the
    *    cascade, and preferred results are exclusive (every other result —
-   *    including cached ones — is dropped). For a league whose preferred
-   *    channel's per-game upload is reliably the best recap even without
-   *    highlight wording (LaLiga / ONE; user decision 2026-10-02).
+   *    including cached ones — is dropped). For a channel whose per-game
+   *    upload is reliably the best recap even without highlight wording in
+   *    the title (LaLiga/ONE, user decision 2026-10-02; CONCACAF official
+   *    channel, user decision 2026-10-03).
    */
   preferredStopRule?: 'any' | 'highlight';
   /**
@@ -504,14 +505,14 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
       'premier league', 'פרמייר ליג',
       'champions league', 'ליגת האלופות',
     ],
-    // No Hebrew priority channel could be verified for the Gold Cup.
-    preferred: [],
+    // CONCACAF official channel (@concacaf) is the priority source: its
+    // per-game upload is the right recap even when the title carries no
+    // highlight wording (the highlight branding is on the thumbnail), so
+    // any kept result stops the cascade and is exclusive (user decision
+    // 2026-10-03; handle verified live — channel UCqn7r-so0mBLaJTtTms9dAQ).
+    preferred: [{ handle: 'concacaf', lang: 'en' }],
+    preferredStopRule: 'any',
     bulk: [
-      // CONCACAF official channel: classic youtube.com/concacaf URL is
-      // verified via official Gold Cup highlight video descriptions
-      // (per-match "Extended Highlights"). Israel geo-blocking unverified.
-      // TODO(verify): confirm the @handle resolves.
-      { handle: 'concacaf', label: 'CONCACAF' },
       { handle: 'sportsextra', label: 'SPORTS EXTRA' },
       { handle: 'foxsports', label: 'FOX Sports' },
     ],
@@ -530,10 +531,14 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
       'premier league', 'פרמייר ליג',
       'champions league', 'ליגת האלופות',
     ],
-    // No Hebrew priority channel could be verified.
-    preferred: [],
+    // CONCACAF official channel (@concacaf) is the priority source: its
+    // per-game upload is the right recap even when the title carries no
+    // highlight wording (the highlight branding is on the thumbnail), so
+    // any kept result stops the cascade and is exclusive (user decision
+    // 2026-10-03; handle verified live — channel UCqn7r-so0mBLaJTtTms9dAQ).
+    preferred: [{ handle: 'concacaf', lang: 'en' }],
+    preferredStopRule: 'any',
     bulk: [
-      { handle: 'concacaf', label: 'CONCACAF' },
       { handle: 'sportsextra', label: 'SPORTS EXTRA' },
       { handle: 'foxsports', label: 'FOX Sports' },
     ],
