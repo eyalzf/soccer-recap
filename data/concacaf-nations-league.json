@@ -1,6 +1,61 @@
 {
   "games": [
     {
+      "id": "nat-20261003-sint-maarten-saint-vincent-and-the-grenadines",
+      "home": "Sint Maarten",
+      "away": "Saint Vincent and the Grenadines",
+      "dateISO": "2026-10-03T21:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 4,
+      "homeBadge": null,
+      "awayBadge": "https://flagcdn.com/w80/vc.png",
+      "stage": "שלב הבתים"
+    },
+    {
+      "id": "nat-20261003-el-salvador-jamaica",
+      "home": "El Salvador",
+      "away": "Jamaica",
+      "dateISO": "2026-10-03T02:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 2,
+      "homeBadge": "https://flagcdn.com/w80/sv.png",
+      "awayBadge": "https://flagcdn.com/w80/jm.png",
+      "stage": "שלב הבתים"
+    },
+    {
+      "id": "nat-20261003-martinique-honduras",
+      "home": "Martinique",
+      "away": "Honduras",
+      "dateISO": "2026-10-03T00:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 1,
+      "homeBadge": "https://flagcdn.com/w80/mq.png",
+      "awayBadge": "https://flagcdn.com/w80/hn.png",
+      "stage": "שלב הבתים"
+    },
+    {
+      "id": "nat-20261003-barbados-bermuda",
+      "home": "Barbados",
+      "away": "Bermuda",
+      "dateISO": "2026-10-03T00:00:00.000Z",
+      "homeScore": 4,
+      "awayScore": 1,
+      "homeBadge": "https://flagcdn.com/w80/bb.png",
+      "awayBadge": "https://flagcdn.com/w80/bm.png",
+      "stage": "שלב הבתים"
+    },
+    {
+      "id": "nat-20261003-bonaire-grenada",
+      "home": "Bonaire",
+      "away": "Grenada",
+      "dateISO": "2026-10-03T00:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 3,
+      "homeBadge": "https://flagcdn.com/w80/bq.png",
+      "awayBadge": "https://flagcdn.com/w80/gd.png",
+      "stage": "שלב הבתים"
+    },
+    {
       "away": "Guatemala",
       "awayBadge": "https://flagcdn.com/w80/gt.png",
       "awayScore": 0,
@@ -533,5 +588,5 @@
   "league_he": "ליגת האומות (אמריקה)",
   "season": "2026/27",
   "source": "concacaf.com",
-  "updated_at": "2026-10-03T04:15:38.000Z"
+  "updated_at": "2026-10-04T03:05:05.000Z"
 }
