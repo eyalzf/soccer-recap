@@ -1,6 +1,28 @@
 {
   "games": [
     {
+      "id": "fr-20261003-india-brazil",
+      "home": "India",
+      "away": "Brazil",
+      "dateISO": "2026-10-03T14:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 4,
+      "homeBadge": null,
+      "awayBadge": "https://flagcdn.com/w80/br.png",
+      "stage": "משחק ידידות"
+    },
+    {
+      "id": "fr-20261003-colombia-paraguay",
+      "home": "Colombia",
+      "away": "Paraguay",
+      "dateISO": "2026-10-03T00:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 1,
+      "homeBadge": "https://flagcdn.com/w80/co.png",
+      "awayBadge": "https://flagcdn.com/w80/py.png",
+      "stage": "משחק ידידות"
+    },
+    {
       "away": "Venezuela",
       "awayBadge": "https://flagcdn.com/w80/ve.png",
       "awayScore": 0,
@@ -109,32 +131,10 @@
       "homeScore": 1,
       "id": "fr-20260925-australia-brazil",
       "stage": "משחק ידידות"
-    },
-    {
-      "away": "Israel",
-      "awayBadge": "https://flagcdn.com/w80/il.png",
-      "awayScore": 1,
-      "dateISO": "2026-06-03T18:00:00.000Z",
-      "home": "Albania",
-      "homeBadge": "https://flagcdn.com/w80/al.png",
-      "homeScore": 0,
-      "id": "fr-20260603-albania-israel",
-      "stage": "משחק ידידות"
-    },
-    {
-      "away": "Israel",
-      "awayBadge": "https://flagcdn.com/w80/il.png",
-      "awayScore": 2,
-      "dateISO": "2026-03-26T16:00:00.000Z",
-      "home": "Georgia",
-      "homeBadge": "https://flagcdn.com/w80/ge.png",
-      "homeScore": 2,
-      "id": "fr-20260326-georgia-israel",
-      "stage": "משחק ידידות"
     }
   ],
   "league": "national-friendlies",
   "season": "2026",
   "source": "web research (Wikipedia, ESPN, Reuters, playmakerstats) - verified 2026-10-02",
-  "updated_at": "2026-10-03T04:15:38.000Z"
+  "updated_at": "2026-10-04T03:05:05.000Z"
 }
