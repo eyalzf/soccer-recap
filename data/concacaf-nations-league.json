@@ -1,6 +1,83 @@
 {
   "games": [
     {
+      "id": "nat-20261004-aruba-anguilla",
+      "home": "Aruba",
+      "away": "Anguilla",
+      "dateISO": "2026-10-04T23:00:00.000Z",
+      "homeScore": 3,
+      "awayScore": 2,
+      "homeBadge": "https://flagcdn.com/w80/aw.png",
+      "awayBadge": "https://flagcdn.com/w80/ai.png",
+      "stage": "שלב הבתים"
+    },
+    {
+      "id": "nat-20261004-trinidad-and-tobago-curacao",
+      "home": "Trinidad and Tobago",
+      "away": "Curaçao",
+      "dateISO": "2026-10-04T22:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 1,
+      "homeBadge": "https://flagcdn.com/w80/tt.png",
+      "awayBadge": "https://flagcdn.com/w80/cw.png",
+      "stage": "שלב הבתים"
+    },
+    {
+      "id": "nat-20261004-puerto-rico-cayman-islands",
+      "home": "Puerto Rico",
+      "away": "Cayman Islands",
+      "dateISO": "2026-10-04T22:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 0,
+      "homeBadge": "https://flagcdn.com/w80/pr.png",
+      "awayBadge": "https://flagcdn.com/w80/ky.png",
+      "stage": "שלב הבתים"
+    },
+    {
+      "id": "nat-20261004-turks-and-caicos-islands-british-virgin-islands",
+      "home": "Turks and Caicos Islands",
+      "away": "British Virgin Islands",
+      "dateISO": "2026-10-04T20:00:00.000Z",
+      "homeScore": 3,
+      "awayScore": 0,
+      "homeBadge": "https://flagcdn.com/w80/tc.png",
+      "awayBadge": "https://flagcdn.com/w80/vg.png",
+      "stage": "שלב הבתים"
+    },
+    {
+      "id": "nat-20261004-bahamas-us-virgin-islands",
+      "home": "Bahamas",
+      "away": "U.S. Virgin Islands",
+      "dateISO": "2026-10-04T20:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 3,
+      "homeBadge": "https://flagcdn.com/w80/bs.png",
+      "awayBadge": "https://flagcdn.com/w80/vi.png",
+      "stage": "שלב הבתים"
+    },
+    {
+      "id": "nat-20261004-guyana-dominica",
+      "home": "Guyana",
+      "away": "Dominica",
+      "dateISO": "2026-10-04T19:00:00.000Z",
+      "homeScore": 8,
+      "awayScore": 1,
+      "homeBadge": "https://flagcdn.com/w80/gy.png",
+      "awayBadge": "https://flagcdn.com/w80/dm.png",
+      "stage": "שלב הבתים"
+    },
+    {
+      "id": "nat-20261004-belize-french-guiana",
+      "home": "Belize",
+      "away": "French Guiana",
+      "dateISO": "2026-10-04T02:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 2,
+      "homeBadge": null,
+      "awayBadge": "https://flagcdn.com/w80/gf.png",
+      "stage": "שלב הבתים"
+    },
+    {
       "id": "nat-20261003-sint-maarten-saint-vincent-and-the-grenadines",
       "home": "Sint Maarten",
       "away": "Saint Vincent and the Grenadines",
@@ -588,5 +665,5 @@
   "league_he": "ליגת האומות (אמריקה)",
   "season": "2026/27",
   "source": "concacaf.com",
-  "updated_at": "2026-10-04T03:05:05.000Z"
+  "updated_at": "2026-10-05T03:05:59.650899+00:00"
 }
