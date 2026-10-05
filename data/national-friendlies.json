@@ -1,6 +1,50 @@
 {
   "games": [
     {
+      "id": "fr-20261004-morocco-mali",
+      "home": "Morocco",
+      "away": "Mali",
+      "dateISO": "2026-10-04T18:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 1,
+      "homeBadge": "https://flagcdn.com/w80/ma.png",
+      "awayBadge": "https://flagcdn.com/w80/ml.png",
+      "stage": "משחק ידידות"
+    },
+    {
+      "id": "fr-20261004-comoros-senegal",
+      "home": "Comoros",
+      "away": "Senegal",
+      "dateISO": "2026-10-04T13:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 1,
+      "homeBadge": "https://flagcdn.com/w80/km.png",
+      "awayBadge": "https://flagcdn.com/w80/sn.png",
+      "stage": "משחק ידידות"
+    },
+    {
+      "id": "fr-20261004-united-states-mexico",
+      "home": "United States",
+      "away": "Mexico",
+      "dateISO": "2026-10-04T02:00:00.000Z",
+      "homeScore": 3,
+      "awayScore": 0,
+      "homeBadge": "https://flagcdn.com/w80/us.png",
+      "awayBadge": "https://flagcdn.com/w80/mx.png",
+      "stage": "משחק ידידות"
+    },
+    {
+      "id": "fr-20261004-argentina-burkina-faso",
+      "home": "Argentina",
+      "away": "Burkina Faso",
+      "dateISO": "2026-10-04T00:00:00.000Z",
+      "homeScore": 7,
+      "awayScore": 0,
+      "homeBadge": "https://flagcdn.com/w80/ar.png",
+      "awayBadge": "https://flagcdn.com/w80/bf.png",
+      "stage": "משחק ידידות"
+    },
+    {
       "id": "fr-20261003-india-brazil",
       "home": "India",
       "away": "Brazil",
@@ -136,5 +180,5 @@
   "league": "national-friendlies",
   "season": "2026",
   "source": "web research (Wikipedia, ESPN, Reuters, playmakerstats) - verified 2026-10-02",
-  "updated_at": "2026-10-04T03:05:05.000Z"
+  "updated_at": "2026-10-05T03:05:59.651706+00:00"
 }
