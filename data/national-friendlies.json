@@ -12,17 +12,6 @@
       "stage": "משחק ידידות"
     },
     {
-      "id": "fr-20261004-comoros-senegal",
-      "home": "Comoros",
-      "away": "Senegal",
-      "dateISO": "2026-10-04T13:00:00.000Z",
-      "homeScore": 0,
-      "awayScore": 1,
-      "homeBadge": "https://flagcdn.com/w80/km.png",
-      "awayBadge": "https://flagcdn.com/w80/sn.png",
-      "stage": "משחק ידידות"
-    },
-    {
       "id": "fr-20261004-united-states-mexico",
       "home": "United States",
       "away": "Mexico",
@@ -180,5 +169,5 @@
   "league": "national-friendlies",
   "season": "2026",
   "source": "web research (Wikipedia, ESPN, Reuters, playmakerstats) - verified 2026-10-02",
-  "updated_at": "2026-10-05T03:05:59.651706+00:00"
+  "updated_at": "2026-10-05T03:13:48.000Z"
 }
