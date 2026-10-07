@@ -1,6 +1,17 @@
 {
   "games": [
     {
+      "id": "nat-20261006-angola-malawi",
+      "home": "Angola",
+      "away": "Malawi",
+      "dateISO": "2026-10-06T19:00:00.000Z",
+      "homeScore": 3,
+      "awayScore": 1,
+      "homeBadge": "https://flagcdn.com/w80/ao.png",
+      "awayBadge": "https://flagcdn.com/w80/mw.png",
+      "stage": "מוקדמות"
+    },
+    {
       "id": "nat-20261001-guinea-kenya",
       "home": "Guinea",
       "away": "Kenya",
@@ -522,5 +533,5 @@
   "league_he": "גביע אפריקה",
   "season": "2027",
   "source": "cafonline.com",
-  "updated_at": "2026-10-02T03:01:02.398370Z"
+  "updated_at": "2026-10-07T03:06:41.000Z"
 }
