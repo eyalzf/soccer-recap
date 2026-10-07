@@ -1,6 +1,50 @@
 {
   "games": [
     {
+      "id": "fr-20261006-colombia-peru",
+      "home": "Colombia",
+      "away": "Peru",
+      "dateISO": "2026-10-06T23:45:00.000Z",
+      "homeScore": 2,
+      "awayScore": 0,
+      "homeBadge": "https://flagcdn.com/w80/co.png",
+      "awayBadge": "https://flagcdn.com/w80/pe.png",
+      "stage": "משחק ידידות"
+    },
+    {
+      "id": "fr-20261006-argentina-benin",
+      "home": "Argentina",
+      "away": "Benin",
+      "dateISO": "2026-10-06T23:00:00.000Z",
+      "homeScore": 3,
+      "awayScore": 0,
+      "homeBadge": "https://flagcdn.com/w80/ar.png",
+      "awayBadge": "https://flagcdn.com/w80/bj.png",
+      "stage": "משחק ידידות"
+    },
+    {
+      "id": "fr-20261006-india-uruguay",
+      "home": "India",
+      "away": "Uruguay",
+      "dateISO": "2026-10-06T14:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 6,
+      "homeBadge": null,
+      "awayBadge": "https://flagcdn.com/w80/uy.png",
+      "stage": "משחק ידידות"
+    },
+    {
+      "id": "fr-20261006-korea-republic-uzbekistan",
+      "home": "Korea Republic",
+      "away": "Uzbekistan",
+      "dateISO": "2026-10-06T11:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 0,
+      "homeBadge": "https://flagcdn.com/w80/kr.png",
+      "awayBadge": "https://flagcdn.com/w80/uz.png",
+      "stage": "משחק ידידות"
+    },
+    {
       "id": "fr-20261004-morocco-mali",
       "home": "Morocco",
       "away": "Mali",
@@ -169,5 +213,5 @@
   "league": "national-friendlies",
   "season": "2026",
   "source": "web research (Wikipedia, ESPN, Reuters, playmakerstats) - verified 2026-10-02",
-  "updated_at": "2026-10-05T03:13:48.000Z"
+  "updated_at": "2026-10-07T03:06:43.000Z"
 }
