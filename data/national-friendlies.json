@@ -45,6 +45,17 @@
       "stage": "משחק ידידות"
     },
     {
+      "id": "fr-20261005-japan-new-zealand",
+      "home": "Japan",
+      "away": "New Zealand",
+      "dateISO": "2026-10-05T10:30:00.000Z",
+      "homeScore": 2,
+      "awayScore": 1,
+      "homeBadge": "https://flagcdn.com/w80/jp.png",
+      "awayBadge": "https://flagcdn.com/w80/nz.png",
+      "stage": "משחק ידידות"
+    },
+    {
       "id": "fr-20261004-morocco-mali",
       "home": "Morocco",
       "away": "Mali",
@@ -213,5 +224,5 @@
   "league": "national-friendlies",
   "season": "2026",
   "source": "web research (Wikipedia, ESPN, Reuters, playmakerstats) - verified 2026-10-02",
-  "updated_at": "2026-10-07T03:06:43.000Z"
+  "updated_at": "2026-10-07T04:46:06.000Z"
 }
