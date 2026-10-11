@@ -39,25 +39,14 @@
       "stage": "מחזור 6"
     },
     {
-      "id": "manual-20261010-sunderland-brighton-hove-albion",
-      "home": "Sunderland",
-      "away": "Brighton & Hove Albion",
-      "dateISO": "2026-10-10T14:00:00.000Z",
-      "homeScore": 0,
-      "awayScore": 2,
-      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8472.png",
-      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10204.png",
-      "stage": "מחזור 6"
-    },
-    {
-      "id": "manual-20261010-ipswich-town-fulham",
-      "home": "Ipswich Town",
-      "away": "Fulham",
+      "id": "manual-20261010-aston-villa-brentford",
+      "home": "Aston Villa",
+      "away": "Brentford",
       "dateISO": "2026-10-10T14:00:00.000Z",
       "homeScore": 2,
-      "awayScore": 1,
-      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9902.png",
-      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9879.png",
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10252.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9937.png",
       "stage": "מחזור 6"
     },
     {
@@ -72,14 +61,25 @@
       "stage": "מחזור 6"
     },
     {
-      "id": "manual-20261010-aston-villa-brentford",
-      "home": "Aston Villa",
-      "away": "Brentford",
+      "id": "manual-20261010-ipswich-town-fulham",
+      "home": "Ipswich Town",
+      "away": "Fulham",
       "dateISO": "2026-10-10T14:00:00.000Z",
       "homeScore": 2,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9902.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9879.png",
+      "stage": "מחזור 6"
+    },
+    {
+      "id": "manual-20261010-sunderland-brighton-hove-albion",
+      "home": "Sunderland",
+      "away": "Brighton & Hove Albion",
+      "dateISO": "2026-10-10T14:00:00.000Z",
+      "homeScore": 0,
       "awayScore": 2,
-      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10252.png",
-      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9937.png",
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8472.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10204.png",
       "stage": "מחזור 6"
     },
     {

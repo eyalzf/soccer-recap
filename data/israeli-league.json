@@ -29,17 +29,6 @@
       "stage": "מחזור 6"
     },
     {
-      "id": "manual-20261010-hapoel-petah-tikva-maccabi-netanya",
-      "home": "Hapoel Petah Tikva",
-      "away": "Maccabi Netanya",
-      "dateISO": "2026-10-10T16:15:00.000Z",
-      "homeScore": 1,
-      "awayScore": 1,
-      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9755.png",
-      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/1832.png",
-      "stage": "מחזור 6"
-    },
-    {
       "id": "manual-20261010-hapoel-ironi-kiryat-shmona-hapoel-tel-aviv",
       "home": "Hapoel Ironi Kiryat Shmona",
       "away": "Hapoel Tel Aviv",
@@ -51,14 +40,14 @@
       "stage": "מחזור 6"
     },
     {
-      "id": "manual-20261010-ironi-tiberias-hapoel-beer-sheva",
-      "home": "Ironi Tiberias",
-      "away": "Hapoel Beer Sheva",
-      "dateISO": "2026-10-10T16:00:00.000Z",
-      "homeScore": 0,
-      "awayScore": 2,
-      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/78q5ez1656067666.png",
-      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9754.png",
+      "id": "manual-20261010-hapoel-petah-tikva-maccabi-netanya",
+      "home": "Hapoel Petah Tikva",
+      "away": "Maccabi Netanya",
+      "dateISO": "2026-10-10T16:15:00.000Z",
+      "homeScore": 1,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9755.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/1832.png",
       "stage": "מחזור 6"
     },
     {
@@ -70,6 +59,17 @@
       "awayScore": 1,
       "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8301.png",
       "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/3bvby91720417514.png",
+      "stage": "מחזור 6"
+    },
+    {
+      "id": "manual-20261010-ironi-tiberias-hapoel-beer-sheva",
+      "home": "Ironi Tiberias",
+      "away": "Hapoel Beer Sheva",
+      "dateISO": "2026-10-10T16:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 2,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/78q5ez1656067666.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9754.png",
       "stage": "מחזור 6"
     },
     {
