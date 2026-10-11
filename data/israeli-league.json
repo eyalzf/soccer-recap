@@ -2,7 +2,7 @@
   "league": "israeli-league",
   "league_id": 127,
   "season": "2026/2027",
-  "updated_at": "2026-09-20T05:53:41.063560+00:00",
+  "updated_at": "2026-10-11T03:06:02.271642+00:00",
   "checked_through": "2026-09-19",
   "team_ids": {
     "Hapoel Haifa": 8301,
@@ -17,6 +17,61 @@
     "Hapoel Beer Sheva": 9754
   },
   "games": [
+    {
+      "id": "manual-20261010-maccabi-tel-aviv-bnei-sakhnin",
+      "home": "Maccabi Tel Aviv",
+      "away": "Bnei Sakhnin",
+      "dateISO": "2026-10-10T16:30:00.000Z",
+      "homeScore": 0,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/7855.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8718.png",
+      "stage": "מחזור 6"
+    },
+    {
+      "id": "manual-20261010-hapoel-petah-tikva-maccabi-netanya",
+      "home": "Hapoel Petah Tikva",
+      "away": "Maccabi Netanya",
+      "dateISO": "2026-10-10T16:15:00.000Z",
+      "homeScore": 1,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9755.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/1832.png",
+      "stage": "מחזור 6"
+    },
+    {
+      "id": "manual-20261010-hapoel-ironi-kiryat-shmona-hapoel-tel-aviv",
+      "home": "Hapoel Ironi Kiryat Shmona",
+      "away": "Hapoel Tel Aviv",
+      "dateISO": "2026-10-10T16:15:00.000Z",
+      "homeScore": 1,
+      "awayScore": 3,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/2095.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10181.png",
+      "stage": "מחזור 6"
+    },
+    {
+      "id": "manual-20261010-ironi-tiberias-hapoel-beer-sheva",
+      "home": "Ironi Tiberias",
+      "away": "Hapoel Beer Sheva",
+      "dateISO": "2026-10-10T16:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 2,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/78q5ez1656067666.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9754.png",
+      "stage": "מחזור 6"
+    },
+    {
+      "id": "manual-20261010-hapoel-haifa-maccabi-petah-tikva",
+      "home": "Hapoel Haifa",
+      "away": "Maccabi Petah Tikva",
+      "dateISO": "2026-10-10T16:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8301.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/3bvby91720417514.png",
+      "stage": "מחזור 6"
+    },
     {
       "id": "manual-20260919-beitar-jerusalem-hapoel-haifa",
       "home": "Beitar Jerusalem",
