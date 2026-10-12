@@ -2,7 +2,7 @@
   "league": "la-liga",
   "league_id": 87,
   "season": "2026/2027",
-  "updated_at": "2026-10-11T03:04:55.455871+00:00",
+  "updated_at": "2026-10-12T03:01:57.857591+00:00",
   "checked_through": "2026-09-19",
   "team_ids": {
     "Villarreal": 10205,
@@ -27,6 +27,50 @@
     "Valencia": 10267
   },
   "games": [
+    {
+      "id": "manual-20261011-racing-santander-valencia",
+      "home": "Racing Santander",
+      "away": "Valencia",
+      "dateISO": "2026-10-11T19:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 2,
+      "homeBadge": 8696,
+      "awayBadge": 10267,
+      "stage": "מחזור 8"
+    },
+    {
+      "id": "manual-20261011-real-betis-osasuna",
+      "home": "Real Betis",
+      "away": "Osasuna",
+      "dateISO": "2026-10-11T16:30:00.000Z",
+      "homeScore": 5,
+      "awayScore": 2,
+      "homeBadge": 8603,
+      "awayBadge": 8371,
+      "stage": "מחזור 8"
+    },
+    {
+      "id": "manual-20261011-real-sociedad-deportivo-a-coruna",
+      "home": "Real Sociedad",
+      "away": "Deportivo A Coruña",
+      "dateISO": "2026-10-11T14:15:00.000Z",
+      "homeScore": 3,
+      "awayScore": 2,
+      "homeBadge": 8560,
+      "awayBadge": 9783,
+      "stage": "מחזור 8"
+    },
+    {
+      "id": "manual-20261011-elche-celta-vigo",
+      "home": "Elche",
+      "away": "Celta Vigo",
+      "dateISO": "2026-10-11T12:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 0,
+      "homeBadge": 10268,
+      "awayBadge": 9910,
+      "stage": "מחזור 8"
+    },
     {
       "id": "manual-20261010-real-madrid-villarreal",
       "home": "Real Madrid",
