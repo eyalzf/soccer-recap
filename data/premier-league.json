@@ -2,7 +2,7 @@
   "league": "premier-league",
   "league_id": 47,
   "season": "2026/2027",
-  "updated_at": "2026-10-11T03:04:55.455871+00:00",
+  "updated_at": "2026-10-12T03:01:57.857591+00:00",
   "checked_through": "2026-09-19",
   "team_ids": {
     "Leeds United": 8463,
@@ -27,6 +27,39 @@
     "Arsenal": 9825
   },
   "games": [
+    {
+      "id": "manual-20261011-liverpool-manchester-city",
+      "home": "Liverpool",
+      "away": "Manchester City",
+      "dateISO": "2026-10-11T15:30:00.000Z",
+      "homeScore": 0,
+      "awayScore": 3,
+      "homeBadge": 8650,
+      "awayBadge": 8456,
+      "stage": "מחזור 6"
+    },
+    {
+      "id": "manual-20261011-crystal-palace-nottingham-forest",
+      "home": "Crystal Palace",
+      "away": "Nottingham Forest",
+      "dateISO": "2026-10-11T13:00:00.000Z",
+      "homeScore": 3,
+      "awayScore": 1,
+      "homeBadge": 9826,
+      "awayBadge": 10203,
+      "stage": "מחזור 6"
+    },
+    {
+      "id": "manual-20261011-hull-city-everton",
+      "home": "Hull City",
+      "away": "Everton",
+      "dateISO": "2026-10-11T13:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 2,
+      "homeBadge": 8667,
+      "awayBadge": 8668,
+      "stage": "מחזור 6"
+    },
     {
       "id": "manual-20261010-manchester-united-tottenham-hotspur",
       "home": "Manchester United",
