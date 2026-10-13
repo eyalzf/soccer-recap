@@ -94,6 +94,53 @@ export async function addToDenyList(
   return list;
 }
 
+/** Normalize a channel title for comparison (same rule as the log aggregations). */
+const normTitle = (s: string): string =>
+  s.toLowerCase().replace(/[^a-z0-9\u0590-\u05ff]/g, '');
+
+/** Identity to match a deny entry against, for removal. */
+export interface DenyMatch {
+  channelId?: string;
+  handle?: string;
+  channel?: string;
+}
+
+/**
+ * Pure: does a deny entry match the given identity? Priority mirrors the
+ * enforcement matching — channelId first, then normalized handle, then
+ * normalized channel title. Exported for zero-quota unit testing.
+ */
+export function denyEntryMatches(e: DenyEntry, m: DenyMatch): boolean {
+  if (m.channelId) return !!e.channelId && e.channelId === m.channelId;
+  if (m.handle)
+    return !!e.handle && normHandle(e.handle) === normHandle(m.handle);
+  if (m.channel) return normTitle(e.channel) === normTitle(m.channel);
+  return false;
+}
+
+/** Pure: the list with every entry matching `m` removed. */
+export function withoutDenyMatches(
+  list: DenyEntry[],
+  m: DenyMatch
+): DenyEntry[] {
+  return list.filter((e) => !denyEntryMatches(e, m));
+}
+
+/**
+ * Remove a channel from the deny list, reinstating it: plan entries are
+ * scanned again and its cached results stop being filtered on read.
+ * Returns true when an entry was actually removed.
+ */
+export async function removeFromDenyList(m: DenyMatch): Promise<boolean> {
+  const list = await readDenyList();
+  const next = withoutDenyMatches(list, m);
+  if (next.length === list.length) return false;
+  await pset(BLOB_KEY, next);
+  // Bust the in-memory copy so the next search sees the change.
+  cacheSet(MEM_KEY, next, MEM_TTL_MS);
+  return true;
+}
+
 /** True when the candidate's channel is deny-listed (by ID or handle). */
 export function isDeniedChannel(
   c: { channelId?: string | null; channelHandle?: string | null },
