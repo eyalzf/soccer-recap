@@ -128,11 +128,13 @@ export const NATIONS: NationEntry[] = [
   { en: 'Turks and Caicos Islands', he: 'איי טורקס וקאיקוס', enAliases: ['TCI'], heAliases: [], iso: 'tc' },
   { en: 'Montserrat', he: 'מונטסראט', enAliases: ['MSR'], heAliases: [], iso: 'ms' },
   { en: 'Saint Martin', he: 'סן מרטן', enAliases: ['SMT', 'St Martin'], heAliases: [], iso: 'mf' },
+  { en: 'Sint Maarten', he: 'סינט מארטן', enAliases: ['SXM', 'SMA'], heAliases: [], iso: 'sx' },
   { en: 'U.S. Virgin Islands', he: 'איי הבתולה האמריקניים', enAliases: ['US Virgin Islands', 'VIR'], heAliases: [], iso: 'vi' },
   { en: 'British Virgin Islands', he: 'איי הבתולה הבריטיים', enAliases: ['VGB'], heAliases: [], iso: 'vg' },
   { en: 'Anguilla', he: 'אנגווילה', enAliases: ['AIA'], heAliases: [], iso: 'ai' },
   { en: 'Saint Vincent and the Grenadines', he: 'סנט וינסנט והגרנדינים', enAliases: ['St Vincent and the Grenadines', 'VIN'], heAliases: [], iso: 'vc' },
   { en: 'French Guiana', he: 'גיאנה הצרפתית', enAliases: ['GUF'], heAliases: [], iso: 'gf' },
+  { en: 'Belize', he: 'בליז', enAliases: ['BLZ'], heAliases: [], iso: 'bz' },
   // ----------------------------------------------------------------- AFC
   { en: 'Japan', he: 'יפן', enAliases: ['JPN'], heAliases: [], iso: 'jp' },
   { en: 'Korea Republic', he: 'דרום קוריאה', enAliases: ['South Korea', 'Korea', 'KOR'], heAliases: [], iso: 'kr' },
@@ -142,6 +144,7 @@ export const NATIONS: NationEntry[] = [
   { en: 'Qatar', he: 'קטאר', enAliases: ['QAT'], heAliases: [], iso: 'qa' },
   { en: 'Jordan', he: 'ירדן', enAliases: ['JOR'], heAliases: [], iso: 'jo' },
   { en: 'Uzbekistan', he: 'אוזבקיסטן', enAliases: ['UZB'], heAliases: [], iso: 'uz' },
+  { en: 'India', he: 'הודו', enAliases: ['IND'], heAliases: [], iso: 'in' },
   // ----------------------------------------------------------------- CAF
   { en: 'Morocco', he: 'מרוקו', enAliases: ['MAR'], heAliases: [], iso: 'ma' },
   { en: 'Algeria', he: "אלג׳יריה", enAliases: ['ALG'], heAliases: ['אלגיריה'], iso: 'dz' },
