@@ -34,18 +34,41 @@ function tierSummary(c: ChannelStat): string {
   return parts.join(' · ');
 }
 
+const normName = (s: string): string =>
+  s.toLowerCase().replace(/[^a-z0-9\u0590-\u05ff]/g, '');
+
+/**
+ * Does a deny entry correspond to a (blocked) stats row? channelId
+ * first, then normalized handle vs the row's display name (roster rows
+ * are named by handle when no label exists), then normalized title.
+ * Used to avoid listing the same block twice: the deny list stays
+ * authoritative, the stats row carries the activity context.
+ */
+function rowMatchesDenyEntry(c: ChannelStat, e: DenyEntry): boolean {
+  if (e.channelId && c.channelId && e.channelId === c.channelId) return true;
+  const n = normName(c.channel);
+  if (normName(e.channel) === n) return true;
+  if (e.handle && normName(e.handle) === n) return true;
+  return false;
+}
+
 function ChannelRow({
   c,
   leagueHe,
   onDeny,
+  onUndeny,
+  denyReason,
   busy,
 }: {
   c: ChannelStat;
   leagueHe: Record<string, string>;
   onDeny: (c: ChannelStat) => void;
+  onUndeny?: (c: ChannelStat) => void;
+  denyReason?: string;
   busy: boolean;
 }) {
   const inPlansHe = c.inPlans.map((s) => leagueHe[s] ?? s);
+  const teams = [...new Set(c.scopeByLeague.flatMap((s) => s.teams ?? []))];
   return (
     <tr style={c.denied ? { opacity: 0.65 } : undefined}>
       <td>
@@ -73,8 +96,18 @@ function ChannelRow({
             במאגר: {inPlansHe.join(', ')}
           </div>
         )}
+        {teams.length > 0 && (
+          <div style={{ fontSize: 11, opacity: 0.75, marginTop: 2 }}>
+            קבוצות: {teams.join(', ')}
+          </div>
+        )}
         {c.denied && (
           <div style={{ fontSize: 11, marginTop: 2, fontWeight: 700 }}>חסום</div>
+        )}
+        {denyReason && (
+          <div style={{ fontSize: 11, opacity: 0.75, marginTop: 2 }}>
+            סיבה: {denyReason}
+          </div>
         )}
       </td>
       <td>{c.kept}</td>
@@ -96,7 +129,18 @@ function ChannelRow({
       </td>
       <td>{fmtDate(c.lastSeen)}</td>
       <td>
-        {!c.denied && (
+        {c.denied ? (
+          onUndeny && (
+            <button
+              className="refresh-btn"
+              disabled={busy}
+              onClick={() => onUndeny(c)}
+              title="מסיר את הערוץ מרשימת החסימה — הסרטונים שלו יחזרו להופיע"
+            >
+              הסר חסימה
+            </button>
+          )
+        ) : (
           <button
             className="refresh-btn"
             disabled={busy}
@@ -108,6 +152,57 @@ function ChannelRow({
         )}
       </td>
     </tr>
+  );
+}
+
+function ChannelTable({
+  rows,
+  leagueHe,
+  onDeny,
+  onUndeny,
+  denied,
+  busy,
+}: {
+  rows: ChannelStat[];
+  leagueHe: Record<string, string>;
+  onDeny: (c: ChannelStat) => void;
+  onUndeny?: (c: ChannelStat) => void;
+  denied: DenyEntry[];
+  busy: boolean;
+}) {
+  if (rows.length === 0) return <p className="empty">אין ערוצים.</p>;
+  return (
+    <table className="log-table">
+      <thead>
+        <tr>
+          <th>ערוץ</th>
+          <th>תוצאות</th>
+          <th>משחקים</th>
+          <th>שלבים</th>
+          <th>ליגות</th>
+          <th>דוגמאות</th>
+          <th>נראה לאחרונה</th>
+          <th>פעולות</th>
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((c) => (
+          <ChannelRow
+            key={c.key}
+            c={c}
+            leagueHe={leagueHe}
+            onDeny={onDeny}
+            onUndeny={onUndeny}
+            denyReason={
+              c.denied
+                ? denied.find((e) => rowMatchesDenyEntry(c, e))?.reason
+                : undefined
+            }
+            busy={busy}
+          />
+        ))}
+      </tbody>
+    </table>
   );
 }
 
@@ -175,6 +270,18 @@ export default function ChannelsClient({ leagueHe }: Props) {
     [leagueHe, post]
   );
 
+  const undenyRow = useCallback(
+    (c: ChannelStat) => {
+      if (!window.confirm(`להסיר את החסימה על "${c.channel}"?`)) return;
+      void post({
+        action: 'undeny',
+        channel: c.channel,
+        channelId: c.channelId,
+      });
+    },
+    [post]
+  );
+
   const undeny = useCallback(
     (e: DenyEntry) => {
       if (!window.confirm(`להסיר את החסימה על "${e.channel}"?`)) return;
@@ -201,12 +308,25 @@ export default function ChannelsClient({ leagueHe }: Props) {
 
   const { denied, searchesSeen } = data;
 
+  const generalRows = visible.filter((c) => c.classification === 'general');
+  const curatedRows = visible.filter((c) => c.classification === 'curated');
+  const perTeamRows = visible.filter((c) => c.classification === 'per-team');
+  const blockedRows = data.channels.filter(
+    (c) => c.classification === 'blocked'
+  );
+  // Deny entries with no blocked stats row behind them — the deny list
+  // remains authoritative, so these still get their own row.
+  const denyOnly = denied.filter(
+    (e) => !blockedRows.some((c) => rowMatchesDenyEntry(c, e))
+  );
+
   return (
     <div>
       <p className="empty" style={{ textAlign: 'right' }}>
-        כל הערוצים שסיפקו תוצאות שמורות ב־14 הימים האחרונים (
-        {searchesSeen} חיפושים חדשים נסרקו), בכל השלבים. חסימת ערוץ מוסיפה
-        אותו לרשימת החסימה — בתוקף מיידי, בלי פריסה.
+        סטטיסטיקת ערוצים מ־14 הימים האחרונים ({searchesSeen} חיפושים
+        חדשים נסרקו), מחולקת לפי סוג הערוץ. ערוצי המאגר והערוצים לפי
+        קבוצה כוללים את כל ערוצי התוכנית, גם אם לא סיפקו תוצאות בתקופה.
+        חסימת ערוץ מוסיפה אותו לרשימת החסימה — בתוקף מיידי, בלי פריסה.
       </p>
       {error && (
         <p className="empty" style={{ textAlign: 'right' }}>
@@ -224,87 +344,99 @@ export default function ChannelsClient({ leagueHe }: Props) {
         />
       </div>
 
-      <h2 className="log-h2">כל הערוצים ({visible.length})</h2>
-      {visible.length === 0 ? (
-        <p className="empty">אין ערוצים להצגה.</p>
-      ) : (
-        <table className="log-table">
-          <thead>
-            <tr>
-              <th>ערוץ</th>
-              <th>תוצאות</th>
-              <th>משחקים</th>
-              <th>שלבים</th>
-              <th>ליגות</th>
-              <th>דוגמאות</th>
-              <th>נראה לאחרונה</th>
-              <th>פעולות</th>
-            </tr>
-          </thead>
-          <tbody>
-            {visible.map((c) => (
-              <ChannelRow
-                key={c.key}
-                c={c}
-                leagueHe={leagueHe}
-                onDeny={deny}
-                busy={busy}
-              />
-            ))}
-          </tbody>
-        </table>
-      )}
+      <h2 className="log-h2">כללי ({generalRows.length})</h2>
+      <ChannelTable
+        rows={generalRows}
+        leagueHe={leagueHe}
+        onDeny={deny}
+        denied={denied}
+        busy={busy}
+      />
 
-      <h2 className="log-h2">ערוצים חסומים ({denied.length})</h2>
-      {denied.length === 0 ? (
-        <p className="empty">רשימת החסימה ריקה.</p>
+      <h2 className="log-h2">ערוצי מאגר ({curatedRows.length})</h2>
+      <ChannelTable
+        rows={curatedRows}
+        leagueHe={leagueHe}
+        onDeny={deny}
+        denied={denied}
+        busy={busy}
+      />
+
+      <h2 className="log-h2">לפי קבוצה ({perTeamRows.length})</h2>
+      <ChannelTable
+        rows={perTeamRows}
+        leagueHe={leagueHe}
+        onDeny={deny}
+        denied={denied}
+        busy={busy}
+      />
+
+      <h2 className="log-h2">
+        חסומים ({blockedRows.length + denyOnly.length})
+      </h2>
+      {blockedRows.length === 0 && denyOnly.length === 0 ? (
+        <p className="empty">אין ערוצים.</p>
       ) : (
-        <table className="log-table">
-          <thead>
-            <tr>
-              <th>ערוץ</th>
-              <th>סיבה</th>
-              <th>נחסם</th>
-              <th>פעולות</th>
-            </tr>
-          </thead>
-          <tbody>
-            {denied.map((e, i) => (
-              <tr
-                key={e.channelId ?? e.handle ?? `${e.channel}-${i}`}
-                style={{ opacity: 0.8 }}
-              >
-                <td>
-                  <div style={{ fontWeight: 600 }}>{e.channel}</div>
-                  {(e.channelId || e.handle) && (
-                    <div
-                      style={{
-                        fontSize: 11,
-                        opacity: 0.6,
-                        direction: 'ltr',
-                        textAlign: 'right',
-                      }}
-                    >
-                      {e.channelId ?? `@${e.handle}`}
-                    </div>
-                  )}
-                </td>
-                <td>{e.reason}</td>
-                <td>{fmtDate(e.addedAt)}</td>
-                <td>
-                  <button
-                    className="refresh-btn"
-                    disabled={busy}
-                    onClick={() => undeny(e)}
-                    title="מסיר את הערוץ מרשימת החסימה — הסרטונים שלו יחזרו להופיע"
+        <>
+          {blockedRows.length > 0 && (
+            <ChannelTable
+              rows={blockedRows}
+              leagueHe={leagueHe}
+              onDeny={deny}
+              onUndeny={undenyRow}
+              denied={denied}
+              busy={busy}
+            />
+          )}
+          {denyOnly.length > 0 && (
+            <table className="log-table">
+              <thead>
+                <tr>
+                  <th>ערוץ</th>
+                  <th>סיבה</th>
+                  <th>נחסם</th>
+                  <th>פעולות</th>
+                </tr>
+              </thead>
+              <tbody>
+                {denyOnly.map((e, i) => (
+                  <tr
+                    key={e.channelId ?? e.handle ?? `${e.channel}-${i}`}
+                    style={{ opacity: 0.8 }}
                   >
-                    הסר חסימה
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                    <td>
+                      <div style={{ fontWeight: 600 }}>{e.channel}</div>
+                      {(e.channelId || e.handle) && (
+                        <div
+                          style={{
+                            fontSize: 11,
+                            opacity: 0.6,
+                            direction: 'ltr',
+                            textAlign: 'right',
+                          }}
+                        >
+                          {e.channelId ?? `@${e.handle}`}
+                        </div>
+                      )}
+                    </td>
+                    <td>{e.reason}</td>
+                    <td>{fmtDate(e.addedAt)}</td>
+                    <td>
+                      <button
+                        className="refresh-btn"
+                        disabled={busy}
+                        onClick={() => undeny(e)}
+                        title="מסיר את הערוץ מרשימת החסימה — הסרטונים שלו יחזרו להופיע"
+                      >
+                        הסר חסימה
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </>
       )}
     </div>
   );
