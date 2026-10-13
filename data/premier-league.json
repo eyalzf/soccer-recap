@@ -45,8 +45,8 @@
       "dateISO": "2026-10-11T15:30:00.000Z",
       "homeScore": 0,
       "awayScore": 3,
-      "homeBadge": 8650,
-      "awayBadge": 8456,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8650.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8456.png",
       "stage": "מחזור 6"
     },
     {
@@ -56,8 +56,8 @@
       "dateISO": "2026-10-11T13:00:00.000Z",
       "homeScore": 3,
       "awayScore": 1,
-      "homeBadge": 9826,
-      "awayBadge": 10203,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9826.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10203.png",
       "stage": "מחזור 6"
     },
     {
@@ -67,8 +67,8 @@
       "dateISO": "2026-10-11T13:00:00.000Z",
       "homeScore": 2,
       "awayScore": 2,
-      "homeBadge": 8667,
-      "awayBadge": 8668,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8667.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8668.png",
       "stage": "מחזור 6"
     },
     {
