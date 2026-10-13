@@ -54,6 +54,28 @@ export interface KeptChannel {
   t: string;
 }
 
+/**
+ * Per-channel tally of candidates REJECTED by filterCandidate in one
+ * search (all tiers combined). Recorded so channels that are repeatedly
+ * filtered on title/content — yet never keep a single result — can be
+ * surfaced as deny-list proposals (see channelStats.ts
+ * aggregateNoiseProposals). 'deny-listed' rejections are not tallied:
+ * the channel is already blocked, so they carry no signal. Capped per
+ * entry (top channels by count); old entries simply lack this field.
+ */
+export interface RejectedChannel {
+  /** channel title as returned by YouTube */
+  ch: string;
+  /** YouTube channel ID when known */
+  chId?: string;
+  /** candidates rejected in this search */
+  n: number;
+  /** per-reason rejection counts (filterCandidate reason strings) */
+  reasons: Record<string, number>;
+  /** up to 2 rejected video titles (for review), truncated */
+  samples: string[];
+}
+
 export interface SearchLogEntry {
   t: number;
   home: string;
@@ -73,6 +95,8 @@ export interface SearchLogEntry {
   sources?: SourceAccess[];
   /** kept results with their channels (absent on cache hits / old entries) */
   channels?: KeptChannel[];
+  /** per-channel rejection tallies (absent on cache hits / old entries) */
+  rejected?: RejectedChannel[];
   results: number;
   rateLimited: boolean;
 }
