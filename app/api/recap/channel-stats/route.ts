@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getChannelStats } from '@/lib/recap/channelStats';
+import { getChannelStats, getNoiseProposals } from '@/lib/recap/channelStats';
 import {
   addToDenyList,
   getDenyList,
@@ -11,15 +11,19 @@ export const dynamic = 'force-dynamic';
 /**
  * GET /api/recap/channel-stats
  * Every channel that kept a result in the last 14 days (all tiers),
- * aggregated from the search log, plus the current deny list.
+ * aggregated from the search log, plus the current deny list and the
+ * noise-channel proposals (zero-kept channels repeatedly filtered on
+ * title/content; empty until rejection tallies accumulate in the log).
  */
 async function payload() {
   const stats = await getChannelStats();
   const denied = await getDenyList();
+  const noiseProposals = await getNoiseProposals();
   return {
     channels: stats.channels,
     denied,
     searchesSeen: stats.searchesSeen,
+    noiseProposals,
   };
 }
 
