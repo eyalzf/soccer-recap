@@ -2,7 +2,7 @@
   "league": "la-liga",
   "league_id": 87,
   "season": "2026/2027",
-  "updated_at": "2026-10-12T03:01:57.857591+00:00",
+  "updated_at": "2026-10-13T02:59:14.102598+00:00",
   "checked_through": "2026-09-19",
   "team_ids": {
     "Villarreal": 10205,
@@ -27,6 +27,17 @@
     "Valencia": 10267
   },
   "games": [
+    {
+      "id": "manual-20261012-levante-sevilla",
+      "home": "Levante",
+      "away": "Sevilla",
+      "dateISO": "2026-10-12T19:00:00.000Z",
+      "homeScore": 3,
+      "awayScore": 3,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8581.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8302.png",
+      "stage": "מחזור 8"
+    },
     {
       "id": "manual-20261011-racing-santander-valencia",
       "home": "Racing Santander",
