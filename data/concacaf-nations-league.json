@@ -8,7 +8,7 @@
       "homeScore": 1,
       "awayScore": 0,
       "homeBadge": "https://flagcdn.com/w80/gf.png",
-      "awayBadge": null,
+      "awayBadge": "https://flagcdn.com/w80/bz.png",
       "stage": "שלב הבתים"
     },
     {
@@ -30,7 +30,7 @@
       "homeScore": 4,
       "awayScore": 0,
       "homeBadge": "https://flagcdn.com/w80/vc.png",
-      "awayBadge": null,
+      "awayBadge": "https://flagcdn.com/w80/sx.png",
       "stage": "שלב הבתים"
     },
     {
@@ -227,7 +227,7 @@
       "dateISO": "2026-10-04T02:00:00.000Z",
       "homeScore": 0,
       "awayScore": 2,
-      "homeBadge": null,
+      "homeBadge": "https://flagcdn.com/w80/bz.png",
       "awayBadge": "https://flagcdn.com/w80/gf.png",
       "stage": "שלב הבתים"
     },
@@ -238,7 +238,7 @@
       "dateISO": "2026-10-03T21:00:00.000Z",
       "homeScore": 2,
       "awayScore": 4,
-      "homeBadge": null,
+      "homeBadge": "https://flagcdn.com/w80/sx.png",
       "awayBadge": "https://flagcdn.com/w80/vc.png",
       "stage": "שלב הבתים"
     },
