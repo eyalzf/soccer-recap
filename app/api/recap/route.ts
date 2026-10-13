@@ -8,7 +8,7 @@ import type { BulkChannel } from '@/lib/recap/leaguePlans';
 import { bulkScan, channelsForGame, scanPriorityChannel } from '@/lib/recap/bulk';
 import { pget, pset } from '@/lib/recap/persist';
 import { emptyTierStats, logSearch } from '@/lib/recap/searchLog';
-import type { KeptChannel, SearchWinner, SourceAccess } from '@/lib/recap/searchLog';
+import type { KeptChannel, RejectedChannel, SearchWinner, SourceAccess } from '@/lib/recap/searchLog';
 import { loadFixture, MATCHER_VERSION } from '@/lib/recap/fixtures';
 import type { GameInput, RankedCandidate, RawCandidate } from '@/lib/recap/types';
 import { getDenySet, isDeniedPlanEntry, dropDeniedCandidates } from '@/lib/recap/denyList';
@@ -237,6 +237,18 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
   // Cap the per-entry kept-channel record: enough for curation review,
   // small enough to keep daily log blobs lean.
   const MAX_KEPT_CHANNEL_LOG = 15;
+  // Per-channel REJECTION tallies for the search log (noise-channel
+  // proposals): which channels keep getting filtered on title/content.
+  // Keyed like the kept-channel aggregation (channelId, else normalized
+  // title). Log-only — never affects what is accepted or returned.
+  const rejectedNorm = (s: string): string =>
+    s.toLowerCase().replace(/[^a-z0-9\u0590-\u05ff]/g, '');
+  const rejectedByChannel = new Map<string, RejectedChannel>();
+  const MAX_REJECTED_CHANNEL_LOG = 12;
+  const rejectedLog = (): RejectedChannel[] =>
+    [...rejectedByChannel.values()]
+      .sort((a, b) => b.n - a.n)
+      .slice(0, MAX_REJECTED_CHANNEL_LOG);
   const ingest = (
     label: string,
     raw: RawCandidate[],
@@ -263,8 +275,30 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
             t: c.title.slice(0, 120),
           });
         }
-      } else if (debug && rejected.length < 10) {
-        rejected.push({ title: c.title, channel: c.channelName, reason: f.reason });
+      } else {
+        if (debug && rejected.length < 10) {
+          rejected.push({ title: c.title, channel: c.channelName, reason: f.reason });
+        }
+        // Tally the rejection for the search log. 'deny-listed' is
+        // skipped: the channel is already blocked, so the count would
+        // only add noise to the noise-proposal data.
+        if (c.channelName && f.reason !== 'deny-listed') {
+          const rkey = c.channelId ?? `t:${rejectedNorm(c.channelName)}`;
+          let rj = rejectedByChannel.get(rkey);
+          if (!rj) {
+            rj = {
+              ch: c.channelName,
+              chId: c.channelId,
+              n: 0,
+              reasons: {},
+              samples: [],
+            };
+            rejectedByChannel.set(rkey, rj);
+          }
+          rj.n += 1;
+          rj.reasons[f.reason] = (rj.reasons[f.reason] ?? 0) + 1;
+          if (rj.samples.length < 2) rj.samples.push(c.title.slice(0, 120));
+        }
       }
     }
     if (debug) diag.push({ search: label, fetched: raw.length, kept, ...(rejected.length ? { rejected } : {}) });
@@ -424,6 +458,10 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
         winner,
         results: merged.length,
         rateLimited: ytRateLimited,
+        // Rejection tallies ride along on fresh searches only; cache-hit
+        // entries (logged via logCached above) never ran a tier, so they
+        // correctly carry no `rejected` field.
+        ...(rejectedByChannel.size ? { rejected: rejectedLog() } : {}),
       })
     : null;
   // Persist every outcome (including empty) with no read-path TTL.
