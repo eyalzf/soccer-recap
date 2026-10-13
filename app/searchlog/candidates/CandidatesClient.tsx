@@ -6,6 +6,7 @@ import type {
   ChannelCandidate,
 } from '@/lib/recap/channelCandidates';
 import SweepClient from './SweepClient';
+import ChannelsClient from './ChannelsClient';
 
 interface Props {
   leagueHe: Record<string, string>;
@@ -103,7 +104,7 @@ function CandidateRow({
 }
 
 export default function CandidatesClient({ leagueHe }: Props) {
-  const [tab, setTab] = useState<'candidates' | 'sweep'>('candidates');
+  const [tab, setTab] = useState<'candidates' | 'sweep' | 'channels'>('candidates');
   const [data, setData] = useState<CandidatesResult | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -165,10 +166,19 @@ export default function CandidatesClient({ leagueHe }: Props) {
         >
           סריקת תקינות
         </button>
+        <button
+          className="refresh-btn"
+          onClick={() => setTab('channels')}
+          style={tab === 'channels' ? { fontWeight: 700 } : { opacity: 0.6 }}
+        >
+          כל הערוצים
+        </button>
       </div>
 
       {tab === 'sweep' ? (
         <SweepClient leagueHe={leagueHe} />
+      ) : tab === 'channels' ? (
+        <ChannelsClient leagueHe={leagueHe} />
       ) : (
         <>
       <p className="empty" style={{ textAlign: 'right' }}>
