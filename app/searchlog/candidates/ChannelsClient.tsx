@@ -211,6 +211,9 @@ export default function ChannelsClient({ leagueHe }: Props) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState('');
+  const [listTab, setListTab] = useState<
+    'general' | 'curated' | 'per-team' | 'blocked'
+  >('general');
 
   const load = useCallback(async () => {
     try {
@@ -344,51 +347,85 @@ export default function ChannelsClient({ leagueHe }: Props) {
         />
       </div>
 
-      <h2 className="log-h2">כללי ({generalRows.length})</h2>
-      <ChannelTable
-        rows={generalRows}
-        leagueHe={leagueHe}
-        onDeny={deny}
-        denied={denied}
-        busy={busy}
-      />
+      <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+        <button
+          className="refresh-btn"
+          onClick={() => setListTab('general')}
+          style={listTab === 'general' ? { fontWeight: 700 } : { opacity: 0.6 }}
+        >
+          כללי ({generalRows.length})
+        </button>
+        <button
+          className="refresh-btn"
+          onClick={() => setListTab('curated')}
+          style={listTab === 'curated' ? { fontWeight: 700 } : { opacity: 0.6 }}
+        >
+          ערוצי מאגר ({curatedRows.length})
+        </button>
+        <button
+          className="refresh-btn"
+          onClick={() => setListTab('per-team')}
+          style={
+            listTab === 'per-team' ? { fontWeight: 700 } : { opacity: 0.6 }
+          }
+        >
+          לפי קבוצה ({perTeamRows.length})
+        </button>
+        <button
+          className="refresh-btn"
+          onClick={() => setListTab('blocked')}
+          style={listTab === 'blocked' ? { fontWeight: 700 } : { opacity: 0.6 }}
+        >
+          חסומים ({blockedRows.length + denyOnly.length})
+        </button>
+      </div>
 
-      <h2 className="log-h2">ערוצי מאגר ({curatedRows.length})</h2>
-      <ChannelTable
-        rows={curatedRows}
-        leagueHe={leagueHe}
-        onDeny={deny}
-        denied={denied}
-        busy={busy}
-      />
+      {listTab === 'general' && (
+        <ChannelTable
+          rows={generalRows}
+          leagueHe={leagueHe}
+          onDeny={deny}
+          denied={denied}
+          busy={busy}
+        />
+      )}
 
-      <h2 className="log-h2">לפי קבוצה ({perTeamRows.length})</h2>
-      <ChannelTable
-        rows={perTeamRows}
-        leagueHe={leagueHe}
-        onDeny={deny}
-        denied={denied}
-        busy={busy}
-      />
+      {listTab === 'curated' && (
+        <ChannelTable
+          rows={curatedRows}
+          leagueHe={leagueHe}
+          onDeny={deny}
+          denied={denied}
+          busy={busy}
+        />
+      )}
 
-      <h2 className="log-h2">
-        חסומים ({blockedRows.length + denyOnly.length})
-      </h2>
-      {blockedRows.length === 0 && denyOnly.length === 0 ? (
-        <p className="empty">אין ערוצים.</p>
-      ) : (
-        <>
-          {blockedRows.length > 0 && (
-            <ChannelTable
-              rows={blockedRows}
-              leagueHe={leagueHe}
-              onDeny={deny}
-              onUndeny={undenyRow}
-              denied={denied}
-              busy={busy}
-            />
-          )}
-          {denyOnly.length > 0 && (
+      {listTab === 'per-team' && (
+        <ChannelTable
+          rows={perTeamRows}
+          leagueHe={leagueHe}
+          onDeny={deny}
+          denied={denied}
+          busy={busy}
+        />
+      )}
+
+      {listTab === 'blocked' &&
+        (blockedRows.length === 0 && denyOnly.length === 0 ? (
+          <p className="empty">אין ערוצים.</p>
+        ) : (
+          <>
+            {blockedRows.length > 0 && (
+              <ChannelTable
+                rows={blockedRows}
+                leagueHe={leagueHe}
+                onDeny={deny}
+                onUndeny={undenyRow}
+                denied={denied}
+                busy={busy}
+              />
+            )}
+            {denyOnly.length > 0 && (
             <table className="log-table">
               <thead>
                 <tr>
@@ -435,9 +472,10 @@ export default function ChannelsClient({ leagueHe }: Props) {
                 ))}
               </tbody>
             </table>
-          )}
-        </>
-      )}
+            )}
+          </>
+        ))}
+
     </div>
   );
 }
