@@ -2,7 +2,7 @@
   "league": "premier-league",
   "league_id": 47,
   "season": "2026/2027",
-  "updated_at": "2026-10-12T03:01:57.857591+00:00",
+  "updated_at": "2026-10-13T02:59:14.102598+00:00",
   "checked_through": "2026-09-19",
   "team_ids": {
     "Leeds United": 8463,
@@ -27,6 +27,17 @@
     "Arsenal": 9825
   },
   "games": [
+    {
+      "id": "manual-20261012-coventry-city-newcastle-united",
+      "home": "Coventry City",
+      "away": "Newcastle United",
+      "dateISO": "2026-10-12T19:00:00.000Z",
+      "homeScore": 4,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8669.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10261.png",
+      "stage": "מחזור 6"
+    },
     {
       "id": "manual-20261011-liverpool-manchester-city",
       "home": "Liverpool",
