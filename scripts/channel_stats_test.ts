@@ -85,7 +85,13 @@ const day = (entries: SearchLogEntry[]): SearchLogDay => ({
   ];
   const res = aggregateChannelStats(days);
   check('searchesSeen counts non-cached entries', res.searchesSeen === 5, res.searchesSeen);
-  check('two channels aggregated', res.channels.length === 2, res.channels.length);
+  // Roster rows (kept 0) now accompany the log-derived rows; the two
+  // channels with activity are the ones with kept > 0.
+  check(
+    'two channels aggregated',
+    res.channels.filter((c) => c.kept > 0).length === 2,
+    res.channels.filter((c) => c.kept > 0).length
+  );
   const se = res.channels.find((c) => c.channelId === 'UCSE');
   check('multi-tier kept total', se?.kept === 3, se?.kept);
   check('tier breakdown', !!se && se.tiers.bulk === 2 && se.tiers.general === 1 && se.tiers.preferred === 0, se?.tiers);
@@ -128,7 +134,14 @@ const day = (entries: SearchLogEntry[]): SearchLogDay => ({
     ]),
   ];
   const res = aggregateChannelStats(days);
-  check('cached entries ignored', res.channels.length === 0 && res.searchesSeen === 0, res);
+  // Cached entries contribute nothing: no searches seen, and every row
+  // is a zero-kept roster row (ONE's included — its only "activity"
+  // here was a cache hit).
+  check(
+    'cached entries ignored',
+    res.searchesSeen === 0 && res.channels.every((c) => c.kept === 0),
+    res.searchesSeen
+  );
 }
 
 // 4. Denied flag via DenySet (by channelId); absent set -> all false.
@@ -229,6 +242,145 @@ const day = (entries: SearchLogEntry[]): SearchLogDay => ({
   check(
     'withoutDenyMatches no-op when nothing matches',
     withoutDenyMatches(list, { channelId: 'UCZZZ' }).length === 3
+  );
+}
+
+// 7. Classification + scopeByLeague on log rows; precedence
+//    blocked > per-team > curated > general.
+{
+  const days = [
+    day([
+      entry('la-liga', 'Barcelona', 'Sevilla', '2026-10-12T19:00:00.000Z', [
+        kc('v1', 'FC Barcelona', undefined, 'bulk', 'Barca highlights'),
+      ]),
+      entry('premier-league', 'Arsenal', 'Chelsea', '2026-10-12T15:00:00.000Z', [
+        kc('v2', 'Random Highlights', undefined, 'general', 'goals'),
+        kc('v3', 'SPORTS EXTRA', 'UCSE', 'general', 'extended highlights'),
+      ]),
+    ]),
+  ];
+  const res = aggregateChannelStats(days);
+  const barca = res.channels.find((c) => c.channel === 'FC Barcelona');
+  check('club channel classified per-team', barca?.classification === 'per-team', barca?.classification);
+  check(
+    'per-team scope carries teams in both leagues',
+    !!barca &&
+      barca.scopeByLeague.length === 2 &&
+      barca.scopeByLeague.every((s) => s.teams?.join(',') === 'Barcelona'),
+    barca?.scopeByLeague
+  );
+  const rnd = res.channels.find((c) => c.channel === 'Random Highlights');
+  check(
+    'plan-less channel classified general',
+    rnd?.classification === 'general' && rnd.scopeByLeague.length === 0,
+    rnd?.classification
+  );
+  const se = res.channels.find((c) => c.channelId === 'UCSE');
+  check('league-wide plan channel classified curated', se?.classification === 'curated', se?.classification);
+  check(
+    'curated scope has no team scopes',
+    !!se && se.scopeByLeague.length >= 5 && se.scopeByLeague.every((s) => !s.teams),
+    se?.scopeByLeague.length
+  );
+  // The log row absorbed the plan scope — SPORTS EXTRA appears once,
+  // not as a log row plus a separate roster row.
+  check(
+    'active plan channel not duplicated as roster row',
+    res.channels.filter((c) => c.channel === 'SPORTS EXTRA').length === 1
+  );
+
+  // Blocked beats per-team and curated.
+  const deny: DenySet = { ids: new Set(['UCSE', 'UCBARCA']), handles: new Set() };
+  const days2 = [
+    day([
+      entry('la-liga', 'Barcelona', 'Sevilla', '2026-10-12T19:00:00.000Z', [
+        kc('v1', 'FC Barcelona', 'UCBARCA', 'bulk', 'Barca highlights'),
+        kc('v2', 'SPORTS EXTRA', 'UCSE', 'bulk', 'Sevilla v Barca'),
+      ]),
+    ]),
+  ];
+  const res2 = aggregateChannelStats(days2, deny);
+  check(
+    'denied club channel classified blocked (beats per-team)',
+    res2.channels.find((c) => c.channelId === 'UCBARCA')?.classification === 'blocked'
+  );
+  check(
+    'denied league-wide channel classified blocked (beats curated)',
+    res2.channels.find((c) => c.channelId === 'UCSE')?.classification === 'blocked'
+  );
+}
+
+// 8. Roster rows: plan channels with no activity are emitted with
+//    their scope, merged across leagues into a single row.
+{
+  const res = aggregateChannelStats([]);
+  check(
+    'no activity -> roster rows only',
+    res.channels.length > 0 && res.channels.every((c) => c.kept === 0),
+    res.channels.length
+  );
+  const espn = res.channels.find((c) => c.channel === 'ESPN FC');
+  check(
+    'league-wide roster row (ESPN FC, la-liga)',
+    !!espn &&
+      espn.classification === 'curated' &&
+      espn.scopeByLeague.length === 1 &&
+      espn.scopeByLeague[0].league === 'la-liga' &&
+      !espn.scopeByLeague[0].teams &&
+      espn.games === 0 &&
+      espn.lastSeen === 0 &&
+      espn.sampleTitles.length === 0,
+    espn?.scopeByLeague
+  );
+  const sev = res.channels.find((c) => c.channel === 'Sevilla FC');
+  check(
+    'team-scoped roster row (Sevilla FC)',
+    !!sev &&
+      sev.classification === 'per-team' &&
+      sev.scopeByLeague.length === 1 &&
+      sev.scopeByLeague[0].teams?.join(',') === 'Sevilla',
+    sev?.scopeByLeague
+  );
+  const seRows = res.channels.filter((c) => c.channel === 'SPORTS EXTRA');
+  check(
+    'multi-league channel merged into one roster row',
+    seRows.length === 1 && seRows[0].scopeByLeague.length >= 6,
+    seRows.map((r) => r.scopeByLeague.length)
+  );
+  const ifa = res.channels.find(
+    (c) => c.channelId === 'UC-5AVLhL2v04-lfbVzejRZQ'
+  );
+  check(
+    'channelId-keyed FA channel roster row (IFA, Israel scope x2)',
+    !!ifa &&
+      ifa.classification === 'per-team' &&
+      ifa.scopeByLeague.length === 2 &&
+      ifa.scopeByLeague.every((s) => s.teams?.join(',') === 'Israel'),
+    ifa?.scopeByLeague
+  );
+  const ipfl = res.channels.find((c) => c.channel === 'Ipflofficial');
+  check(
+    'handle-only preferred entry named by handle (Ipflofficial)',
+    !!ipfl &&
+      ipfl.classification === 'curated' &&
+      ipfl.scopeByLeague.length === 1 &&
+      ipfl.scopeByLeague[0].league === 'israeli-league',
+    ipfl?.scopeByLeague
+  );
+  const cc = res.channels.find((c) => c.channel === 'concacaf');
+  check(
+    'handle-only roster row across two leagues (concacaf)',
+    !!cc && cc.classification === 'curated' && cc.scopeByLeague.length === 2,
+    cc?.scopeByLeague
+  );
+  // A roster channel denied by handle classifies blocked.
+  const deny: DenySet = { ids: new Set(), handles: new Set(['uefa']) };
+  const resD = aggregateChannelStats([], deny);
+  const uefa = resD.channels.find((c) => c.channel === 'UEFA');
+  check(
+    'roster row denied by handle classified blocked',
+    !!uefa && uefa.denied && uefa.classification === 'blocked',
+    uefa?.classification
   );
 }
 
