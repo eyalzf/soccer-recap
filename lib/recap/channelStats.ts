@@ -3,12 +3,13 @@
  *
  * The candidates module (channelCandidates.ts) only surfaces general-tier
  * winners as bulk-pool suggestions. This module aggregates EVERY channel
- * that kept at least one result in the window, across all tiers, so the
- * channel-management page can show the full picture — including channels
- * whose videos look valid but are irrelevant for this app — and block
- * them via the deny list (lib/recap/denyList.ts, runtime effect, no
- * deploy). Read-only aggregation; the deny list is the source of truth
- * for what is blocked.
+ * that kept at least one result in the window, across all tiers, and adds
+ * roster rows for curated-plan channels that were quiet in the window, so
+ * the channel-management page can show the full picture — split into
+ * general / curated / per-team / blocked sections — and block channels
+ * via the deny list (lib/recap/denyList.ts, runtime effect, no deploy).
+ * Read-only aggregation; the deny list is the source of truth for what
+ * is blocked.
  */
 import {
   readSearchLog,
@@ -28,6 +29,24 @@ export interface ChannelTierCounts {
   bulk: number;
   general: number;
 }
+
+/** One curated-plan membership of a channel, in one league. */
+export interface ChannelScope {
+  league: string;
+  /** Team scope when the plan entry is team-scoped (club/FA channels). */
+  teams?: string[];
+}
+
+/**
+ * Section the channel-management view files a row under. Precedence:
+ * blocked (deny-listed) > per-team (any team-scoped plan entry) >
+ * curated (any plan membership) > general (kept results, in no plan).
+ */
+export type ChannelClassification =
+  | 'blocked'
+  | 'per-team'
+  | 'curated'
+  | 'general';
 
 export interface ChannelStat {
   /** channelId when known, else `t:`+normalized title — stable across calls. */
@@ -51,6 +70,10 @@ export interface ChannelStat {
   denied: boolean;
   /** league slugs whose curated plan (preferred or bulk) includes this channel */
   inPlans: string[];
+  /** every curated-plan membership across all leagues, with team scope */
+  scopeByLeague: ChannelScope[];
+  /** section classification (see ChannelClassification) */
+  classification: ChannelClassification;
 }
 
 export interface ChannelStatsResult {
@@ -72,43 +95,116 @@ const ALL_SLUGS: string[] = [
 ];
 
 /**
- * Identity keys for one league's plan entries: `id:<channelId>` plus
- * `n:<normalized>` forms of the label and the handle. Kept log entries
- * carry the channel's YouTube title (not its handle), so title↔label and
- * title↔handle matches are both attempted; the handle is also indexed
- * with any trailing digit run stripped, because ONE's handle is
- * 'one-1004' while its channel title is 'ONE'.
+ * One curated-plan entry (preferred or bulk) with its identity keys.
+ * Kept log entries carry the channel's YouTube title (not its handle),
+ * so title↔label and title↔handle matches are both attempted; the
+ * handle is also indexed with any trailing digit run stripped, because
+ * ONE's handle is 'one-1004' while its channel title is 'ONE'.
  */
-function planIdentities(league: string): Set<string> {
-  const plan = searchPlanFor(league);
-  const ids = new Set<string>();
-  for (const ch of [...plan.preferred, ...plan.bulk]) {
-    if (ch.channelId) ids.add(`id:${ch.channelId}`);
-    const label = (ch as { label?: string }).label;
-    if (label) ids.add(`n:${norm(label)}`);
-    if (ch.handle) {
-      const h = norm(ch.handle.replace(/^@/, ''));
-      if (h) ids.add(`n:${h}`);
-      const stripped = h.replace(/\d+$/, '');
-      if (stripped && stripped !== h) ids.add(`n:${stripped}`);
-    }
-  }
-  return ids;
+interface PlanEntryInfo {
+  league: string;
+  channelId?: string;
+  handle?: string;
+  label?: string;
+  teams?: string[];
+  /** `id:<channelId>` identity key, when the entry carries an ID. */
+  idKey?: string;
+  /** `n:<normalized>` keys derived from the handle (incl. digits-stripped). */
+  handleKeys: string[];
+  /** `n:<normalized>` key derived from the label, when present. */
+  labelKey?: string;
 }
 
-const PLAN_IDENTITIES: Array<{ league: string; ids: Set<string> }> =
-  ALL_SLUGS.map((league) => ({ league, ids: planIdentities(league) }));
+function planEntryInfo(
+  league: string,
+  ch: {
+    channelId?: string;
+    handle?: string;
+    label?: string;
+    teams?: string[];
+  }
+): PlanEntryInfo {
+  const handleKeys: string[] = [];
+  if (ch.handle) {
+    const h = norm(ch.handle.replace(/^@/, ''));
+    if (h) handleKeys.push(`n:${h}`);
+    const stripped = h.replace(/\d+$/, '');
+    if (stripped && stripped !== h) handleKeys.push(`n:${stripped}`);
+  }
+  return {
+    league,
+    channelId: ch.channelId,
+    handle: ch.handle,
+    label: ch.label,
+    teams: ch.teams,
+    idKey: ch.channelId ? `id:${ch.channelId}` : undefined,
+    handleKeys,
+    labelKey: ch.label ? `n:${norm(ch.label)}` : undefined,
+  };
+}
 
-/** League slugs whose curated plan (preferred or bulk) includes this channel. */
-export function plansForChannel(channel: string, channelId?: string): string[] {
-  const out: string[] = [];
-  const byTitle = `n:${norm(channel)}`;
-  for (const { league, ids } of PLAN_IDENTITIES) {
-    if ((channelId && ids.has(`id:${channelId}`)) || ids.has(byTitle)) {
-      out.push(league);
+const PLAN_ENTRIES: PlanEntryInfo[] = (() => {
+  const out: PlanEntryInfo[] = [];
+  for (const league of ALL_SLUGS) {
+    const plan = searchPlanFor(league);
+    for (const ch of [...plan.preferred, ...plan.bulk]) {
+      out.push(planEntryInfo(league, ch));
     }
   }
   return out;
+})();
+
+/** Does a plan entry identify this channel (title + optional channelId)? */
+function entryMatchesChannel(
+  e: PlanEntryInfo,
+  titleNorm: string,
+  channelId?: string
+): boolean {
+  if (channelId && e.idKey === `id:${channelId}`) return true;
+  const key = `n:${titleNorm}`;
+  return e.labelKey === key || e.handleKeys.includes(key);
+}
+
+/**
+ * All curated-plan memberships of a channel across every league, in
+ * league-registry order; a membership carries the union of the team
+ * scopes of the entries it matched in that league (no `teams` when
+ * every matched entry is league-wide).
+ */
+export function scopeForChannel(
+  channel: string,
+  channelId?: string
+): ChannelScope[] {
+  const titleNorm = norm(channel);
+  const byLeague = new Map<string, Set<string>>();
+  for (const e of PLAN_ENTRIES) {
+    if (!entryMatchesChannel(e, titleNorm, channelId)) continue;
+    let teams = byLeague.get(e.league);
+    if (!teams) {
+      teams = new Set();
+      byLeague.set(e.league, teams);
+    }
+    if (e.teams) for (const t of e.teams) teams.add(t);
+  }
+  return [...byLeague.entries()].map(([league, teams]) =>
+    teams.size ? { league, teams: [...teams] } : { league }
+  );
+}
+
+/** League slugs whose curated plan (preferred or bulk) includes this channel. */
+export function plansForChannel(channel: string, channelId?: string): string[] {
+  return scopeForChannel(channel, channelId).map((s) => s.league);
+}
+
+/** Section classification; precedence blocked > per-team > curated > general. */
+export function classifyChannel(
+  denied: boolean,
+  scopeByLeague: ChannelScope[]
+): ChannelClassification {
+  if (denied) return 'blocked';
+  if (scopeByLeague.some((s) => s.teams?.length)) return 'per-team';
+  if (scopeByLeague.length > 0) return 'curated';
+  return 'general';
 }
 
 export async function getChannelStats(): Promise<ChannelStatsResult> {
@@ -130,7 +226,8 @@ interface Agg {
 
 /**
  * Pure aggregation: every kept result in the log -> per-channel stats,
- * one row per channel. Exported for zero-quota unit testing.
+ * one row per channel, plus roster rows for quiet curated channels.
+ * Exported for zero-quota unit testing.
  */
 export function aggregateChannelStats(
   days: SearchLogDay[],
@@ -170,24 +267,32 @@ export function aggregateChannelStats(
     }
   }
 
-  const channels: ChannelStat[] = [...aggs.entries()].map(([key, a]) => ({
-    key,
-    channel: a.channel,
-    channelId: a.channelId,
-    kept: a.kept,
-    games: a.games.size,
-    tiers: a.tiers,
-    leagues: [...a.leagues].sort(),
-    sampleTitles: a.titles,
-    lastSeen: a.lastSeen,
-    denied: denied
+  const channels: ChannelStat[] = [...aggs.entries()].map(([key, a]) => {
+    const scopeByLeague = scopeForChannel(a.channel, a.channelId);
+    const deniedFlag = denied
       ? isDeniedChannel(
           { channelId: a.channelId, channelHandle: null },
           denied
         )
-      : false,
-    inPlans: plansForChannel(a.channel, a.channelId),
-  }));
+      : false;
+    return {
+      key,
+      channel: a.channel,
+      channelId: a.channelId,
+      kept: a.kept,
+      games: a.games.size,
+      tiers: a.tiers,
+      leagues: [...a.leagues].sort(),
+      sampleTitles: a.titles,
+      lastSeen: a.lastSeen,
+      denied: deniedFlag,
+      inPlans: scopeByLeague.map((s) => s.league),
+      scopeByLeague,
+      classification: classifyChannel(deniedFlag, scopeByLeague),
+    };
+  });
+  // Roster rows for curated channels that kept nothing in the window.
+  channels.push(...rosterRows(channels, denied));
   channels.sort(
     (x, y) =>
       y.kept - x.kept ||
@@ -195,6 +300,118 @@ export function aggregateChannelStats(
       (x.channel < y.channel ? -1 : x.channel > y.channel ? 1 : 0)
   );
   return { channels, searchesSeen };
+}
+
+interface RosterAcc {
+  channelId?: string;
+  handle?: string;
+  label?: string;
+  /** league -> union of team scopes across the merged entries */
+  scopes: Map<string, Set<string>>;
+}
+
+/**
+ * Roster rows for curated-plan channels with NO kept result in the
+ * window: the management view lists the full curated pool (and lets it
+ * be blocked) even when a channel was quiet. Plan entries merge by
+ * identity — channelId first, then normalized handle (incl. the
+ * digits-stripped variant), then normalized label/title — into a log
+ * row when one matches (that row's scope already covers the entry via
+ * scopeForChannel) or into a shared roster row otherwise, so a channel
+ * curated in several leagues still yields exactly one row.
+ */
+function rosterRows(
+  logRows: ChannelStat[],
+  denied?: DenySet
+): ChannelStat[] {
+  const rowByIdentity = new Map<string, ChannelStat>();
+  for (const row of logRows) {
+    if (row.channelId) rowByIdentity.set(`id:${row.channelId}`, row);
+    const nk = `n:${norm(row.channel)}`;
+    if (!rowByIdentity.has(nk)) rowByIdentity.set(nk, row);
+  }
+  const findLogRow = (e: PlanEntryInfo): ChannelStat | undefined => {
+    if (e.idKey) {
+      const r = rowByIdentity.get(e.idKey);
+      if (r) return r;
+    }
+    for (const k of e.handleKeys) {
+      const r = rowByIdentity.get(k);
+      if (r) return r;
+    }
+    if (e.labelKey) return rowByIdentity.get(e.labelKey);
+    return undefined;
+  };
+
+  const accByIdentity = new Map<string, RosterAcc>();
+  const accs: RosterAcc[] = [];
+  for (const e of PLAN_ENTRIES) {
+    if (findLogRow(e)) continue; // merged into the log row's scope
+    const keys = [
+      ...(e.idKey ? [e.idKey] : []),
+      ...e.handleKeys,
+      ...(e.labelKey ? [e.labelKey] : []),
+    ];
+    let acc: RosterAcc | undefined;
+    for (const k of keys) {
+      acc = accByIdentity.get(k);
+      if (acc) break;
+    }
+    if (!acc) {
+      acc = { scopes: new Map() };
+      accs.push(acc);
+    }
+    for (const k of keys) {
+      if (!accByIdentity.has(k)) accByIdentity.set(k, acc);
+    }
+    if (!acc.channelId && e.channelId) acc.channelId = e.channelId;
+    if (!acc.handle && e.handle) acc.handle = e.handle;
+    if (!acc.label && e.label) acc.label = e.label;
+    let teams = acc.scopes.get(e.league);
+    if (!teams) {
+      teams = new Set();
+      acc.scopes.set(e.league, teams);
+    }
+    if (e.teams) for (const t of e.teams) teams.add(t);
+  }
+
+  const logKeys = new Set(logRows.map((r) => r.key));
+  const out: ChannelStat[] = [];
+  for (const acc of accs) {
+    // Display name: label ?? handle ?? channelId (every plan entry
+    // carries at least one of the three).
+    const name = acc.label ?? acc.handle ?? (acc.channelId as string);
+    const key = acc.channelId ?? `t:${norm(name)}`;
+    if (logKeys.has(key)) continue;
+    const scopeByLeague: ChannelScope[] = ALL_SLUGS.filter((l) =>
+      acc.scopes.has(l)
+    ).map((league) => {
+      const teams = acc.scopes.get(league) as Set<string>;
+      return teams.size ? { league, teams: [...teams] } : { league };
+    });
+    const deniedFlag = denied
+      ? isDeniedChannel(
+          { channelId: acc.channelId, channelHandle: acc.handle ?? null },
+          denied
+        )
+      : false;
+    out.push({
+      key,
+      channel: name,
+      channelId: acc.channelId,
+      kept: 0,
+      games: 0,
+      tiers: { sport1: 0, preferred: 0, bulk: 0, general: 0 },
+      leagues: scopeByLeague.map((s) => s.league).sort(),
+      sampleTitles: [],
+      lastSeen: 0,
+      denied: deniedFlag,
+      inPlans: scopeByLeague.map((s) => s.league),
+      scopeByLeague,
+      classification: classifyChannel(deniedFlag, scopeByLeague),
+    });
+  }
+  return out;
 }
 
 /* ------------------------------------------------------------------ */
