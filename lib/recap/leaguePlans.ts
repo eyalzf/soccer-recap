@@ -218,14 +218,23 @@ export const CLUB_CHANNELS: Record<string, ClubChannelDef> = {
   // Italy / Germany / France / Portugal / Netherlands / Belgium
   Inter: { handle: 'Inter', label: 'Inter' },
   Juventus: { handle: 'Juventus', label: 'Juventus' },
+  Roma: { handle: 'ASRoma', label: 'Roma' },
   'Bayern Munich': { handle: 'FCBayern', label: 'Bayern' },
   'Borussia Dortmund': { handle: 'BVB', label: 'Dortmund' },
+  'RB Leipzig': { handle: 'RBLeipzig', label: 'RB Leipzig' },
   'Paris Saint-Germain': { handle: 'PSG', label: 'PSG' },
+  Lille: { handle: 'LOSC', label: 'Lille' },
   Benfica: { handle: 'SLBenfica', label: 'Benfica' },
   Ajax: { handle: 'AFCAjax', label: 'Ajax' },
   'Sporting CP': { handle: 'SportingCP', label: 'Sporting CP' },
   'PSV Eindhoven': { handle: 'PSV', label: 'PSV Eindhoven' },
+  Feyenoord: { handle: 'Feyenoord', label: 'Feyenoord' },
   'Club Brugge': { handle: 'clubbrugge', label: 'Club Brugge' },
+  // Ukraine / Slovakia — handles verified by the 2026-10-14 UCL channel
+  // audit against this season's UCL uploads (channel IDs cross-checked:
+  // Shakhtar UCmPCqUih--EyT2oxUn72MtA, Slovan UC7ldMqVVX6CD6NMZaqsihTw).
+  'Shakhtar Donetsk': { handle: 'FCShakhtar', label: 'Shakhtar Donetsk' },
+  'Slovan Bratislava': { handle: 'SKSlovanBratislava', label: 'Slovan Bratislava' },
 };
 
 /**
@@ -342,6 +351,20 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
       clubChannel('Sporting CP'),
       clubChannel('PSV Eindhoven'),
       clubChannel('Club Brugge'),
+      // Audit-validated 2026-10-14 (per-competition opt-in: each of
+      // these channels demonstrably posts proper highlights for its
+      // club's UCL games this season — domestic output alone does not
+      // qualify a channel here).
+      clubChannel('Manchester United'),
+      clubChannel('Aston Villa'),
+      clubChannel('Real Betis'),
+      clubChannel('Villarreal'),
+      clubChannel('RB Leipzig'),
+      clubChannel('Roma'),
+      clubChannel('Lille'),
+      clubChannel('Feyenoord'),
+      clubChannel('Shakhtar Donetsk'),
+      clubChannel('Slovan Bratislava'),
       // Aggregator channels verified in the 2026-09-17 round-2 curation
       // (proper-highlight coverage on 10-game tests): CHEFON FF 9/10,
       // Al Faris Production 7/10, FranSports 6/10, Franq Media 6/10.
