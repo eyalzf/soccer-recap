@@ -238,7 +238,6 @@ export const CLUB_CHANNELS: Record<string, ClubChannelDef> = {
   'Borussia Dortmund': { handle: 'BVB', label: 'Dortmund' },
   'RB Leipzig': { handle: 'RBLeipzig', label: 'RB Leipzig' },
   'Paris Saint-Germain': { handle: 'PSG', label: 'PSG' },
-  Lille: { handle: 'LOSC', label: 'Lille' },
   Benfica: { handle: 'SLBenfica', label: 'Benfica' },
   Ajax: { handle: 'AFCAjax', label: 'Ajax' },
   'Sporting CP': { handle: 'SportingCP', label: 'Sporting CP' },
@@ -350,7 +349,6 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
     preferred: [],
     bulk: [
       clubChannel('Real Madrid'),
-      clubChannel('Barcelona'),
       clubChannel('Liverpool'),
       clubChannel('Arsenal'),
       clubChannel('Manchester City'),
@@ -376,7 +374,6 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
       clubChannel('Villarreal'),
       clubChannel('RB Leipzig'),
       clubChannel('Roma'),
-      clubChannel('Lille'),
       clubChannel('Feyenoord'),
       clubChannel('Shakhtar Donetsk'),
       clubChannel('Slovan Bratislava'),
