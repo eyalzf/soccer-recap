@@ -15,6 +15,8 @@ interface Candidate {
   source: string;
   videoId?: string;
   embedUrl?: string;
+  /** External link-out result (Sport5): opens at the source in a new tab; never embedded. */
+  external?: boolean;
   thumbnail?: string;
   publishedAt?: string;
   durationSec?: number;
@@ -60,9 +62,12 @@ export default function RecapPanel({
   const [, setProgressTick] = useState(0);
 
   /** A view counts when the user SELECTS a video — watching it fully is not required. */
-  const selectCandidate = (c: Candidate) => {
+  const recordView = () => {
     if (isNationalSlug(league)) recordNationGameView(game.id, game.home, game.away);
     else recordGameView(game.id, game.home, game.away);
+  };
+  const selectCandidate = (c: Candidate) => {
+    recordView();
     setSelected(c);
   };
   /** Candidate ids whose YouTube thumbnail failed to load (fall back to crests). */
@@ -171,12 +176,8 @@ export default function RecapPanel({
             const watched = c.videoId ? isWatched(c.videoId) : false;
             const frac = !watched && c.videoId ? progressFraction(c.videoId) : null;
             const showThumb = !!c.thumbnail && !brokenThumb[c.id];
-            return (
-              <button
-                key={c.id}
-                className={'recap-item' + (selected?.id === c.id ? ' selected' : '')}
-                onClick={() => selectCandidate(c)}
-              >
+            const inner = (
+              <>
                 <span className="recap-thumb">
                   {showThumb ? (
                     <img
@@ -203,8 +204,14 @@ export default function RecapPanel({
                   <span className="recap-title">{c.title}</span>
                   <br />
                   <span className="recap-src">
-                    {SOURCE_HE[c.source] ?? c.source}
-                    {c.channelName ? ` · ${c.channelName}` : ''}
+                    {c.external ? (
+                      <>לצפייה בספורט 5 ↗</>
+                    ) : (
+                      <>
+                        {SOURCE_HE[c.source] ?? c.source}
+                        {c.channelName ? ` · ${c.channelName}` : ''}
+                      </>
+                    )}
                   </span>
                   {watched && <span className="watched-badge">נצפה ✓</span>}
                   {frac != null && (
@@ -216,6 +223,32 @@ export default function RecapPanel({
                     </span>
                   )}
                 </span>
+              </>
+            );
+            // External results (Sport5) are link-out only: the source
+            // site blocks framing, so the card itself is a link that
+            // opens the video page in a new tab — never a player.
+            if (c.external) {
+              return (
+                <a
+                  key={c.id}
+                  className="recap-item"
+                  href={c.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={recordView}
+                >
+                  {inner}
+                </a>
+              );
+            }
+            return (
+              <button
+                key={c.id}
+                className={'recap-item' + (selected?.id === c.id ? ' selected' : '')}
+                onClick={() => selectCandidate(c)}
+              >
+                {inner}
               </button>
             );
           })}
