@@ -306,7 +306,7 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
     competitionTerms: [
       'la liga', 'לה ליגה',
     ],
-    preferred: [{ handle: 'one-1004', lang: 'he' }],
+    preferred: [{ handle: 'one-1004', lang: 'he', pages: 6 }],
     // ONE's per-game upload is consistently the best La Liga recap even
     // when its title carries no highlight wording, so any kept ONE result
     // stops the cascade and is exclusive (user decision 2026-10-02).
