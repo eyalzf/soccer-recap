@@ -471,6 +471,128 @@ const valSevGame: GameInput = {
 eq('racing: ONE title rejected for non-Racing game',
   filterCandidate(mkRacing('racing-neg', 'קרב תחתית עיקש: תיקו בין ולנסיה לראסינג'), valSevGame).keep, false);
 
+// ONE-channel audit (510 uploads x 78 La Liga fixtures): ONE's house forms
+// for Spanish clubs differ from the canonical Hebrew names. Each alias below
+// is proven by a real ONE title that the filter rejected before the alias was
+// added (kept after), plus a same-date control where the aliased club is
+// swapped out — the title must then reject on teams.
+const mkAudit = (id: string, title: string, publishedAt: string): RawCandidate => ({
+  id, title,
+  url: `https://www.youtube.com/watch?v=${id}`, source: 'youtube', videoId: id,
+  lang: 'he', embeddable: true, publishedAt,
+});
+
+// Racing de Santander: alternate spellings ראסינג סאנטנדר / סנטנדר / סאנטנדר.
+eq('racing: ONE ראסינג סאנטנדר spelling kept',
+  filterCandidate(mkAudit('50QOtIcYppw', 'ראיו ויאקנו אירחה את ראסינג סאנטנדר למשחק פשוט פסיכי | מחזור 4', '2026-09-06T12:00:00Z'),
+    { home: 'Rayo Vallecano', away: 'Racing Santander', dateISO: '2026-09-05T16:30:00.000Z', league: 'la-liga', homeScore: 3, awayScore: 2 }).keep, true);
+eq('racing: ראסינג סאנטנדר title rejected without Racing',
+  filterCandidate(mkAudit('50QOtIcYppw', 'ראיו ויאקנו אירחה את ראסינג סאנטנדר למשחק פשוט פסיכי | מחזור 4', '2026-09-06T12:00:00Z'),
+    { home: 'Rayo Vallecano', away: 'Sevilla', dateISO: '2026-09-05T16:30:00.000Z', league: 'la-liga', homeScore: 3, awayScore: 2 }).keep, false);
+eq('racing: ONE bare סנטנדר kept',
+  filterCandidate(mkAudit('c9r1oymMWu0', 'שלושער בבכורה, חמישה שערים ודרמה ענקית: סנטנדר ואלצ\'ה פותחות מחזור | מחזור 3', '2026-08-29T12:00:00Z'),
+    { home: 'Racing Santander', away: 'Elche', dateISO: '2026-08-28T17:00:00.000Z', league: 'la-liga', homeScore: 3, awayScore: 2 }).keep, true);
+eq('racing: bare סנטנדר title rejected without Racing',
+  filterCandidate(mkAudit('c9r1oymMWu0', 'שלושער בבכורה, חמישה שערים ודרמה ענקית: סנטנדר ואלצ\'ה פותחות מחזור | מחזור 3', '2026-08-29T12:00:00Z'),
+    { home: 'Sevilla', away: 'Elche', dateISO: '2026-08-28T17:00:00.000Z', league: 'la-liga', homeScore: 3, awayScore: 2 }).keep, false);
+eq('racing: ONE bare סאנטנדר kept',
+  filterCandidate(mkAudit('jqSFjE8TdNY', 'סאנטנדר חוזרת ללה ליגה אחרי 16 שנה במשחק אדיר עם ויאריאל | מחזור הפתיחה', '2026-08-17T12:00:00Z'),
+    { home: 'Racing Santander', away: 'Villarreal', dateISO: '2026-08-16T15:00:00.000Z', league: 'la-liga', homeScore: 2, awayScore: 2 }).keep, true);
+eq('racing: bare סאנטנדר title rejected without Racing',
+  filterCandidate(mkAudit('jqSFjE8TdNY', 'סאנטנדר חוזרת ללה ליגה אחרי 16 שנה במשחק אדיר עם ויאריאל | מחזור הפתיחה', '2026-08-17T12:00:00Z'),
+    { home: 'Sevilla', away: 'Villarreal', dateISO: '2026-08-16T15:00:00.000Z', league: 'la-liga', homeScore: 2, awayScore: 2 }).keep, false);
+
+// Real Betis: ONE uses bare בטיס (this title also carries Osasuna's אוססונה).
+eq('betis: ONE bare בטיס kept',
+  filterCandidate(mkAudit('xWwenZiyvrM', 'מטורף: 2:5 אדיר בין בטיס לאוססונה', '2026-10-12T12:00:00Z'),
+    { home: 'Real Betis', away: 'Osasuna', dateISO: '2026-10-11T16:30:00.000Z', league: 'la-liga', homeScore: 5, awayScore: 2 }).keep, true);
+eq('betis: bare בטיס title rejected without Betis',
+  filterCandidate(mkAudit('xWwenZiyvrM', 'מטורף: 2:5 אדיר בין בטיס לאוססונה', '2026-10-12T12:00:00Z'),
+    { home: 'Sevilla', away: 'Osasuna', dateISO: '2026-10-11T16:30:00.000Z', league: 'la-liga', homeScore: 5, awayScore: 2 }).keep, false);
+
+// Osasuna: ONE's house spelling is אוססונה (canonical אוסאסונה).
+eq('osasuna: ONE spelling אוססונה kept',
+  filterCandidate(mkAudit('-W7Oxh6jwjI', 'מוכנה לדרבי: 0:4 לאתלטיקו על אוססונה', '2026-09-17T12:00:00Z'),
+    { home: 'Atlético Madrid', away: 'Osasuna', dateISO: '2026-09-16T17:00:00.000Z', league: 'la-liga', homeScore: 4, awayScore: 0 }).keep, true);
+eq('osasuna: אוססונה title rejected without Osasuna',
+  filterCandidate(mkAudit('-W7Oxh6jwjI', 'מוכנה לדרבי: 0:4 לאתלטיקו על אוססונה', '2026-09-17T12:00:00Z'),
+    { home: 'Atlético Madrid', away: 'Sevilla', dateISO: '2026-09-16T17:00:00.000Z', league: 'la-liga', homeScore: 4, awayScore: 0 }).keep, false);
+
+// Real Sociedad: ONE uses bare סוסיאדד.
+eq('sociedad: ONE bare סוסיאדד kept',
+  filterCandidate(mkAudit('rak4rNsy-Ps', 'מתקרבת לפסגה: אתלטיקו מביסה את סוסיאדד', '2026-09-14T12:00:00Z'),
+    { home: 'Real Sociedad', away: 'Atlético Madrid', dateISO: '2026-09-13T19:00:00.000Z', league: 'la-liga', homeScore: 0, awayScore: 3 }).keep, true);
+eq('sociedad: bare סוסיאדד title rejected without Sociedad',
+  filterCandidate(mkAudit('rak4rNsy-Ps', 'מתקרבת לפסגה: אתלטיקו מביסה את סוסיאדד', '2026-09-14T12:00:00Z'),
+    { home: 'Sevilla', away: 'Atlético Madrid', dateISO: '2026-09-13T19:00:00.000Z', league: 'la-liga', homeScore: 0, awayScore: 3 }).keep, false);
+
+// Deportivo A Coruña: ONE uses דפוטיבו, אה קורוניה and דפורטיבו.
+eq('coruna: ONE דפוטיבו kept',
+  filterCandidate(mkAudit('z0D5YkKjIA0', 'מותחן דרמה: סוסיאדד מנצחת את דפוטיבו 2:3', '2026-10-12T12:00:00Z'),
+    { home: 'Real Sociedad', away: 'Deportivo A Coruña', dateISO: '2026-10-11T14:15:00.000Z', league: 'la-liga', homeScore: 3, awayScore: 2 }).keep, true);
+eq('coruna: דפוטיבו title rejected without Coruña',
+  filterCandidate(mkAudit('z0D5YkKjIA0', 'מותחן דרמה: סוסיאדד מנצחת את דפוטיבו 2:3', '2026-10-12T12:00:00Z'),
+    { home: 'Real Sociedad', away: 'Sevilla', dateISO: '2026-10-11T14:15:00.000Z', league: 'la-liga', homeScore: 3, awayScore: 2 }).keep, false);
+eq('coruna: ONE אה קורוניה kept',
+  filterCandidate(mkAudit('jm7NNeVrVBw', 'סביליה מנחילה הפסד ראשון לאה קורוניה', '2026-09-17T12:00:00Z'),
+    { home: 'Deportivo A Coruña', away: 'Sevilla', dateISO: '2026-09-16T17:00:00.000Z', league: 'la-liga', homeScore: 0, awayScore: 1 }).keep, true);
+eq('coruna: אה קורוניה title rejected without Coruña',
+  filterCandidate(mkAudit('jm7NNeVrVBw', 'סביליה מנחילה הפסד ראשון לאה קורוניה', '2026-09-17T12:00:00Z'),
+    { home: 'Valencia', away: 'Sevilla', dateISO: '2026-09-16T17:00:00.000Z', league: 'la-liga', homeScore: 0, awayScore: 1 }).keep, false);
+eq('coruna: ONE דפורטיבו kept',
+  filterCandidate(mkAudit('gwR_x4puXvA', 'באה מלמטה: דפורטיבו מוציאה נקודה מבטיס', '2026-09-21T12:00:00Z'),
+    { home: 'Deportivo A Coruña', away: 'Real Betis', dateISO: '2026-09-20T16:30:00.000Z', league: 'la-liga', homeScore: 1, awayScore: 1 }).keep, true);
+// דפורטיבו gate: ONE's Coruña-Getafe draw title must keep for its true
+// fixture and must NOT match the Alavés-Getafe fixture (Alavés's canonical
+// name also starts with דפורטיבו).
+eq('coruna: דפורטיבו gate title kept for true Coruña fixture',
+  filterCandidate(mkAudit('GqiDrDYtw1w', 'בקרב עיקש: דפורטיבו וחטאפה נפרדות בתיקו', '2026-09-14T12:00:00Z'),
+    { home: 'Getafe', away: 'Deportivo A Coruña', dateISO: '2026-09-13T16:30:00.000Z', league: 'la-liga', homeScore: 1, awayScore: 1 }).keep, true);
+eq('coruna: דפורטיבו gate title rejected for Alavés-Getafe fixture',
+  filterCandidate(mkAudit('GqiDrDYtw1w', 'בקרב עיקש: דפורטיבו וחטאפה נפרדות בתיקו', '2026-08-16T12:00:00Z'),
+    { home: 'Deportivo Alavés', away: 'Getafe', dateISO: '2026-08-15T17:30:00.000Z', league: 'la-liga', homeScore: 3, awayScore: 0 }).keep, false);
+
+// Deportivo Alavés: ONE uses bare אלאבס.
+eq('alaves: ONE bare אלאבס kept',
+  filterCandidate(mkAudit('9YPBIsJ1qn4', 'סיום דרמטי: אתלטיקו גוברת על אלאבס 1:2', '2026-10-11T12:00:00Z'),
+    { home: 'Deportivo Alavés', away: 'Atlético Madrid', dateISO: '2026-10-10T14:15:00.000Z', league: 'la-liga', homeScore: 1, awayScore: 2 }).keep, true);
+eq('alaves: bare אלאבס title rejected without Alavés',
+  filterCandidate(mkAudit('9YPBIsJ1qn4', 'סיום דרמטי: אתלטיקו גוברת על אלאבס 1:2', '2026-10-11T12:00:00Z'),
+    { home: 'Sevilla', away: 'Atlético Madrid', dateISO: '2026-10-10T14:15:00.000Z', league: 'la-liga', homeScore: 1, awayScore: 2 }).keep, false);
+
+// Athletic Club: ONE uses bare בילבאו.
+eq('athletic: ONE bare בילבאו kept',
+  filterCandidate(mkAudit('yvuCsjYz254', '90 דק\' לרביבו: אלצ\'ה ובילבאו נפרדות ב1:1', '2026-09-13T12:00:00Z'),
+    { home: 'Athletic Club', away: 'Elche', dateISO: '2026-09-12T16:30:00.000Z', league: 'la-liga', homeScore: 1, awayScore: 1 }).keep, true);
+eq('athletic: bare בילבאו title rejected without Athletic',
+  filterCandidate(mkAudit('yvuCsjYz254', '90 דק\' לרביבו: אלצ\'ה ובילבאו נפרדות ב1:1', '2026-09-13T12:00:00Z'),
+    { home: 'Sevilla', away: 'Elche', dateISO: '2026-09-12T16:30:00.000Z', league: 'la-liga', homeScore: 1, awayScore: 1 }).keep, false);
+
+// Celta Vigo: ONE uses bare סלטה.
+eq('celta: ONE bare סלטה kept',
+  filterCandidate(mkAudit('VR2xfE2uq5k', 'מפגש משפחתי: רביבו ואלצ\'ה בתיקו עם סלטה', '2026-10-12T12:00:00Z'),
+    { home: 'Elche', away: 'Celta Vigo', dateISO: '2026-10-11T12:00:00.000Z', league: 'la-liga', homeScore: 0, awayScore: 0 }).keep, true);
+eq('celta: bare סלטה title rejected without Celta',
+  filterCandidate(mkAudit('VR2xfE2uq5k', 'מפגש משפחתי: רביבו ואלצ\'ה בתיקו עם סלטה', '2026-10-12T12:00:00Z'),
+    { home: 'Elche', away: 'Sevilla', dateISO: '2026-10-11T12:00:00.000Z', league: 'la-liga', homeScore: 0, awayScore: 0 }).keep, false);
+
+// Málaga: ONE spells it מאלגה (canonical מלאגה).
+eq('malaga: ONE spelling מאלגה kept',
+  filterCandidate(mkAudit('C5lq98p_cS8', 'עדיין בלי ניצחון: מאלגה מפסידה לחטאפה', '2026-09-21T12:00:00Z'),
+    { home: 'Getafe', away: 'Málaga', dateISO: '2026-09-20T12:00:00.000Z', league: 'la-liga', homeScore: 1, awayScore: 0 }).keep, true);
+eq('malaga: מאלגה title rejected without Málaga',
+  filterCandidate(mkAudit('C5lq98p_cS8', 'עדיין בלי ניצחון: מאלגה מפסידה לחטאפה', '2026-09-21T12:00:00Z'),
+    { home: 'Getafe', away: 'Sevilla', dateISO: '2026-09-20T12:00:00.000Z', league: 'la-liga', homeScore: 1, awayScore: 0 }).keep, false);
+
+// Real Valladolid: bare ויאדוליד — STATIC-ONLY (no ONE audit title exists;
+// alias proven at matcher level with a synthetic title only).
+eq('valladolid: synthetic bare ויאדוליד kept',
+  filterCandidate(mkAudit('valla-syn', 'תקציר: ויאדוליד נגד סביליה 1:0', '2026-10-12T12:00:00Z'),
+    { home: 'Real Valladolid', away: 'Sevilla', dateISO: '2026-10-11T19:00:00.000Z', league: 'la-liga', homeScore: 1, awayScore: 0 }).keep, true);
+eq('valladolid: synthetic ויאדוליד title rejected without Valladolid',
+  filterCandidate(mkAudit('valla-syn', 'תקציר: ויאדוליד נגד סביליה 1:0', '2026-10-12T12:00:00Z'),
+    { home: 'Valencia', away: 'Sevilla', dateISO: '2026-10-11T19:00:00.000Z', league: 'la-liga', homeScore: 1, awayScore: 0 }).keep, false);
+
 // ---------------------------------------------------------------- report ---
 console.log(`\n${gameCount} games, ${pass + fail} assertions: ${pass} pass, ${fail} fail`);
 if (failures.length) {
