@@ -21,8 +21,10 @@
  *     Aggregated across the selected channels, matched app-side.
  *  3. `external` — link-out web sources (Sport5): harvested + matched
  *     app-side, rendered as "open at source" results, never embedded.
- *     Runs only when tiers 1+2 kept no proper highlight. A league with
- *     external sources configured NEVER runs tier 4.
+ *     Position is plan-driven (`externalPosition`): by default it runs
+ *     after bulk, only when tiers 1+2 kept no proper highlight; a plan
+ *     may instead place it above bulk, where a hit is exclusive. A
+ *     league with external sources configured NEVER runs tier 4.
  *  4. General search.list fallback (100 units per language), only when
  *     tiers 1+2 produce nothing and no external source is configured.
  *
@@ -79,9 +81,9 @@ export interface BulkChannel {
  * One external (link-out) web source for a league. External providers
  * discover a per-game video on a third-party site and return a LINK to
  * it — the result is rendered as an "open at source" card and never
- * embedded (the site blocks third-party framing). Providers run only
- * when the YouTube tiers kept no proper highlight, and a league with
- * any external source configured never falls through to general YouTube
+ * embedded (the site blocks third-party framing). Where the tier runs
+ * is the plan's `externalPosition`; either way, a league with any
+ * external source configured never falls through to general YouTube
  * search: the external tier is terminal (user decision 2026-10-14).
  */
 export interface ExternalSourceConfig {
@@ -101,11 +103,24 @@ export interface LeagueSearchPlan {
   /** Curated bulk pool: uploads playlists scanned + matched app-side. */
   bulk: BulkChannel[];
   /**
-   * External link-out sources, tried in order after the bulk tier when
-   * no proper highlight was kept. When non-empty, the general-search
-   * fallback never runs for this league.
+   * External link-out sources, tried in order (their position relative
+   * to the bulk tier is `externalPosition`). When non-empty, the
+   * general-search fallback never runs for this league.
    */
   external?: ExternalSourceConfig[];
+  /**
+   * Where the external tier sits relative to the bulk tier:
+   *  - 'below-bulk' (default): external runs after bulk, only when the
+   *    curated tiers kept no proper highlight.
+   *  - 'above-bulk': external runs after preferred, BEFORE bulk, and a
+   *    hit is exclusive — bulk/general never run for that game, and
+   *    non-external results (including cached ones) are suppressed on
+   *    read, mirroring preferred exclusivity. For a league whose
+   *    external source outranks its bulk pool (Champions League /
+   *    Sport5: the bulk aggregators proved poor in preview validation
+   *    and one was deny-listed by the user — user decision 2026-10-14).
+   */
+  externalPosition?: 'above-bulk' | 'below-bulk';
   /**
    * Max uploads-playlist pages per bulk channel (50 videos/page, newest
    * first, early-stop once videos predate the game). Default 10.
@@ -383,7 +398,11 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
     // homepage rail (category Vc=12363), matched app-side, and opened
     // at the source (user design + approval 2026-10-14). With this
     // configured, general YouTube search never runs for the UCL.
+    // The tier sits ABOVE bulk and is exclusive on a hit: preview
+    // validation showed the bulk aggregators are the weaker source
+    // (user decision 2026-10-14, after the Sabah–Slavia live check).
     external: [{ provider: 'sport5', category: 12363 }],
+    externalPosition: 'above-bulk',
     fallbackLangs: ['en'],
   },
   'premier-league': {
