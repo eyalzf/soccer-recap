@@ -30,6 +30,7 @@ function tierSummary(c: ChannelStat): string {
   if (c.tiers.sport1) parts.push(`S1:${c.tiers.sport1}`);
   if (c.tiers.preferred) parts.push(`P:${c.tiers.preferred}`);
   if (c.tiers.bulk) parts.push(`B:${c.tiers.bulk}`);
+  if (c.tiers.external) parts.push(`E:${c.tiers.external}`);
   if (c.tiers.general) parts.push(`G:${c.tiers.general}`);
   return parts.join(' · ');
 }
