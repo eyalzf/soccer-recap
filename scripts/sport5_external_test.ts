@@ -20,7 +20,9 @@ import {
   parseSport5Rail,
   type Sport5IndexItem,
 } from '../lib/recap/sport5';
-import type { GameInput } from '../lib/recap/types';
+import { applyExternalExclusivity } from '../lib/recap/external';
+import { searchPlanFor } from '../lib/recap/leaguePlans';
+import type { GameInput, RawCandidate } from '../lib/recap/types';
 
 let pass = 0;
 let fail = 0;
@@ -178,6 +180,46 @@ for (const { game, vi } of GAMES) {
   idx = mergeSport5Index([ancient, ...idx], [], t1);
   check('merge: >120d pruned', !idx.some((i) => i.vi === 1));
   check('merge: sorted newest first', idx.every((v, i, a) => i === 0 || a[i - 1].vi >= v.vi));
+}
+
+// ---------- Part 3: above-bulk exclusivity (read-path filter) ----------
+// The recap route runs every result list (fresh compute, merge, cache
+// read) through applyExternalExclusivity: for an above-bulk plan, an
+// external result suppresses every non-external result — including
+// bulk results cached before the external result existed.
+{
+  const mk = (id: string, external: boolean): RawCandidate => ({
+    id,
+    title: id,
+    url: 'https://example.com/' + id,
+    source: external ? 'sport5' : 'youtube',
+    ...(external ? { external: true } : {}),
+    lang: 'en',
+  });
+  const ucl = searchPlanFor('champions-league');
+  const pl = searchPlanFor('premier-league');
+  const mixed = [mk('bulk-a', false), mk('sport5:563574', true), mk('bulk-b', false)];
+
+  eq(
+    'exclusivity: above-bulk keeps only the external result',
+    applyExternalExclusivity(ucl, mixed).map((c) => c.id),
+    ['sport5:563574']
+  );
+  eq(
+    'exclusivity: above-bulk without an external result is unchanged',
+    applyExternalExclusivity(ucl, [mk('bulk-a', false), mk('bulk-b', false)]).map((c) => c.id),
+    ['bulk-a', 'bulk-b']
+  );
+  eq(
+    'exclusivity: above-bulk empty list stays empty',
+    applyExternalExclusivity(ucl, []).length,
+    0
+  );
+  eq(
+    'exclusivity: below-bulk plan (default) is unchanged',
+    applyExternalExclusivity(pl, mixed).map((c) => c.id),
+    ['bulk-a', 'sport5:563574', 'bulk-b']
+  );
 }
 
 console.log(`\nsport5_external_test: ${pass} passed, ${fail} failed`);
