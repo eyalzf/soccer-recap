@@ -250,8 +250,8 @@ const day = (entries: SearchLogEntry[]): SearchLogDay => ({
 {
   const days = [
     day([
-      entry('la-liga', 'Barcelona', 'Sevilla', '2026-10-12T19:00:00.000Z', [
-        kc('v1', 'FC Barcelona', undefined, 'bulk', 'Barca highlights'),
+      entry('la-liga', 'Real Madrid', 'Sevilla', '2026-10-12T19:00:00.000Z', [
+        kc('v1', 'Real Madrid', undefined, 'bulk', 'Madrid highlights'),
       ]),
       entry('premier-league', 'Arsenal', 'Chelsea', '2026-10-12T15:00:00.000Z', [
         kc('v2', 'Random Highlights', undefined, 'general', 'goals'),
@@ -260,14 +260,14 @@ const day = (entries: SearchLogEntry[]): SearchLogDay => ({
     ]),
   ];
   const res = aggregateChannelStats(days);
-  const barca = res.channels.find((c) => c.channel === 'FC Barcelona');
-  check('club channel classified per-team', barca?.classification === 'per-team', barca?.classification);
+  const rm = res.channels.find((c) => c.channel === 'Real Madrid');
+  check('club channel classified per-team', rm?.classification === 'per-team', rm?.classification);
   check(
     'per-team scope carries teams in both leagues',
-    !!barca &&
-      barca.scopeByLeague.length === 2 &&
-      barca.scopeByLeague.every((s) => s.teams?.join(',') === 'Barcelona'),
-    barca?.scopeByLeague
+    !!rm &&
+      rm.scopeByLeague.length === 2 &&
+      rm.scopeByLeague.every((s) => s.teams?.join(',') === 'Real Madrid'),
+    rm?.scopeByLeague
   );
   const rnd = res.channels.find((c) => c.channel === 'Random Highlights');
   check(
