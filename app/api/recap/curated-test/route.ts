@@ -48,11 +48,13 @@ interface ChannelReport {
  * (quota-cheap triage of new channels).
  *
  * When the league plan configures external sources (Sport5 for the
- * UCL), an "external" tier report is appended: the provider's harvested
+ * UCL), an "external" tier report is included: the provider's harvested
  * index is matched against the game and every considered item's verdict
  * is tallied (rejectReasons / rejectedExamples), with the matched
- * link-out URL in keptUrls. &only=external runs just that tier (it
- * costs no YouTube quota).
+ * link-out URL in keptUrls. The tier is reported in the plan's
+ * execution position (above bulk for plans with
+ * externalPosition 'above-bulk', otherwise after bulk).
+ * &only=external runs just that tier (it costs no YouTube quota).
  *
  * NOTE: like production's preferred tier, this test scans the channel's
  * uploads playlist (1 unit/page, Blob-cached) and matches app-side — the
@@ -158,42 +160,16 @@ export async function GET(req: NextRequest) {
     };
   };
 
-  for (const tierName of ['preferred', 'bulk'] as const) {
-    if (sp.get('only') === 'candidate' || sp.get('only') === 'external') break;
-    const channels: ChannelReport[] = [];
-    for (const entry of plan[tierName]) {
-      const label =
-        tierName === 'preferred'
-          ? `preferred:@${entry.handle}`
-          : (entry as { label: string }).label;
-      channels.push(await scanChannel(entry, label, tierName));
-      if (ytRateLimited) break;
-    }
-    tiers.push({ tier: tierName, channels });
-  }
-
-  // Candidate channels for curation research: &extra=@handle1,@handle2 (or
-  // raw channel IDs). Scanned as a separate "candidate" tier with the same
-  // matcher; never touches the plan or the search log.
-  const extraParam = sp.get('extra');
-  if (extraParam && !ytRateLimited) {
-    const channels: ChannelReport[] = [];
-    for (const raw of extraParam.split(',')) {
-      const tok = raw.trim().replace(/^@/, '');
-      if (!tok) continue;
-      const entry = tok.startsWith('UC')
-        ? { channelId: tok }
-        : { handle: tok };
-      channels.push(await scanChannel(entry, `candidate:@${tok}`, 'candidate'));
-      if (ytRateLimited) break;
-    }
-    tiers.push({ tier: 'candidate', channels });
-  }
-
   // External link-out tier (plan-configured; Sport5 for the UCL):
   // report what the provider's index held and how each item fared.
+  // Built lazily (it harvests/matches live) and inserted at the plan's
+  // execution position below.
   const externalCfgs = plan.external ?? [];
-  if (externalCfgs.length > 0 && sp.get('only') !== 'candidate') {
+  const buildExternalTier = async (): Promise<{
+    tier: string;
+    channels: ChannelReport[];
+  } | null> => {
+    if (externalCfgs.length === 0 || sp.get('only') === 'candidate') return null;
     const channels: ChannelReport[] = [];
     for (const cfg of externalCfgs) {
       const r = await runExternalSource(cfg, game);
@@ -217,8 +193,54 @@ export async function GET(req: NextRequest) {
         ...(r.ambiguous ? { ambiguous: true } : {}),
       });
     }
-    tiers.push({ tier: 'external', channels });
+    return { tier: 'external', channels };
+  };
+  const externalAboveBulk = plan.externalPosition === 'above-bulk';
+  const planTierReports: Array<{ tier: string; channels: ChannelReport[] }> = [];
+  for (const tierName of ['preferred', 'bulk'] as const) {
+    if (sp.get('only') === 'candidate' || sp.get('only') === 'external') break;
+    const channels: ChannelReport[] = [];
+    for (const entry of plan[tierName]) {
+      const label =
+        tierName === 'preferred'
+          ? `preferred:@${entry.handle}`
+          : (entry as { label: string }).label;
+      channels.push(await scanChannel(entry, label, tierName));
+      if (ytRateLimited) break;
+    }
+    planTierReports.push({ tier: tierName, channels });
   }
+
+  // Candidate channels for curation research: &extra=@handle1,@handle2 (or
+  // raw channel IDs). Scanned as a separate "candidate" tier with the same
+  // matcher; never touches the plan or the search log.
+  let candidateTier: { tier: string; channels: ChannelReport[] } | null = null;
+  const extraParam = sp.get('extra');
+  if (extraParam && !ytRateLimited) {
+    const channels: ChannelReport[] = [];
+    for (const raw of extraParam.split(',')) {
+      const tok = raw.trim().replace(/^@/, '');
+      if (!tok) continue;
+      const entry = tok.startsWith('UC')
+        ? { channelId: tok }
+        : { handle: tok };
+      channels.push(await scanChannel(entry, `candidate:@${tok}`, 'candidate'));
+      if (ytRateLimited) break;
+    }
+    candidateTier = { tier: 'candidate', channels };
+  }
+
+  // Assemble the report in the plan's execution order: preferred →
+  // external (above-bulk plans only) → bulk → candidate → external
+  // (default below-bulk position).
+  const externalTier = await buildExternalTier();
+  const preferredReport = planTierReports.find((t) => t.tier === 'preferred');
+  const bulkReport = planTierReports.find((t) => t.tier === 'bulk');
+  if (preferredReport) tiers.push(preferredReport);
+  if (externalAboveBulk && externalTier) tiers.push(externalTier);
+  if (bulkReport) tiers.push(bulkReport);
+  if (candidateTier) tiers.push(candidateTier);
+  if (!externalAboveBulk && externalTier) tiers.push(externalTier);
 
   return NextResponse.json({ game, tiers, ytRateLimited });
 }
