@@ -19,8 +19,12 @@
  *     Team-scoped entries (club channels) are only scanned for their own
  *     club's games; league-wide entries (aggregators, broadcasters) always.
  *     Aggregated across the selected channels, matched app-side.
- *  3. General search.list fallback (100 units per language), only when
- *     tiers 1+2 produce nothing.
+ *  3. `external` — link-out web sources (Sport5): harvested + matched
+ *     app-side, rendered as "open at source" results, never embedded.
+ *     Runs only when tiers 1+2 kept no proper highlight. A league with
+ *     external sources configured NEVER runs tier 4.
+ *  4. General search.list fallback (100 units per language), only when
+ *     tiers 1+2 produce nothing and no external source is configured.
  *
  * To add a new source: add one line to the league's `preferred` or `bulk`
  * list. Bulk entries take a `handle` (without @) or a raw `channelId`
@@ -71,11 +75,37 @@ export interface BulkChannel {
   teams?: string[];
 }
 
+/**
+ * One external (link-out) web source for a league. External providers
+ * discover a per-game video on a third-party site and return a LINK to
+ * it — the result is rendered as an "open at source" card and never
+ * embedded (the site blocks third-party framing). Providers run only
+ * when the YouTube tiers kept no proper highlight, and a league with
+ * any external source configured never falls through to general YouTube
+ * search: the external tier is terminal (user decision 2026-10-14).
+ */
+export interface ExternalSourceConfig {
+  /** Provider implementation key (see lib/recap/external.ts). */
+  provider: 'sport5';
+  /**
+   * Provider-specific catalog selector: for Sport5, the Vc category id
+   * of the competition's highlight rail on the site (12363 = Champions
+   * League). Items from any other category never leak into matching.
+   */
+  category: number;
+}
+
 export interface LeagueSearchPlan {
   /** Preferred channels, tried in order (first = highest priority). */
   preferred: PreferredChannel[];
   /** Curated bulk pool: uploads playlists scanned + matched app-side. */
   bulk: BulkChannel[];
+  /**
+   * External link-out sources, tried in order after the bulk tier when
+   * no proper highlight was kept. When non-empty, the general-search
+   * fallback never runs for this league.
+   */
+  external?: ExternalSourceConfig[];
   /**
    * Max uploads-playlist pages per bulk channel (50 videos/page, newest
    * first, early-stop once videos predate the game). Default 10.
@@ -323,6 +353,14 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
       // TODO(verify): Tottenham (handle unconfirmed), UEFA (matchday
       // roundups only — rejected by per-game matching anyway).
     ],
+    // Sport5 is the official Israeli UCL broadcaster and posts a
+    // Hebrew highlight for nearly every game, but its player blocks
+    // third-party framing on every surface — so Sport5 is an external
+    // (link-out) source: discovered by harvesting the m.sport5.co.il
+    // homepage rail (category Vc=12363), matched app-side, and opened
+    // at the source (user design + approval 2026-10-14). With this
+    // configured, general YouTube search never runs for the UCL.
+    external: [{ provider: 'sport5', category: 12363 }],
     fallbackLangs: ['en'],
   },
   'premier-league': {
