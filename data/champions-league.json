@@ -2,7 +2,7 @@
   "league": "champions-league",
   "league_id": 42,
   "season": "2026/2027",
-  "updated_at": "2026-09-20T05:29:21.412429+00:00",
+  "updated_at": "2026-10-14T02:58:41.301068+00:00",
   "checked_through": "2026-09-19",
   "team_ids": {
     "Arsenal": 9825,
@@ -17,6 +17,105 @@
     "Villarreal": 10205
   },
   "games": [
+    {
+      "id": "manual-20261013-arsenal-lille",
+      "home": "Arsenal",
+      "away": "Lille",
+      "dateISO": "2026-10-13T19:00:00.000Z",
+      "homeScore": 3,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9825.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/2giize1534005340.png",
+      "stage": "שלב הליגה · מחזור 2"
+    },
+    {
+      "id": "manual-20261013-atletico-madrid-manchester-united",
+      "home": "Atlético Madrid",
+      "away": "Manchester United",
+      "dateISO": "2026-10-13T19:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9906.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10260.png",
+      "stage": "שלב הליגה · מחזור 2"
+    },
+    {
+      "id": "manual-20261013-galatasaray-barcelona",
+      "home": "Galatasaray",
+      "away": "Barcelona",
+      "dateISO": "2026-10-13T19:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 4,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/io7jk21767941298.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8634.png",
+      "stage": "שלב הליגה · מחזור 2"
+    },
+    {
+      "id": "manual-20261013-inter-club-brugge",
+      "home": "Inter",
+      "away": "Club Brugge",
+      "dateISO": "2026-10-13T19:00:00.000Z",
+      "homeScore": 3,
+      "awayScore": 4,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/ryhu6d1617113103.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/mz8y0q1771129880.png",
+      "stage": "שלב הליגה · מחזור 2"
+    },
+    {
+      "id": "manual-20261013-rb-leipzig-psv-eindhoven",
+      "home": "RB Leipzig",
+      "away": "PSV Eindhoven",
+      "dateISO": "2026-10-13T19:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 0,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/zjgapo1594244951.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/xfsz6i1721297428.png",
+      "stage": "שלב הליגה · מחזור 2"
+    },
+    {
+      "id": "manual-20261013-viking-bayern-munchen",
+      "home": "Viking",
+      "away": "Bayern München",
+      "dateISO": "2026-10-13T19:00:00.000Z",
+      "homeScore": 3,
+      "awayScore": 3,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/9mzq961590148192.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/01ogkh1716960412.png",
+      "stage": "שלב הליגה · מחזור 2"
+    },
+    {
+      "id": "manual-20261013-villarreal-napoli",
+      "home": "Villarreal",
+      "away": "Napoli",
+      "dateISO": "2026-10-13T19:00:00.000Z",
+      "homeScore": 3,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10205.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/l8qyxv1742982541.png",
+      "stage": "שלב הליגה · מחזור 2"
+    },
+    {
+      "id": "manual-20261013-lens-sporting-cp",
+      "home": "Lens",
+      "away": "Sporting CP",
+      "dateISO": "2026-10-13T16:45:00.000Z",
+      "homeScore": 0,
+      "awayScore": 2,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/3pxoum1598797195.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/5hiuk71783137875.png",
+      "stage": "שלב הליגה · מחזור 2"
+    },
+    {
+      "id": "manual-20261013-sabah-fk-slavia-prague",
+      "home": "Sabah FK",
+      "away": "Slavia Prague",
+      "dateISO": "2026-10-13T16:45:00.000Z",
+      "homeScore": 2,
+      "awayScore": 0,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/dug7wr1614888756.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/l7kl4n1759252139.png",
+      "stage": "שלב הליגה · מחזור 2"
+    },
     {
       "id": "6106240",
       "home": "Bayern München",
