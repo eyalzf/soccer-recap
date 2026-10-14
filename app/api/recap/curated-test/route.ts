@@ -4,6 +4,7 @@ import { getChannelVideos } from '@/lib/recap/bulk';
 import { channelIdForHandle, ytVideoMeta } from '@/lib/recap/sources';
 import { filterCandidate, hasHighlightIntent } from '@/lib/recap/match';
 import { getDenySet } from '@/lib/recap/denyList';
+import { runExternalSource } from '@/lib/recap/external';
 import type { GameInput, RawCandidate } from '@/lib/recap/types';
 
 export const dynamic = 'force-dynamic';
@@ -26,6 +27,10 @@ interface ChannelReport {
   rejectReasons?: Record<string, number>;
   rejectedExamples?: Array<{ title: string; reason: string }>;
   keptTitles?: string[];
+  /** External tier only: the matched link-out URL(s). */
+  keptUrls?: string[];
+  /** External tier only: ≥2 index items matched; result suppressed. */
+  ambiguous?: boolean;
 }
 
 /**
@@ -41,6 +46,13 @@ interface ChannelReport {
  *
  * &only=candidate skips the plan tiers and runs just the candidate tier
  * (quota-cheap triage of new channels).
+ *
+ * When the league plan configures external sources (Sport5 for the
+ * UCL), an "external" tier report is appended: the provider's harvested
+ * index is matched against the game and every considered item's verdict
+ * is tallied (rejectReasons / rejectedExamples), with the matched
+ * link-out URL in keptUrls. &only=external runs just that tier (it
+ * costs no YouTube quota).
  *
  * NOTE: like production's preferred tier, this test scans the channel's
  * uploads playlist (1 unit/page, Blob-cached) and matches app-side — the
@@ -147,7 +159,7 @@ export async function GET(req: NextRequest) {
   };
 
   for (const tierName of ['preferred', 'bulk'] as const) {
-    if (sp.get('only') === 'candidate') break;
+    if (sp.get('only') === 'candidate' || sp.get('only') === 'external') break;
     const channels: ChannelReport[] = [];
     for (const entry of plan[tierName]) {
       const label =
@@ -176,6 +188,36 @@ export async function GET(req: NextRequest) {
       if (ytRateLimited) break;
     }
     tiers.push({ tier: 'candidate', channels });
+  }
+
+  // External link-out tier (plan-configured; Sport5 for the UCL):
+  // report what the provider's index held and how each item fared.
+  const externalCfgs = plan.external ?? [];
+  if (externalCfgs.length > 0 && sp.get('only') !== 'candidate') {
+    const channels: ChannelReport[] = [];
+    for (const cfg of externalCfgs) {
+      const r = await runExternalSource(cfg, game);
+      const rejectReasons: Record<string, number> = {};
+      const rejectedExamples: Array<{ title: string; reason: string }> = [];
+      for (const c of r.considered) {
+        if (c.keep) continue;
+        rejectReasons[c.reason] = (rejectReasons[c.reason] ?? 0) + 1;
+        if (rejectedExamples.length < 8)
+          rejectedExamples.push({ title: c.title.slice(0, 90), reason: c.reason });
+      }
+      channels.push({
+        label: cfg.provider,
+        videos: r.considered.length,
+        kept: r.candidates.length,
+        properHighlight: false,
+        rejectReasons,
+        rejectedExamples,
+        keptTitles: r.candidates.map((c) => c.title),
+        keptUrls: r.candidates.map((c) => c.url),
+        ...(r.ambiguous ? { ambiguous: true } : {}),
+      });
+    }
+    tiers.push({ tier: 'external', channels });
   }
 
   return NextResponse.json({ game, tiers, ytRateLimited });
