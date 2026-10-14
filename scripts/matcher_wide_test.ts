@@ -445,6 +445,32 @@ const typoRes = filterCandidate(typoVid, villaGame);
 eq('v5 highights typo kept', typoRes.keep, true);
 check('v5 highights typo proper', typoRes.keep && hasHighlightIntent(typoVid.title));
 
+// Racing de Santander: ONE shortens the club to just 'ראסינג' in Hebrew
+// titles — the short form must match Racing games and nothing else.
+const racingGame: GameInput = {
+  home: 'Racing Santander', away: 'Valencia',
+  dateISO: '2026-10-11T19:00:00Z', league: 'la-liga', homeScore: 2, awayScore: 2,
+};
+const mkRacing = (id: string, title: string): RawCandidate => ({
+  id, title,
+  url: `https://www.youtube.com/watch?v=${id}`, source: 'youtube', videoId: id,
+  lang: 'he', embeddable: true, publishedAt: '2026-10-12T10:00:00Z',
+});
+// The exact ONE title production missed (video w25ykEUqavM).
+eq('racing: ONE short-name title kept',
+  filterCandidate(mkRacing('racing-one', 'קרב תחתית עיקש: תיקו בין ולנסיה לראסינג'), racingGame).keep, true);
+eq('racing: short-name recap with score kept',
+  filterCandidate(mkRacing('racing-short', 'תקציר: ולנסיה נגד ראסינג 2:2'), racingGame).keep, true);
+eq('racing: full-name title still kept',
+  filterCandidate(mkRacing('racing-full', 'תקציר: ולנסיה נגד ראסינג סנטנדר 2:2'), racingGame).keep, true);
+// Negative control: the same ONE title must not match a game without Racing.
+const valSevGame: GameInput = {
+  home: 'Valencia', away: 'Sevilla',
+  dateISO: '2026-10-11T19:00:00Z', league: 'la-liga', homeScore: 2, awayScore: 2,
+};
+eq('racing: ONE title rejected for non-Racing game',
+  filterCandidate(mkRacing('racing-neg', 'קרב תחתית עיקש: תיקו בין ולנסיה לראסינג'), valSevGame).keep, false);
+
 // ---------------------------------------------------------------- report ---
 console.log(`\n${gameCount} games, ${pass + fail} assertions: ${pass} pass, ${fail} fail`);
 if (failures.length) {
