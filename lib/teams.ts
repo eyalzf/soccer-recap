@@ -218,7 +218,7 @@ export const CLUBS: ClubEntry[] = [
     en: "Racing de Santander",
     he: "ראסינג סנטנדר",
     enAliases: ["Racing", "Real Racing", "Racing Santander", "Real Racing Club", "R. Racing Club"],
-    heAliases: [],
+    heAliases: ["ראסינג"],
   },
   {
     en: "Rayo Vallecano",
