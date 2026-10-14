@@ -1,13 +1,13 @@
 import { NextRequest } from 'next/server';
-import { del, list } from '@vercel/blob';
+import { pdel, plist, storageConfigured } from '@/lib/recap/persist';
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
 
 /**
  * Weekly DB pruning (Vercel cron, see vercel.json): delete game-result
- * blobs untouched for 120 days. Old games are extremely unlikely to be
- * reviewed, so this bounds Blob storage instead of a read-path TTL — the
+ * records untouched for 120 days. Old games are extremely unlikely to be
+ * reviewed, so this bounds storage instead of a read-path TTL — the
  * game cache itself never expires logically.
  *
  * Security: Vercel Cron sends `Authorization: Bearer <CRON_SECRET>` when
@@ -28,8 +28,8 @@ export async function GET(req: NextRequest) {
   if ((req.headers.get('authorization') ?? '') !== `Bearer ${secret}`) {
     return new Response(JSON.stringify({ error: 'unauthorized' }), { status: 401 });
   }
-  if (!process.env.BLOB_READ_WRITE_TOKEN) {
-    return new Response(JSON.stringify({ error: 'blob not configured' }), {
+  if (!storageConfigured()) {
+    return new Response(JSON.stringify({ error: 'storage not configured' }), {
       status: 503,
     });
   }
@@ -39,13 +39,11 @@ export async function GET(req: NextRequest) {
   let scanned = 0;
   let deleted = 0;
   do {
-    const page = await list({ prefix: 'game/', cursor, limit: 1000 });
-    const stale = page.blobs.filter(
-      (b) => now - new Date(b.uploadedAt).getTime() > PRUNE_AFTER_MS
-    );
-    scanned += page.blobs.length;
+    const page = await plist('game/', cursor, 1000);
+    const stale = page.items.filter((b) => now - b.uploadedAt > PRUNE_AFTER_MS);
+    scanned += page.items.length;
     if (stale.length) {
-      await del(stale.map((b) => b.url));
+      await pdel(stale.map((b) => b.pathname));
       deleted += stale.length;
     }
     cursor = page.hasMore ? page.cursor : undefined;
