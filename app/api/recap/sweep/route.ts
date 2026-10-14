@@ -46,7 +46,7 @@ export const maxDuration = 60;
  */
 
 // Must match gameCacheKey() in app/api/recap/route.ts.
-const GAME_PREFIX = 'game/v9/';
+const GAME_PREFIX = 'game/v10/';
 const REPORT_KEY = 'channel-ops/sweep-report.json';
 const TIME_BUDGET_MS = 45_000;
 
@@ -114,7 +114,7 @@ async function checkVideosFresh(
 }
 
 function gameLabelFromKey(key: string): string {
-  // game/v9/<league>/<home>-<away>-<date>
+  // game/v10/<league>/<home>-<away>-<date>
   const rest = key.slice(GAME_PREFIX.length);
   const [league, slug = ''] = rest.split('/');
   return `${league}: ${slug}`;
