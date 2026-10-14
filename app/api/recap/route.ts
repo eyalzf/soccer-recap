@@ -6,6 +6,7 @@ import type { YouTubeSearchJob } from '@/lib/recap/sources';
 import { searchPlanFor } from '@/lib/recap/leaguePlans';
 import type { BulkChannel } from '@/lib/recap/leaguePlans';
 import { bulkScan, channelsForGame, scanPriorityChannel } from '@/lib/recap/bulk';
+import { applyExternalExclusivity, runExternalSource } from '@/lib/recap/external';
 import { pget, pset } from '@/lib/recap/persist';
 import { emptyTierStats, logSearch } from '@/lib/recap/searchLog';
 import type { KeptChannel, RejectedChannel, SearchWinner, SourceAccess } from '@/lib/recap/searchLog';
@@ -84,10 +85,13 @@ function parseGame(sp: URLSearchParams): GameInput | null {
 }
 
 /** Persisted per-game cache key: league + teams + date (teams meet twice a
- *  season). Versioned so matcher/policy changes auto-invalidate. */
+ *  season). Versioned so matcher/policy changes auto-invalidate.
+ *  v10 (2026-10-14): the external (Sport5) tier — UCL caches written by
+ *  v9 may hold general-search results that the external-configured plan
+ *  must never serve again, so the old namespace is orphaned. */
 function gameCacheKey(game: GameInput): string {
   const seg = (s: string) => encodeURIComponent(s).replace(/[%().]/g, '_');
-  return `game/v9/${game.league}/${seg(game.home)}-${seg(game.away)}-${seg(game.dateISO)}`;
+  return `game/v10/${game.league}/${seg(game.home)}-${seg(game.away)}-${seg(game.dateISO)}`;
 }
 
 interface CachedGame {
@@ -122,7 +126,7 @@ interface ComputeResult {
 const inflight = new Map<string, Promise<ComputeResult>>();
 
 /**
- * Three-tier recap search:
+ * Recap search tiers (Sport1 web runs first where the plan opts in):
  *  1. Preferred channels: uploads playlists (1 unit / 50 videos, cached 1h
  *     per channel ID in Blob), matched app-side. Stop at the first channel
  *     with a proper highlight.
@@ -130,8 +134,17 @@ const inflight = new Map<string, Promise<ComputeResult>>();
  *     channels are only scanned for their own club's games; league-wide
  *     channels (aggregators, broadcasters) always. Aggregated, matched
  *     app-side.
+ *  2.5. External link-out sources (plan-configured; Sport5 for the UCL):
+ *     harvested + matched app-side, rendered as "open at source" links.
+ *     Position is plan-driven (`externalPosition`): by default the tier
+ *     runs here, after bulk, only when tiers 1+2 kept no proper
+ *     highlight; an 'above-bulk' plan runs it before tier 2 instead,
+ *     and a hit there is exclusive (bulk never runs, and non-external
+ *     results are suppressed — see applyExternalExclusivity). When a
+ *     plan configures external sources, tier 3 never runs for that
+ *     league.
  *  3. General search.list fallback (100 units per language), only when
- *     tiers 1+2 find nothing.
+ *     tiers 1+2 find nothing and no external source is configured.
  * Game results persist in Blob with no read-path TTL (120-day pruning is
  * handled by the weekly /api/recap/prune cron); consecutive runs only ADD
  * to existing results (append-only merge). A 429 stops everything and is
@@ -149,6 +162,7 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
     sport1: emptyTierStats(),
     preferred: emptyTierStats(),
     bulk: emptyTierStats(),
+    external: emptyTierStats(),
     general: emptyTierStats(),
     sources,
     channels: [] as KeptChannel[],
@@ -180,11 +194,18 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
   // result exclusive (LaLiga / ONE). Applied to fresh results and to
   // cached results on read, so plan changes take effect immediately
   // instead of waiting for caches to age out.
+  // External exclusivity composes on top of it: for a plan that places
+  // the external tier above bulk, an external result in the list is the
+  // game's whole result set (applyExternalExclusivity no-ops for every
+  // other plan).
   const visible = <T extends RawCandidate>(list: T[]): T[] => {
+    let out = list;
     const pref = list.filter(isPreferredChannel);
-    if (!pref.length) return list;
-    if (pref.some((c) => hasHighlightIntent(c.title))) return pref;
-    return plan.preferredStopRule === 'any' ? pref : list;
+    if (pref.length) {
+      if (pref.some((c) => hasHighlightIntent(c.title))) out = pref;
+      else if (plan.preferredStopRule === 'any') out = pref;
+    }
+    return applyExternalExclusivity(plan, out);
   };
   let prevResults: RankedCandidate[] = [];
   if (!debug) {
@@ -252,7 +273,7 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
   const ingest = (
     label: string,
     raw: RawCandidate[],
-    tier: 'sport1' | 'preferred' | 'bulk' | 'general'
+    tier: 'sport1' | 'preferred' | 'bulk' | 'external' | 'general'
   ): number => {
     let kept = 0;
     const rejected: Array<{ title: string; channel?: string; reason: string }> = [];
@@ -389,6 +410,53 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
   )
     winner = 'preferred';
 
+  // External link-out tier (plan-configured; Sport5 for the UCL).
+  // Position is plan-driven: 'below-bulk' (default) it runs after the
+  // bulk tier, only when the curated tiers kept no proper highlight;
+  // 'above-bulk' it runs here, before bulk, and a hit is exclusive
+  // (bulk never runs). It costs no YouTube quota, so a YouTube 429 does
+  // not stop it. A league with external sources configured NEVER falls
+  // through to general search — this tier is terminal in both
+  // positions, even when it finds nothing (user decision 2026-10-14).
+  const externalCfgs = plan.external ?? [];
+  const externalAboveBulk =
+    plan.externalPosition === 'above-bulk' && externalCfgs.length > 0;
+  const runExternalTier = async (): Promise<void> => {
+    for (const cfg of externalCfgs) {
+      try {
+        const r = await runExternalSource(cfg, game);
+        logEntry.external.ran += 1;
+        const kept = ingest('external:' + cfg.provider, r.candidates, 'external');
+        logEntry.external.kept += kept;
+        sources.push({
+          label: cfg.provider,
+          kind: 'external',
+          cached: false,
+          fetched: r.considered.length,
+          kept,
+        });
+        if (debug)
+          diag.push({
+            search: 'external:' + cfg.provider,
+            fetched: r.considered.length,
+            kept,
+            ambiguous: r.ambiguous,
+            considered: r.considered
+              .filter((c) => c.keep || c.reason !== 'category')
+              .slice(0, 40),
+          });
+        if (kept > 0) winner = 'external';
+      } catch (e) {
+        if (debug)
+          diag.push({
+            search: 'external:' + cfg.provider,
+            error: (e as Error)?.message ?? String(e),
+          });
+      }
+    }
+  };
+  if (externalAboveBulk && winner === 'none') await runExternalTier();
+
   // Tier 2: curated bulk pool (uploads playlists, app-side matching).
   // Team-scoped channels (club / FA channels) are scanned FIRST: when
   // they yield a proper highlight, league-wide channels are not scanned
@@ -427,8 +495,16 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
     if (hasProperHighlight()) winner = 'bulk';
   }
 
-  // Tier 3: general-search fallback, only when tiers 1+2 found nothing.
-  if (!ytRateLimited && winner === 'none') {
+  // Tier 2.5: external link-out sources in the default (below-bulk)
+  // position — runs only when the curated tiers kept no proper
+  // highlight. Above-bulk plans already ran the tier before tier 2.
+  if (!externalAboveBulk && winner === 'none' && externalCfgs.length > 0) {
+    await runExternalTier();
+  }
+
+  // Tier 3: general-search fallback, only when tiers 1+2 found nothing
+  // and the league configures no external source.
+  if (!ytRateLimited && winner === 'none' && externalCfgs.length === 0) {
     for (const lang of plan.fallbackLangs) {
       const q = lang === 'he' ? hebrewQuery(game) : englishQuery(game);
       logEntry.general.ran += 1;

@@ -16,6 +16,7 @@ const WINNER_HE: Record<SearchWinner, string> = {
   sport1: 'ספורט1',
   preferred: 'ערוץ מועדף',
   bulk: 'מאגר ערוצים',
+  external: 'מקור חיצוני',
   general: 'חיפוש כללי',
   none: 'ללא תקציר ראוי',
   cache: 'מטמון',
@@ -26,12 +27,13 @@ interface Agg {
   sport1: number;
   preferred: number;
   bulk: number;
+  external: number;
   general: number;
   none: number;
   fallback: number;
 }
 
-const emptyAgg = (): Agg => ({ n: 0, sport1: 0, preferred: 0, bulk: 0, general: 0, none: 0, fallback: 0 });
+const emptyAgg = (): Agg => ({ n: 0, sport1: 0, preferred: 0, bulk: 0, external: 0, general: 0, none: 0, fallback: 0 });
 
 function bump(a: Agg, e: SearchLogEntry): void {
   a.n += 1;
@@ -39,6 +41,7 @@ function bump(a: Agg, e: SearchLogEntry): void {
   if (w === 'sport1') a.sport1 += 1;
   else if (w === 'preferred') a.preferred += 1;
   else if (w === 'bulk') a.bulk += 1;
+  else if (w === 'external') a.external += 1;
   else if (w === 'general') a.general += 1;
   else a.none += 1;
   if (e.general.ran > 0) a.fallback += 1;
@@ -50,6 +53,7 @@ const KIND_HE: Record<string, string> = {
   sport1: 'ספורט1',
   preferred: 'מועדף',
   bulk: 'מאגר',
+  external: 'חיצוני',
   general: 'כללי',
 };
 
@@ -145,6 +149,7 @@ export default async function SearchLogPage() {
             <th>ספורט1</th>
             <th>מועדף</th>
             <th>מאגר</th>
+            <th>חיצוני</th>
             <th>חיפוש כללי</th>
             <th>ללא תקציר</th>
             <th>שיעור נפילה</th>
@@ -158,6 +163,7 @@ export default async function SearchLogPage() {
               <td>{a.sport1}</td>
               <td>{a.preferred}</td>
               <td>{a.bulk}</td>
+              <td>{a.external}</td>
               <td>{a.general}</td>
               <td>{a.none}</td>
               <td>{pct(a.fallback, a.n)}</td>
@@ -165,7 +171,7 @@ export default async function SearchLogPage() {
           ))}
           {byLeague.size === 0 && (
             <tr>
-              <td colSpan={8} className="empty">
+              <td colSpan={9} className="empty">
                 אין חיפושים מתועדים עדיין — היומן מתמלא החל מהחיפוש הבא
               </td>
             </tr>

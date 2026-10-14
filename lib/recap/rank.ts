@@ -102,6 +102,13 @@ export function rankCandidates(list: RawCandidate[], game: GameInput): RankedCan
     const tb = highlightTier(b.title);
     if (ta !== tb) return ta - tb;
     if (ta === 2) {
+      // External link-out results (Sport5) lead the non-highlight
+      // leftovers: the external tier only fires when no proper
+      // highlight was kept anywhere, and its broadcaster link is a
+      // better outcome than bulk-tier news/training leftovers.
+      const ea = a.external ? 0 : 1;
+      const eb = b.external ? 0 : 1;
+      if (ea !== eb) return ea - eb;
       const ha = videoLang(a) === 'he' ? 0 : 1;
       const hb = videoLang(b) === 'he' ? 0 : 1;
       if (ha !== hb) return ha - hb;

@@ -19,8 +19,14 @@
  *     Team-scoped entries (club channels) are only scanned for their own
  *     club's games; league-wide entries (aggregators, broadcasters) always.
  *     Aggregated across the selected channels, matched app-side.
- *  3. General search.list fallback (100 units per language), only when
- *     tiers 1+2 produce nothing.
+ *  3. `external` — link-out web sources (Sport5): harvested + matched
+ *     app-side, rendered as "open at source" results, never embedded.
+ *     Position is plan-driven (`externalPosition`): by default it runs
+ *     after bulk, only when tiers 1+2 kept no proper highlight; a plan
+ *     may instead place it above bulk, where a hit is exclusive. A
+ *     league with external sources configured NEVER runs tier 4.
+ *  4. General search.list fallback (100 units per language), only when
+ *     tiers 1+2 produce nothing and no external source is configured.
  *
  * To add a new source: add one line to the league's `preferred` or `bulk`
  * list. Bulk entries take a `handle` (without @) or a raw `channelId`
@@ -71,11 +77,50 @@ export interface BulkChannel {
   teams?: string[];
 }
 
+/**
+ * One external (link-out) web source for a league. External providers
+ * discover a per-game video on a third-party site and return a LINK to
+ * it — the result is rendered as an "open at source" card and never
+ * embedded (the site blocks third-party framing). Where the tier runs
+ * is the plan's `externalPosition`; either way, a league with any
+ * external source configured never falls through to general YouTube
+ * search: the external tier is terminal (user decision 2026-10-14).
+ */
+export interface ExternalSourceConfig {
+  /** Provider implementation key (see lib/recap/external.ts). */
+  provider: 'sport5';
+  /**
+   * Provider-specific catalog selector: for Sport5, the Vc category id
+   * of the competition's highlight rail on the site (12363 = Champions
+   * League). Items from any other category never leak into matching.
+   */
+  category: number;
+}
+
 export interface LeagueSearchPlan {
   /** Preferred channels, tried in order (first = highest priority). */
   preferred: PreferredChannel[];
   /** Curated bulk pool: uploads playlists scanned + matched app-side. */
   bulk: BulkChannel[];
+  /**
+   * External link-out sources, tried in order (their position relative
+   * to the bulk tier is `externalPosition`). When non-empty, the
+   * general-search fallback never runs for this league.
+   */
+  external?: ExternalSourceConfig[];
+  /**
+   * Where the external tier sits relative to the bulk tier:
+   *  - 'below-bulk' (default): external runs after bulk, only when the
+   *    curated tiers kept no proper highlight.
+   *  - 'above-bulk': external runs after preferred, BEFORE bulk, and a
+   *    hit is exclusive — bulk/general never run for that game, and
+   *    non-external results (including cached ones) are suppressed on
+   *    read, mirroring preferred exclusivity. For a league whose
+   *    external source outranks its bulk pool (Champions League /
+   *    Sport5: the bulk aggregators proved poor in preview validation
+   *    and one was deny-listed by the user — user decision 2026-10-14).
+   */
+  externalPosition?: 'above-bulk' | 'below-bulk';
   /**
    * Max uploads-playlist pages per bulk channel (50 videos/page, newest
    * first, early-stop once videos predate the game). Default 10.
@@ -188,14 +233,22 @@ export const CLUB_CHANNELS: Record<string, ClubChannelDef> = {
   // Italy / Germany / France / Portugal / Netherlands / Belgium
   Inter: { handle: 'Inter', label: 'Inter' },
   Juventus: { handle: 'Juventus', label: 'Juventus' },
+  Roma: { handle: 'ASRoma', label: 'Roma' },
   'Bayern Munich': { handle: 'FCBayern', label: 'Bayern' },
   'Borussia Dortmund': { handle: 'BVB', label: 'Dortmund' },
+  'RB Leipzig': { handle: 'RBLeipzig', label: 'RB Leipzig' },
   'Paris Saint-Germain': { handle: 'PSG', label: 'PSG' },
   Benfica: { handle: 'SLBenfica', label: 'Benfica' },
   Ajax: { handle: 'AFCAjax', label: 'Ajax' },
   'Sporting CP': { handle: 'SportingCP', label: 'Sporting CP' },
   'PSV Eindhoven': { handle: 'PSV', label: 'PSV Eindhoven' },
+  Feyenoord: { handle: 'Feyenoord', label: 'Feyenoord' },
   'Club Brugge': { handle: 'clubbrugge', label: 'Club Brugge' },
+  // Ukraine / Slovakia — handles verified by the 2026-10-14 UCL channel
+  // audit against this season's UCL uploads (channel IDs cross-checked:
+  // Shakhtar UCmPCqUih--EyT2oxUn72MtA, Slovan UC7ldMqVVX6CD6NMZaqsihTw).
+  'Shakhtar Donetsk': { handle: 'FCShakhtar', label: 'Shakhtar Donetsk' },
+  'Slovan Bratislava': { handle: 'SKSlovanBratislava', label: 'Slovan Bratislava' },
 };
 
 /**
@@ -296,7 +349,6 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
     preferred: [],
     bulk: [
       clubChannel('Real Madrid'),
-      clubChannel('Barcelona'),
       clubChannel('Liverpool'),
       clubChannel('Arsenal'),
       clubChannel('Manchester City'),
@@ -312,6 +364,19 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
       clubChannel('Sporting CP'),
       clubChannel('PSV Eindhoven'),
       clubChannel('Club Brugge'),
+      // Audit-validated 2026-10-14 (per-competition opt-in: each of
+      // these channels demonstrably posts proper highlights for its
+      // club's UCL games this season — domestic output alone does not
+      // qualify a channel here).
+      clubChannel('Manchester United'),
+      clubChannel('Aston Villa'),
+      clubChannel('Real Betis'),
+      clubChannel('Villarreal'),
+      clubChannel('RB Leipzig'),
+      clubChannel('Roma'),
+      clubChannel('Feyenoord'),
+      clubChannel('Shakhtar Donetsk'),
+      clubChannel('Slovan Bratislava'),
       // Aggregator channels verified in the 2026-09-17 round-2 curation
       // (proper-highlight coverage on 10-game tests): CHEFON FF 9/10,
       // Al Faris Production 7/10, FranSports 6/10, Franq Media 6/10.
@@ -323,6 +388,18 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
       // TODO(verify): Tottenham (handle unconfirmed), UEFA (matchday
       // roundups only — rejected by per-game matching anyway).
     ],
+    // Sport5 is the official Israeli UCL broadcaster and posts a
+    // Hebrew highlight for nearly every game, but its player blocks
+    // third-party framing on every surface — so Sport5 is an external
+    // (link-out) source: discovered by harvesting the m.sport5.co.il
+    // homepage rail (category Vc=12363), matched app-side, and opened
+    // at the source (user design + approval 2026-10-14). With this
+    // configured, general YouTube search never runs for the UCL.
+    // The tier sits ABOVE bulk and is exclusive on a hit: preview
+    // validation showed the bulk aggregators are the weaker source
+    // (user decision 2026-10-14, after the Sabah–Slavia live check).
+    external: [{ provider: 'sport5', category: 12363 }],
+    externalPosition: 'above-bulk',
     fallbackLangs: ['en'],
   },
   'premier-league': {

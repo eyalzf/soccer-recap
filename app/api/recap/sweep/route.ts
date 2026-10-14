@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { list } from '@vercel/blob';
+import { del, list } from '@vercel/blob';
 import { pget, pset } from '@/lib/recap/persist';
 import { channelIdForHandle, ytApiGet } from '@/lib/recap/sources';
 import {
@@ -15,6 +15,7 @@ import { LEAGUES, NATIONAL_COMPETITIONS } from '@/lib/leagues';
 import {
   denyCriterion,
   emptyReport,
+  gameCacheKeyMatchesDate,
   mergeProposals,
   proposalKey,
   type ChannelDeathStats,
@@ -43,10 +44,14 @@ export const maxDuration = 60;
  * - POST {action:'deny'|'discard', ...} → user-initiated deny-list or
  *   discard actions from the UI (same trust level as the existing
  *   channel-candidates actions).
+ * - POST {action:'clear-game-cache', league, date} → targeted ops clear:
+ *   deletes the game-cache blobs of ONE league played on ONE date
+ *   (YYYY-MM-DD), e.g. to drop entries written under a previous cascade
+ *   order. Responds {ok, deleted, keys}.
  */
 
 // Must match gameCacheKey() in app/api/recap/route.ts.
-const GAME_PREFIX = 'game/v9/';
+const GAME_PREFIX = 'game/v10/';
 const REPORT_KEY = 'channel-ops/sweep-report.json';
 const TIME_BUDGET_MS = 45_000;
 
@@ -114,7 +119,7 @@ async function checkVideosFresh(
 }
 
 function gameLabelFromKey(key: string): string {
-  // game/v9/<league>/<home>-<away>-<date>
+  // game/v10/<league>/<home>-<away>-<date>
   const rest = key.slice(GAME_PREFIX.length);
   const [league, slug = ''] = rest.split('/');
   return `${league}: ${slug}`;
@@ -447,6 +452,28 @@ export async function GET(req: NextRequest) {
   });
 }
 
+/**
+ * Delete every game-cache blob of one league whose key's game date is
+ * `date`. Lists only that league's v10 prefix, filters with the pure
+ * matcher, and deletes the hits. Returns the deleted keys.
+ */
+async function clearGameCache(
+  league: string,
+  date: string
+): Promise<{ deleted: number; keys: string[] }> {
+  const prefix = `game/v10/${league}/`;
+  const all: string[] = [];
+  let cursor: string | undefined;
+  do {
+    const page = await list({ prefix, cursor, limit: 1000 });
+    all.push(...page.blobs.map((b) => b.pathname));
+    cursor = page.hasMore ? page.cursor : undefined;
+  } while (cursor);
+  const keys = all.filter((k) => gameCacheKeyMatchesDate(k, league, date));
+  if (keys.length) await del(keys);
+  return { deleted: keys.length, keys };
+}
+
 export async function POST(req: NextRequest) {
   let body: {
     action?: string;
@@ -455,11 +482,34 @@ export async function POST(req: NextRequest) {
     handle?: string;
     dead?: number;
     reason?: string;
+    league?: string;
+    date?: string;
   };
   try {
     body = await req.json();
   } catch {
     return Response.json({ error: 'invalid JSON' }, { status: 400 });
+  }
+  if (body.action === 'clear-game-cache') {
+    const league = body.league ?? '';
+    const date = body.date ?? '';
+    const validLeague = /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(league);
+    const validDate =
+      /^\d{4}-\d{2}-\d{2}$/.test(date) && !Number.isNaN(Date.parse(date));
+    if (!validLeague || !validDate) {
+      return Response.json(
+        { error: 'invalid league or date' },
+        { status: 400 }
+      );
+    }
+    if (!process.env.BLOB_READ_WRITE_TOKEN) {
+      return Response.json(
+        { ok: false, error: 'blob not configured' },
+        { status: 503 }
+      );
+    }
+    const { deleted, keys } = await clearGameCache(league, date);
+    return Response.json({ ok: true, deleted, keys });
   }
   if (body.action !== 'deny' && body.action !== 'discard') {
     return Response.json({ error: 'unknown action' }, { status: 400 });

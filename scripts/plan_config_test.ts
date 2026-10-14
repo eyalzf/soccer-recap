@@ -179,5 +179,38 @@ ok(
   searchPlanFor('premier-league').bulk.some((e) => e.label === 'Everton' && e.teams?.[0] === 'Everton')
 );
 
+// 8. External link-out sources: only the Champions League configures
+// one (Sport5, UCL rail category 12363) — every other league must stay
+// on the general-search fallback, and unknown leagues get none.
+eq('ucl external', searchPlanFor('champions-league').external, [
+  { provider: 'sport5', category: 12363 },
+]);
+ok(
+  'only ucl has external',
+  Object.entries(LEAGUE_SEARCH_PLANS)
+    .filter(([slug]) => slug !== 'champions-league')
+    .every(([, p]) => (p.external ?? []).length === 0)
+);
+eq('unknown league external', searchPlanFor('no-such-league').external, undefined);
+// External position: only the UCL opts into above-bulk (exclusive on a
+// hit); every other plan keeps the default below-bulk placement, so no
+// other league's cascade changes.
+eq(
+  'ucl externalPosition',
+  searchPlanFor('champions-league').externalPosition,
+  'above-bulk'
+);
+ok(
+  'only ucl is above-bulk',
+  Object.entries(LEAGUE_SEARCH_PLANS)
+    .filter(([slug]) => slug !== 'champions-league')
+    .every(([, p]) => p.externalPosition !== 'above-bulk')
+);
+eq(
+  'unknown league externalPosition',
+  searchPlanFor('no-such-league').externalPosition,
+  undefined
+);
+
 console.log(`\nplan_config_test: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

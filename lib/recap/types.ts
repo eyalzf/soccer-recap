@@ -33,6 +33,12 @@ export interface RawCandidate {
   channelId?: string;
   /** Ingested from a curated bulk channel (uploads playlist scan). */
   bulk?: boolean;
+  /**
+   * External link-out result (Sport5): the video lives on a third-party
+   * site that blocks framing, so the UI renders it as an "open at
+   * source" card (new tab) and never as an embedded player.
+   */
+  external?: boolean;
   lang: 'he' | 'en';
 }
 

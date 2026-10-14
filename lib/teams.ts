@@ -158,7 +158,7 @@ export const CLUBS: ClubEntry[] = [
     en: "Atlético Madrid",
     he: "אתלטיקו מדריד",
     enAliases: ["Atleti", "Atletico Madrid", "Atlético"],
-    heAliases: [],
+    heAliases: ["אתלטיקו"],
   },
   {
     en: "Barcelona",
@@ -748,7 +748,7 @@ export const CLUBS: ClubEntry[] = [
     en: "Sabah Baku",
     he: "סבאח באקו",
     enAliases: ["Sabah FK", "Sabah"],
-    heAliases: [],
+    heAliases: ["סבאח"],
   },
   {
     en: "Shamrock Rovers",
@@ -833,7 +833,7 @@ export const CLUBS: ClubEntry[] = [
     en: "Viking FK",
     he: "ויקינג סטוונגר",
     enAliases: ["Viking", "Viking Stavanger"],
-    heAliases: [],
+    heAliases: ["ויקינג"],
   },
   {
     en: "Lille",

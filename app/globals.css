@@ -183,6 +183,7 @@ body {
 }
 .recap-item:hover { background: var(--card-hover); }
 .recap-item.selected { border-color: var(--accent); }
+a.recap-item { text-decoration: none; }
 .recap-thumb {
   position: relative; width: 120px; aspect-ratio: 16 / 9; flex-shrink: 0;
   border-radius: 8px; overflow: hidden; background: #0a1120;

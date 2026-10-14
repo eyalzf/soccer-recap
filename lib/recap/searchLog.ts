@@ -16,7 +16,14 @@ export interface TierStats {
   kept: number;
 }
 
-export type SearchWinner = 'sport1' | 'preferred' | 'bulk' | 'general' | 'none' | 'cache';
+export type SearchWinner =
+  | 'sport1'
+  | 'preferred'
+  | 'bulk'
+  | 'external'
+  | 'general'
+  | 'none'
+  | 'cache';
 
 /**
  * One raw data source access within a search (design-doc logging):
@@ -26,7 +33,7 @@ export type SearchWinner = 'sport1' | 'preferred' | 'bulk' | 'general' | 'none' 
 export interface SourceAccess {
   /** Channel handle/label, or 'general:<lang>'. */
   label: string;
-  kind: 'sport1' | 'preferred' | 'bulk' | 'general';
+  kind: 'sport1' | 'preferred' | 'bulk' | 'external' | 'general';
   /** The channel's uploads listing was served from the playlist cache. */
   cached: boolean;
   /** Videos returned by the raw source, before matching. */
@@ -49,7 +56,7 @@ export interface KeptChannel {
   /** YouTube channel ID when known */
   chId?: string;
   /** tier that kept the candidate */
-  tier: 'sport1' | 'preferred' | 'bulk' | 'general';
+  tier: 'sport1' | 'preferred' | 'bulk' | 'external' | 'general';
   /** candidate title, truncated (for review) */
   t: string;
 }
@@ -90,6 +97,8 @@ export interface SearchLogEntry {
   sport1?: TierStats;
   preferred: TierStats;
   bulk: TierStats;
+  /** External link-out tier (absent on entries logged before it existed) */
+  external?: TierStats;
   general: TierStats;
   /** per raw data source access (empty on cache hits / old entries) */
   sources?: SourceAccess[];
