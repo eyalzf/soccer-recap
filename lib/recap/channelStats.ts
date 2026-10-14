@@ -27,6 +27,7 @@ export interface ChannelTierCounts {
   sport1: number;
   preferred: number;
   bulk: number;
+  external: number;
   general: number;
 }
 
@@ -250,7 +251,7 @@ export function aggregateChannelStats(
             channelId: c.chId,
             kept: 0,
             games: new Set(),
-            tiers: { sport1: 0, preferred: 0, bulk: 0, general: 0 },
+            tiers: { sport1: 0, preferred: 0, bulk: 0, external: 0, general: 0 },
             leagues: new Set(),
             titles: [],
             lastSeen: 0,
@@ -401,7 +402,7 @@ function rosterRows(
       channelId: acc.channelId,
       kept: 0,
       games: 0,
-      tiers: { sport1: 0, preferred: 0, bulk: 0, general: 0 },
+      tiers: { sport1: 0, preferred: 0, bulk: 0, external: 0, general: 0 },
       leagues: scopeByLeague.map((s) => s.league).sort(),
       sampleTitles: [],
       lastSeen: 0,
