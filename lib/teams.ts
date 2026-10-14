@@ -152,7 +152,7 @@ export const CLUBS: ClubEntry[] = [
     en: "Athletic Bilbao",
     he: "אתלטיק בילבאו",
     enAliases: ["Athletic Club", "Athletic", "Athletic de Bilbao"],
-    heAliases: [],
+    heAliases: ["בילבאו"],
   },
   {
     en: "Atlético Madrid",
@@ -170,19 +170,19 @@ export const CLUBS: ClubEntry[] = [
     en: "Celta Vigo",
     he: "סלטה ויגו",
     enAliases: ["Celta", "RC Celta", "Celta de Vigo"],
-    heAliases: [],
+    heAliases: ["סלטה"],
   },
   {
     en: "Deportivo Alavés",
     he: "דפורטיבו אלאבס",
     enAliases: ["Alaves", "Alavés", "Deportivo Alaves"],
-    heAliases: [],
+    heAliases: ["אלאבס"],
   },
   {
     en: "Deportivo de A Coruña",
     he: "דפורטיבו לה קורוניה",
     enAliases: ["Deportivo", "Depor", "A Coruña", "RC Deportivo", "Deportivo A Coruña"],
-    heAliases: [],
+    heAliases: ["דפוטיבו", "אה קורוניה", "דפורטיבו"],
   },
   {
     en: "Elche",
@@ -212,13 +212,13 @@ export const CLUBS: ClubEntry[] = [
     en: "Málaga",
     he: "מלאגה",
     enAliases: ["Malaga", "Málaga CF"],
-    heAliases: [],
+    heAliases: ["מאלגה"],
   },
   {
     en: "Racing de Santander",
     he: "ראסינג סנטנדר",
     enAliases: ["Racing", "Real Racing", "Racing Santander", "Real Racing Club", "R. Racing Club"],
-    heAliases: ["ראסינג"],
+    heAliases: ["ראסינג", "ראסינג סאנטנדר", "סנטנדר", "סאנטנדר"],
   },
   {
     en: "Rayo Vallecano",
@@ -230,7 +230,7 @@ export const CLUBS: ClubEntry[] = [
     en: "Real Betis",
     he: "ריאל בטיס",
     enAliases: ["Betis", "Real Betis Balompié"],
-    heAliases: [],
+    heAliases: ["בטיס"],
   },
   {
     en: "Real Madrid",
@@ -242,7 +242,7 @@ export const CLUBS: ClubEntry[] = [
     en: "Real Sociedad",
     he: "ריאל סוסיאדד",
     enAliases: ["La Real", "Sociedad", "Real Sociedad de Fútbol"],
-    heAliases: [],
+    heAliases: ["סוסיאדד"],
   },
   {
     en: "Sevilla",
@@ -278,13 +278,13 @@ export const CLUBS: ClubEntry[] = [
     en: "Osasuna",
     he: "אוסאסונה",
     enAliases: ["CA Osasuna", "Los Rojillos"],
-    heAliases: [],
+    heAliases: ["אוססונה"],
   },
   {
     en: "Real Valladolid",
     he: "ריאל ויאדוליד",
     enAliases: ["Valladolid", "Pucela"],
-    heAliases: [],
+    heAliases: ["ויאדוליד"],
   },
   {
     en: "Las Palmas",
