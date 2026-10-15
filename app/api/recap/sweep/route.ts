@@ -1,6 +1,5 @@
 import { NextRequest } from 'next/server';
-import { del, list } from '@vercel/blob';
-import { pget, pset } from '@/lib/recap/persist';
+import { pdel, pget, plist, pset, storageConfigured } from '@/lib/recap/persist';
 import { channelIdForHandle, ytApiGet } from '@/lib/recap/sources';
 import {
   addToDenyList,
@@ -161,8 +160,8 @@ async function runSweep(): Promise<SweepReport> {
   const keys: string[] = [];
   let cursor: string | undefined;
   do {
-    const page = await list({ prefix: GAME_PREFIX, cursor, limit: 1000 });
-    keys.push(...page.blobs.map((b) => b.pathname));
+    const page = await plist(GAME_PREFIX, cursor, 1000);
+    keys.push(...page.items.map((b) => b.pathname));
     cursor = page.hasMore ? page.cursor : undefined;
   } while (cursor && Date.now() - started < TIME_BUDGET_MS);
 
@@ -396,9 +395,9 @@ export async function GET(req: NextRequest) {
   const authed =
     !!secret && req.headers.get('authorization') === `Bearer ${secret}`;
   if (authed) {
-    if (!process.env.BLOB_READ_WRITE_TOKEN) {
+    if (!storageConfigured()) {
       return Response.json(
-        { ok: false, error: 'blob not configured' },
+        { ok: false, error: 'storage not configured' },
         { status: 503 }
       );
     }
@@ -465,12 +464,12 @@ async function clearGameCache(
   const all: string[] = [];
   let cursor: string | undefined;
   do {
-    const page = await list({ prefix, cursor, limit: 1000 });
-    all.push(...page.blobs.map((b) => b.pathname));
+    const page = await plist(prefix, cursor, 1000);
+    all.push(...page.items.map((b) => b.pathname));
     cursor = page.hasMore ? page.cursor : undefined;
   } while (cursor);
   const keys = all.filter((k) => gameCacheKeyMatchesDate(k, league, date));
-  if (keys.length) await del(keys);
+  if (keys.length) await pdel(keys);
   return { deleted: keys.length, keys };
 }
 
@@ -502,9 +501,9 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
-    if (!process.env.BLOB_READ_WRITE_TOKEN) {
+    if (!storageConfigured()) {
       return Response.json(
-        { ok: false, error: 'blob not configured' },
+        { ok: false, error: 'storage not configured' },
         { status: 503 }
       );
     }

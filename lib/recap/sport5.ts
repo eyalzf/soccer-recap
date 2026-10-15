@@ -42,7 +42,15 @@ const MOBILE_UA =
   'AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1';
 
 export interface Sport5IndexItem {
-  /** Sport5 VOD category id (12363 = Champions League highlights). */
+  /**
+   * Sport5 VOD category id as linked from the homepage rail. Until
+   * 2026-10-14 this was the video's own category (12363 = Champions
+   * League); since 2026-10-15 the rail links every item under a single
+   * rail-level category (893), so `vc` no longer identifies the
+   * competition and matching must not gate on it (see matchSport5Index).
+   * It is still used verbatim in the link-out URL — it is the URL
+   * Sport5's own rail points at.
+   */
   vc: number;
   /** Sport5 video id. */
   vi: number;
@@ -208,7 +216,6 @@ export interface Sport5MatchResult {
 
 /**
  * Match the accumulated index against one game (pure). Rules:
- *  - item's category must equal the configured category ('category');
  *  - both teams identifiable in the Hebrew headline via the central
  *    team registry (canonical names + aliases) ('teams');
  *  - a score in the headline must match the fixture score in one of
@@ -217,12 +224,26 @@ export interface Sport5MatchResult {
  *    must fall within gameDate −1d .. gameDate +3d ('date');
  *  - exactly one surviving item → the result; zero → none; two or
  *    more → 'ambiguous': no result (a wrong link is worse than none).
+ *
+ * The item's rail category (`vc`) is deliberately NOT a gate: on
+ * 2026-10-15 Sport5 changed the homepage rail to link every item
+ * under one rail-level category (893), so vc stopped identifying the
+ * competition overnight and every real highlight was rejected on
+ * 'category' (verified on production via curated-test: 12 fetched,
+ * 12 category-rejected). Competition safety now rests on the rules
+ * above — the same combination the YouTube matcher relies on, which
+ * has no category concept either. A same-pair clash across two
+ * competitions inside the window can only produce 'ambiguous' (both
+ * items kept → suppressed), never a wrong link. `category` (the
+ * plan's canonical VOD category) is accepted for signature
+ * compatibility and diagnostics, but no longer filters.
  */
 export function matchSport5Index(
   items: Sport5IndexItem[],
   game: GameInput,
   category: number
 ): Sport5MatchResult {
+  void category;
   const home = lookupClubEn(game.home);
   const away = lookupClubEn(game.away);
   const gameTime = Date.parse(game.dateISO);
@@ -230,9 +251,7 @@ export function matchSport5Index(
   const matches: Sport5IndexItem[] = [];
   for (const it of items) {
     let reason = 'ok';
-    if (it.vc !== category) {
-      reason = 'category';
-    } else if (!home || !away) {
+    if (!home || !away) {
       reason = 'unknown-team';
     } else if (!teamMentioned(it.title, home) || !teamMentioned(it.title, away)) {
       reason = 'teams';

@@ -20,7 +20,7 @@ export const CLUBS: ClubEntry[] = [
     en: "Aston Villa",
     he: "אסטון וילה",
     enAliases: ["Villa", "AVFC", "The Villans"],
-    heAliases: [],
+    heAliases: ["וילה"],
   },
   {
     en: "Bournemouth",
@@ -98,7 +98,7 @@ export const CLUBS: ClubEntry[] = [
     en: "Manchester City",
     he: "מנצ'סטר סיטי",
     enAliases: ["Man City", "City", "MCFC"],
-    heAliases: [],
+    heAliases: ["סיטי"],
   },
   {
     en: "Manchester United",
@@ -406,7 +406,7 @@ export const CLUBS: ClubEntry[] = [
     en: "Borussia Dortmund",
     he: "בורוסיה דורטמונד",
     enAliases: ["BVB", "Dortmund", "BVB 09"],
-    heAliases: [],
+    heAliases: ["דורטמונד"],
   },
   {
     en: "Bayer Leverkusen",
@@ -544,7 +544,7 @@ export const CLUBS: ClubEntry[] = [
     en: "Shakhtar Donetsk",
     he: "שחטאר דונייצק",
     enAliases: ["Shakhtar", "FC Shakhtar Donetsk"],
-    heAliases: [],
+    heAliases: ["שחטאר"],
   },
   {
     en: "Dinamo Zagreb",
@@ -604,7 +604,7 @@ export const CLUBS: ClubEntry[] = [
     en: "Bodø/Glimt",
     he: "בודו גלימט",
     enAliases: ["Bodo Glimt", "Bodø", "FK Bodø/Glimt", "FK Bodo/Glimt"],
-    heAliases: [],
+    heAliases: ["בודה/גלימט", "גלימט"],
   },
   {
     en: "Qarabağ",
@@ -803,7 +803,7 @@ export const CLUBS: ClubEntry[] = [
     en: "ŠK Slovan Bratislava",
     he: "סלובן ברטיסלבה",
     enAliases: ["Slovan Bratislava", "Slovan"],
-    heAliases: [],
+    heAliases: ["ברטיסלבה"],
   },
   {
     en: "NK Celje",
@@ -827,7 +827,7 @@ export const CLUBS: ClubEntry[] = [
     en: "AEK Athens",
     he: "א.א.ק אתונה",
     enAliases: ["AEK", "AEK Athen"],
-    heAliases: [],
+    heAliases: ["א.א.ק"],
   },
   {
     en: "Viking FK",
@@ -845,7 +845,7 @@ export const CLUBS: ClubEntry[] = [
     en: "VfB Stuttgart",
     he: "שטוטגרט",
     enAliases: ["Stuttgart", "VfB"],
-    heAliases: [],
+    heAliases: ["שטוטגארט"],
   },
   {
     en: "AS Roma",
