@@ -6,7 +6,8 @@
  * the live rail of Tuesday 2026-10-13's Champions League matchday).
  * Part 2 — headline matcher: the eight real MD2 headlines against their
  * real fixtures (names/scores as in data/champions-league.json), plus
- * score-veto, ambiguity, wrong-category and date-window cases. All
+ * score-veto, ambiguity, rail-category (2026-10-15) and date-window
+ * cases. All
  * parts are pure/offline — no network, no Blob (index items are built
  * in memory from the parsed fixture).
  *
@@ -138,19 +139,84 @@ for (const { game, vi } of GAMES) {
   eq('ambiguity: both items individually match', r.considered.filter((c) => c.keep).length, 2);
 }
 
-// ---------- Wrong category: basketball's "Barcelona" is not football ----------
+// ---------- Rail category change (2026-10-15): vc no longer gates ----------
+// Sport5's homepage rail now links EVERY item under one rail-level
+// category (893) instead of each video's own category. Simulating that
+// rail by rewriting every indexed item's vc to 893 must not change any
+// match — competition safety comes from teams + score + date +
+// exactly-one, not from vc.
 {
-  const game: GameInput = {
-    home: 'Maccabi Tel Aviv', away: 'Barcelona', homeScore: 90, awayScore: 87,
-    dateISO: '2026-10-13T19:00:00.000Z', league: 'champions-league',
-  };
-  const r = matchSport5Index(index, game, CATEGORY);
-  eq('wrong category: no candidate', r.candidate, null);
+  const rail893: Sport5IndexItem[] = index.map((i) => ({ ...i, vc: 893 }));
+  for (const { game, vi } of GAMES) {
+    const label = `rail-893 ${game.home} vs ${game.away}`;
+    const r = matchSport5Index(rail893, game, CATEGORY);
+    eq(`${label}: matched vi`, r.candidate?.id, `sport5:${vi}`);
+    eq(
+      `${label}: url uses the item's own rail vc`,
+      r.candidate?.url,
+      `https://vod.sport5.co.il/?Vc=893&Vi=${vi}`
+    );
+    eq(`${label}: exactly one kept item`, r.considered.filter((c) => c.keep).length, 1);
+  }
+  // A non-football item still cannot leak into a football match: the
+  // basketball headline names neither UCL team of any fixture, and the
+  // NBA item names no football club at all — both die on 'teams'.
+  const gala = matchSport5Index(rail893, GAMES[7].game, CATEGORY);
   eq(
-    'wrong category: basketball item rejected on category',
-    r.considered.find((c) => c.vi === 563583)?.reason,
-    'category'
+    'rail-893: basketball item rejected on teams for a football game',
+    gala.considered.find((c) => c.vi === 563583)?.reason,
+    'teams'
   );
+  eq(
+    'rail-893: NBA item rejected on teams for a football game',
+    gala.considered.find((c) => c.vi === 563730)?.reason,
+    'teams'
+  );
+}
+
+// ---------- Live rail of 2026-10-15: all nine MD2 (Oct 14) games match ----------
+// The REAL headlines Sport5 published for the Oct 14 UCL games, as they
+// appeared on the post-change rail (every item vc=893), plus the three
+// non-UCL items that shared that rail (basketball ×2, youth football)
+// as leak controls. These headlines are also what pinned down the short
+// Hebrew alias additions of 2026-10-15 (סיטי, וילה, שחטאר, א.א.ק,
+// בודה/גלימט, ברטיסלבה, דורטמונד, שטוטגארט) in lib/teams.ts.
+{
+  const seen = Date.parse('2026-10-15T05:00:00Z');
+  const item = (vi: number, title: string): Sport5IndexItem => ({
+    vc: 893, vi, title, firstSeen: seen, lastSeen: seen,
+  });
+  const liveIndex: Sport5IndexItem[] = [
+    item(563751, 'אלופה אמיתית: 2:4 לפריז סן-ז\'רמן על סיטי'),
+    item(563750, 'בלתי שבירים: ריאל השלימה מהפך מטורף מול רומא'),
+    item(563749, 'חזרה לנצח: הפועל ת"א הביסה את בשיקטאש'),
+    item(563748, 'חגיגת שערים: 3:6 לליברפול על לאסק לינץ'),
+    item(563747, 'המבצר שלה: בודה/גלימט ניצחה את דורטמונד 0-1'),
+    item(563746, 'באפס מאמץ: וילה רמסה 0:6 את פנרבחצ\'ה'),
+    item(563745, 'מהפכים ושערים מטורפים: בטיס גברה על פורטו 2:3'),
+    item(563744, 'קומו על הרגליים: 2:3 לפיינורד על קומו'),
+    item(563743, 'בדקה ה-80: שחטאר השלימה מהפך וניצחה את א.א.ק'),
+    item(563742, 'בקלות: שטוטגארט ניצחה 0:3 את ברטיסלבה'),
+    item(563741, 'בתום מותחן: חולון גברה על ספרטק סוביטוצה'),
+    item(563740, 'צפו: 0:3 למכבי חיפה על הפועל ת"א בנוער'),
+  ];
+  const liveGames: Array<{ game: GameInput; vi: number }> = [
+    { game: { home: 'Manchester City', away: 'Paris Saint-Germain', homeScore: 2, awayScore: 4, dateISO: '2026-10-14T19:00:00.000Z', league: 'champions-league' }, vi: 563751 },
+    { game: { home: 'Roma', away: 'Real Madrid', homeScore: 3, awayScore: 4, dateISO: '2026-10-14T19:00:00.000Z', league: 'champions-league' }, vi: 563750 },
+    { game: { home: 'LASK', away: 'Liverpool', homeScore: 3, awayScore: 6, dateISO: '2026-10-14T19:00:00.000Z', league: 'champions-league' }, vi: 563748 },
+    { game: { home: 'Bodø/Glimt', away: 'Borussia Dortmund', homeScore: 1, awayScore: 0, dateISO: '2026-10-14T19:00:00.000Z', league: 'champions-league' }, vi: 563747 },
+    { game: { home: 'Aston Villa', away: 'Fenerbahçe', homeScore: 6, awayScore: 0, dateISO: '2026-10-14T19:00:00.000Z', league: 'champions-league' }, vi: 563746 },
+    { game: { home: 'Real Betis', away: 'FC Porto', homeScore: 3, awayScore: 2, dateISO: '2026-10-14T19:00:00.000Z', league: 'champions-league' }, vi: 563745 },
+    { game: { home: 'Feyenoord', away: 'Como', homeScore: 3, awayScore: 2, dateISO: '2026-10-14T16:45:00.000Z', league: 'champions-league' }, vi: 563744 },
+    { game: { home: 'Shakhtar Donetsk', away: 'AEK Athens', homeScore: 3, awayScore: 1, dateISO: '2026-10-14T19:00:00.000Z', league: 'champions-league' }, vi: 563743 },
+    { game: { home: 'Slovan Bratislava', away: 'VfB Stuttgart', homeScore: 0, awayScore: 3, dateISO: '2026-10-14T19:00:00.000Z', league: 'champions-league' }, vi: 563742 },
+  ];
+  for (const { game, vi } of liveGames) {
+    const label = `live-rail ${game.home} vs ${game.away}`;
+    const r = matchSport5Index(liveIndex, game, CATEGORY);
+    eq(`${label}: matched vi`, r.candidate?.id, `sport5:${vi}`);
+    eq(`${label}: exactly one kept item`, r.considered.filter((c) => c.keep).length, 1);
+  }
 }
 
 // ---------- Date window: first seen too late ----------
