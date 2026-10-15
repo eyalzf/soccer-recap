@@ -2,7 +2,7 @@
   "league": "champions-league",
   "league_id": 42,
   "season": "2026/2027",
-  "updated_at": "2026-10-14T02:58:41.301068+00:00",
+  "updated_at": "2026-10-15T03:00:19.876341+00:00",
   "checked_through": "2026-09-19",
   "team_ids": {
     "Arsenal": 9825,
@@ -17,6 +17,105 @@
     "Villarreal": 10205
   },
   "games": [
+    {
+      "id": "manual-20261014-aston-villa-fenerbahce",
+      "home": "Aston Villa",
+      "away": "Fenerbahçe",
+      "dateISO": "2026-10-14T19:00:00.000Z",
+      "homeScore": 6,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10252.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/twxxvs1448199691.png",
+      "stage": "שלב הליגה · מחזור 2"
+    },
+    {
+      "id": "manual-20261014-bodo-glimt-borussia-dortmund",
+      "home": "Bodø/Glimt",
+      "away": "Borussia Dortmund",
+      "dateISO": "2026-10-14T19:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 0,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/uqpwwx1449165943.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/tqo8ge1716960353.png",
+      "stage": "שלב הליגה · מחזור 2"
+    },
+    {
+      "id": "manual-20261014-manchester-city-paris-saint-germain",
+      "home": "Manchester City",
+      "away": "Paris Saint-Germain",
+      "dateISO": "2026-10-14T19:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 4,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8456.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/rwqrrq1473504808.png",
+      "stage": "שלב הליגה · מחזור 2"
+    },
+    {
+      "id": "manual-20261014-real-betis-fc-porto",
+      "home": "Real Betis",
+      "away": "FC Porto",
+      "dateISO": "2026-10-14T19:00:00.000Z",
+      "homeScore": 3,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8603.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/xu47rb1628855600.png",
+      "stage": "שלב הליגה · מחזור 2"
+    },
+    {
+      "id": "manual-20261014-roma-real-madrid",
+      "home": "Roma",
+      "away": "Real Madrid",
+      "dateISO": "2026-10-14T19:00:00.000Z",
+      "homeScore": 3,
+      "awayScore": 4,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/jwro2s1760820674.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8633.png",
+      "stage": "שלב הליגה · מחזור 2"
+    },
+    {
+      "id": "manual-20261014-shakhtar-donetsk-aek-athens",
+      "home": "Shakhtar Donetsk",
+      "away": "AEK Athens",
+      "dateISO": "2026-10-14T19:00:00.000Z",
+      "homeScore": 3,
+      "awayScore": 1,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/sqrxsr1421791799.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/4nogst1602773624.png",
+      "stage": "שלב הליגה · מחזור 2"
+    },
+    {
+      "id": "manual-20261014-slovan-bratislava-vfb-stuttgart",
+      "home": "Slovan Bratislava",
+      "away": "VfB Stuttgart",
+      "dateISO": "2026-10-14T19:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 3,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/uzkg701781199823.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/yppyux1473454085.png",
+      "stage": "שלב הליגה · מחזור 2"
+    },
+    {
+      "id": "manual-20261014-feyenoord-como",
+      "home": "Feyenoord",
+      "away": "Como",
+      "dateISO": "2026-10-14T16:45:00.000Z",
+      "homeScore": 3,
+      "awayScore": 2,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/uturtx1473534803.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/02x81t1627405841.png",
+      "stage": "שלב הליגה · מחזור 2"
+    },
+    {
+      "id": "manual-20261014-lask-liverpool",
+      "home": "LASK",
+      "away": "Liverpool",
+      "dateISO": "2026-10-14T16:45:00.000Z",
+      "homeScore": 3,
+      "awayScore": 6,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/oox26l1683556395.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8650.png",
+      "stage": "שלב הליגה · מחזור 2"
+    },
     {
       "id": "manual-20261013-arsenal-lille",
       "home": "Arsenal",
