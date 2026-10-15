@@ -92,7 +92,10 @@ export interface ExternalSourceConfig {
   /**
    * Provider-specific catalog selector: for Sport5, the Vc category id
    * of the competition's highlight rail on the site (12363 = Champions
-   * League). Items from any other category never leak into matching.
+   * League). Retained as the canonical category reference, but since
+   * the 2026-10-15 rail change (the homepage rail links all items
+   * under one rail-level Vc) it no longer gates matching — see
+   * matchSport5Index in lib/recap/sport5.ts.
    */
   category: number;
 }
@@ -392,7 +395,7 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
     // Hebrew highlight for nearly every game, but its player blocks
     // third-party framing on every surface — so Sport5 is an external
     // (link-out) source: discovered by harvesting the m.sport5.co.il
-    // homepage rail (category Vc=12363), matched app-side, and opened
+    // homepage rail, matched app-side, and opened
     // at the source (user design + approval 2026-10-14). With this
     // configured, general YouTube search never runs for the UCL.
     // The tier sits ABOVE bulk and is exclusive on a hit: preview
