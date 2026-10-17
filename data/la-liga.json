@@ -2,7 +2,7 @@
   "league": "la-liga",
   "league_id": 87,
   "season": "2026/2027",
-  "updated_at": "2026-10-13T02:59:14.102598+00:00",
+  "updated_at": "2026-10-17T02:59:10.761371Z",
   "checked_through": "2026-09-19",
   "team_ids": {
     "Villarreal": 10205,
@@ -27,6 +27,17 @@
     "Valencia": 10267
   },
   "games": [
+    {
+      "id": "manual-20261016-deportivo-a-coruna-levante",
+      "home": "Deportivo A Coruña",
+      "away": "Levante",
+      "dateISO": "2026-10-16T19:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9783.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8581.png",
+      "stage": "מחזור 9"
+    },
     {
       "id": "manual-20261012-levante-sevilla",
       "home": "Levante",
