@@ -100,6 +100,38 @@ async function main(): Promise<void> {
   const walesRecap = s1('תקציר: ווילס – נורבגיה 1:2', { durationSec: 170 });
   check('Sport1-spelled ווילס–נורבגיה recap kept', filterCandidate(walesRecap, WALES).keep);
 
+  // Israeli-league rescue (sport1Fallback, user decision 2026-10-18):
+  // Bnei Sakhnin – Hapoel Petah Tikva (2026-10-17, 2-0) had NO YouTube
+  // source at all; Sport1's real recap post (id 1974298, title below,
+  // 155s) must pass the shared matcher for the Israeli game, and the
+  // previous meeting's post (2026-08-15, 0:1) must die on date.
+  const SAKHNIN: GameInput = {
+    home: 'Bnei Sakhnin',
+    away: 'Hapoel Petah Tikva',
+    dateISO: '2026-10-17',
+    league: 'israeli-league',
+    homeScore: 2,
+    awayScore: 0,
+  };
+  const sakhninRecap: RawCandidate = {
+    id: 'sport1:1974298',
+    title: 'תקציר: בני סכנין – הפועל פתח תקוה 0:2',
+    url: 'https://sport1.maariv.co.il/israeli-soccer/video/1974298/',
+    source: 'sport1',
+    embedUrl:
+      'https://player.maariv.co.il/public/player.html?player=sport1-desktop&media=1',
+    publishedAt: '2026-10-17T19:24:55Z',
+    durationSec: 155,
+    lang: 'he',
+  };
+  check('israeli rescue: Sakhnin recap kept', filterCandidate(sakhninRecap, SAKHNIN).keep);
+  check('israeli rescue: Sakhnin recap has highlight intent (wins over general)', hasHighlightIntent(sakhninRecap.title));
+  const sakhninOld = filterCandidate(
+    { ...sakhninRecap, id: 'sport1:1925259', title: 'תקציר: בני סכנין – הפועל פתח תקוה 0:1', publishedAt: '2026-08-15T20:44:13Z', durationSec: 116 },
+    SAKHNIN
+  );
+  check('israeli rescue: previous meeting rejected', !sakhninOld.keep, sakhninOld.reason);
+
   // ---- Part 2: live retrieval ----
   const cands = await sport1Search(GAME);
   console.log(`live retrieval returned ${cands.length} candidate(s)`);
@@ -120,6 +152,14 @@ async function main(): Promise<void> {
   for (const c of walesCands) console.log('  ·', c.title, '|', c.durationSec + 's');
   const walesKept = walesCands.filter((c) => filterCandidate(c, WALES).keep);
   check('live: Wales–Norway recap found and kept', walesKept.length >= 1);
+
+  // Israeli-league rescue, live: the Sakhnin game above had no YouTube
+  // source; sport1Search must surface its recap and the matcher keep it.
+  const sakhCands = await sport1Search(SAKHNIN);
+  console.log(`live Sakhnin retrieval returned ${sakhCands.length} candidate(s)`);
+  for (const c of sakhCands) console.log('  ·', c.title, '|', c.durationSec + 's');
+  const sakhKept = sakhCands.filter((c) => filterCandidate(c, SAKHNIN).keep);
+  check('live: Sakhnin–Hapoel PT recap found and kept', sakhKept.length >= 1);
 
   console.log(`\nsport1 tests: ${pass} pass, ${fail} fail`);
   process.exit(fail ? 1 : 0);
