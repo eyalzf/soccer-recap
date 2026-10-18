@@ -29,7 +29,7 @@
  *
  * Records have no storage-level TTL: each record stores its own
  * `fetchedAt` and callers enforce staleness. Keys are pathnames like
- * `pl/v2/<channelId>` or `game/v10/<league>/<home>-<away>-<date>`.
+ * `pl/v2/<channelId>` or `game/v11/<league>/<home>-<away>-<date>`.
  */
 import {
   del as blobDel,

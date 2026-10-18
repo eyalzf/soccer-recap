@@ -259,6 +259,13 @@ check('exactly-30min kept',
   filterCandidate({ ...longVid, id: 'edge', durationSec: 1800 }, manuCity).keep);
 check('unknown-duration kept',
   filterCandidate({ ...longVid, id: 'nodur', durationSec: undefined }, manuCity).keep);
+
+// Duration floor (2026-10-18): videos under 60 seconds are clips/Shorts,
+// not recaps; exactly 60s is kept; unknown duration fails open (above).
+eq('under-60s rejected', filterCandidate({ ...longVid, id: 'short45', durationSec: 45 }, manuCity).reason, 'too-short');
+eq('59s rejected', filterCandidate({ ...longVid, id: 'short59', durationSec: 59 }, manuCity).reason, 'too-short');
+check('exactly-60s kept',
+  filterCandidate({ ...longVid, id: 'edge60', durationSec: 60 }, manuCity).keep);
 const mtaGame: GameInput = {
   home: 'Maccabi Tel Aviv', away: 'Hapoel Tel Aviv',
   dateISO: '2026-09-13T18:00:00Z', league: 'israeli-league', homeScore: 2, awayScore: 0,

@@ -183,7 +183,7 @@ export function proposalKey(p: {
  * Targeted game-cache clear (the 'clear-game-cache' POST action on
  * /api/recap/sweep): does this game-cache key belong to `league` and to
  * game date `date` (YYYY-MM-DD)? Keys are
- * `game/v10/<league>/<seg(home)>-<seg(away)>-<seg(dateISO)>`, and the
+ * `game/v11/<league>/<seg(home)>-<seg(away)>-<seg(dateISO)>`, and the
  * dateISO that reaches the recap route is either date-only
  * ("2026-10-13") or a full ISO timestamp (seg-encoded, e.g.
  * "2026-10-13T16_3A45_3A00_000Z"), so the slug must END with `-<date>`
@@ -195,7 +195,7 @@ export function gameCacheKeyMatchesDate(
   league: string,
   date: string
 ): boolean {
-  const prefix = `game/v10/${league}/`;
+  const prefix = `game/v11/${league}/`;
   if (!key.startsWith(prefix)) return false;
   const slug = key.slice(prefix.length);
   if (!slug || slug.includes('/')) return false;

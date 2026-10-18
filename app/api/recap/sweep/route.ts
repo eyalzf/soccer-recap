@@ -50,7 +50,7 @@ export const maxDuration = 60;
  */
 
 // Must match gameCacheKey() in app/api/recap/route.ts.
-const GAME_PREFIX = 'game/v10/';
+const GAME_PREFIX = 'game/v11/';
 const REPORT_KEY = 'channel-ops/sweep-report.json';
 const TIME_BUDGET_MS = 45_000;
 
@@ -118,7 +118,7 @@ async function checkVideosFresh(
 }
 
 function gameLabelFromKey(key: string): string {
-  // game/v10/<league>/<home>-<away>-<date>
+  // game/v11/<league>/<home>-<away>-<date>
   const rest = key.slice(GAME_PREFIX.length);
   const [league, slug = ''] = rest.split('/');
   return `${league}: ${slug}`;
@@ -453,14 +453,14 @@ export async function GET(req: NextRequest) {
 
 /**
  * Delete every game-cache blob of one league whose key's game date is
- * `date`. Lists only that league's v10 prefix, filters with the pure
+ * `date`. Lists only that league's v11 prefix, filters with the pure
  * matcher, and deletes the hits. Returns the deleted keys.
  */
 async function clearGameCache(
   league: string,
   date: string
 ): Promise<{ deleted: number; keys: string[] }> {
-  const prefix = `game/v10/${league}/`;
+  const prefix = `game/v11/${league}/`;
   const all: string[] = [];
   let cursor: string | undefined;
   do {
