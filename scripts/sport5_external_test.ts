@@ -298,10 +298,10 @@ for (const { game, vi } of GAMES) {
   const L = 'champions-league';
   const D = '2026-10-13';
   const sabahFull =
-    'game/v10/champions-league/Sabah_20FK-Slavia_20Prague-2026-10-13T16_3A45_3A00_000Z';
+    'game/v11/champions-league/Sabah_20FK-Slavia_20Prague-2026-10-13T16_3A45_3A00_000Z';
   const galaFull =
-    'game/v10/champions-league/Galatasaray-Barcelona-2026-10-13T19_3A00_3A00_000Z';
-  const dateOnly = 'game/v10/champions-league/Inter-Club_20Brugge-2026-10-13';
+    'game/v11/champions-league/Galatasaray-Barcelona-2026-10-13T19_3A00_3A00_000Z';
+  const dateOnly = 'game/v11/champions-league/Inter-Club_20Brugge-2026-10-13';
 
   check('cache-clear: full-ISO key matches', gameCacheKeyMatchesDate(sabahFull, L, D));
   check('cache-clear: second full-ISO key matches', gameCacheKeyMatchesDate(galaFull, L, D));
@@ -309,7 +309,7 @@ for (const { game, vi } of GAMES) {
   check(
     'cache-clear: next-day key does not match',
     !gameCacheKeyMatchesDate(
-      'game/v10/champions-league/Liverpool-LASK-2026-10-14T19_3A00_3A00_000Z',
+      'game/v11/champions-league/Liverpool-LASK-2026-10-14T19_3A00_3A00_000Z',
       L,
       D
     )
@@ -317,7 +317,7 @@ for (const { game, vi } of GAMES) {
   check(
     'cache-clear: same day/month other year does not match',
     !gameCacheKeyMatchesDate(
-      'game/v10/champions-league/Inter-Club_20Brugge-2025-10-13',
+      'game/v11/champions-league/Inter-Club_20Brugge-2025-10-13',
       L,
       D
     )
@@ -325,15 +325,15 @@ for (const { game, vi } of GAMES) {
   check(
     'cache-clear: other league does not match',
     !gameCacheKeyMatchesDate(
-      'game/v10/premier-league/Arsenal-Chelsea-2026-10-13',
+      'game/v11/premier-league/Arsenal-Chelsea-2026-10-13',
       L,
       D
     )
   );
   check(
-    'cache-clear: v9 key never matches',
+    'cache-clear: previous-version (v10) key never matches',
     !gameCacheKeyMatchesDate(
-      'game/v9/champions-league/Inter-Club_20Brugge-2026-10-13',
+      'game/v10/champions-league/Inter-Club_20Brugge-2026-10-13',
       L,
       D
     )
@@ -341,7 +341,7 @@ for (const { game, vi } of GAMES) {
   check(
     'cache-clear: date as a team-name suffix does not match',
     !gameCacheKeyMatchesDate(
-      'game/v10/champions-league/Real_202026-10-13-FC_20Porto-2026-10-14',
+      'game/v11/champions-league/Real_202026-10-13-FC_20Porto-2026-10-14',
       L,
       D
     )
