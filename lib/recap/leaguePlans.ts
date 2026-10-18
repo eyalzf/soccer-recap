@@ -169,6 +169,18 @@ export interface LeagueSearchPlan {
    * League).
    */
   sport1?: boolean;
+  /**
+   * Sport1 as a RESCUE source (user decision 2026-10-18, Israeli
+   * league): the same Sport1 lookup, but invoked only after the
+   * preferred and bulk YouTube tiers produced no proper highlight —
+   * i.e. for games YouTube has no source for (e.g. Bnei Sakhnin –
+   * Hapoel Petah Tikva, 2026-10-17: zero YouTube results, Sport1 had
+   * the recap). Runs before the general-search fallback; a proper
+   * Sport1 highlight ends the search, anything weaker merges and
+   * general still runs. NOT exclusive: results rank alongside any
+   * non-highlight keeps from the earlier tiers.
+   */
+  sport1Fallback?: boolean;
 }
 
 export interface ClubChannelDef {
@@ -299,6 +311,13 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
       // כדורגל.2, FCBJ_edit, Green And Glory, DicapOr, adix — handles
       // unknown; resolve via forHandle (1 unit each) after quota reset.
     ],
+    // Sport1 as a rescue source only: some Israeli games have no
+    // YouTube source at all while Sport1 (the broadcaster) posts the
+    // recap on its site (user decision 2026-10-18). Runs after the
+    // preferred + bulk tiers, before general search — see
+    // sport1Fallback in LeagueSearchPlan. NOT the UNL-style priority
+    // tier: YouTube sources keep precedence here.
+    sport1Fallback: true,
     fallbackLangs: ['he', 'en'],
   },
   'la-liga': {
