@@ -2,7 +2,7 @@
   "league": "la-liga",
   "league_id": 87,
   "season": "2026/2027",
-  "updated_at": "2026-10-17T02:59:10.761371Z",
+  "updated_at": "2026-10-18T03:00:55.766690Z",
   "checked_through": "2026-09-19",
   "team_ids": {
     "Villarreal": 10205,
@@ -27,6 +27,50 @@
     "Valencia": 10267
   },
   "games": [
+    {
+      "id": "manual-20261017-valencia-athletic-club",
+      "home": "Valencia",
+      "away": "Athletic Club",
+      "dateISO": "2026-10-17T19:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10267.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8315.png",
+      "stage": "מחזור 9"
+    },
+    {
+      "id": "manual-20261017-real-betis-barcelona",
+      "home": "Real Betis",
+      "away": "Barcelona",
+      "dateISO": "2026-10-17T16:30:00.000Z",
+      "homeScore": 2,
+      "awayScore": 5,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8603.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8634.png",
+      "stage": "מחזור 9"
+    },
+    {
+      "id": "manual-20261017-villarreal-elche",
+      "home": "Villarreal",
+      "away": "Elche",
+      "dateISO": "2026-10-17T14:15:00.000Z",
+      "homeScore": 0,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10205.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10268.png",
+      "stage": "מחזור 9"
+    },
+    {
+      "id": "manual-20261017-espanyol-atletico-madrid",
+      "home": "Espanyol",
+      "away": "Atlético Madrid",
+      "dateISO": "2026-10-17T12:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8558.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9906.png",
+      "stage": "מחזור 9"
+    },
     {
       "id": "manual-20261016-deportivo-a-coruna-levante",
       "home": "Deportivo A Coruña",
