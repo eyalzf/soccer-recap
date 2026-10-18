@@ -350,21 +350,30 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
 
   let winner: SearchWinner = 'none';
 
-  // Tier 0: Sport1 web (per-league opt-in; Nations League). Sport1 is the
-  // priority source: any result it yields for the game ends the search —
-  // no YouTube tier runs and no quota is spent (user decision 2026-10-02:
-  // "when results are identified it should not continue to other sources").
-  if (plan.sport1) {
+  // The Sport1 web lookup, shared by the two plan-driven positions
+  // below. Costs no YouTube quota (plain REST + page fetches), so a
+  // YouTube 429 does not stop it in either position.
+  const runSport1Tier = async (): Promise<number> => {
     try {
       const raw = await sport1Search(game);
       logEntry.sport1.ran += 1;
       const kept = ingest('sport1', raw, 'sport1');
       logEntry.sport1.kept += kept;
       sources.push({ label: 'sport1', kind: 'sport1', cached: false, fetched: raw.length, kept });
+      return kept;
     } catch (e) {
       if (debug) diag.push({ search: 'sport1', error: (e as Error)?.message ?? String(e) });
+      return 0;
     }
-    if (logEntry.sport1.kept > 0) winner = 'sport1';
+  };
+
+  // Tier 0: Sport1 web (per-league opt-in; Nations League). Sport1 is the
+  // priority source: any result it yields for the game ends the search —
+  // no YouTube tier runs and no quota is spent (user decision 2026-10-02:
+  // "when results are identified it should not continue to other sources").
+  if (plan.sport1) {
+    const kept = await runSport1Tier();
+    if (kept > 0) winner = 'sport1';
   }
 
   // Tier 1: preferred channels in priority order, scanned via their
@@ -503,6 +512,17 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
   // highlight. Above-bulk plans already ran the tier before tier 2.
   if (!externalAboveBulk && winner === 'none' && externalCfgs.length > 0) {
     await runExternalTier();
+  }
+
+  // Tier 2.6: Sport1 as a rescue source (plan.sport1Fallback; Israeli
+  // league, user decision 2026-10-18). Runs only when the preferred and
+  // bulk YouTube tiers produced no proper highlight — the games YouTube
+  // has no source for — and before the general-search fallback. A
+  // proper Sport1 highlight ends the search; a weaker keep merges into
+  // the results and general still runs, exactly like a bulk keep.
+  if (plan.sport1Fallback && winner === 'none') {
+    const kept = await runSport1Tier();
+    if (kept > 0 && hasProperHighlight()) winner = 'sport1';
   }
 
   // Tier 3: general-search fallback, only when tiers 1+2 found nothing
