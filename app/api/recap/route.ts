@@ -88,10 +88,13 @@ function parseGame(sp: URLSearchParams): GameInput | null {
  *  season). Versioned so matcher/policy changes auto-invalidate.
  *  v10 (2026-10-14): the external (Sport5) tier — UCL caches written by
  *  v9 may hold general-search results that the external-configured plan
- *  must never serve again, so the old namespace is orphaned. */
+ *  must never serve again, so the old namespace is orphaned.
+ *  v11 (2026-10-18): the sub-minute ('too-short') filter — v10 caches
+ *  may hold sub-60s clips the matcher now rejects, so they are orphaned
+ *  rather than served until their natural refresh. */
 function gameCacheKey(game: GameInput): string {
   const seg = (s: string) => encodeURIComponent(s).replace(/[%().]/g, '_');
-  return `game/v10/${game.league}/${seg(game.home)}-${seg(game.away)}-${seg(game.dateISO)}`;
+  return `game/v11/${game.league}/${seg(game.home)}-${seg(game.away)}-${seg(game.dateISO)}`;
 }
 
 interface CachedGame {
