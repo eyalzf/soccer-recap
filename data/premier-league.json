@@ -2,7 +2,7 @@
   "league": "premier-league",
   "league_id": 47,
   "season": "2026/2027",
-  "updated_at": "2026-10-13T02:59:14.102598+00:00",
+  "updated_at": "2026-10-18T03:00:46.163768Z",
   "checked_through": "2026-09-19",
   "team_ids": {
     "Leeds United": 8463,
@@ -27,6 +27,61 @@
     "Arsenal": 9825
   },
   "games": [
+    {
+      "id": "manual-20261017-newcastle-united-aston-villa",
+      "home": "Newcastle United",
+      "away": "Aston Villa",
+      "dateISO": "2026-10-17T16:30:00.000Z",
+      "homeScore": 0,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10261.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10252.png",
+      "stage": "מחזור 7"
+    },
+    {
+      "id": "manual-20261017-brentford-liverpool",
+      "home": "Brentford",
+      "away": "Liverpool",
+      "dateISO": "2026-10-17T14:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9937.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8650.png",
+      "stage": "מחזור 7"
+    },
+    {
+      "id": "manual-20261017-fulham-hull-city",
+      "home": "Fulham",
+      "away": "Hull City",
+      "dateISO": "2026-10-17T14:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9879.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8667.png",
+      "stage": "מחזור 7"
+    },
+    {
+      "id": "manual-20261017-manchester-city-ipswich-town",
+      "home": "Manchester City",
+      "away": "Ipswich Town",
+      "dateISO": "2026-10-17T14:00:00.000Z",
+      "homeScore": 3,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8456.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9902.png",
+      "stage": "מחזור 7"
+    },
+    {
+      "id": "manual-20261017-everton-chelsea",
+      "home": "Everton",
+      "away": "Chelsea",
+      "dateISO": "2026-10-17T11:30:00.000Z",
+      "homeScore": 0,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8668.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8455.png",
+      "stage": "מחזור 7"
+    },
     {
       "id": "manual-20261012-coventry-city-newcastle-united",
       "home": "Coventry City",
