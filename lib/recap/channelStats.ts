@@ -435,6 +435,7 @@ export const NOISE_MIN_GAMES = 4;
  * territory), the game itself was unresolvable, or the channel is
  * already blocked. Everything else filterCandidate returns counts:
  * 'teams', 'competition', 'excluded', 'language', 'date', 'too-long',
+ * 'too-short',
  * 'score', 'score-reversed', 'press-conference', 'prematch'.
  */
 const NON_CONTENT_REASONS = new Set([
