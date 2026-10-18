@@ -88,6 +88,21 @@ eq(
 );
 eq('unknown league stop rule default', searchPlanFor('no-such-league').preferredStopRule, undefined);
 
+// 4b. Sport1 positions: tier-0 priority ONLY for the Nations League;
+// rescue (after preferred+bulk) ONLY for the Israeli league; no other
+// league consults Sport1 in any position.
+eq('unl sport1 priority', searchPlanFor('nations-league').sport1, true);
+eq('unl has no sport1 rescue', searchPlanFor('nations-league').sport1Fallback, undefined);
+eq('israeli sport1 rescue', searchPlanFor('israeli-league').sport1Fallback, true);
+eq('israeli has no sport1 priority', searchPlanFor('israeli-league').sport1, undefined);
+eq(
+  'no other league uses sport1',
+  Object.entries(LEAGUE_SEARCH_PLANS)
+    .filter(([slug]) => !['nations-league', 'israeli-league'].includes(slug))
+    .every(([, p]) => !p.sport1 && !p.sport1Fallback),
+  true
+);
+
 // 5. Competition ranking terms live in the plans now.
 eq('pl competitionTerms', searchPlanFor('premier-league').competitionTerms, [
   'premier league',

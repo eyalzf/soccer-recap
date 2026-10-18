@@ -9,7 +9,7 @@ import path from 'path';
  * (lib/recap/match.ts, rank.ts, leaguePlans.ts, sources.ts) so stale
  * fixtures are flagged instead of silently trusted.
  */
-export const MATCHER_VERSION = 14;
+export const MATCHER_VERSION = 15;
 
 export interface FixtureRequest {
   home: string;
