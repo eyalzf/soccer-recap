@@ -335,6 +335,12 @@ export function filterCandidate(
   if (c.durationSec != null && c.durationSec > 1800)
     return { keep: false, reason: 'too-long' };
 
+  // Sub-minute videos are single-play clips or Shorts, not recaps:
+  // floor at 60 seconds, in every tier (user request 2026-10-18).
+  // Exactly 60s is kept; unknown duration fails open, as above.
+  if (c.durationSec != null && c.durationSec < 60)
+    return { keep: false, reason: 'too-short' };
+
   // The uploader disabled embedding: it would fail in our player.
   if (c.embeddable === false) return { keep: false, reason: 'not-embeddable' };
 
