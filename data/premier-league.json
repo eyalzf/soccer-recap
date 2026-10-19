@@ -2,7 +2,7 @@
   "league": "premier-league",
   "league_id": 47,
   "season": "2026/2027",
-  "updated_at": "2026-10-18T03:00:46.163768Z",
+  "updated_at": "2026-10-19T03:00:49.869493Z",
   "checked_through": "2026-09-19",
   "team_ids": {
     "Leeds United": 8463,
@@ -27,6 +27,50 @@
     "Arsenal": 9825
   },
   "games": [
+    {
+      "id": "manual-20261018-nottingham-forest-arsenal",
+      "home": "Nottingham Forest",
+      "away": "Arsenal",
+      "dateISO": "2026-10-18T15:30:00.000Z",
+      "homeScore": 0,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10203.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9825.png",
+      "stage": "מחזור 7"
+    },
+    {
+      "id": "manual-20261018-afc-bournemouth-sunderland",
+      "home": "AFC Bournemouth",
+      "away": "Sunderland",
+      "dateISO": "2026-10-18T13:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8678.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8472.png",
+      "stage": "מחזור 7"
+    },
+    {
+      "id": "manual-20261018-brighton-hove-albion-crystal-palace",
+      "home": "Brighton & Hove Albion",
+      "away": "Crystal Palace",
+      "dateISO": "2026-10-18T13:00:00.000Z",
+      "homeScore": 5,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10204.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9826.png",
+      "stage": "מחזור 7"
+    },
+    {
+      "id": "manual-20261018-leeds-united-manchester-united",
+      "home": "Leeds United",
+      "away": "Manchester United",
+      "dateISO": "2026-10-18T13:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8463.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10260.png",
+      "stage": "מחזור 7"
+    },
     {
       "id": "manual-20261017-newcastle-united-aston-villa",
       "home": "Newcastle United",
