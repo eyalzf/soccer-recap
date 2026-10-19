@@ -2,7 +2,7 @@
   "league": "la-liga",
   "league_id": 87,
   "season": "2026/2027",
-  "updated_at": "2026-10-18T03:00:55.766690Z",
+  "updated_at": "2026-10-19T03:00:49.869493Z",
   "checked_through": "2026-09-19",
   "team_ids": {
     "Villarreal": 10205,
@@ -27,6 +27,50 @@
     "Valencia": 10267
   },
   "games": [
+    {
+      "id": "manual-20261018-real-madrid-sevilla",
+      "home": "Real Madrid",
+      "away": "Sevilla",
+      "dateISO": "2026-10-18T19:00:00.000Z",
+      "homeScore": 4,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8633.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8302.png",
+      "stage": "מחזור 9"
+    },
+    {
+      "id": "manual-20261018-malaga-real-sociedad",
+      "home": "Málaga",
+      "away": "Real Sociedad",
+      "dateISO": "2026-10-18T16:30:00.000Z",
+      "homeScore": 2,
+      "awayScore": 5,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9864.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8560.png",
+      "stage": "מחזור 9"
+    },
+    {
+      "id": "manual-20261018-celta-vigo-deportivo-alaves",
+      "home": "Celta Vigo",
+      "away": "Deportivo Alavés",
+      "dateISO": "2026-10-18T14:15:00.000Z",
+      "homeScore": 2,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9910.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9866.png",
+      "stage": "מחזור 9"
+    },
+    {
+      "id": "manual-20261018-osasuna-racing-santander",
+      "home": "Osasuna",
+      "away": "Racing Santander",
+      "dateISO": "2026-10-18T12:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8371.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8696.png",
+      "stage": "מחזור 9"
+    },
     {
       "id": "manual-20261017-valencia-athletic-club",
       "home": "Valencia",
