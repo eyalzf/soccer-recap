@@ -2,7 +2,7 @@
   "league": "premier-league",
   "league_id": 47,
   "season": "2026/2027",
-  "updated_at": "2026-10-19T03:00:49.869493Z",
+  "updated_at": "2026-10-20T03:00:04.288Z",
   "checked_through": "2026-09-19",
   "team_ids": {
     "Leeds United": 8463,
@@ -27,6 +27,17 @@
     "Arsenal": 9825
   },
   "games": [
+    {
+      "id": "manual-20261019-tottenham-hotspur-coventry-city",
+      "home": "Tottenham Hotspur",
+      "away": "Coventry City",
+      "dateISO": "2026-10-19T19:00:00.000Z",
+      "homeScore": 3,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8586.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8669.png",
+      "stage": "מחזור 7"
+    },
     {
       "id": "manual-20261018-nottingham-forest-arsenal",
       "home": "Nottingham Forest",
