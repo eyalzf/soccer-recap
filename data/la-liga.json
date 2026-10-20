@@ -2,7 +2,7 @@
   "league": "la-liga",
   "league_id": 87,
   "season": "2026/2027",
-  "updated_at": "2026-10-19T03:00:49.869493Z",
+  "updated_at": "2026-10-20T03:00:04.288Z",
   "checked_through": "2026-09-19",
   "team_ids": {
     "Villarreal": 10205,
@@ -27,6 +27,17 @@
     "Valencia": 10267
   },
   "games": [
+    {
+      "id": "manual-20261019-getafe-rayo-vallecano",
+      "home": "Getafe",
+      "away": "Rayo Vallecano",
+      "dateISO": "2026-10-19T19:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8305.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8370.png",
+      "stage": "מחזור 9"
+    },
     {
       "id": "manual-20261018-real-madrid-sevilla",
       "home": "Real Madrid",
