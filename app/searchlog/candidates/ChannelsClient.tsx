@@ -70,13 +70,18 @@ function ChannelRow({
 }) {
   const inPlansHe = c.inPlans.map((s) => leagueHe[s] ?? s);
   const teams = [...new Set(c.scopeByLeague.flatMap((s) => s.teams ?? []))];
+  const channelUrl = c.channelId
+    ? `https://www.youtube.com/channel/${c.channelId}`
+    : c.handle
+      ? `https://www.youtube.com/@${c.handle}`
+      : null;
   return (
     <tr style={c.denied ? { opacity: 0.65 } : undefined}>
       <td>
         <div style={{ fontWeight: 600 }}>
-          {c.channelId ? (
+          {channelUrl ? (
             <a
-              href={`https://www.youtube.com/channel/${c.channelId}`}
+              href={channelUrl}
               target="_blank"
               rel="noreferrer"
               style={{ color: 'inherit' }}
@@ -87,9 +92,9 @@ function ChannelRow({
             c.channel
           )}
         </div>
-        {c.channelId && (
+        {(c.channelId || c.handle) && (
           <div style={{ fontSize: 11, opacity: 0.6, direction: 'ltr', textAlign: 'right' }}>
-            {c.channelId}
+            {c.channelId ?? `@${c.handle}`}
           </div>
         )}
         {c.inPlans.length > 0 && (
@@ -443,7 +448,24 @@ export default function ChannelsClient({ leagueHe }: Props) {
                     style={{ opacity: 0.8 }}
                   >
                     <td>
-                      <div style={{ fontWeight: 600 }}>{e.channel}</div>
+                      <div style={{ fontWeight: 600 }}>
+                        {e.channelId || e.handle ? (
+                          <a
+                            href={
+                              e.channelId
+                                ? `https://www.youtube.com/channel/${e.channelId}`
+                                : `https://www.youtube.com/@${e.handle}`
+                            }
+                            target="_blank"
+                            rel="noreferrer"
+                            style={{ color: 'inherit' }}
+                          >
+                            {e.channel}
+                          </a>
+                        ) : (
+                          e.channel
+                        )}
+                      </div>
                       {(e.channelId || e.handle) && (
                         <div
                           style={{
