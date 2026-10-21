@@ -261,6 +261,42 @@ for (const { game, vi } of GAMES) {
   }
 }
 
+// ---------- Pre-emptive short forms (2026-10-21, before MD3 night 2) ----------
+// Bare Hebrew forms attested in Israeli sports media the same day —
+// ONE's match preview 'ריאל מדריד תארח את לייפציג' (RB Leipzig's
+// canonical registry name is the dotted ר.ב. לייפציג, no bare form)
+// and N12/Mako's recap headline '0:2 לספורטינג על לאנס' (Sporting
+// CP's canonical is ספורטינג ליסבון) — added ahead of tonight's
+// Real Madrid–RB Leipzig and Sporting CP–LASK games so a Sport5
+// headline in the same style cannot die on 'teams' the way PSG's
+// פ.ס.ז' headline did this morning. Fixture scores below are
+// illustrative (the games were unplayed when the aliases were added);
+// the headlines are built around the attested bare forms. Collision
+// check at addition time: across the whole club registry both forms
+// appear only in their own teams' entries.
+{
+  const seen = Date.parse('2026-10-21T21:30:00Z');
+  const item = (vi: number, title: string): Sport5IndexItem => ({
+    vc: 893, vi, title, firstSeen: seen, lastSeen: seen,
+  });
+  const preIndex: Sport5IndexItem[] = [
+    item(910001, 'צמד לוויניסיוס: 1:2 לריאל מדריד על לייפציג'),
+    item(910002, 'חגיגה ירוקה: 0:2 לספורטינג על לאסק'),
+  ];
+  const leipzig = matchSport5Index(
+    preIndex,
+    { home: 'Real Madrid', away: 'RB Leipzig', homeScore: 2, awayScore: 1, dateISO: '2026-10-21T19:00:00.000Z', league: 'champions-league' },
+    CATEGORY
+  );
+  eq('pre-emptive: bare לייפציג headline matches', leipzig.candidate?.id, 'sport5:910001');
+  const sporting = matchSport5Index(
+    preIndex,
+    { home: 'Sporting CP', away: 'LASK', homeScore: 2, awayScore: 0, dateISO: '2026-10-21T19:00:00.000Z', league: 'champions-league' },
+    CATEGORY
+  );
+  eq('pre-emptive: bare ספורטינג headline matches', sporting.candidate?.id, 'sport5:910002');
+}
+
 // ---------- Date window: first seen too late ----------
 {
   const late: Sport5IndexItem[] = index.map((i) =>
