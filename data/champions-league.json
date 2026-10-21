@@ -2,7 +2,7 @@
   "league": "champions-league",
   "league_id": 42,
   "season": "2026/2027",
-  "updated_at": "2026-10-15T03:00:19.876341+00:00",
+  "updated_at": "2026-10-21T02:59:32.000Z",
   "checked_through": "2026-09-19",
   "team_ids": {
     "Arsenal": 9825,
@@ -17,6 +17,105 @@
     "Villarreal": 10205
   },
   "games": [
+    {
+      "id": "manual-20261020-fc-porto-psv-eindhoven",
+      "home": "FC Porto",
+      "away": "PSV Eindhoven",
+      "dateISO": "2026-10-20T19:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 1,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/xu47rb1628855600.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/xfsz6i1721297428.png",
+      "stage": "שלב הליגה · מחזור 3"
+    },
+    {
+      "id": "manual-20261020-liverpool-villarreal",
+      "home": "Liverpool",
+      "away": "Villarreal",
+      "dateISO": "2026-10-20T19:00:00.000Z",
+      "homeScore": 4,
+      "awayScore": 3,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8650.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10205.png",
+      "stage": "שלב הליגה · מחזור 3"
+    },
+    {
+      "id": "manual-20261020-manchester-city-aek-athens",
+      "home": "Manchester City",
+      "away": "AEK Athens",
+      "dateISO": "2026-10-20T19:00:00.000Z",
+      "homeScore": 5,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8456.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/4nogst1602773624.png",
+      "stage": "שלב הליגה · מחזור 3"
+    },
+    {
+      "id": "manual-20261020-napoli-bodo-glimt",
+      "home": "Napoli",
+      "away": "Bodø/Glimt",
+      "dateISO": "2026-10-20T19:00:00.000Z",
+      "homeScore": 4,
+      "awayScore": 3,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/l8qyxv1742982541.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/uqpwwx1449165943.png",
+      "stage": "שלב הליגה · מחזור 3"
+    },
+    {
+      "id": "manual-20261020-paris-saint-germain-barcelona",
+      "home": "Paris Saint-Germain",
+      "away": "Barcelona",
+      "dateISO": "2026-10-20T19:00:00.000Z",
+      "homeScore": 4,
+      "awayScore": 2,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/rwqrrq1473504808.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8634.png",
+      "stage": "שלב הליגה · מחזור 3"
+    },
+    {
+      "id": "manual-20261020-roma-slovan-bratislava",
+      "home": "Roma",
+      "away": "Slovan Bratislava",
+      "dateISO": "2026-10-20T19:00:00.000Z",
+      "homeScore": 4,
+      "awayScore": 0,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/jwro2s1760820674.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/uzkg701781199823.png",
+      "stage": "שלב הליגה · מחזור 3"
+    },
+    {
+      "id": "manual-20261020-vfb-stuttgart-atletico-madrid",
+      "home": "VfB Stuttgart",
+      "away": "Atlético Madrid",
+      "dateISO": "2026-10-20T19:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 1,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/yppyux1473454085.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9906.png",
+      "stage": "שלב הליגה · מחזור 3"
+    },
+    {
+      "id": "manual-20261020-fenerbahce-slavia-prague",
+      "home": "Fenerbahçe",
+      "away": "Slavia Prague",
+      "dateISO": "2026-10-20T16:45:00.000Z",
+      "homeScore": 2,
+      "awayScore": 2,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/twxxvs1448199691.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/l7kl4n1759252139.png",
+      "stage": "שלב הליגה · מחזור 3"
+    },
+    {
+      "id": "manual-20261020-sabah-fk-borussia-dortmund",
+      "home": "Sabah FK",
+      "away": "Borussia Dortmund",
+      "dateISO": "2026-10-20T16:45:00.000Z",
+      "homeScore": 1,
+      "awayScore": 2,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/dug7wr1614888756.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/tqo8ge1716960353.png",
+      "stage": "שלב הליגה · מחזור 3"
+    },
     {
       "id": "manual-20261014-aston-villa-fenerbahce",
       "home": "Aston Villa",
