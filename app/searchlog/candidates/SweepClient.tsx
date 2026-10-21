@@ -25,10 +25,28 @@ function ProposalRow({
   onAction: (action: 'deny' | 'discard', p: SweepProposal) => void;
   busy: boolean;
 }) {
+  const channelUrl = p.channelId
+    ? `https://www.youtube.com/channel/${p.channelId}`
+    : p.handle
+      ? `https://www.youtube.com/@${p.handle}`
+      : null;
   return (
     <tr>
       <td>
-        <div style={{ fontWeight: 600 }}>{p.channel}</div>
+        <div style={{ fontWeight: 600 }}>
+          {channelUrl ? (
+            <a
+              href={channelUrl}
+              target="_blank"
+              rel="noreferrer"
+              style={{ color: 'inherit' }}
+            >
+              {p.channel}
+            </a>
+          ) : (
+            p.channel
+          )}
+        </div>
         {p.channelId && (
           <div style={{ fontSize: 11, opacity: 0.6, direction: 'ltr', textAlign: 'right' }}>
             {p.channelId}
@@ -190,7 +208,24 @@ export default function SweepClient({ leagueHe }: { leagueHe: Record<string, str
                   key={p.channelId ?? p.handle ?? p.channel}
                   style={{ opacity: 0.65 }}
                 >
-                  <td>{p.channel}</td>
+                  <td>
+                    {p.channelId || p.handle ? (
+                      <a
+                        href={
+                          p.channelId
+                            ? `https://www.youtube.com/channel/${p.channelId}`
+                            : `https://www.youtube.com/@${p.handle}`
+                        }
+                        target="_blank"
+                        rel="noreferrer"
+                        style={{ color: 'inherit' }}
+                      >
+                        {p.channel}
+                      </a>
+                    ) : (
+                      p.channel
+                    )}
+                  </td>
                   <td>{fmtDate(p.deniedAt ?? 0)}</td>
                 </tr>
               ))}
@@ -215,7 +250,24 @@ export default function SweepClient({ leagueHe }: { leagueHe: Record<string, str
                   key={p.channelId ?? p.handle ?? p.channel}
                   style={{ opacity: 0.65 }}
                 >
-                  <td>{p.channel}</td>
+                  <td>
+                    {p.channelId || p.handle ? (
+                      <a
+                        href={
+                          p.channelId
+                            ? `https://www.youtube.com/channel/${p.channelId}`
+                            : `https://www.youtube.com/@${p.handle}`
+                        }
+                        target="_blank"
+                        rel="noreferrer"
+                        style={{ color: 'inherit' }}
+                      >
+                        {p.channel}
+                      </a>
+                    ) : (
+                      p.channel
+                    )}
+                  </td>
                   <td>{(p.deadAtDiscard ?? 0) + 2} סרטונים מתים</td>
                 </tr>
               ))}
