@@ -240,6 +240,7 @@ for (const { game, vi } of GAMES) {
     item(900006, 'חגיגה איטלקית: 0:4 לרומא על סלובן ברטיסלבה'),
     item(900007, 'טיל העניק לפ.ס.וו 0:1 קטן וחשוב על פורטו'),
     item(900008, 'צמד לגיראסי: דורטמונד ניצחה 1:2 את סבאח'),
+    item(900009, 'עדיין ללא ניצחון באלופות: פנר סיימה ב-2:2 מול סלביה פראג'),
   ];
   const md3Games: Array<{ game: GameInput; vi: number }> = [
     { game: { home: 'Paris Saint-Germain', away: 'Barcelona', homeScore: 4, awayScore: 2, dateISO: '2026-10-20T19:00:00.000Z', league: 'champions-league' }, vi: 900001 },
@@ -250,6 +251,7 @@ for (const { game, vi } of GAMES) {
     { game: { home: 'Roma', away: 'Slovan Bratislava', homeScore: 4, awayScore: 0, dateISO: '2026-10-20T19:00:00.000Z', league: 'champions-league' }, vi: 900006 },
     { game: { home: 'FC Porto', away: 'PSV Eindhoven', homeScore: 0, awayScore: 1, dateISO: '2026-10-20T19:00:00.000Z', league: 'champions-league' }, vi: 900007 },
     { game: { home: 'Sabah FK', away: 'Borussia Dortmund', homeScore: 1, awayScore: 2, dateISO: '2026-10-20T16:45:00.000Z', league: 'champions-league' }, vi: 900008 },
+    { game: { home: 'Fenerbahçe', away: 'Slavia Prague', homeScore: 2, awayScore: 2, dateISO: '2026-10-20T16:45:00.000Z', league: 'champions-league' }, vi: 900009 },
   ];
   for (const { game, vi } of md3Games) {
     const label = `md3-rail ${game.home} vs ${game.away}`;
