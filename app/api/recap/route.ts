@@ -515,7 +515,8 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
   }
 
   // Tier 2.6: Sport1 as a rescue source (plan.sport1Fallback; Israeli
-  // league, user decision 2026-10-18). Runs only when the preferred and
+  // league 2026-10-18, Premier League 2026-10-21). Runs only when the
+  // preferred and
   // bulk YouTube tiers produced no proper highlight — the games YouTube
   // has no source for — and before the general-search fallback. A
   // proper Sport1 highlight ends the search; a weaker keep merges into
