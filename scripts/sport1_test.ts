@@ -132,6 +132,38 @@ async function main(): Promise<void> {
   );
   check('israeli rescue: previous meeting rejected', !sakhninOld.keep, sakhninOld.reason);
 
+  // Premier League rescue (sport1Fallback, user decision 2026-10-21):
+  // Sport1 posts proper recaps for most PL games. The four REAL posts
+  // below (ids/titles/durations/publication as retrieved live on
+  // 2026-10-21) were initially dropped by the shared matcher on Hebrew
+  // short forms — bare לידס, קובנטרי, איפסוויץ, טוטנהאם (canonical:
+  // לידס יונייטד, קובנטרי סיטי, איפסוויץ' טאון, טוטנהאם הוטספר) and
+  // Bournemouth's geresh-less spelling (בורנמות vs canonical
+  // בורנמות') — until the 2026-10-21 heAliases were added.
+  const plCases: Array<{ game: GameInput; cand: RawCandidate }> = [
+    {
+      game: { home: 'Tottenham Hotspur', away: 'Coventry City', dateISO: '2026-10-19', league: 'premier-league', homeScore: 3, awayScore: 1 },
+      cand: { id: 'sport1:1976388', title: 'תקציר: טוטנהאם – קובנטרי 1:3', url: 'https://sport1.maariv.co.il/english-soccer/video/1976388/', source: 'sport1', embedUrl: 'https://player.maariv.co.il/public/player.html?player=sport1-desktop&media=1', publishedAt: '2026-10-19T21:24:57Z', durationSec: 143, lang: 'he' },
+    },
+    {
+      game: { home: 'Leeds United', away: 'Manchester United', dateISO: '2026-10-18', league: 'premier-league', homeScore: 1, awayScore: 1 },
+      cand: { id: 'sport1:1975184', title: 'תקציר: לידס – מנצ\'סטר יונייטד 1:1', url: 'https://sport1.maariv.co.il/english-soccer/video/1975184/', source: 'sport1', embedUrl: 'https://player.maariv.co.il/public/player.html?player=sport1-desktop&media=1', publishedAt: '2026-10-18T16:09:03Z', durationSec: 84, lang: 'he' },
+    },
+    {
+      game: { home: 'AFC Bournemouth', away: 'Sunderland', dateISO: '2026-10-18', league: 'premier-league', homeScore: 2, awayScore: 0 },
+      cand: { id: 'sport1:1975196', title: 'תקציר: בורנמות – סנדרלנד 0:2', url: 'https://sport1.maariv.co.il/english-soccer/video/1975196/', source: 'sport1', embedUrl: 'https://player.maariv.co.il/public/player.html?player=sport1-desktop&media=1', publishedAt: '2026-10-18T16:22:29Z', durationSec: 116, lang: 'he' },
+    },
+    {
+      game: { home: 'Manchester City', away: 'Ipswich Town', dateISO: '2026-10-17', league: 'premier-league', homeScore: 3, awayScore: 2 },
+      cand: { id: 'sport1:1974051', title: 'תקציר: מנצ\'סטר סיטי – איפסוויץ 2:3', url: 'https://sport1.maariv.co.il/english-soccer/video/1974051/', source: 'sport1', embedUrl: 'https://player.maariv.co.il/public/player.html?player=sport1-desktop&media=1', publishedAt: '2026-10-17T16:26:41Z', durationSec: 134, lang: 'he' },
+    },
+  ];
+  for (const { game, cand } of plCases) {
+    const label = `pl rescue ${game.home} vs ${game.away}`;
+    check(`${label}: kept`, filterCandidate(cand, game).keep);
+    check(`${label}: highlight intent (wins over general)`, hasHighlightIntent(cand.title));
+  }
+
   // ---- Part 2: live retrieval ----
   const cands = await sport1Search(GAME);
   console.log(`live retrieval returned ${cands.length} candidate(s)`);
