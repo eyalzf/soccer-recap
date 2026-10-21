@@ -367,6 +367,11 @@ const day = (entries: SearchLogEntry[]): SearchLogDay => ({
       ipfl.scopeByLeague[0].league === 'israeli-league',
     ipfl?.scopeByLeague
   );
+  check(
+    'handle-only roster row exposes its handle (channel-page link)',
+    !!ipfl && ipfl.handle === 'Ipflofficial' && !ipfl.channelId,
+    ipfl?.handle
+  );
   const cc = res.channels.find((c) => c.channel === 'concacaf');
   check(
     'handle-only roster row across two leagues (concacaf)',

@@ -55,6 +55,13 @@ export interface ChannelStat {
   /** channel title as reported by YouTube */
   channel: string;
   channelId?: string;
+  /**
+   * YouTube handle when known (from the curated-plan entry this row
+   * matched, or the roster entry itself). Powers the channel-page link
+   * in the management UI for rows that have no channelId — e.g.
+   * handle-only plan entries like @Ipflofficial.
+   */
+  handle?: string;
   /** kept results across all tiers in the window */
   kept: number;
   /** distinct games those results came from */
@@ -197,6 +204,23 @@ export function plansForChannel(channel: string, channelId?: string): string[] {
   return scopeForChannel(channel, channelId).map((s) => s.league);
 }
 
+/**
+ * The YouTube handle of the curated-plan entry this channel matches, if
+ * any matched entry carries one. Used for the channel-page link on rows
+ * that have no channelId.
+ */
+export function handleForChannel(
+  channel: string,
+  channelId?: string
+): string | undefined {
+  const titleNorm = norm(channel);
+  for (const e of PLAN_ENTRIES) {
+    if (e.handle && entryMatchesChannel(e, titleNorm, channelId))
+      return e.handle;
+  }
+  return undefined;
+}
+
 /** Section classification; precedence blocked > per-team > curated > general. */
 export function classifyChannel(
   denied: boolean,
@@ -280,6 +304,7 @@ export function aggregateChannelStats(
       key,
       channel: a.channel,
       channelId: a.channelId,
+      handle: handleForChannel(a.channel, a.channelId),
       kept: a.kept,
       games: a.games.size,
       tiers: a.tiers,
@@ -400,6 +425,7 @@ function rosterRows(
       key,
       channel: name,
       channelId: acc.channelId,
+      handle: acc.handle,
       kept: 0,
       games: 0,
       tiers: { sport1: 0, preferred: 0, bulk: 0, external: 0, general: 0 },
