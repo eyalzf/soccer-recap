@@ -171,13 +171,14 @@ export interface LeagueSearchPlan {
   sport1?: boolean;
   /**
    * Sport1 as a RESCUE source (user decision 2026-10-18, Israeli
-   * league): the same Sport1 lookup, but invoked only after the
-   * preferred and bulk YouTube tiers produced no proper highlight —
-   * i.e. for games YouTube has no source for (e.g. Bnei Sakhnin –
-   * Hapoel Petah Tikva, 2026-10-17: zero YouTube results, Sport1 had
-   * the recap). Runs before the general-search fallback; a proper
-   * Sport1 highlight ends the search, anything weaker merges and
-   * general still runs. NOT exclusive: results rank alongside any
+   * league; extended to the Premier League 2026-10-21): the same
+   * Sport1 lookup, but invoked only after the preferred and bulk
+   * YouTube tiers produced no proper highlight — i.e. for games
+   * YouTube has no source for (e.g. Bnei Sakhnin – Hapoel Petah
+   * Tikva, 2026-10-17: zero YouTube results, Sport1 had the recap).
+   * Runs before the general-search fallback; a proper Sport1
+   * highlight ends the search, anything weaker merges and general
+   * still runs. NOT exclusive: results rank alongside any
    * non-highlight keeps from the earlier tiers.
    */
   sport1Fallback?: boolean;
@@ -452,6 +453,13 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
       clubChannel('Hull City'),
       clubChannel('Everton'),
     ],
+    // Sport1 as a rescue source (user decision 2026-10-21): Sport1
+    // posts proper Hebrew recaps for most PL games (verified live:
+    // 8 of the 10 games of the Oct 17–19 matchweek had one), but the
+    // league's YouTube pool keeps precedence — the lookup runs only
+    // after the bulk tier found no proper highlight, before general
+    // search. Same sport1Fallback semantics as the Israeli league.
+    sport1Fallback: true,
     fallbackLangs: ['en'],
   },
 
