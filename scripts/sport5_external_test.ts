@@ -219,6 +219,48 @@ for (const { game, vi } of GAMES) {
   }
 }
 
+// ---------- Live rail of 2026-10-20/21: MD3 games match ----------
+// The REAL headlines Sport5 published for the Oct 20 UCL games, as they
+// sat in the accumulated index on 2026-10-21 (vc is the rail's 893).
+// Two of them use Sport5's dotted-acronym house style — פ.ס.ז' for PSG
+// and פ.ס.וו for PSV — which is what the heAliases added to
+// lib/teams.ts on 2026-10-21 pin down (PSG–Barcelona was the user
+// report: the Sport5 item was in the index but died on 'teams').
+{
+  const seen = Date.parse('2026-10-20T21:30:00Z');
+  const item = (vi: number, title: string): Sport5IndexItem => ({
+    vc: 893, vi, title, firstSeen: seen, lastSeen: seen,
+  });
+  const md3Index: Sport5IndexItem[] = [
+    item(900001, 'אסור לפספס! 2:4 מטורף לפ.ס.ז` על ברצלונה'),
+    item(900002, 'צמד למקאליסטר ב-3:4 הענק של ליברפול מול ויאריאל'),
+    item(900003, 'שלושער ובישול לפודן, סיטי הביסה 1:5 את א.א.ק אתונה'),
+    item(900004, 'שער ראשון לאלברז העונה, 1:1 לאתלטיקו מול שטוטגרט'),
+    item(900005, 'צמד למקטומיניי, 3:4 נהדר לנאפולי על בודה גלימט'),
+    item(900006, 'חגיגה איטלקית: 0:4 לרומא על סלובן ברטיסלבה'),
+    item(900007, 'טיל העניק לפ.ס.וו 0:1 קטן וחשוב על פורטו'),
+    item(900008, 'צמד לגיראסי: דורטמונד ניצחה 1:2 את סבאח'),
+    item(900009, 'עדיין ללא ניצחון באלופות: פנר סיימה ב-2:2 מול סלביה פראג'),
+  ];
+  const md3Games: Array<{ game: GameInput; vi: number }> = [
+    { game: { home: 'Paris Saint-Germain', away: 'Barcelona', homeScore: 4, awayScore: 2, dateISO: '2026-10-20T19:00:00.000Z', league: 'champions-league' }, vi: 900001 },
+    { game: { home: 'Liverpool', away: 'Villarreal', homeScore: 4, awayScore: 3, dateISO: '2026-10-20T19:00:00.000Z', league: 'champions-league' }, vi: 900002 },
+    { game: { home: 'Manchester City', away: 'AEK Athens', homeScore: 5, awayScore: 1, dateISO: '2026-10-20T19:00:00.000Z', league: 'champions-league' }, vi: 900003 },
+    { game: { home: 'VfB Stuttgart', away: 'Atlético Madrid', homeScore: 1, awayScore: 1, dateISO: '2026-10-20T19:00:00.000Z', league: 'champions-league' }, vi: 900004 },
+    { game: { home: 'Napoli', away: 'Bodø/Glimt', homeScore: 4, awayScore: 3, dateISO: '2026-10-20T19:00:00.000Z', league: 'champions-league' }, vi: 900005 },
+    { game: { home: 'Roma', away: 'Slovan Bratislava', homeScore: 4, awayScore: 0, dateISO: '2026-10-20T19:00:00.000Z', league: 'champions-league' }, vi: 900006 },
+    { game: { home: 'FC Porto', away: 'PSV Eindhoven', homeScore: 0, awayScore: 1, dateISO: '2026-10-20T19:00:00.000Z', league: 'champions-league' }, vi: 900007 },
+    { game: { home: 'Sabah FK', away: 'Borussia Dortmund', homeScore: 1, awayScore: 2, dateISO: '2026-10-20T16:45:00.000Z', league: 'champions-league' }, vi: 900008 },
+    { game: { home: 'Fenerbahçe', away: 'Slavia Prague', homeScore: 2, awayScore: 2, dateISO: '2026-10-20T16:45:00.000Z', league: 'champions-league' }, vi: 900009 },
+  ];
+  for (const { game, vi } of md3Games) {
+    const label = `md3-rail ${game.home} vs ${game.away}`;
+    const r = matchSport5Index(md3Index, game, CATEGORY);
+    eq(`${label}: matched vi`, r.candidate?.id, `sport5:${vi}`);
+    eq(`${label}: exactly one kept item`, r.considered.filter((c) => c.keep).length, 1);
+  }
+}
+
 // ---------- Date window: first seen too late ----------
 {
   const late: Sport5IndexItem[] = index.map((i) =>

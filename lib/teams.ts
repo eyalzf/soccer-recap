@@ -424,7 +424,7 @@ export const CLUBS: ClubEntry[] = [
     en: "Paris Saint-Germain",
     he: "פריז סן-ז'רמן",
     enAliases: ["PSG", "Paris SG", "Paris"],
-    heAliases: [],
+    heAliases: ["פ.ס.ז'"],
   },
   {
     en: "Marseille",
@@ -496,7 +496,7 @@ export const CLUBS: ClubEntry[] = [
     en: "PSV Eindhoven",
     he: "פ.ס.וו איינדהובן",
     enAliases: ["PSV"],
-    heAliases: [],
+    heAliases: ["פ.ס.וו"],
   },
   {
     en: "Feyenoord",
@@ -532,7 +532,7 @@ export const CLUBS: ClubEntry[] = [
     en: "Fenerbahçe",
     he: "פנרבחצ'ה",
     enAliases: ["Fenerbahce", "Fener"],
-    heAliases: [],
+    heAliases: ["פנר"],
   },
   {
     en: "Olympiacos",
