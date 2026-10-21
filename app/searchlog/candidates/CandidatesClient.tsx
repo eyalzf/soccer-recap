@@ -38,7 +38,20 @@ function CandidateRow({
   return (
     <tr>
       <td>
-        <div style={{ fontWeight: 600 }}>{c.channel}</div>
+        <div style={{ fontWeight: 600 }}>
+          {c.channelId ? (
+            <a
+              href={`https://www.youtube.com/channel/${c.channelId}`}
+              target="_blank"
+              rel="noreferrer"
+              style={{ color: 'inherit' }}
+            >
+              {c.channel}
+            </a>
+          ) : (
+            c.channel
+          )}
+        </div>
         {c.channelId && (
           <div style={{ fontSize: 11, opacity: 0.6, direction: 'ltr', textAlign: 'right' }}>
             {c.channelId}
@@ -226,7 +239,20 @@ export default function CandidatesClient({ leagueHe }: Props) {
             <tbody>
               {ops.pending.map((p) => (
                 <tr key={p.key}>
-                  <td>{p.channel}</td>
+                  <td>
+                    {p.channelId ? (
+                      <a
+                        href={`https://www.youtube.com/channel/${p.channelId}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        style={{ color: 'inherit' }}
+                      >
+                        {p.channel}
+                      </a>
+                    ) : (
+                      p.channel
+                    )}
+                  </td>
                   <td>
                     {(leagueHe[p.league] ?? p.league) +
                       (p.teams?.length ? ` · ${p.teams.join(' + ')} בלבד` : ' · כל הליגה')}
@@ -264,7 +290,20 @@ export default function CandidatesClient({ leagueHe }: Props) {
             <tbody>
               {ops.discarded.map((d) => (
                 <tr key={d.key} style={{ opacity: 0.65 }}>
-                  <td>{d.channel}</td>
+                  <td>
+                    {d.channelId ? (
+                      <a
+                        href={`https://www.youtube.com/channel/${d.channelId}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        style={{ color: 'inherit' }}
+                      >
+                        {d.channel}
+                      </a>
+                    ) : (
+                      d.channel
+                    )}
+                  </td>
                   <td>{leagueHe[d.league] ?? d.league}</td>
                   <td>{(d.countAtDiscard ?? 0) + hitThreshold} ניצחונות</td>
                 </tr>
