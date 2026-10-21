@@ -26,7 +26,7 @@ export const CLUBS: ClubEntry[] = [
     en: "Bournemouth",
     he: "בורנמות'",
     enAliases: ["AFC Bournemouth", "Bournemouth AFC", "The Cherries", "Boscombe"],
-    heAliases: [],
+    heAliases: ["בורנמות"],
   },
   {
     en: "Brentford",
@@ -50,7 +50,7 @@ export const CLUBS: ClubEntry[] = [
     en: "Coventry City",
     he: "קובנטרי סיטי",
     enAliases: ["Coventry", "Sky Blues", "Coventry City FC"],
-    heAliases: [],
+    heAliases: ["קובנטרי"],
   },
   {
     en: "Crystal Palace",
@@ -80,13 +80,13 @@ export const CLUBS: ClubEntry[] = [
     en: "Ipswich Town",
     he: "איפסוויץ' טאון",
     enAliases: ["Ipswich", "The Tractor Boys", "Ipswich Town FC"],
-    heAliases: [],
+    heAliases: ["איפסוויץ"],
   },
   {
     en: "Leeds United",
     he: "לידס יונייטד",
     enAliases: ["Leeds", "LUFC", "The Whites"],
-    heAliases: [],
+    heAliases: ["לידס"],
   },
   {
     en: "Liverpool",
@@ -128,7 +128,7 @@ export const CLUBS: ClubEntry[] = [
     en: "Tottenham Hotspur",
     he: "טוטנהאם הוטספר",
     enAliases: ["Spurs", "Tottenham", "THFC"],
-    heAliases: [],
+    heAliases: ["טוטנהאם"],
   },
   {
     en: "West Ham United",
