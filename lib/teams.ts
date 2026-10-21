@@ -532,7 +532,7 @@ export const CLUBS: ClubEntry[] = [
     en: "Fenerbahçe",
     he: "פנרבחצ'ה",
     enAliases: ["Fenerbahce", "Fener"],
-    heAliases: [],
+    heAliases: ["פנר"],
   },
   {
     en: "Olympiacos",
