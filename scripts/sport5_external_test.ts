@@ -297,6 +297,41 @@ for (const { game, vi } of GAMES) {
   eq('pre-emptive: bare ספורטינג headline matches', sporting.candidate?.id, 'sport5:910002');
 }
 
+// ---------- MD3 night 2 (2026-10-21): bare club forms ----------
+// Real headlines from Sport5's 2026-10-21 rail (via the accumulated
+// production index): Bayern München headlined as bare באיירן
+// (canonical: באיירן מינכן) and Club Brugge as bare ברוז' (canonical:
+// קלאב ברוז') — both died on 'teams' in production until the
+// 2026-10-22 heAliases were added (Bayern–Arsenal reported by the
+// user). The other seven MD3 headlines that night matched as-is —
+// including both pre-emptive aliases added that morning (ספורטינג,
+// לייפציג), which are covered by their own block above and by the
+// live rail. Collision check: באיירן and ברוז' each appear only in
+// their own team's registry entry (Bayer Leverkusen is באייר, a
+// different string).
+{
+  const seen = Date.parse('2026-10-21T21:35:00Z');
+  const item = (vi: number, title: string): Sport5IndexItem => ({
+    vc: 893, vi, title, firstSeen: seen, lastSeen: seen,
+  });
+  const md3n2: Sport5IndexItem[] = [
+    item(920001, 'בתום משחק גדול: 2:2 בין באיירן לארסנל'),
+    item(920002, '0:3 גדול לברוז` על לאנס'),
+  ];
+  const bayern = matchSport5Index(
+    md3n2,
+    { home: 'Bayern München', away: 'Arsenal', homeScore: 2, awayScore: 2, dateISO: '2026-10-21T19:00:00.000Z', league: 'champions-league' },
+    CATEGORY
+  );
+  eq('md3n2: bare באיירן headline matches', bayern.candidate?.id, 'sport5:920001');
+  const brugge = matchSport5Index(
+    md3n2,
+    { home: 'Club Brugge', away: 'Lens', homeScore: 3, awayScore: 0, dateISO: '2026-10-21T19:00:00.000Z', league: 'champions-league' },
+    CATEGORY
+  );
+  eq('md3n2: bare ברוז headline matches', brugge.candidate?.id, 'sport5:920002');
+}
+
 // ---------- Date window: first seen too late ----------
 {
   const late: Sport5IndexItem[] = index.map((i) =>
