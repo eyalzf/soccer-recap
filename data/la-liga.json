@@ -2,7 +2,7 @@
   "league": "la-liga",
   "league_id": 87,
   "season": "2026/2027",
-  "updated_at": "2026-10-20T03:00:04.288Z",
+  "updated_at": "2026-10-22T02:58:39.000Z",
   "checked_through": "2026-09-19",
   "team_ids": {
     "Villarreal": 10205,
@@ -27,6 +27,17 @@
     "Valencia": 10267
   },
   "games": [
+    {
+      "id": "manual-20261021-levante-athletic-club",
+      "home": "Levante",
+      "away": "Athletic Club",
+      "dateISO": "2026-10-21T18:00:00.000Z",
+      "homeScore": 3,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8581.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8315.png",
+      "stage": "מחזור 6"
+    },
     {
       "id": "manual-20261019-getafe-rayo-vallecano",
       "home": "Getafe",
