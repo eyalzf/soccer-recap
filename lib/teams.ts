@@ -400,7 +400,7 @@ export const CLUBS: ClubEntry[] = [
     en: "Bayern Munich",
     he: "באיירן מינכן",
     enAliases: ["Bayern", "Bayern München", "FC Bayern", "FC Bayern Munich", "FC Bayern München"],
-    heAliases: [],
+    heAliases: ["באיירן"],
   },
   {
     en: "Borussia Dortmund",
@@ -508,7 +508,7 @@ export const CLUBS: ClubEntry[] = [
     en: "Club Brugge",
     he: "קלאב ברוז'",
     enAliases: ["Brugge", "Club Brugge KV"],
-    heAliases: [],
+    heAliases: ["ברוז'"],
   },
   {
     en: "Celtic",
