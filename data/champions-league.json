@@ -2,7 +2,7 @@
   "league": "champions-league",
   "league_id": 42,
   "season": "2026/2027",
-  "updated_at": "2026-10-21T02:59:32.000Z",
+  "updated_at": "2026-10-22T02:58:36.000Z",
   "checked_through": "2026-09-19",
   "team_ids": {
     "Arsenal": 9825,
@@ -17,6 +17,105 @@
     "Villarreal": 10205
   },
   "games": [
+    {
+      "id": "manual-20261021-aston-villa-viking",
+      "home": "Aston Villa",
+      "away": "Viking",
+      "dateISO": "2026-10-21T19:00:00.000Z",
+      "homeScore": 3,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10252.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/9mzq961590148192.png",
+      "stage": "שלב הליגה · מחזור 3"
+    },
+    {
+      "id": "manual-20261021-bayern-munchen-arsenal",
+      "home": "Bayern München",
+      "away": "Arsenal",
+      "dateISO": "2026-10-21T19:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 2,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/01ogkh1716960412.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9825.png",
+      "stage": "שלב הליגה · מחזור 3"
+    },
+    {
+      "id": "manual-20261021-club-brugge-lens",
+      "home": "Club Brugge",
+      "away": "Lens",
+      "dateISO": "2026-10-21T19:00:00.000Z",
+      "homeScore": 3,
+      "awayScore": 0,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/mz8y0q1771129880.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/3pxoum1598797195.png",
+      "stage": "שלב הליגה · מחזור 3"
+    },
+    {
+      "id": "manual-20261021-inter-shakhtar-donetsk",
+      "home": "Inter",
+      "away": "Shakhtar Donetsk",
+      "dateISO": "2026-10-21T19:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 0,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/ryhu6d1617113103.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/sqrxsr1421791799.png",
+      "stage": "שלב הליגה · מחזור 3"
+    },
+    {
+      "id": "manual-20261021-real-betis-feyenoord",
+      "home": "Real Betis",
+      "away": "Feyenoord",
+      "dateISO": "2026-10-21T19:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8603.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/uturtx1473534803.png",
+      "stage": "שלב הליגה · מחזור 3"
+    },
+    {
+      "id": "manual-20261021-real-madrid-rb-leipzig",
+      "home": "Real Madrid",
+      "away": "RB Leipzig",
+      "dateISO": "2026-10-21T19:00:00.000Z",
+      "homeScore": 4,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8633.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/zjgapo1594244951.png",
+      "stage": "שלב הליגה · מחזור 3"
+    },
+    {
+      "id": "manual-20261021-sporting-cp-lask",
+      "home": "Sporting CP",
+      "away": "LASK",
+      "dateISO": "2026-10-21T19:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 3,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/5hiuk71783137875.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/oox26l1683556395.png",
+      "stage": "שלב הליגה · מחזור 3"
+    },
+    {
+      "id": "manual-20261021-como-manchester-united",
+      "home": "Como",
+      "away": "Manchester United",
+      "dateISO": "2026-10-21T16:45:00.000Z",
+      "homeScore": 4,
+      "awayScore": 1,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/02x81t1627405841.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10260.png",
+      "stage": "שלב הליגה · מחזור 3"
+    },
+    {
+      "id": "manual-20261021-lille-galatasaray",
+      "home": "Lille",
+      "away": "Galatasaray",
+      "dateISO": "2026-10-21T16:45:00.000Z",
+      "homeScore": 2,
+      "awayScore": 4,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/2giize1534005340.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/io7jk21767941298.png",
+      "stage": "שלב הליגה · מחזור 3"
+    },
     {
       "id": "manual-20261020-fc-porto-psv-eindhoven",
       "home": "FC Porto",
