@@ -2,7 +2,7 @@
   "league": "la-liga",
   "league_id": 87,
   "season": "2026/2027",
-  "updated_at": "2026-10-22T02:58:39.000Z",
+  "updated_at": "2026-10-24T02:58:09.000Z",
   "checked_through": "2026-09-19",
   "team_ids": {
     "Villarreal": 10205,
@@ -27,6 +27,17 @@
     "Valencia": 10267
   },
   "games": [
+    {
+      "id": "manual-20261023-deportivo-alaves-malaga",
+      "home": "Deportivo Alavés",
+      "away": "Málaga",
+      "dateISO": "2026-10-23T19:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9866.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9864.png",
+      "stage": "מחזור 10"
+    },
     {
       "id": "manual-20261021-levante-athletic-club",
       "home": "Levante",
