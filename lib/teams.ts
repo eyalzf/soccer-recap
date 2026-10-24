@@ -74,7 +74,7 @@ export const CLUBS: ClubEntry[] = [
     en: "Hull City",
     he: "האל סיטי",
     enAliases: ["Hull", "The Tigers", "Hull City AFC"],
-    heAliases: [],
+    heAliases: ["האל"],
   },
   {
     en: "Ipswich Town",
@@ -110,7 +110,7 @@ export const CLUBS: ClubEntry[] = [
     en: "Newcastle United",
     he: "ניוקאסל יונייטד",
     enAliases: ["Newcastle", "NUFC", "The Magpies"],
-    heAliases: [],
+    heAliases: ["ניוקאסל"],
   },
   {
     en: "Nottingham Forest",

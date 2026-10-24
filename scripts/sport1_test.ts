@@ -164,6 +164,33 @@ async function main(): Promise<void> {
     check(`${label}: highlight intent (wins over general)`, hasHighlightIntent(cand.title));
   }
 
+  // Pre-emptive PL short forms (2026-10-24, ahead of the Sun Oct 25
+  // fixtures): Sport1's own PL page (article 1979612, live that day)
+  // lists the fixtures in bare forms — 'קריסטל פאלאס – ניוקאסל' and
+  // 'האל – ברנטפורד' — while the registry canonicals are ניוקאסל
+  // יונייטד and האל סיטי with no bare alias, so a Sport1 recap title
+  // in the same style would fail the teams check and the PL rescue
+  // would drop it. heAliases ניוקאסל / האל added 2026-10-24 (bare
+  // יונייטד deliberately NOT added — ambiguous across United clubs).
+  // Collision check: each bare form appears only in its own team's
+  // registry entry. Scores below are illustrative (fixtures unplayed
+  // when pinned); team-name forms are Sport1's attested ones.
+  const plPreemptive: Array<{ game: GameInput; cand: RawCandidate }> = [
+    {
+      game: { home: 'Crystal Palace', away: 'Newcastle United', dateISO: '2026-10-25', league: 'premier-league', homeScore: 2, awayScore: 1 },
+      cand: { id: 'sport1:pre-palace-newcastle', title: 'תקציר: קריסטל פאלאס – ניוקאסל 1:2', url: 'https://sport1.maariv.co.il/', source: 'sport1', embedUrl: 'https://player.maariv.co.il/public/player.html?player=sport1-desktop&media=1', publishedAt: '2026-10-25T15:30:00Z', durationSec: 150, lang: 'he' },
+    },
+    {
+      game: { home: 'Hull City', away: 'Brentford', dateISO: '2026-10-25', league: 'premier-league', homeScore: 1, awayScore: 1 },
+      cand: { id: 'sport1:pre-hull-brentford', title: 'תקציר: האל – ברנטפורד 1:1', url: 'https://sport1.maariv.co.il/', source: 'sport1', embedUrl: 'https://player.maariv.co.il/public/player.html?player=sport1-desktop&media=1', publishedAt: '2026-10-25T15:30:00Z', durationSec: 150, lang: 'he' },
+    },
+  ];
+  for (const { game, cand } of plPreemptive) {
+    const label = `pl pre-emptive ${game.home} vs ${game.away}`;
+    check(`${label}: kept`, filterCandidate(cand, game).keep);
+    check(`${label}: highlight intent (wins over general)`, hasHighlightIntent(cand.title));
+  }
+
   // ---- Part 2: live retrieval ----
   const cands = await sport1Search(GAME);
   console.log(`live retrieval returned ${cands.length} candidate(s)`);
