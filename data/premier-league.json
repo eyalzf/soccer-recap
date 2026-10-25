@@ -2,7 +2,7 @@
   "league": "premier-league",
   "league_id": 47,
   "season": "2026/2027",
-  "updated_at": "2026-10-24T02:58:09.000Z",
+  "updated_at": "2026-10-25T03:59:23.000Z",
   "checked_through": "2026-09-19",
   "team_ids": {
     "Leeds United": 8463,
@@ -27,6 +27,50 @@
     "Arsenal": 9825
   },
   "games": [
+    {
+      "id": "manual-20261024-chelsea-tottenham-hotspur",
+      "home": "Chelsea",
+      "away": "Tottenham Hotspur",
+      "dateISO": "2026-10-24T16:30:00.000Z",
+      "homeScore": 0,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8455.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8586.png",
+      "stage": "מחזור 8"
+    },
+    {
+      "id": "manual-20261024-arsenal-everton",
+      "home": "Arsenal",
+      "away": "Everton",
+      "dateISO": "2026-10-24T14:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9825.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8668.png",
+      "stage": "מחזור 8"
+    },
+    {
+      "id": "manual-20261024-coventry-city-fulham",
+      "home": "Coventry City",
+      "away": "Fulham",
+      "dateISO": "2026-10-24T14:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8669.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9879.png",
+      "stage": "מחזור 8"
+    },
+    {
+      "id": "manual-20261024-aston-villa-manchester-city",
+      "home": "Aston Villa",
+      "away": "Manchester City",
+      "dateISO": "2026-10-24T11:30:00.000Z",
+      "homeScore": 2,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10252.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8456.png",
+      "stage": "מחזור 8"
+    },
     {
       "id": "manual-20261023-ipswich-town-nottingham-forest",
       "home": "Ipswich Town",
