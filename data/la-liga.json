@@ -2,7 +2,7 @@
   "league": "la-liga",
   "league_id": 87,
   "season": "2026/2027",
-  "updated_at": "2026-10-24T02:58:09.000Z",
+  "updated_at": "2026-10-25T03:59:28.000Z",
   "checked_through": "2026-09-19",
   "team_ids": {
     "Villarreal": 10205,
@@ -27,6 +27,50 @@
     "Valencia": 10267
   },
   "games": [
+    {
+      "id": "manual-20261024-atletico-madrid-deportivo-a-coruna",
+      "home": "Atlético Madrid",
+      "away": "Deportivo A Coruña",
+      "dateISO": "2026-10-24T19:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9906.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9783.png",
+      "stage": "מחזור 10"
+    },
+    {
+      "id": "manual-20261024-valencia-villarreal",
+      "home": "Valencia",
+      "away": "Villarreal",
+      "dateISO": "2026-10-24T16:30:00.000Z",
+      "homeScore": 1,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10267.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10205.png",
+      "stage": "מחזור 10"
+    },
+    {
+      "id": "manual-20261024-racing-santander-espanyol",
+      "home": "Racing Santander",
+      "away": "Espanyol",
+      "dateISO": "2026-10-24T14:15:00.000Z",
+      "homeScore": 2,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8696.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8558.png",
+      "stage": "מחזור 10"
+    },
+    {
+      "id": "manual-20261024-rayo-vallecano-elche",
+      "home": "Rayo Vallecano",
+      "away": "Elche",
+      "dateISO": "2026-10-24T12:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 3,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8370.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10268.png",
+      "stage": "מחזור 10"
+    },
     {
       "id": "manual-20261023-deportivo-alaves-malaga",
       "home": "Deportivo Alavés",
