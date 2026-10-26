@@ -69,6 +69,7 @@ export async function GET(req: NextRequest) {
     dateISO: sp.get('date') ?? '',
     homeScore: numOrNull(sp.get('hs')),
     awayScore: numOrNull(sp.get('as')),
+    cup: sp.get('cup') || null,
   };
   if (!game.league || !game.home || !game.away || !game.dateISO) {
     return NextResponse.json(
