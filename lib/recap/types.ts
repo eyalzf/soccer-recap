@@ -54,4 +54,10 @@ export interface GameInput {
   league: string;
   homeScore: number | null;
   awayScore: number | null;
+  /**
+   * Domestic-cup slug (lib/cups.ts) when this game is a cup tie
+   * played inside the parent league's listing; null/absent for
+   * league games. Flips the competition logic in the matcher.
+   */
+  cup?: string | null;
 }
