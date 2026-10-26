@@ -88,6 +88,7 @@ export default function RecapPanel({
       hs: game.homeScore == null ? '' : String(game.homeScore),
       as: game.awayScore == null ? '' : String(game.awayScore),
     });
+    if (game.cup) q.set('cup', game.cup);
     const es = new EventSource(
       `/api/recap?${q.toString()}${fixture ? `&fixture=${encodeURIComponent(fixture)}` : ''}`
     );
