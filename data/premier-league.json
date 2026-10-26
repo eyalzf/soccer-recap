@@ -24,7 +24,10 @@
   "Tottenham Hotspur": 8586,
   "Everton": 8668,
   "Sunderland": 8472,
-  "Arsenal": 9825
+  "Arsenal": 9825,
+  "Millwall": 10004,
+  "Lincoln City": 8430,
+  "Norwich City": 9850
  },
  "games": [
   {
@@ -475,7 +478,7 @@
    "homeScore": 5,
    "awayScore": 0,
    "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8456.png",
-   "awayBadge": null,
+   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9850.png",
    "stage": "סיבוב שלישי",
    "cup": "efl-cup"
   },
@@ -656,7 +659,7 @@
    "dateISO": "2026-09-08T18:45:00.000Z",
    "homeScore": 0,
    "awayScore": 1,
-   "homeBadge": null,
+   "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10004.png",
    "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10261.png",
    "stage": "סיבוב שלישי",
    "cup": "efl-cup"
@@ -669,7 +672,7 @@
    "homeScore": 4,
    "awayScore": 0,
    "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8678.png",
-   "awayBadge": null,
+   "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8430.png",
    "stage": "סיבוב שלישי",
    "cup": "efl-cup"
   },
