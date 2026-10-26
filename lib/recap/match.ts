@@ -2,7 +2,7 @@ import { CLUBS, type ClubEntry } from '../teams';
 import { NATIONS } from '../nations';
 import { lookupClubEn } from '../teamIndex';
 import type { GameInput, RawCandidate } from './types';
-import { LEAGUE_SEARCH_PLANS, searchPlanFor } from './leaguePlans';
+import { LEAGUE_SEARCH_PLANS, searchPlanFor, competitionConfigFor } from './leaguePlans';
 import { isDeniedChannel, type DenySet } from './denyList';
 
 export const hasHebrew = (s: string): boolean => /[\u0590-\u05FF]/.test(s);
@@ -113,13 +113,20 @@ export function mentionIndex(title: string, club: ClubEntry): number {
 }
 
 /**
- * Does the title name a competition that contradicts the game's league?
- * The keyword lists are league configuration (see `contradictions` in
- * lib/recap/leaguePlans.ts); this matcher is league-agnostic.
+ * Does the title name a competition that contradicts the game's
+ * competition? The keyword lists are configuration (league plans in
+ * lib/recap/leaguePlans.ts, cup definitions in lib/cups.ts); this
+ * matcher is league-agnostic. Accepts a league slug (legacy callers)
+ * or a game-like {league, cup} — cup games check against the cup's
+ * own contradiction list.
  */
-export function competitionContradiction(title: string, league: string): string | null {
+export function competitionContradiction(
+  title: string,
+  game: string | { league: string; cup?: string | null }
+): string | null {
+  const g = typeof game === 'string' ? { league: game } : game;
   const t = title.toLowerCase();
-  for (const kw of searchPlanFor(league).contradictions ?? []) {
+  for (const kw of competitionConfigFor(g).contradictions) {
     if (kw && t.includes(kw.toLowerCase())) return kw;
   }
   return null;
@@ -363,7 +370,7 @@ export function filterCandidate(
     return { keep: false, reason: 'teams' };
   }
 
-  const contra = competitionContradiction(c.title, game.league);
+  const contra = competitionContradiction(c.title, game);
   if (contra) return { keep: false, reason: 'competition' };
 
   const excl = excludedCategory(c.title, game.league);
