@@ -46,6 +46,8 @@ export interface GameRecord {
   stage: string | null;
   /** Domestic-cup slug (lib/cups.ts) for cup ties inside a league listing; null for league games. */
   cup: string | null;
+  /** Competition slug (lib/competitions.ts) for leading-teams games; null elsewhere. */
+  competition: string | null;
 }
 
 export interface LeagueGamesResult {
@@ -65,6 +67,7 @@ interface StoredGame {
   awayBadge?: string | null;
   stage?: string | null;
   cup?: string | null;
+  competition?: string | null;
 }
 
 interface StoredFile {
@@ -169,6 +172,7 @@ export async function getLeagueGames(
       leagueBadge: league.badge,
       stage: g.stage || null,
       cup: g.cup || null,
+      competition: g.competition || null,
     });
   }
   games.sort((a, b) => (a.dateISO < b.dateISO ? 1 : -1));

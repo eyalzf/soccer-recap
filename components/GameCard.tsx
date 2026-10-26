@@ -2,6 +2,7 @@
 
 import CompositeThumb from './CompositeThumb';
 import { cupLabelHe } from '../lib/cups';
+import { competitionLabelHe } from '../lib/competitions';
 
 export interface GameItem {
   id: string;
@@ -22,6 +23,8 @@ export interface GameItem {
   stage?: string | null;
   /** Domestic-cup slug (lib/cups.ts) for cup ties inside a league listing. */
   cup?: string | null;
+  /** Competition slug (lib/competitions.ts) for leading-teams games. */
+  competition?: string | null;
 }
 
 function formatDate(iso: string): string {
@@ -70,6 +73,11 @@ export default function GameCard({
           {game.cup && cupLabelHe(game.cup) ? (
             <span className="game-stage game-cup">
               🏆 {cupLabelHe(game.cup)}
+              {game.stage ? ` · ${game.stage}` : ''}
+            </span>
+          ) : game.competition && competitionLabelHe(game.competition) ? (
+            <span className="game-stage game-cup">
+              ⭐ {competitionLabelHe(game.competition)}
               {game.stage ? ` · ${game.stage}` : ''}
             </span>
           ) : (

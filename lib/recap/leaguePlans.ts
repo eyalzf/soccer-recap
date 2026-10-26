@@ -1,4 +1,10 @@
 import { cupDefFor } from '../cups';
+import {
+  COMPETITIONS,
+  CARRIED_COMPETITION_TERMS,
+  competitionDefFor,
+  competitionContradictions,
+} from '../competitions';
 
 /**
  * Per-league search plans: ALL league-specific configuration for the
@@ -250,6 +256,12 @@ export const CLUB_CHANNELS: Record<string, ClubChannelDef> = {
   Everton: { handle: 'Everton', label: 'Everton' },
   // Italy / Germany / France / Portugal / Netherlands / Belgium
   Inter: { handle: 'Inter', label: 'Inter' },
+  // AC Milan: validated 2026-10-26 in the leading-teams channel audit —
+  // proper Serie A highlights + extended highlights, embeddable, posted
+  // same/next day (Udinese, Atalanta). (The 2026-10-03 evaluation had
+  // shelved Milan for insufficient UCL data; this is a domestic-scope
+  // validation, which is what the leading-teams view needs.)
+  'AC Milan': { handle: 'acmilan', label: 'AC Milan' },
   Juventus: { handle: 'Juventus', label: 'Juventus' },
   Roma: { handle: 'ASRoma', label: 'Roma' },
   'Bayern Munich': { handle: 'FCBayern', label: 'Bayern' },
@@ -679,7 +691,67 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
     bulk: [],
     fallbackLangs: ['he', 'en'],
   },
+  // Leading teams (קבוצות מובילות, user feature 2026-10-26): a fixed
+  // list of leading clubs from leagues the app does not carry as pills.
+  // Channels are configured PER TEAM (user rule): each club's entry is
+  // team-scoped, and a club without a validated source is not in the
+  // list at all. Sources validated in the 2026-10-26 channel audit
+  // against real domestic games (proper highlights, embeddable, timely):
+  //  - Bayern: the club channel's Bundesliga highlights are ALL
+  //    embedding-blocked, so Bayern's source is the Bundesliga league
+  //    channel (@bundesliga — every game, same-day, embeddable).
+  //  - PSG: the club channel posts magazine résumés/pressers only, so
+  //    PSG's source is the Ligue 1 channel (@ligue1 full matchday packs).
+  //  - Celtic: the club channel posts almost no highlights, so Celtic's
+  //    source is the SPFL channel (@spflofficial — every Premiership
+  //    game, embeddable).
+  //  - Dortmund, Inter, Milan, Juventus, Sporting CP, Ajax: their own
+  //    club channels (Dortmund also gets @bundesliga redundancy).
+  // Porto was audited and EXCLUDED (no match highlights anywhere; the
+  // Liga Portugal channel is dormant since 2024). PSV was excluded by
+  // the user (its highlight titles often name no opponent, so the
+  // both-teams title check would miss many of its games).
+  // Competition logic is per game (game.competition — lib/competitions.ts).
+  // The plan-level list is only the safety net for a game filed without
+  // a competition slug: then ANY competition-named title contradicts it.
+  'leading-teams': {
+    contradictions: [
+      ...COMPETITIONS.flatMap((c) => c.terms),
+      ...CARRIED_COMPETITION_TERMS,
+    ],
+    competitionTerms: [],
+    preferred: [],
+    bulk: [
+      { handle: 'bundesliga', label: 'Bundesliga', teams: ['Bayern Munich', 'Borussia Dortmund'] },
+      clubChannel('Borussia Dortmund'),
+      clubChannel('Inter'),
+      clubChannel('AC Milan'),
+      clubChannel('Juventus'),
+      { handle: 'ligue1', label: 'Ligue 1', teams: ['Paris Saint-Germain'] },
+      clubChannel('Sporting CP'),
+      clubChannel('Ajax'),
+      { handle: 'spflofficial', label: 'SPFL', teams: ['Celtic'] },
+    ],
+    fallbackLangs: ['en'],
+  },
 };
+
+/**
+ * The fixed leading-teams club list (data-file spellings), in display
+ * order. A club joins this list only with a validated per-team source
+ * in the 'leading-teams' plan above (user rule, 2026-10-26).
+ */
+export const LEADING_TEAM_CLUBS: string[] = [
+  'Bayern München',
+  'Borussia Dortmund',
+  'Inter',
+  'AC Milan',
+  'Juventus',
+  'Paris Saint-Germain',
+  'Sporting CP',
+  'Ajax',
+  'Celtic',
+];
 
 /** Unknown league slugs get English general search only. */
 export function searchPlanFor(league: string): LeagueSearchPlan {
@@ -696,10 +768,18 @@ export function searchPlanFor(league: string): LeagueSearchPlan {
 export function competitionConfigFor(game: {
   league: string;
   cup?: string | null;
+  competition?: string | null;
 }): { contradictions: string[]; competitionTerms: string[] } {
   const cup = cupDefFor(game.cup);
   if (cup) {
     return { contradictions: cup.contradictions, competitionTerms: cup.competitionTerms };
+  }
+  const competition = competitionDefFor(game.competition);
+  if (competition) {
+    return {
+      contradictions: competitionContradictions(competition),
+      competitionTerms: competition.terms,
+    };
   }
   const plan = searchPlanFor(game.league);
   return {

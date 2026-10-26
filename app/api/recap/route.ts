@@ -82,6 +82,7 @@ function parseGame(sp: URLSearchParams): GameInput | null {
     homeScore: num(sp.get('hs')),
     awayScore: num(sp.get('as')),
     cup: sp.get('cup') || null,
+    competition: sp.get('competition') || null,
   };
 }
 

@@ -70,6 +70,7 @@ export async function GET(req: NextRequest) {
     homeScore: numOrNull(sp.get('hs')),
     awayScore: numOrNull(sp.get('as')),
     cup: sp.get('cup') || null,
+    competition: sp.get('competition') || null,
   };
   if (!game.league || !game.home || !game.away || !game.dateISO) {
     return NextResponse.json(

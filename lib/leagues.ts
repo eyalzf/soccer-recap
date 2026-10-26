@@ -2,7 +2,8 @@ export type LeagueSlug =
   | 'premier-league'
   | 'la-liga'
   | 'israeli-league'
-  | 'champions-league';
+  | 'champions-league'
+  | 'leading-teams';
 
 export interface LeagueDef {
   slug: LeagueSlug;
@@ -21,6 +22,17 @@ export const LEAGUES: LeagueDef[] = [
   { slug: 'la-liga', hebrewName: 'לה ליגה', parsebotId: 87, badge: LEAGUE_LOGO(87) },
   { slug: 'israeli-league', hebrewName: 'ליגת העל', parsebotId: 127, badge: LEAGUE_LOGO(127) },
   { slug: 'champions-league', hebrewName: 'ליגת האלופות', parsebotId: 42, badge: LEAGUE_LOGO(42) },
+  {
+    // Leading teams (user feature 2026-10-26): a virtual view over a
+    // fixed club list (lib/recap/leaguePlans.ts LEADING_TEAM_CLUBS), not
+    // a FotMob league — parsebotId 0 and a custom star icon, like the
+    // friendlies view. Games carry their real competition per game
+    // (lib/competitions.ts).
+    slug: 'leading-teams',
+    hebrewName: 'קבוצות מובילות',
+    parsebotId: 0,
+    badge: '/leading-teams-icon.svg',
+  },
 ];
 
 export function getLeague(slug: string): LeagueDef | undefined {
