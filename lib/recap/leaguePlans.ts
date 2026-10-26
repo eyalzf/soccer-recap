@@ -1,3 +1,5 @@
+import { cupDefFor } from '../cups';
+
 /**
  * Per-league search plans: ALL league-specific configuration for the
  * recap pipeline lives here — which channels/sources serve the league,
@@ -682,4 +684,26 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
 /** Unknown league slugs get English general search only. */
 export function searchPlanFor(league: string): LeagueSearchPlan {
   return LEAGUE_SEARCH_PLANS[league] ?? { preferred: [], bulk: [], fallbackLangs: ['en'] };
+}
+
+/**
+ * The competition logic for a game: which title terms contradict it
+ * and which earn the correct-competition ranking boost. League games
+ * use their plan's lists; CUP games (game.cup set — see lib/cups.ts)
+ * flip to the cup's own lists while continuing to use the parent
+ * league's plan for everything else (channels, tiers, fallbacks).
+ */
+export function competitionConfigFor(game: {
+  league: string;
+  cup?: string | null;
+}): { contradictions: string[]; competitionTerms: string[] } {
+  const cup = cupDefFor(game.cup);
+  if (cup) {
+    return { contradictions: cup.contradictions, competitionTerms: cup.competitionTerms };
+  }
+  const plan = searchPlanFor(game.league);
+  return {
+    contradictions: plan.contradictions ?? [],
+    competitionTerms: plan.competitionTerms ?? [],
+  };
 }
