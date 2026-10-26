@@ -2,7 +2,7 @@
   "league": "la-liga",
   "league_id": 87,
   "season": "2026/2027",
-  "updated_at": "2026-10-25T03:59:28.000Z",
+  "updated_at": "2026-10-26T03:58:36.000Z",
   "checked_through": "2026-09-19",
   "team_ids": {
     "Villarreal": 10205,
@@ -27,6 +27,50 @@
     "Valencia": 10267
   },
   "games": [
+    {
+      "id": "manual-20261025-barcelona-real-madrid",
+      "home": "Barcelona",
+      "away": "Real Madrid",
+      "dateISO": "2026-10-25T20:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8634.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8633.png",
+      "stage": "מחזור 10"
+    },
+    {
+      "id": "manual-20261025-real-sociedad-levante",
+      "home": "Real Sociedad",
+      "away": "Levante",
+      "dateISO": "2026-10-25T17:30:00.000Z",
+      "homeScore": 2,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8560.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8581.png",
+      "stage": "מחזור 10"
+    },
+    {
+      "id": "manual-20261025-celta-vigo-real-betis",
+      "home": "Celta Vigo",
+      "away": "Real Betis",
+      "dateISO": "2026-10-25T15:15:00.000Z",
+      "homeScore": 0,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9910.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8603.png",
+      "stage": "מחזור 10"
+    },
+    {
+      "id": "manual-20261025-athletic-club-getafe",
+      "home": "Athletic Club",
+      "away": "Getafe",
+      "dateISO": "2026-10-25T13:00:00.000Z",
+      "homeScore": 4,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8315.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8305.png",
+      "stage": "מחזור 10"
+    },
     {
       "id": "manual-20261024-atletico-madrid-deportivo-a-coruna",
       "home": "Atlético Madrid",
