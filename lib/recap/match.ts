@@ -122,7 +122,7 @@ export function mentionIndex(title: string, club: ClubEntry): number {
  */
 export function competitionContradiction(
   title: string,
-  game: string | { league: string; cup?: string | null }
+  game: string | { league: string; cup?: string | null; competition?: string | null }
 ): string | null {
   const g = typeof game === 'string' ? { league: game } : game;
   const t = title.toLowerCase();
