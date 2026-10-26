@@ -1,5 +1,5 @@
 import { lookupClubEn } from '../teamIndex';
-import { searchPlanFor } from './leaguePlans';
+import { competitionConfigFor } from './leaguePlans';
 import {
   dateProximity,
   extractScore,
@@ -71,9 +71,10 @@ export function scoreCandidate(c: RawCandidate, game: GameInput): number {
     else if (c.durationSec < 90) s -= 5;
   }
 
-  // Correct competition mentioned (league-configured name variants).
+  // Correct competition mentioned (configured name variants — the
+  // cup's own terms for cup games, the league's otherwise).
   const t = c.title.toLowerCase();
-  for (const kw of searchPlanFor(game.league).competitionTerms ?? []) {
+  for (const kw of competitionConfigFor(game).competitionTerms) {
     if (t.includes(kw)) {
       s += 10;
       break;

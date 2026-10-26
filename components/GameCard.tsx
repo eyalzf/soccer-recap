@@ -1,6 +1,7 @@
 'use client';
 
 import CompositeThumb from './CompositeThumb';
+import { cupLabelHe } from '../lib/cups';
 
 export interface GameItem {
   id: string;
@@ -19,6 +20,8 @@ export interface GameItem {
   leagueBadge: string | null;
   /** Competition stage/round label, e.g. "שלב הבתים" or "מחזור 5". */
   stage?: string | null;
+  /** Domestic-cup slug (lib/cups.ts) for cup ties inside a league listing. */
+  cup?: string | null;
 }
 
 function formatDate(iso: string): string {
@@ -64,7 +67,14 @@ export default function GameCard({
           <span className="game-score">
             {game.awayScore} - {game.homeScore}
           </span>
-          {game.stage && <span className="game-stage">{game.stage}</span>}
+          {game.cup && cupLabelHe(game.cup) ? (
+            <span className="game-stage game-cup">
+              🏆 {cupLabelHe(game.cup)}
+              {game.stage ? ` · ${game.stage}` : ''}
+            </span>
+          ) : (
+            game.stage && <span className="game-stage">{game.stage}</span>
+          )}
           {game.leagueBadge && <img className="league-logo" src={game.leagueBadge} alt="" />}
         </div>
       </div>
