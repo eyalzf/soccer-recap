@@ -44,6 +44,8 @@ export interface GameRecord {
   leagueBadge: string | null;
   /** Competition stage/round label, e.g. "שלב הבתים" (nations) or "מחזור 5" (clubs). */
   stage: string | null;
+  /** Domestic-cup slug (lib/cups.ts) for cup ties inside a league listing; null for league games. */
+  cup: string | null;
 }
 
 export interface LeagueGamesResult {
@@ -62,6 +64,7 @@ interface StoredGame {
   homeBadge?: string | null;
   awayBadge?: string | null;
   stage?: string | null;
+  cup?: string | null;
 }
 
 interface StoredFile {
@@ -165,6 +168,7 @@ export async function getLeagueGames(
       awayBadge: g.awayBadge || null,
       leagueBadge: league.badge,
       stage: g.stage || null,
+      cup: g.cup || null,
     });
   }
   games.sort((a, b) => (a.dateISO < b.dateISO ? 1 : -1));
