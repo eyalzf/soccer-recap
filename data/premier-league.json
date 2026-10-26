@@ -2,7 +2,7 @@
   "league": "premier-league",
   "league_id": 47,
   "season": "2026/2027",
-  "updated_at": "2026-10-25T03:59:23.000Z",
+  "updated_at": "2026-10-26T03:58:33.000Z",
   "checked_through": "2026-09-19",
   "team_ids": {
     "Leeds United": 8463,
@@ -27,6 +27,61 @@
     "Arsenal": 9825
   },
   "games": [
+    {
+      "id": "manual-20261025-sunderland-leeds-united",
+      "home": "Sunderland",
+      "away": "Leeds United",
+      "dateISO": "2026-10-25T16:30:00.000Z",
+      "homeScore": 0,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8472.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8463.png",
+      "stage": "מחזור 8"
+    },
+    {
+      "id": "manual-20261025-crystal-palace-newcastle-united",
+      "home": "Crystal Palace",
+      "away": "Newcastle United",
+      "dateISO": "2026-10-25T14:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9826.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10261.png",
+      "stage": "מחזור 8"
+    },
+    {
+      "id": "manual-20261025-hull-city-brentford",
+      "home": "Hull City",
+      "away": "Brentford",
+      "dateISO": "2026-10-25T14:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8667.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9937.png",
+      "stage": "מחזור 8"
+    },
+    {
+      "id": "manual-20261025-liverpool-brighton-hove-albion",
+      "home": "Liverpool",
+      "away": "Brighton & Hove Albion",
+      "dateISO": "2026-10-25T14:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8650.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10204.png",
+      "stage": "מחזור 8"
+    },
+    {
+      "id": "manual-20261025-manchester-united-afc-bournemouth",
+      "home": "Manchester United",
+      "away": "AFC Bournemouth",
+      "dateISO": "2026-10-25T14:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 3,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10260.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8678.png",
+      "stage": "מחזור 8"
+    },
     {
       "id": "manual-20261024-chelsea-tottenham-hotspur",
       "home": "Chelsea",
