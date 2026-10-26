@@ -60,4 +60,11 @@ export interface GameInput {
    * league games. Flips the competition logic in the matcher.
    */
   cup?: string | null;
+  /**
+   * Competition slug (lib/competitions.ts) for leading-teams games:
+   * the actual competition the game was played in (Bundesliga, Serie A,
+   * Europa League, ...). Flips the competition logic in the matcher,
+   * like `cup` does for cup ties.
+   */
+  competition?: string | null;
 }
