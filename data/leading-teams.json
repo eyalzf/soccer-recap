@@ -2,7 +2,7 @@
   "league": "leading-teams",
   "league_id": 0,
   "season": "2026/27",
-  "updated_at": "2026-10-27T04:00:02.000Z",
+  "updated_at": "2026-10-27T16:00:00.000Z",
   "checked_through": "2026-08-01",
   "team_ids": {
     "Bayern München": 9823,
@@ -26,7 +26,14 @@
     "Hibernian": 10251,
     "Celtic": 9925,
     "Heart of Midlothian": 9860,
-    "Olympique Lyonnais": 9748
+    "Olympique Lyonnais": 9748,
+    "Roma": 8686,
+    "Napoli": 9875,
+    "Genoa": 10233,
+    "Inter Miami CF": 960720,
+    "New York Red Bulls": 6514,
+    "Atlanta United": 773958,
+    "Cruz Azul": 6578
   },
   "games": [
     {
@@ -42,40 +49,16 @@
       "competition": "ligue-1"
     },
     {
-      "id": "team-20261025-sc-freiburg-bayern-munchen",
-      "home": "SC Freiburg",
-      "away": "Bayern München",
-      "dateISO": "2026-10-25T15:30:00.000Z",
+      "id": "team-20261025-sporting-cp-academico-de-viseu",
+      "home": "Sporting CP",
+      "away": "Académico de Viseu",
+      "dateISO": "2026-10-25T20:30:00.000Z",
       "homeScore": 1,
-      "awayScore": 3,
-      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8358.png",
-      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9823.png",
-      "stage": "מחזור 7",
-      "competition": "bundesliga"
-    },
-    {
-      "id": "team-20261024-borussia-dortmund-eintracht-frankfurt",
-      "home": "Borussia Dortmund",
-      "away": "Eintracht Frankfurt",
-      "dateISO": "2026-10-24T16:30:00.000Z",
-      "homeScore": 1,
-      "awayScore": 0,
-      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9789.png",
-      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9810.png",
-      "stage": "מחזור 7",
-      "competition": "bundesliga"
-    },
-    {
-      "id": "team-20261025-inter-fiorentina",
-      "home": "Inter",
-      "away": "Fiorentina",
-      "dateISO": "2026-10-25T12:30:00.000Z",
-      "homeScore": 2,
-      "awayScore": 1,
-      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8636.png",
-      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8535.png",
-      "stage": "מחזור 8",
-      "competition": "serie-a"
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9768.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/1786.png",
+      "stage": "מחזור 9",
+      "competition": "primeira-liga"
     },
     {
       "id": "team-20261025-udinese-ac-milan",
@@ -102,64 +85,16 @@
       "competition": "serie-a"
     },
     {
-      "id": "team-20261022-bournemouth-ac-milan",
-      "home": "Bournemouth",
-      "away": "AC Milan",
-      "dateISO": "2026-10-22T19:00:00.000Z",
-      "homeScore": 3,
-      "awayScore": 0,
-      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8678.png",
-      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8564.png",
-      "stage": "שלב הליגה · מחזור 3",
-      "competition": "europa-league"
-    },
-    {
-      "id": "team-20261017-strasbourg-paris-saint-germain",
-      "home": "Strasbourg",
-      "away": "Paris Saint-Germain",
-      "dateISO": "2026-10-17T15:15:00.000Z",
+      "id": "team-20261025-sc-freiburg-bayern-munchen",
+      "home": "SC Freiburg",
+      "away": "Bayern München",
+      "dateISO": "2026-10-25T15:30:00.000Z",
       "homeScore": 1,
       "awayScore": 3,
-      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9848.png",
-      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9847.png",
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8358.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9823.png",
       "stage": "מחזור 7",
-      "competition": "ligue-1"
-    },
-    {
-      "id": "team-20261025-sporting-cp-academico-de-viseu",
-      "home": "Sporting CP",
-      "away": "Académico de Viseu",
-      "dateISO": "2026-10-25T20:30:00.000Z",
-      "homeScore": 1,
-      "awayScore": 2,
-      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9768.png",
-      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/1786.png",
-      "stage": "מחזור 9",
-      "competition": "primeira-liga"
-    },
-    {
-      "id": "team-20261025-sparta-rotterdam-ajax",
-      "home": "Sparta Rotterdam",
-      "away": "Ajax",
-      "dateISO": "2026-10-25T14:45:00.000Z",
-      "homeScore": 1,
-      "awayScore": 2,
-      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8614.png",
-      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8593.png",
-      "stage": "מחזור 10",
-      "competition": "eredivisie"
-    },
-    {
-      "id": "team-20261022-ajax-atalanta",
-      "home": "Ajax",
-      "away": "Atalanta",
-      "dateISO": "2026-10-22T19:00:00.000Z",
-      "homeScore": 2,
-      "awayScore": 0,
-      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8593.png",
-      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8524.png",
-      "stage": "שלב הליגה · מחזור 2",
-      "competition": "conference-league"
+      "competition": "bundesliga"
     },
     {
       "id": "team-20261025-hibernian-celtic",
@@ -174,6 +109,90 @@
       "competition": "scottish-premiership"
     },
     {
+      "id": "team-20261025-sparta-rotterdam-ajax",
+      "home": "Sparta Rotterdam",
+      "away": "Ajax",
+      "dateISO": "2026-10-25T14:45:00.000Z",
+      "homeScore": 1,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8614.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8593.png",
+      "stage": "מחזור 10",
+      "competition": "eredivisie"
+    },
+    {
+      "id": "team-20261025-inter-fiorentina",
+      "home": "Inter",
+      "away": "Fiorentina",
+      "dateISO": "2026-10-25T12:30:00.000Z",
+      "homeScore": 2,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8636.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8535.png",
+      "stage": "מחזור 8",
+      "competition": "serie-a"
+    },
+    {
+      "id": "team-20261024-new-york-red-bulls-inter-miami-cf",
+      "home": "New York Red Bulls",
+      "away": "Inter Miami CF",
+      "dateISO": "2026-10-24T21:30:00.000Z",
+      "homeScore": 2,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/6514.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/960720.png",
+      "stage": "מחזור 32",
+      "competition": "mls"
+    },
+    {
+      "id": "team-20261024-borussia-dortmund-eintracht-frankfurt",
+      "home": "Borussia Dortmund",
+      "away": "Eintracht Frankfurt",
+      "dateISO": "2026-10-24T16:30:00.000Z",
+      "homeScore": 1,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9789.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9810.png",
+      "stage": "מחזור 7",
+      "competition": "bundesliga"
+    },
+    {
+      "id": "team-20261024-napoli-roma",
+      "home": "Napoli",
+      "away": "Roma",
+      "dateISO": "2026-10-24T16:00:00.000Z",
+      "homeScore": 3,
+      "awayScore": 3,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9875.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8686.png",
+      "stage": "מחזור 8",
+      "competition": "serie-a"
+    },
+    {
+      "id": "team-20261022-bournemouth-ac-milan",
+      "home": "Bournemouth",
+      "away": "AC Milan",
+      "dateISO": "2026-10-22T19:00:00.000Z",
+      "homeScore": 3,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8678.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8564.png",
+      "stage": "שלב הליגה · מחזור 3",
+      "competition": "europa-league"
+    },
+    {
+      "id": "team-20261022-ajax-atalanta",
+      "home": "Ajax",
+      "away": "Atalanta",
+      "dateISO": "2026-10-22T19:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8593.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8524.png",
+      "stage": "שלב הליגה · מחזור 2",
+      "competition": "conference-league"
+    },
+    {
       "id": "team-20261018-celtic-heart-of-midlothian",
       "home": "Celtic",
       "away": "Heart of Midlothian",
@@ -184,6 +203,66 @@
       "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9860.png",
       "stage": "מחזור 9",
       "competition": "scottish-premiership"
+    },
+    {
+      "id": "team-20261017-atlanta-united-inter-miami-cf",
+      "home": "Atlanta United",
+      "away": "Inter Miami CF",
+      "dateISO": "2026-10-17T23:30:00.000Z",
+      "homeScore": 1,
+      "awayScore": 3,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/773958.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/960720.png",
+      "stage": "מחזור 31",
+      "competition": "mls"
+    },
+    {
+      "id": "team-20261017-roma-genoa",
+      "home": "Roma",
+      "away": "Genoa",
+      "dateISO": "2026-10-17T18:45:00.000Z",
+      "homeScore": 2,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8686.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10233.png",
+      "stage": "מחזור 7",
+      "competition": "serie-a"
+    },
+    {
+      "id": "team-20261017-strasbourg-paris-saint-germain",
+      "home": "Strasbourg",
+      "away": "Paris Saint-Germain",
+      "dateISO": "2026-10-17T15:15:00.000Z",
+      "homeScore": 1,
+      "awayScore": 3,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9848.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9847.png",
+      "stage": "מחזור 7",
+      "competition": "ligue-1"
+    },
+    {
+      "id": "team-20261011-como-roma",
+      "home": "Como",
+      "away": "Roma",
+      "dateISO": "2026-10-11T10:30:00.000Z",
+      "homeScore": 0,
+      "awayScore": 0,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/02x81t1627405841.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8686.png",
+      "stage": "מחזור 6",
+      "competition": "serie-a"
+    },
+    {
+      "id": "team-20260917-inter-miami-cf-cruz-azul",
+      "home": "Inter Miami CF",
+      "away": "Cruz Azul",
+      "dateISO": "2026-09-17T00:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/960720.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/6578.png",
+      "stage": "גמר",
+      "competition": "campeones-cup"
     }
   ]
 }

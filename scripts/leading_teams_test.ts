@@ -125,6 +125,88 @@ check(
   competitionConfigFor(bayernLeague).competitionTerms.includes('bundesliga')
 );
 
+// --- Roma (added 2026-10-27): Serie A in this view, UCL stays in its pill -
+const romaLeague: GameInput = {
+  home: 'Napoli', away: 'Roma', dateISO: '2026-10-24T16:00:00.000Z',
+  league: 'leading-teams', homeScore: 3, awayScore: 3, competition: 'serie-a',
+};
+check(
+  'roma: real serie a highlights title kept',
+  filterCandidate(cand('NAPOLI 3-3 ROMA | SERIE A HIGHLIGHTS 2026-27', '2026-10-25T18:00:00Z'), romaLeague).keep
+);
+const uclForRoma = filterCandidate(cand('NAPOLI 3-3 ROMA | Champions League Highlights', '2026-10-25T18:00:00Z'), romaLeague);
+check(
+  'roma serie a game rejects champions league title',
+  !uclForRoma.keep && uclForRoma.reason === 'competition'
+);
+const coppaForRoma = filterCandidate(cand('NAPOLI 3-3 ROMA | Coppa Italia Highlights', '2026-10-25T18:00:00Z'), romaLeague);
+check(
+  'roma serie a game rejects coppa italia title',
+  !coppaForRoma.keep && coppaForRoma.reason === 'competition'
+);
+
+// --- Inter Miami (added 2026-10-27): MLS + the CONCACAF cup set -----------
+const miamiMls: GameInput = {
+  home: 'Atlanta United', away: 'Inter Miami CF', dateISO: '2026-10-17T23:30:00.000Z',
+  league: 'leading-teams', homeScore: 1, awayScore: 3, competition: 'mls',
+};
+check(
+  'miami mls: club channel title kept',
+  filterCandidate(cand('HIGHLIGHTS | Atlanta United FC vs Inter Miami CF', '2026-10-18T18:00:00Z'), miamiMls).keep
+);
+const leaguesCupForMls = filterCandidate(cand('HIGHLIGHTS | Atlanta United FC vs Inter Miami CF | Leagues Cup', '2026-10-18T18:00:00Z'), miamiMls);
+check(
+  'miami mls game rejects leagues cup title',
+  !leaguesCupForMls.keep && leaguesCupForMls.reason === 'competition'
+);
+const campeonesForMls = filterCandidate(cand('Atlanta United FC vs Inter Miami CF | Campeones Cup Highlights', '2026-10-18T18:00:00Z'), miamiMls);
+check(
+  'miami mls game rejects campeones cup title',
+  !campeonesForMls.keep && campeonesForMls.reason === 'competition'
+);
+
+const miamiRbny: GameInput = {
+  home: 'New York Red Bulls', away: 'Inter Miami CF', dateISO: '2026-10-24T21:30:00.000Z',
+  league: 'leading-teams', homeScore: 2, awayScore: 0, competition: 'mls',
+};
+check(
+  'miami mls: @MLS league-channel title kept',
+  filterCandidate(cand('New York Red Bulls vs. Inter Miami CF | Full Match Highlights | Messi in New York!', '2026-10-25T18:00:00Z'), miamiRbny).keep
+);
+
+const miamiChampionsCup: GameInput = {
+  home: 'Inter Miami CF', away: 'Monterrey', dateISO: '2027-02-17T01:00:00.000Z',
+  league: 'leading-teams', homeScore: null, awayScore: null, competition: 'concacaf-champions-cup',
+};
+check(
+  'miami champions cup: concacaf title kept',
+  filterCandidate(cand('Inter Miami vs Monterrey | Concacaf Champions Cup Highlights', '2027-02-18T18:00:00Z'), miamiChampionsCup).keep
+);
+const uclForChampionsCup = filterCandidate(cand('Inter Miami vs Monterrey | Champions League Highlights', '2027-02-18T18:00:00Z'), miamiChampionsCup);
+check(
+  'champions cup game rejects champions league title',
+  !uclForChampionsCup.keep && uclForChampionsCup.reason === 'competition'
+);
+const mlsForChampionsCup = filterCandidate(cand('Inter Miami vs Monterrey | MLS Highlights', '2027-02-18T18:00:00Z'), miamiChampionsCup);
+check(
+  'champions cup game rejects mls title',
+  !mlsForChampionsCup.keep && mlsForChampionsCup.reason === 'competition'
+);
+
+const miamiCampeones: GameInput = {
+  home: 'Inter Miami CF', away: 'Cruz Azul', dateISO: '2026-09-17T00:00:00.000Z',
+  league: 'leading-teams', homeScore: 2, awayScore: 0, competition: 'campeones-cup',
+};
+check(
+  'miami campeones: real club-channel title kept',
+  filterCandidate(cand('HIGHLIGHTS | Inter Miami CF vs Cruz Azul (Campeones Cup)', '2026-09-18T18:00:00Z'), miamiCampeones).keep
+);
+const leaguesCupForCampeones = filterCandidate(cand('HIGHLIGHTS | Inter Miami CF vs Cruz Azul (Leagues Cup)', '2026-09-18T18:00:00Z'), miamiCampeones);
+check(
+  'campeones game rejects leagues cup title',
+  !leaguesCupForCampeones.keep && leaguesCupForCampeones.reason === 'competition'
+);
+
 // --- Registry sanity ------------------------------------------------------
 for (const def of COMPETITIONS) {
   check(`competition ${def.slug}: parent is leading-teams`, def.parent === 'leading-teams');
@@ -149,6 +231,15 @@ for (const club of LEADING_TEAM_CLUBS) {
   check(`featured club has a team-scoped source: ${club}`, scoped);
 }
 check('AC Milan club channel registered', !!CLUB_CHANNELS['AC Milan']);
+check('Inter Miami club channel registered', !!CLUB_CHANNELS['Inter Miami CF']);
+check(
+  'leading-teams bulk includes the Roma club channel',
+  plan.bulk.some((b) => b.handle === 'ASRoma')
+);
+check(
+  'leading-teams bulk includes the MLS league channel for Miami',
+  plan.bulk.some((b) => b.handle === 'MLS' && (b.teams ?? []).includes('Inter Miami CF'))
+);
 check(
   'PSG club channel NOT in the leading-teams bulk (magazine format only)',
   !plan.bulk.some((b) => b.handle === 'PSG')
@@ -205,6 +296,29 @@ const ROSTERS: Record<string, string[]> = {
     'St Johnstone', 'St Mirren',
   ],
   'english-cup-opponents': ['Millwall', 'Lincoln City', 'Norwich City'],
+  mls: [
+    'Inter Miami CF', 'Atlanta United', 'Austin FC', 'Charlotte FC',
+    'Chicago Fire FC', 'Colorado Rapids', 'Columbus Crew', 'D.C. United',
+    'FC Cincinnati', 'FC Dallas', 'Houston Dynamo FC', 'LA Galaxy',
+    'Los Angeles FC', 'Minnesota United', 'CF Montréal', 'Nashville SC',
+    'New England Revolution', 'New York City FC', 'New York Red Bulls',
+    'Orlando City', 'Philadelphia Union', 'Portland Timbers',
+    'Real Salt Lake', 'San Jose Earthquakes', 'Seattle Sounders FC',
+    'Sporting Kansas City', 'St. Louis CITY SC', 'Toronto FC',
+    'Vancouver Whitecaps FC', 'San Diego FC',
+  ],
+  'liga-mx': [
+    'Club América', 'Atlas', 'Atlético San Luis', 'Cruz Azul',
+    'Guadalajara', 'FC Juárez', 'León', 'Mazatlán', 'Monterrey',
+    'Necaxa', 'Pachuca', 'Puebla', 'Pumas UNAM', 'Querétaro',
+    'Santos Laguna', 'Tigres UANL', 'Tijuana', 'Toluca',
+  ],
+  'concacaf-others': [
+    'Alajuelense', 'Saprissa', 'Herediano', 'Olimpia', 'Motagua',
+    'Real España', 'Comunicaciones', 'Municipal', 'Forge FC',
+    'Cavalry FC', 'Atlético Ottawa', 'Alianza', 'Independiente',
+    'Tauro', 'Mount Pleasant', 'Cavalier', 'Defence Force',
+  ],
 };
 for (const [league, clubs] of Object.entries(ROSTERS)) {
   for (const club of clubs) {

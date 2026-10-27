@@ -264,6 +264,10 @@ export const CLUB_CHANNELS: Record<string, ClubChannelDef> = {
   'AC Milan': { handle: 'acmilan', label: 'AC Milan' },
   Juventus: { handle: 'Juventus', label: 'Juventus' },
   Roma: { handle: 'ASRoma', label: 'Roma' },
+  // Inter Miami: validated 2026-10-27 in the leading-teams channel audit —
+  // a full ~10-minute "HIGHLIGHTS | Inter Miami CF vs X" for every game
+  // (MLS, Leagues Cup, Campeones Cup), embeddable, posted next day.
+  'Inter Miami CF': { handle: 'InterMiamiCF', label: 'Inter Miami CF' },
   'Bayern Munich': { handle: 'FCBayern', label: 'Bayern' },
   'Borussia Dortmund': { handle: 'BVB', label: 'Dortmund' },
   'RB Leipzig': { handle: 'RBLeipzig', label: 'RB Leipzig' },
@@ -729,6 +733,9 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
       clubChannel('Juventus'),
       { handle: 'ligue1', label: 'Ligue 1', teams: ['Paris Saint-Germain'] },
       clubChannel('Sporting CP'),
+      clubChannel('Roma'),
+      clubChannel('Inter Miami CF'),
+      { handle: 'MLS', label: 'MLS', teams: ['Inter Miami CF'] },
       clubChannel('Ajax'),
       { handle: 'spflofficial', label: 'SPFL', teams: ['Celtic'] },
     ],
@@ -751,6 +758,8 @@ export const LEADING_TEAM_CLUBS: string[] = [
   'Sporting CP',
   'Ajax',
   'Celtic',
+  'Roma',
+  'Inter Miami CF',
 ];
 
 /** Unknown league slugs get English general search only. */
