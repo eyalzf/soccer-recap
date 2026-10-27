@@ -2,7 +2,7 @@
   "league": "leading-teams",
   "league_id": 0,
   "season": "2026/27",
-  "updated_at": "2026-10-26T16:00:00.000Z",
+  "updated_at": "2026-10-27T04:00:02.000Z",
   "checked_through": "2026-08-01",
   "team_ids": {
     "Bayern München": 9823,
@@ -25,9 +25,22 @@
     "Ajax": 8593,
     "Hibernian": 10251,
     "Celtic": 9925,
-    "Heart of Midlothian": 9860
+    "Heart of Midlothian": 9860,
+    "Olympique Lyonnais": 9748
   },
   "games": [
+    {
+      "id": "team-20261026-paris-saint-germain-olympique-lyonnais",
+      "home": "Paris Saint-Germain",
+      "away": "Olympique Lyonnais",
+      "dateISO": "2026-10-26T19:30:00.000Z",
+      "homeScore": 2,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9847.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9748.png",
+      "stage": "מחזור 8",
+      "competition": "ligue-1"
+    },
     {
       "id": "team-20261025-sc-freiburg-bayern-munchen",
       "home": "SC Freiburg",
