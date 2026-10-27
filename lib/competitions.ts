@@ -2,7 +2,7 @@
  * Competitions of the "leading teams" view (קבוצות מובילות, user feature
  * 2026-10-26): a fixed list of leading clubs from leagues the app does
  * not carry as pills (Bayern, Dortmund, Inter, Milan, Juventus, PSG,
- * Sporting CP, Ajax, Celtic). Their games live in
+ * Sporting CP, Ajax, Celtic; Roma and Inter Miami added 2026-10-27). Their games live in
  * data/leading-teams.json under the synthetic league slug 'leading-teams'
  * and each game carries a `competition` slug from this registry; the UI
  * chip composes "<competition label> · <round>" from it.
@@ -132,6 +132,32 @@ export const COMPETITIONS: CompetitionDef[] = [
     parent: 'leading-teams',
     labelHe: 'קונפרנס ליג',
     terms: ['conference league', 'קונפרנס ליג'],
+  },
+  {
+    // Inter Miami's competitions (added 2026-10-27). MLS playoffs are
+    // filed under 'mls' too — the round lives in the game's stage label.
+    slug: 'mls',
+    parent: 'leading-teams',
+    labelHe: 'MLS',
+    terms: ['mls', 'major league soccer'],
+  },
+  {
+    slug: 'leagues-cup',
+    parent: 'leading-teams',
+    labelHe: 'גביע הליגות',
+    terms: ['leagues cup', 'גביע הליגות'],
+  },
+  {
+    slug: 'concacaf-champions-cup',
+    parent: 'leading-teams',
+    labelHe: 'ליגת האלופות של CONCACAF',
+    terms: ['concacaf champions cup', 'concacaf champions', 'champions cup', 'ליגת האלופות של CONCACAF'],
+  },
+  {
+    slug: 'campeones-cup',
+    parent: 'leading-teams',
+    labelHe: 'גביע הקמפאונס',
+    terms: ['campeones cup', 'campeones', 'גביע הקמפאונס'],
   },
 ];
 
