@@ -2,7 +2,7 @@
   "league": "la-liga",
   "league_id": 87,
   "season": "2026/2027",
-  "updated_at": "2026-10-26T03:58:36.000Z",
+  "updated_at": "2026-10-27T03:59:41.000Z",
   "checked_through": "2026-09-19",
   "team_ids": {
     "Villarreal": 10205,
@@ -27,6 +27,17 @@
     "Valencia": 10267
   },
   "games": [
+    {
+      "id": "manual-20261026-sevilla-osasuna",
+      "home": "Sevilla",
+      "away": "Osasuna",
+      "dateISO": "2026-10-26T20:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8302.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8371.png",
+      "stage": "מחזור 10"
+    },
     {
       "id": "manual-20261025-barcelona-real-madrid",
       "home": "Barcelona",
