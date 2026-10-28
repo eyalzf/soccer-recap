@@ -114,13 +114,15 @@ body {
 .details-pill {
   display: inline-flex; align-items: stretch;
   border: 1px solid var(--border); border-radius: 999px; overflow: hidden;
-  font-size: 0.78rem; white-space: nowrap;
+  font-size: 0.78rem; white-space: nowrap; line-height: 1.45;
 }
 .details-pill .pill-name {
+  display: flex; align-items: center;
   padding: 2px 10px; font-weight: 700; color: var(--text);
   background: rgba(255, 255, 255, 0.07);
 }
 .details-pill .pill-stage {
+  display: flex; align-items: center;
   padding: 2px 10px; color: var(--muted);
   border-inline-start: 1px solid var(--border);
 }
