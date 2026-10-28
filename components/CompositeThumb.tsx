@@ -57,6 +57,48 @@ export default function CompositeThumb({ homeBadge, awayBadge, homeHe, awayHe }:
     const AWAY_SLOT = { x: W * 0.28, label: awayHe, fallback: awayHe };
 
     Promise.all([load(homeBadge), load(awayBadge)]).then(([homeImg, awayImg]) => {
+      // Team name under the crest, word-wrapped onto at most two
+      // centered lines (user refinement 2026-10-28): a long name must
+      // never be horizontally squished across the center divider or
+      // into the other team's half. The font steps down until the
+      // wrapped lines fit the slot width; fillText's maxWidth stays
+      // as a final guard for a single over-long word.
+      const drawLabel = (label: string, cx: number) => {
+        const MAXW = 196;
+        const LINE_H = 26;
+        const CENTER_Y = 205;
+        ctx.fillStyle = '#dbe3f4';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        let size = 22;
+        let lines: string[] = [];
+        while (size >= 16) {
+          ctx.font = `bold ${size}px sans-serif`;
+          lines = [];
+          let cur = '';
+          for (const w of label.split(' ')) {
+            const t = cur ? `${cur} ${w}` : w;
+            if (ctx.measureText(t).width <= MAXW || !cur) cur = t;
+            else {
+              lines.push(cur);
+              cur = w;
+            }
+          }
+          if (cur) lines.push(cur);
+          if (
+            lines.length <= 2 &&
+            lines.every((l) => ctx.measureText(l).width <= MAXW)
+          )
+            break;
+          size -= 2;
+        }
+        if (lines.length > 2) lines = [lines[0], lines.slice(1).join(' ')];
+        lines.forEach((l, i) => {
+          const y = CENTER_Y + (i - (lines.length - 1) / 2) * LINE_H;
+          ctx.fillText(l, cx, y, MAXW);
+        });
+      };
+
       const drawCrest = (
         img: HTMLImageElement | null,
         slot: { x: number; label: string; fallback: string }
@@ -78,11 +120,7 @@ export default function CompositeThumb({ homeBadge, awayBadge, homeHe, awayHe }:
           ctx.textBaseline = 'middle';
           ctx.fillText(slot.fallback.slice(0, 1), slot.x, 102);
         }
-        ctx.fillStyle = '#dbe3f4';
-        ctx.font = 'bold 21px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'alphabetic';
-        ctx.fillText(slot.label, slot.x, 200, 200);
+        drawLabel(slot.label, slot.x);
       };
 
       // Identity-explicit draw calls: home crest -> HOME_SLOT, away crest -> AWAY_SLOT.

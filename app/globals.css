@@ -88,7 +88,6 @@ body {
 .thumb canvas { width: 100%; height: 100%; display: block; }
 
 .game-body { padding: 12px 14px; }
-.game-teams { font-size: 1.1rem; font-weight: 700; margin-bottom: 6px; }
 .game-meta {
   display: flex; align-items: center; justify-content: space-between;
   flex-wrap: wrap; row-gap: 6px; column-gap: 8px;
@@ -365,10 +364,13 @@ a.recap-item { text-decoration: none; }
   border-bottom: 1px solid var(--border);
 }
 .day-header:first-child { margin-top: 4px; }
-.game-watched {
-  background: var(--bg2); color: var(--muted);
+/* Watched marker (moved 2026-10-28): with the teams title line gone
+   from the card body, the chip overlays the panel's top corner. */
+.watched-chip {
+  position: absolute; top: 8px; inset-inline-start: 8px; z-index: 2;
+  background: rgba(19, 30, 54, 0.88); color: var(--muted);
   font-size: 0.72rem; font-weight: 600;
   border: 1px solid var(--border); border-radius: 999px;
-  padding: 1px 8px; margin-inline-start: 8px; vertical-align: middle;
+  padding: 1px 8px; white-space: nowrap;
 }
 .status .clear-btn { align-self: center; margin-top: 8px; }
