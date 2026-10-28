@@ -78,12 +78,9 @@ export default function GameCard({
             {game.awayScore} - {game.homeScore}
           </span>
         )}
+        {watched && <span className="watched-chip">נצפה</span>}
       </div>
       <div className="game-body">
-        <div className="game-teams">
-          {game.homeHe} נגד {game.awayHe}
-          {watched && <span className="game-watched">נצפה</span>}
-        </div>
         <div className="game-meta">
           <span className="game-date">{formatDate(game.dateISO)}</span>
           <span className="details-pill">
