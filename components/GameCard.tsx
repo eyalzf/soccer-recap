@@ -29,11 +29,7 @@ export interface GameItem {
 
 function formatDate(iso: string): string {
   const d = new Date(iso);
-  return (
-    d.toLocaleDateString('he-IL', { day: 'numeric', month: 'numeric', year: 'numeric' }) +
-    ' ' +
-    d.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })
-  );
+  return d.toLocaleDateString('he-IL', { day: 'numeric', month: 'numeric', year: 'numeric' });
 }
 
 export default function GameCard({
@@ -66,7 +62,7 @@ export default function GameCard({
           {watched && <span className="game-watched">נצפה</span>}
         </div>
         <div className="game-meta">
-          <span>{formatDate(game.dateISO)}</span>
+          <span className="game-date">{formatDate(game.dateISO)}</span>
           <span className="game-score">
             {game.awayScore} - {game.homeScore}
           </span>
