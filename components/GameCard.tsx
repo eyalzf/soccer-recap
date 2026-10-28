@@ -42,18 +42,29 @@ export default function GameCard({
   watched?: boolean;
   onSelect: (g: GameItem) => void;
 }) {
+  const hasScore = game.homeScore != null && game.awayScore != null;
   return (
-    <article className="game-card" onClick={() => onSelect(game)}>
-      <div className="thumb">
-        {game.thumb ? (
-          <img className="thumb" src={game.thumb} alt="" loading="lazy" />
-        ) : (
-          <CompositeThumb
-            homeBadge={game.homeBadge}
-            awayBadge={game.awayBadge}
-            homeHe={game.homeHe}
-            awayHe={game.awayHe}
-          />
+    <article
+      className={`game-card${hasScore ? ' has-score' : ''}`}
+      onClick={() => onSelect(game)}
+    >
+      <div className="thumb-wrap">
+        <div className="thumb">
+          {game.thumb ? (
+            <img className="thumb" src={game.thumb} alt="" loading="lazy" />
+          ) : (
+            <CompositeThumb
+              homeBadge={game.homeBadge}
+              awayBadge={game.awayBadge}
+              homeHe={game.homeHe}
+              awayHe={game.awayHe}
+            />
+          )}
+        </div>
+        {hasScore && (
+          <span className="score-pill">
+            {game.awayScore} - {game.homeScore}
+          </span>
         )}
       </div>
       <div className="game-body">
@@ -63,9 +74,6 @@ export default function GameCard({
         </div>
         <div className="game-meta">
           <span className="game-date">{formatDate(game.dateISO)}</span>
-          <span className="game-score">
-            {game.awayScore} - {game.homeScore}
-          </span>
           {game.cup && cupLabelHe(game.cup) ? (
             <span className="game-stage game-cup">
               🏆 {cupLabelHe(game.cup)}
