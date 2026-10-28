@@ -4,6 +4,7 @@ import { getChannelVideos } from '@/lib/recap/bulk';
 import { channelIdForHandle, ytVideoMeta } from '@/lib/recap/sources';
 import { filterCandidate, hasHighlightIntent } from '@/lib/recap/match';
 import { getDenySet } from '@/lib/recap/denyList';
+import { ensureClubAdditions } from '@/lib/clubAdditions';
 import { runExternalSource } from '@/lib/recap/external';
 import type { GameInput, RawCandidate } from '@/lib/recap/types';
 
@@ -80,6 +81,7 @@ export async function GET(req: NextRequest) {
   }
 
   const plan = searchPlanFor(game.league);
+  await ensureClubAdditions();
   const denySet = await getDenySet();
   const olderThanISO = new Date(Date.parse(game.dateISO) - 2 * DAY).toISOString();
   let ytRateLimited = false;
