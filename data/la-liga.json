@@ -2,7 +2,7 @@
   "league": "la-liga",
   "league_id": 87,
   "season": "2026/2027",
-  "updated_at": "2026-10-27T03:59:41.000Z",
+  "updated_at": "2026-10-28T04:07:21.000Z",
   "checked_through": "2026-09-19",
   "team_ids": {
     "Villarreal": 10205,
@@ -24,9 +24,72 @@
     "Real Madrid": 8633,
     "Rayo Vallecano": 8370,
     "Sevilla": 8302,
-    "Valencia": 10267
+    "Valencia": 10267,
+    "Sestao River": 8228,
+    "CD Manacor": 209025,
+    "Recreativo Huelva": 8479
   },
   "games": [
+    {
+      "id": "cup-20261027-cd-manacor-villarreal",
+      "home": "CD Manacor",
+      "away": "Villarreal",
+      "dateISO": "2026-10-27T20:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 5,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/209025.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10205.png",
+      "stage": "סיבוב ראשון",
+      "cup": "copa-del-rey"
+    },
+    {
+      "id": "cup-20261027-sporting-de-alcazar-malaga",
+      "home": "Sporting de Alcázar",
+      "away": "Málaga",
+      "dateISO": "2026-10-27T20:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 3,
+      "homeBadge": null,
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9864.png",
+      "stage": "סיבוב ראשון",
+      "cup": "copa-del-rey"
+    },
+    {
+      "id": "cup-20261027-recreativo-huelva-rayo-vallecano",
+      "home": "Recreativo Huelva",
+      "away": "Rayo Vallecano",
+      "dateISO": "2026-10-27T20:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 3,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8479.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8370.png",
+      "stage": "סיבוב ראשון",
+      "cup": "copa-del-rey"
+    },
+    {
+      "id": "cup-20261027-sestao-river-espanyol",
+      "home": "Sestao River",
+      "away": "Espanyol",
+      "dateISO": "2026-10-27T18:00:00.000Z",
+      "homeScore": 4,
+      "awayScore": 3,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8228.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8558.png",
+      "stage": "סיבוב ראשון",
+      "cup": "copa-del-rey"
+    },
+    {
+      "id": "cup-20261027-ud-pinatar-elche",
+      "home": "UD Pinatar",
+      "away": "Elche",
+      "dateISO": "2026-10-27T18:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 3,
+      "homeBadge": null,
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10268.png",
+      "stage": "סיבוב ראשון",
+      "cup": "copa-del-rey"
+    },
     {
       "id": "manual-20261026-sevilla-osasuna",
       "home": "Sevilla",
