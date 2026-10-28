@@ -365,6 +365,12 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
       clubChannel('Sevilla'),
       clubChannel('Espanyol'),
       { handle: 'ESPNFC', label: 'ESPN FC' },
+      // RFEF (Spanish federation): posts a "Resumen" for every Copa
+      // del Rey tie, including lower-division hosts no club channel
+      // covers — the canonical cup source (added 2026-10-28 with the
+      // registry-overlay fix). League-wide; the matcher filters its
+      // heavy national-team/women/futsal volume by teams + date.
+      { handle: 'RFEFutbol', label: 'RFEF' },
       clubChannel('Athletic Club'),
       clubChannel('Getafe'),
       clubChannel('Real Sociedad'),
@@ -457,6 +463,11 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
       // User-verified 2026-09-17: @skysportspremierleague is the active
       // channel (the old 'SkySportsPL' handle resolves to a near-dead one).
       { handle: 'skysportspremierleague', label: 'Sky Sports Premier League' },
+      // EFL (official competition channel): extended highlights for
+      // EFL Cup ties, including lower-division hosts (added 2026-10-28
+      // with the registry-overlay fix). League-wide; league games are
+      // protected by the carabao/efl-cup contradiction terms.
+      { handle: 'theEFL', label: 'EFL' },
       clubChannel('Manchester City'),
       clubChannel('Manchester United'),
       clubChannel('Arsenal'),
