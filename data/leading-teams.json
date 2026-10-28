@@ -2,7 +2,7 @@
   "league": "leading-teams",
   "league_id": 0,
   "season": "2026/27",
-  "updated_at": "2026-10-27T16:00:00.000Z",
+  "updated_at": "2026-10-28T04:07:24.000Z",
   "checked_through": "2026-08-01",
   "team_ids": {
     "Bayern München": 9823,
@@ -33,9 +33,35 @@
     "Inter Miami CF": 960720,
     "New York Red Bulls": 6514,
     "Atlanta United": 773958,
-    "Cruz Azul": 6578
+    "Cruz Azul": 6578,
+    "Cagliari": 8529,
+    "Werder Bremen": 8697
   },
   "games": [
+    {
+      "id": "team-20261027-roma-cagliari",
+      "home": "Roma",
+      "away": "Cagliari",
+      "dateISO": "2026-10-27T19:45:00.000Z",
+      "homeScore": 4,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8686.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8529.png",
+      "stage": "מחזור 9",
+      "competition": "serie-a"
+    },
+    {
+      "id": "team-20261027-borussia-dortmund-werder-bremen",
+      "home": "Borussia Dortmund",
+      "away": "Werder Bremen",
+      "dateISO": "2026-10-27T19:45:00.000Z",
+      "homeScore": 3,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9789.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8697.png",
+      "stage": "סיבוב שני",
+      "competition": "dfb-pokal"
+    },
     {
       "id": "team-20261026-paris-saint-germain-olympique-lyonnais",
       "home": "Paris Saint-Germain",
