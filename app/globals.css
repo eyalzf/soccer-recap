@@ -91,15 +91,17 @@ body {
 .game-teams { font-size: 1.1rem; font-weight: 700; margin-bottom: 6px; }
 .game-meta {
   display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; row-gap: 6px; column-gap: 8px;
   color: var(--muted); font-size: 0.9rem;
 }
-.game-score { font-size: 1.25rem; font-weight: 800; color: var(--text); direction: ltr; }
+.game-date { white-space: nowrap; }
+.game-score { font-size: 1.25rem; font-weight: 800; color: var(--text); direction: ltr; white-space: nowrap; flex: none; }
 .game-stage {
   font-size: 0.78rem; color: var(--muted);
   border: 1px solid var(--border); border-radius: 999px; padding: 2px 10px;
-  white-space: nowrap;
+  white-space: nowrap; order: 4;
 }
-.league-logo { width: 22px; height: 22px; object-fit: contain; vertical-align: middle; background: #fff; border-radius: 50%; padding: 2px; }
+.league-logo { width: 22px; height: 22px; object-fit: contain; vertical-align: middle; background: #fff; border-radius: 50%; padding: 2px; order: 3; flex: none; }
 
 .infinite-sentinel { height: 1px; }
 .status.slim { padding: 18px 0 30px; }
