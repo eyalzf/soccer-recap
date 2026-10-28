@@ -53,7 +53,7 @@ export default function GameCard({
   // icon on leading-teams cards, a competition emblem on nationals).
   const cupHe = game.cup ? cupLabelHe(game.cup) : null;
   const compHe = game.competition ? competitionLabelHe(game.competition) : null;
-  const pillName = cupHe ? `🏆 ${cupHe}` : compHe ? `⭐ ${compHe}` : game.leagueHe;
+  const pillName = cupHe ?? compHe ?? game.leagueHe;
   const pillStage = game.stage && game.stage !== pillName ? game.stage : null;
   return (
     <article
