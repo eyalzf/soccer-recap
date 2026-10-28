@@ -1,6 +1,7 @@
 import { CLUBS, type ClubEntry } from '../teams';
 import { NATIONS } from '../nations';
 import { lookupClubEn } from '../teamIndex';
+import { isNationalSlug } from '../leagues';
 import type { GameInput, RawCandidate } from './types';
 import { LEAGUE_SEARCH_PLANS, searchPlanFor, competitionConfigFor } from './leaguePlans';
 import { isDeniedChannel, type DenySet } from './denyList';
@@ -323,8 +324,21 @@ export function filterCandidate(
   game: GameInput,
   denied?: DenySet
 ): FilterResult {
-  const home = lookupClubEn(game.home);
-  const away = lookupClubEn(game.away);
+  let home = lookupClubEn(game.home);
+  let away = lookupClubEn(game.away);
+  if ((!home || !away) && !isNationalSlug(game.league)) {
+    // Last-resort net (2026-10-28): a club fixture from our own data
+    // files whose club is not registered yet — typically a lower-
+    // division cup opponent in the gap before its registration lands
+    // (code registry or data/club-additions.json). Match on the
+    // fixture's own name instead of rejecting every candidate as
+    // 'unknown-team'; all the title/score/competition checks below
+    // still apply. National competitions keep the hard reject: their
+    // names resolve through the nations registry, and a miss there is
+    // a data error, not a registration gap.
+    home = home ?? { en: game.home, he: game.home, enAliases: [], heAliases: [] };
+    away = away ?? { en: game.away, he: game.away, enAliases: [], heAliases: [] };
+  }
   if (!home || !away) return { keep: false, reason: 'unknown-team' };
 
   // Deny-listed "known offender" channel: never surface its videos, in any
