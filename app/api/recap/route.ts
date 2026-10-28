@@ -13,6 +13,7 @@ import type { KeptChannel, RejectedChannel, SearchWinner, SourceAccess } from '@
 import { loadFixture, MATCHER_VERSION } from '@/lib/recap/fixtures';
 import type { GameInput, RankedCandidate, RawCandidate } from '@/lib/recap/types';
 import { getDenySet, isDeniedPlanEntry, dropDeniedCandidates } from '@/lib/recap/denyList';
+import { ensureClubAdditions } from '@/lib/clubAdditions';
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
@@ -189,6 +190,9 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
   // rejects their videos in fresh searches, plan entries are skipped
   // before scanning, and cached results are deny-filtered on read so a
   // denial takes effect immediately instead of at the next weekly sweep.
+  // Runtime club additions (data/club-additions.json) must be
+  // registered before any team resolution in the search below.
+  await ensureClubAdditions();
   const denySet = await getDenySet();
   const plan = searchPlanFor(game.league);
   // Preferred-channel exclusivity: when a preferred channel (IPFL / ONE)

@@ -10,6 +10,7 @@ import {
 } from '@/lib/leagues';
 import { getLeagueGames } from '@/lib/results';
 import { toHebrew } from '@/lib/teamIndex';
+import { ensureClubAdditions } from '@/lib/clubAdditions';
 
 export const dynamic = 'force-dynamic';
 
@@ -20,6 +21,9 @@ export async function GET(req: NextRequest) {
   const leagueParam = sp.get('league') || 'premier-league';
   const page = Math.max(0, parseInt(sp.get('page') || '0', 10) || 0);
   const nocache = sp.get('nocache') === '1';
+
+  // Runtime club additions feed the Hebrew display names below.
+  await ensureClubAdditions();
 
   // Unified view: every game from every club league and every national
   // competition, newest first, no pagination (the total is small enough for
