@@ -2,7 +2,7 @@
   "league": "leading-teams",
   "league_id": 0,
   "season": "2026/27",
-  "updated_at": "2026-10-28T04:07:24.000Z",
+  "updated_at": "2026-10-29T04:05:24.000Z",
   "checked_through": "2026-08-01",
   "team_ids": {
     "Bayern München": 9823,
@@ -35,9 +35,86 @@
     "Atlanta United": 773958,
     "Cruz Azul": 6578,
     "Cagliari": 8529,
-    "Werder Bremen": 8697
+    "Werder Bremen": 8697,
+    "Bologna": 9857,
+    "Venezia": 7881,
+    "Dundee United": 9938,
+    "FC Cincinnati": 722265,
+    "1. FC Magdeburg": 8188
   },
   "games": [
+    {
+      "id": "team-20261028-inter-miami-cf-fc-cincinnati",
+      "home": "Inter Miami CF",
+      "away": "FC Cincinnati",
+      "dateISO": "2026-10-28T23:30:00.000Z",
+      "homeScore": 2,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/960720.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/722265.png",
+      "stage": "מחזור 33",
+      "competition": "mls"
+    },
+    {
+      "id": "team-20261028-bayern-munchen-1-fc-magdeburg",
+      "home": "Bayern München",
+      "away": "1. FC Magdeburg",
+      "dateISO": "2026-10-28T19:45:00.000Z",
+      "homeScore": 6,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9823.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8188.png",
+      "stage": "סיבוב שני",
+      "competition": "dfb-pokal"
+    },
+    {
+      "id": "team-20261028-genoa-juventus",
+      "home": "Genoa",
+      "away": "Juventus",
+      "dateISO": "2026-10-28T19:45:00.000Z",
+      "homeScore": 2,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10233.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9885.png",
+      "stage": "מחזור 9",
+      "competition": "serie-a"
+    },
+    {
+      "id": "team-20261028-celtic-dundee-united",
+      "home": "Celtic",
+      "away": "Dundee United",
+      "dateISO": "2026-10-28T19:45:00.000Z",
+      "homeScore": 2,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9925.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9938.png",
+      "stage": "מחזור 11",
+      "competition": "scottish-premiership"
+    },
+    {
+      "id": "team-20261028-ac-milan-bologna",
+      "home": "AC Milan",
+      "away": "Bologna",
+      "dateISO": "2026-10-28T17:30:00.000Z",
+      "homeScore": 2,
+      "awayScore": 4,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8564.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9857.png",
+      "stage": "מחזור 9",
+      "competition": "serie-a"
+    },
+    {
+      "id": "team-20261028-venezia-inter",
+      "home": "Venezia",
+      "away": "Inter",
+      "dateISO": "2026-10-28T17:30:00.000Z",
+      "homeScore": 0,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/7881.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8636.png",
+      "stage": "מחזור 9",
+      "competition": "serie-a"
+    },
     {
       "id": "team-20261027-roma-cagliari",
       "home": "Roma",
