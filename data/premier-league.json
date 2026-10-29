@@ -2,7 +2,7 @@
   "league": "premier-league",
   "league_id": 47,
   "season": "2026/2027",
-  "updated_at": "2026-10-28T04:07:17.000Z",
+  "updated_at": "2026-10-29T04:05:24.000Z",
   "checked_through": "2026-09-19",
   "team_ids": {
     "Leeds United": 8463,
@@ -31,6 +31,66 @@
     "Fleetwood Town": 45723
   },
   "games": [
+    {
+      "id": "cup-20261028-liverpool-chelsea",
+      "home": "Liverpool",
+      "away": "Chelsea",
+      "dateISO": "2026-10-28T20:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8650.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8455.png",
+      "stage": "סיבוב רביעי",
+      "cup": "efl-cup"
+    },
+    {
+      "id": "cup-20261028-afc-bournemouth-aston-villa",
+      "home": "AFC Bournemouth",
+      "away": "Aston Villa",
+      "dateISO": "2026-10-28T19:45:00.000Z",
+      "homeScore": 3,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8678.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10252.png",
+      "stage": "סיבוב רביעי",
+      "cup": "efl-cup"
+    },
+    {
+      "id": "cup-20261028-fulham-crystal-palace",
+      "home": "Fulham",
+      "away": "Crystal Palace",
+      "dateISO": "2026-10-28T19:45:00.000Z",
+      "homeScore": 0,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9879.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9826.png",
+      "stage": "סיבוב רביעי",
+      "cup": "efl-cup"
+    },
+    {
+      "id": "cup-20261028-sunderland-brentford",
+      "home": "Sunderland",
+      "away": "Brentford",
+      "dateISO": "2026-10-28T19:45:00.000Z",
+      "homeScore": 3,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8472.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9937.png",
+      "stage": "סיבוב רביעי",
+      "cup": "efl-cup"
+    },
+    {
+      "id": "cup-20261028-manchester-city-brighton-hove-albion",
+      "home": "Manchester City",
+      "away": "Brighton & Hove Albion",
+      "dateISO": "2026-10-28T19:30:00.000Z",
+      "homeScore": 2,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8456.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10204.png",
+      "stage": "סיבוב רביעי",
+      "cup": "efl-cup"
+    },
     {
       "id": "cup-20261027-fleetwood-town-arsenal",
       "home": "Fleetwood Town",
