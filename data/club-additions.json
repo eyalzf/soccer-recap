@@ -1,1 +1,124 @@
-{"clubs":[{"en":"Fleetwood Town","enAliases":["Fleetwood"],"he":"פליטווד טאון","heAliases":["פליטווד"]},{"en":"CD Manacor","enAliases":["Manacor","CE Manacor"],"he":"מנאקור","heAliases":[]},{"en":"Sporting de Alcázar","enAliases":["Sporting Alcazar","Alcázar","Alcazar"],"he":"ספורטינג אלקאסר","heAliases":["אלקאסר"]},{"en":"UD Pinatar","enAliases":["Pinatar","Unión Deportiva Pinatar","Union Deportiva Pinatar"],"he":"פינאטר","heAliases":[]},{"en":"Sestao River","enAliases":["Sestao"],"he":"ססטאו ריבר","heAliases":["ססטאו"]},{"en":"Recreativo Huelva","enAliases":["Recreativo","Recre"],"he":"רקראטיבו וולבה","heAliases":[]},{"en":"1. FC Magdeburg","enAliases":["Magdeburg","FC Magdeburg"],"he":"מגדבורג","heAliases":[]}]}
+{
+  "clubs": [
+    {
+      "en": "Fleetwood Town",
+      "enAliases": [
+        "Fleetwood"
+      ],
+      "he": "פליטווד טאון",
+      "heAliases": [
+        "פליטווד"
+      ]
+    },
+    {
+      "en": "CD Manacor",
+      "enAliases": [
+        "Manacor",
+        "CE Manacor"
+      ],
+      "he": "מנאקור",
+      "heAliases": []
+    },
+    {
+      "en": "Sporting de Alcázar",
+      "enAliases": [
+        "Sporting Alcazar",
+        "Alcázar",
+        "Alcazar"
+      ],
+      "he": "ספורטינג אלקאסר",
+      "heAliases": [
+        "אלקאסר"
+      ]
+    },
+    {
+      "en": "UD Pinatar",
+      "enAliases": [
+        "Pinatar",
+        "Unión Deportiva Pinatar",
+        "Union Deportiva Pinatar"
+      ],
+      "he": "פינאטר",
+      "heAliases": []
+    },
+    {
+      "en": "Sestao River",
+      "enAliases": [
+        "Sestao"
+      ],
+      "he": "ססטאו ריבר",
+      "heAliases": [
+        "ססטאו"
+      ]
+    },
+    {
+      "en": "Recreativo Huelva",
+      "enAliases": [
+        "Recreativo",
+        "Recre"
+      ],
+      "he": "רקראטיבו וולבה",
+      "heAliases": []
+    },
+    {
+      "en": "1. FC Magdeburg",
+      "enAliases": [
+        "Magdeburg",
+        "FC Magdeburg"
+      ],
+      "he": "מגדבורג",
+      "heAliases": []
+    },
+    {
+      "en": "Sporting Hortaleza",
+      "he": "ספורטינג הורטלסה",
+      "enAliases": [
+        "AD Sporting Hortaleza",
+        "Sporting de Hortaleza"
+      ],
+      "heAliases": []
+    },
+    {
+      "en": "AE Prat",
+      "he": "פראט",
+      "enAliases": [
+        "Prat"
+      ],
+      "heAliases": []
+    },
+    {
+      "en": "Atlético Calatayud",
+      "he": "אתלטיקו קלטיוד",
+      "enAliases": [
+        "Atletico Calatayud",
+        "At. Calatayud"
+      ],
+      "heAliases": []
+    },
+    {
+      "en": "UB Lebrijana",
+      "he": "לבריחאנה",
+      "enAliases": [
+        "Lebrijana"
+      ],
+      "heAliases": []
+    },
+    {
+      "en": "Ribadesella CF",
+      "he": "ריבדסייה",
+      "enAliases": [
+        "Ribadesella"
+      ],
+      "heAliases": []
+    },
+    {
+      "en": "Auriense Cented Academy",
+      "he": "אאוריאנסה סנטד אקדמי",
+      "enAliases": [
+        "Auriense",
+        "Cented Academy"
+      ],
+      "heAliases": []
+    }
+  ]
+}
