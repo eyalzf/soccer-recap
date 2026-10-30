@@ -2,7 +2,7 @@
   "league": "premier-league",
   "league_id": 47,
   "season": "2026/2027",
-  "updated_at": "2026-10-29T04:05:24.000Z",
+  "updated_at": "2026-10-30T04:15:37.000Z",
   "checked_through": "2026-09-19",
   "team_ids": {
     "Leeds United": 8463,
@@ -31,6 +31,18 @@
     "Fleetwood Town": 45723
   },
   "games": [
+    {
+      "id": "cup-20261029-everton-newcastle-united",
+      "home": "Everton",
+      "away": "Newcastle United",
+      "dateISO": "2026-10-29T19:45:00.000Z",
+      "homeScore": 3,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8668.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10261.png",
+      "stage": "סיבוב רביעי",
+      "cup": "efl-cup"
+    },
     {
       "id": "cup-20261028-liverpool-chelsea",
       "home": "Liverpool",
