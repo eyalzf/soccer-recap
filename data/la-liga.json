@@ -2,7 +2,7 @@
   "league": "la-liga",
   "league_id": 87,
   "season": "2026/2027",
-  "updated_at": "2026-10-28T05:28:51.000Z",
+  "updated_at": "2026-10-30T04:23:15.000Z",
   "checked_through": "2026-09-19",
   "team_ids": {
     "Villarreal": 10205,
@@ -27,9 +27,87 @@
     "Valencia": 10267,
     "Sestao River": 8228,
     "CD Manacor": 209025,
-    "Recreativo Huelva": 8479
+    "Recreativo Huelva": 8479,
+    "Sporting Hortaleza": 2360741,
+    "AE Prat": 189638,
+    "Atlético Calatayud": 190104,
+    "UB Lebrijana": 477697,
+    "Ribadesella CF": 189591,
+    "Auriense Cented Academy": 2341117
   },
   "games": [
+    {
+      "id": "cup-20261029-sporting-hortaleza-sevilla",
+      "home": "Sporting Hortaleza",
+      "away": "Sevilla",
+      "dateISO": "2026-10-29T20:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 3,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/2360741.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8302.png",
+      "stage": "סיבוב ראשון",
+      "cup": "copa-del-rey"
+    },
+    {
+      "id": "cup-20261029-ribadesella-cf-racing-santander",
+      "home": "Ribadesella CF",
+      "away": "Racing Santander",
+      "dateISO": "2026-10-29T20:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/189591.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8696.png",
+      "stage": "סיבוב ראשון",
+      "cup": "copa-del-rey"
+    },
+    {
+      "id": "cup-20261029-ae-prat-athletic-club",
+      "home": "AE Prat",
+      "away": "Athletic Club",
+      "dateISO": "2026-10-29T20:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 6,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/189638.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8315.png",
+      "stage": "סיבוב ראשון",
+      "cup": "copa-del-rey"
+    },
+    {
+      "id": "cup-20261029-auriense-cented-academy-deportivo-a-coruna",
+      "home": "Auriense Cented Academy",
+      "away": "Deportivo A Coruña",
+      "dateISO": "2026-10-29T20:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 3,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/2341117.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9783.png",
+      "stage": "סיבוב ראשון",
+      "cup": "copa-del-rey"
+    },
+    {
+      "id": "cup-20261029-atletico-calatayud-osasuna",
+      "home": "Atlético Calatayud",
+      "away": "Osasuna",
+      "dateISO": "2026-10-29T18:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 6,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/190104.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8371.png",
+      "stage": "סיבוב ראשון",
+      "cup": "copa-del-rey"
+    },
+    {
+      "id": "cup-20261029-ub-lebrijana-getafe",
+      "home": "UB Lebrijana",
+      "away": "Getafe",
+      "dateISO": "2026-10-29T18:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 3,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/477697.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8305.png",
+      "stage": "סיבוב ראשון",
+      "cup": "copa-del-rey"
+    },
     {
       "id": "cup-20261027-cd-manacor-villarreal",
       "home": "CD Manacor",
