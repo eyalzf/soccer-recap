@@ -146,11 +146,14 @@ export default function Home() {
     [modeGames, league, team, hideWatched, watchedIds, keyFn]
   );
 
-  // Group by calendar day, preserving the API's newest-first order.
+  // Group by LOCAL calendar day, preserving the API's newest-first order.
+  // (dateISO is UTC, but dayLabel renders in local time, so grouping by the
+  // UTC date split one local day across two groups with the same header.)
   const groups = useMemo(() => {
     const map = new Map<string, GameItem[]>();
     for (const g of filtered) {
-      const k = g.dateISO.slice(0, 10);
+      const d = new Date(g.dateISO);
+      const k = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
       const arr = map.get(k);
       if (arr) arr.push(g);
       else map.set(k, [g]);
