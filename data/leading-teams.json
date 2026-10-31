@@ -2,7 +2,7 @@
   "league": "leading-teams",
   "league_id": 0,
   "season": "2026/27",
-  "updated_at": "2026-10-29T04:05:24.000Z",
+  "updated_at": "2026-10-31T04:00:40.000Z",
   "checked_through": "2026-08-01",
   "team_ids": {
     "Bayern München": 9823,
@@ -40,9 +40,35 @@
     "Venezia": 7881,
     "Dundee United": 9938,
     "FC Cincinnati": 722265,
-    "1. FC Magdeburg": 8188
+    "1. FC Magdeburg": 8188,
+    "Casa Pia": 212821,
+    "Le Havre": 9746
   },
   "games": [
+    {
+      "id": "team-20261030-casa-pia-sporting-cp",
+      "home": "Casa Pia",
+      "away": "Sporting CP",
+      "dateISO": "2026-10-30T20:15:00.000Z",
+      "homeScore": 0,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/212821.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9768.png",
+      "stage": "מחזור 10",
+      "competition": "primeira-liga"
+    },
+    {
+      "id": "team-20261030-le-havre-paris-saint-germain",
+      "home": "Le Havre",
+      "away": "Paris Saint-Germain",
+      "dateISO": "2026-10-30T18:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 5,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9746.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9847.png",
+      "stage": "מחזור 9",
+      "competition": "ligue-1"
+    },
     {
       "id": "team-20261028-inter-miami-cf-fc-cincinnati",
       "home": "Inter Miami CF",
