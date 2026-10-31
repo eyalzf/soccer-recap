@@ -2,7 +2,7 @@
   "league": "la-liga",
   "league_id": 87,
   "season": "2026/2027",
-  "updated_at": "2026-10-30T04:23:15.000Z",
+  "updated_at": "2026-10-31T04:00:40.000Z",
   "checked_through": "2026-09-19",
   "team_ids": {
     "Villarreal": 10205,
@@ -36,6 +36,17 @@
     "Auriense Cented Academy": 2341117
   },
   "games": [
+    {
+      "id": "manual-20261030-villarreal-espanyol",
+      "home": "Villarreal",
+      "away": "Espanyol",
+      "dateISO": "2026-10-30T20:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10205.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8558.png",
+      "stage": "מחזור 11"
+    },
     {
       "id": "cup-20261029-sporting-hortaleza-sevilla",
       "home": "Sporting Hortaleza",
