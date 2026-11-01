@@ -2,7 +2,7 @@
   "league": "israeli-league",
   "league_id": 127,
   "season": "2026/2027",
-  "updated_at": "2026-10-27T03:59:41.000Z",
+  "updated_at": "2026-11-01T04:03:36.000Z",
   "checked_through": "2026-09-19",
   "team_ids": {
     "Hapoel Haifa": 8301,
@@ -17,6 +17,50 @@
     "Hapoel Beer Sheva": 9754
   },
   "games": [
+    {
+      "id": "manual-20261031-maccabi-netanya-hapoel-jerusalem-fc",
+      "home": "Maccabi Netanya",
+      "away": "Hapoel Jerusalem FC",
+      "dateISO": "2026-10-31T17:30:00.000Z",
+      "homeScore": 1,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/1832.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/cvh4ec1639431062.png",
+      "stage": "מחזור 9"
+    },
+    {
+      "id": "manual-20261031-bnei-sakhnin-ironi-tiberias",
+      "home": "Bnei Sakhnin",
+      "away": "Ironi Tiberias",
+      "dateISO": "2026-10-31T16:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8718.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/78q5ez1656067666.png",
+      "stage": "מחזור 9"
+    },
+    {
+      "id": "manual-20261031-hapoel-haifa-hapoel-petah-tikva",
+      "home": "Hapoel Haifa",
+      "away": "Hapoel Petah Tikva",
+      "dateISO": "2026-10-31T15:30:00.000Z",
+      "homeScore": 2,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8301.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9755.png",
+      "stage": "מחזור 9"
+    },
+    {
+      "id": "manual-20261031-beitar-jerusalem-hapoel-ironi-kiryat-shmona",
+      "home": "Beitar Jerusalem",
+      "away": "Hapoel Ironi Kiryat Shmona",
+      "dateISO": "2026-10-31T13:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 1,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/lsg64h1781239463.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/2095.png",
+      "stage": "מחזור 9"
+    },
     {
       "id": "manual-20261026-maccabi-haifa-hapoel-beer-sheva",
       "home": "Maccabi Haifa",
