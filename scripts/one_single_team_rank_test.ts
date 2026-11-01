@@ -122,6 +122,61 @@ eq('general single-team still rejected', filterCandidate(generalSingle, game), {
   reason: 'teams',
 });
 
+// --------------------------- external single-team exception (2026-11-01) ---
+// External candidates pass through filterCandidate on ingest, so the
+// single-team exception must cover them too: the Le Havre Sport5
+// article matched in matchSport5Index and was then vetoed HERE on
+// 'teams' until this clause existed. Same guards as preferred.
+const leHavreGame: GameInput = {
+  home: 'Le Havre',
+  away: 'Paris Saint-Germain',
+  dateISO: '2026-10-30T18:00:00.000Z',
+  league: 'leading-teams',
+  homeScore: 1,
+  awayScore: 5,
+};
+const extBase: RawCandidate = {
+  id: '',
+  title: '',
+  url: 'https://m.sport5.co.il/articles.aspx?FolderID=496&docID=565835',
+  source: 'sport5',
+  external: true,
+  channelName: 'Sport5',
+  lang: 'he',
+};
+const ext = (id: string, title: string, over: Partial<RawCandidate> = {}): RawCandidate => ({
+  ...extBase,
+  ...over,
+  id,
+  title,
+});
+const extSingle = ext('sport5:article:565835', 'שלושער מטורף לחאכימי, 1:5 גדול לפ.ס.ז`', {
+  publishedAt: '2026-10-30T12:00:00.000Z',
+});
+eq('external single-team kept', filterCandidate(extSingle, leHavreGame), {
+  keep: true,
+  reason: 'ok',
+});
+const extWrongScore = ext('sport5:article:wrong', 'שלושער מטורף לחאכימי, 1:4 גדול לפ.ס.ז`', {
+  publishedAt: '2026-10-30T12:00:00.000Z',
+});
+eq('external single-team wrong score rejected', filterCandidate(extWrongScore, leHavreGame), {
+  keep: false,
+  reason: 'teams',
+});
+const extUndated = ext('sport5:article:undated', 'שלושער מטורף לחאכימי, 1:5 גדול לפ.ס.ז`', {});
+eq('external single-team undated rejected', filterCandidate(extUndated, leHavreGame), {
+  keep: false,
+  reason: 'teams',
+});
+const extStale = ext('sport5:article:stale', 'שלושער מטורף לחאכימי, 1:5 גדול לפ.ס.ז`', {
+  publishedAt: '2026-11-15T12:00:00.000Z',
+});
+eq('external single-team stale date rejected', filterCandidate(extStale, leHavreGame), {
+  keep: false,
+  reason: 'teams',
+});
+
 // ------------------------------------------------------------ vs vetoes ---
 const vsWrong = mk('vs-wrong', 'Barcelona 6 vs 2 Alavés | Highlights', {
   publishedAt: '2026-11-01T10:00:00.000Z',
