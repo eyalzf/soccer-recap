@@ -435,7 +435,10 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
   // (bulk never runs). It costs no YouTube quota, so a YouTube 429 does
   // not stop it. A league with external sources configured NEVER falls
   // through to general search — this tier is terminal in both
-  // positions, even when it finds nothing (user decision 2026-10-14).
+  // positions, even when it finds nothing (user decision 2026-10-14) —
+  // UNLESS the plan sets externalTerminal: false, in which case
+  // general search still runs as a backstop when external found
+  // nothing (leading-teams, 2026-11-01).
   const externalCfgs = plan.external ?? [];
   const externalAboveBulk =
     plan.externalPosition === 'above-bulk' && externalCfgs.length > 0;
@@ -532,8 +535,10 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
   }
 
   // Tier 3: general-search fallback, only when tiers 1+2 found nothing
-  // and the league configures no external source.
-  if (!ytRateLimited && winner === 'none' && externalCfgs.length === 0) {
+  // and the league configures no external source — or its external
+  // tier is non-terminal (plan.externalTerminal === false), in which
+  // case general is the backstop when external found nothing.
+  if (!ytRateLimited && winner === 'none' && (externalCfgs.length === 0 || plan.externalTerminal === false)) {
     for (const lang of plan.fallbackLangs) {
       const q = lang === 'he' ? hebrewQuery(game) : englishQuery(game);
       logEntry.general.ran += 1;
