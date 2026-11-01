@@ -133,6 +133,21 @@ export interface LeagueSearchPlan {
    */
   externalPosition?: 'above-bulk' | 'below-bulk';
   /**
+   * Whether the external tier is terminal (default true): when true, a
+   * plan with external sources NEVER runs general search, even when
+   * the external tier finds nothing (user decision 2026-10-14, made
+   * for the Champions League, where Sport5 covers nearly every game).
+   * Set false only for a plan whose external source covers a fraction
+   * of its games (leading-teams, 2026-11-01): with false, general
+   * search still runs when the curated + external tiers found no
+   * proper highlight, so a game with no bulk and no Sport5 item keeps
+   * its generic clips instead of going empty. When the external tier
+   * DOES find a result, winner is set and general never runs either
+   * way — false only restores the backstop, it never adds generics
+   * alongside an external hit.
+   */
+  externalTerminal?: boolean;
+  /**
    * Max uploads-playlist pages per bulk channel (50 videos/page, newest
    * first, early-stop once videos predate the game). Default 10.
    */
@@ -758,6 +773,12 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
     // Category no longer gates matching (2026-10-15 rail change); 893
     // is the current rail-level Vc, kept for signature/diagnostics.
     external: [{ provider: 'sport5', category: 893 }],
+    // Non-terminal: Sport5 covers Ligue 1 well but only a fraction of
+    // the eleven clubs' games — without the general backstop, a game
+    // with no bulk highlight and no Sport5 item returns nothing at
+    // all (verified on preview 2026-11-01: Le Havre–PSG went empty,
+    // where production serves 2 generic clips).
+    externalTerminal: false,
     fallbackLangs: ['en'],
   },
 };
