@@ -2,7 +2,7 @@
   "league": "premier-league",
   "league_id": 47,
   "season": "2026/2027",
-  "updated_at": "2026-10-30T04:15:37.000Z",
+  "updated_at": "2026-11-01T04:03:36.000Z",
   "checked_through": "2026-09-19",
   "team_ids": {
     "Leeds United": 8463,
@@ -31,6 +31,94 @@
     "Fleetwood Town": 45723
   },
   "games": [
+    {
+      "id": "manual-20261031-aston-villa-fulham",
+      "home": "Aston Villa",
+      "away": "Fulham",
+      "dateISO": "2026-10-31T20:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10252.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9879.png",
+      "stage": "מחזור 9"
+    },
+    {
+      "id": "manual-20261031-tottenham-hotspur-crystal-palace",
+      "home": "Tottenham Hotspur",
+      "away": "Crystal Palace",
+      "dateISO": "2026-10-31T17:30:00.000Z",
+      "homeScore": 2,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8586.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9826.png",
+      "stage": "מחזור 9"
+    },
+    {
+      "id": "manual-20261031-afc-bournemouth-leeds-united",
+      "home": "AFC Bournemouth",
+      "away": "Leeds United",
+      "dateISO": "2026-10-31T15:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8678.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8463.png",
+      "stage": "מחזור 9"
+    },
+    {
+      "id": "manual-20261031-brentford-nottingham-forest",
+      "home": "Brentford",
+      "away": "Nottingham Forest",
+      "dateISO": "2026-10-31T15:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9937.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10203.png",
+      "stage": "מחזור 9"
+    },
+    {
+      "id": "manual-20261031-coventry-city-sunderland",
+      "home": "Coventry City",
+      "away": "Sunderland",
+      "dateISO": "2026-10-31T15:00:00.000Z",
+      "homeScore": 3,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8669.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8472.png",
+      "stage": "מחזור 9"
+    },
+    {
+      "id": "manual-20261031-hull-city-ipswich-town",
+      "home": "Hull City",
+      "away": "Ipswich Town",
+      "dateISO": "2026-10-31T15:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8667.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9902.png",
+      "stage": "מחזור 9"
+    },
+    {
+      "id": "manual-20261031-manchester-city-brighton-hove-albion",
+      "home": "Manchester City",
+      "away": "Brighton & Hove Albion",
+      "dateISO": "2026-10-31T15:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8456.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10204.png",
+      "stage": "מחזור 9"
+    },
+    {
+      "id": "manual-20261031-chelsea-manchester-united",
+      "home": "Chelsea",
+      "away": "Manchester United",
+      "dateISO": "2026-10-31T12:30:00.000Z",
+      "homeScore": 2,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8455.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10260.png",
+      "stage": "מחזור 9"
+    },
     {
       "id": "cup-20261029-everton-newcastle-united",
       "home": "Everton",
