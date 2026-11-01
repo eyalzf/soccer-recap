@@ -2,7 +2,7 @@
   "league": "la-liga",
   "league_id": 87,
   "season": "2026/2027",
-  "updated_at": "2026-10-31T04:00:40.000Z",
+  "updated_at": "2026-11-01T04:03:36.000Z",
   "checked_through": "2026-09-19",
   "team_ids": {
     "Villarreal": 10205,
@@ -36,6 +36,50 @@
     "Auriense Cented Academy": 2341117
   },
   "games": [
+    {
+      "id": "manual-20261031-barcelona-deportivo-alaves",
+      "home": "Barcelona",
+      "away": "Deportivo Alavés",
+      "dateISO": "2026-10-31T20:00:00.000Z",
+      "homeScore": 6,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8634.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9866.png",
+      "stage": "מחזור 11"
+    },
+    {
+      "id": "manual-20261031-real-betis-malaga",
+      "home": "Real Betis",
+      "away": "Málaga",
+      "dateISO": "2026-10-31T17:30:00.000Z",
+      "homeScore": 2,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8603.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9864.png",
+      "stage": "מחזור 11"
+    },
+    {
+      "id": "manual-20261031-rayo-vallecano-celta-vigo",
+      "home": "Rayo Vallecano",
+      "away": "Celta Vigo",
+      "dateISO": "2026-10-31T15:15:00.000Z",
+      "homeScore": 3,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8370.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9910.png",
+      "stage": "מחזור 11"
+    },
+    {
+      "id": "manual-20261031-levante-atletico-madrid",
+      "home": "Levante",
+      "away": "Atlético Madrid",
+      "dateISO": "2026-10-31T13:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8581.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9906.png",
+      "stage": "מחזור 11"
+    },
     {
       "id": "manual-20261030-villarreal-espanyol",
       "home": "Villarreal",
