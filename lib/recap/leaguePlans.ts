@@ -750,6 +750,14 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
       clubChannel('Ajax'),
       { handle: 'spflofficial', label: 'SPFL', teams: ['Celtic'] },
     ],
+    // Sport5 (2026-11-01): Hebrew link-out recaps for the leading-teams
+    // view. Below-bulk (default): runs only when bulk kept no proper
+    // highlight, so club-channel results for the other clubs are
+    // untouched. NOTE: any external source makes the tier terminal —
+    // general YouTube search no longer runs for this plan (route.ts).
+    // Category no longer gates matching (2026-10-15 rail change); 893
+    // is the current rail-level Vc, kept for signature/diagnostics.
+    external: [{ provider: 'sport5', category: 893 }],
     fallbackLangs: ['en'],
   },
 };
