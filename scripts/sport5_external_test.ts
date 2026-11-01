@@ -18,8 +18,10 @@ import path from 'path';
 import {
   matchSport5Index,
   mergeSport5Index,
+  parseSport5LeaguePage,
   parseSport5Rail,
   type Sport5IndexItem,
+  type Sport5LeagueItem,
 } from '../lib/recap/sport5';
 import { applyExternalExclusivity } from '../lib/recap/external';
 import { gameCacheKeyMatchesDate } from '../lib/recap/sweep';
@@ -512,6 +514,124 @@ for (const { game, vi } of GAMES) {
   const lt = searchPlanFor('leading-teams');
   check('ligue1: leading-teams plan carries Sport5 external', (lt.external ?? []).some((e) => e.provider === 'sport5'));
   check('ligue1: leading-teams external is below-bulk (default)', lt.externalPosition !== 'above-bulk');
+}
+
+// ---------- Part 5: Ligue 1 league-page harvest (2026-11-01) ----------
+// The league page (m.sport5.co.il/liga.aspx?FolderId=495) is a second
+// discovery source: its items are ARTICLE links (minute-ly embeds, no
+// VOD id), retained ~2 weeks vs ~1-2 days on the rail, with real
+// per-item dates. Only btn-play items are video; the 2 text articles
+// in the fixture must be excluded, or a text article matching
+// teams+score would be a wrong result.
+{
+  const leagueHtml = readFileSync(
+    path.join(__dirname, '..', 'fixtures', 'sport5', 'league-ligue1-2026-11-01.html'),
+    'utf8'
+  );
+  const league = parseSport5LeaguePage(leagueHtml);
+  eq('league parser: 7 video items', league.length, 7);
+  eq(
+    'league parser: docIDs',
+    league.map((i) => i.docId).sort((a, b) => a - b),
+    [564137, 564273, 565062, 565176, 565344, 565835, 565935]
+  );
+  const leHavreItem = league.find((i) => i.docId === 565835)!;
+  eq(
+    'league parser: Le Havre title',
+    leHavreItem.title,
+    'שלושער מטורף לחאכימי, 1:5 גדול לפ.ס.ז`'
+  );
+  eq(
+    'league parser: Le Havre date',
+    leHavreItem.publishedMs,
+    Date.UTC(2026, 9, 30, 12)
+  );
+  eq(
+    'league parser: Le Havre article URL',
+    leHavreItem.articleUrl,
+    'https://m.sport5.co.il/articles.aspx?FolderID=496&docID=565835'
+  );
+  check(
+    'league parser: text articles excluded',
+    !league.some((i) => i.docId === 564371 || i.docId === 564237)
+  );
+  check(
+    'league parser: thumbnails captured',
+    league.every((i) => !!i.thumb)
+  );
+
+  const toIndex = (
+    items: Sport5LeagueItem[],
+    seen: number
+  ): Sport5IndexItem[] =>
+    items.map((i) => ({
+      vc: 0,
+      vi: 0,
+      docId: i.docId,
+      articleUrl: i.articleUrl,
+      title: i.title,
+      ...(i.thumb ? { thumb: i.thumb } : {}),
+      publishedMs: i.publishedMs,
+      firstSeen: seen,
+      lastSeen: seen,
+    }));
+  const g = (
+    home: string,
+    away: string,
+    hs: number,
+    as: number,
+    dateISO: string
+  ): GameInput => ({ home, away, homeScore: hs, awayScore: as, dateISO, league: 'leading-teams' });
+  const leHavre = g('Le Havre', 'Paris Saint-Germain', 1, 5, '2026-10-30T18:00:00.000Z');
+  const lyon = g('Paris Saint-Germain', 'Olympique Lyonnais', 2, 0, '2026-10-26T19:30:00.000Z');
+  const strasbourg = g('Strasbourg', 'Paris Saint-Germain', 1, 3, '2026-10-17T15:15:00.000Z');
+  const idx = toIndex(league, Date.parse('2026-11-01T10:00:00Z'));
+
+  const r1 = matchSport5Index(idx, leHavre, CATEGORY);
+  eq('league matcher: Le Havre article matches', r1.candidate?.id, 'sport5:article:565835');
+  eq(
+    'league matcher: Le Havre candidate URL is the article',
+    r1.candidate?.url,
+    'https://m.sport5.co.il/articles.aspx?FolderID=496&docID=565835'
+  );
+  const r2 = matchSport5Index(idx, lyon, CATEGORY);
+  eq('league matcher: Lyon article matches', r2.candidate?.id, 'sport5:article:565344');
+  const r3 = matchSport5Index(idx, strasbourg, CATEGORY);
+  eq('league matcher: Strasbourg article matches', r3.candidate?.id, 'sport5:article:564137');
+
+  // The window uses the article date, not firstSeen: harvested 11 days
+  // after the game, the Le Havre article still matches; an article
+  // dated 11 days after the game does not, even if firstSeen is near.
+  const lateSeen = toIndex([leHavreItem], Date.parse('2026-11-10T10:00:00Z'));
+  const rLate = matchSport5Index(lateSeen, leHavre, CATEGORY);
+  check(
+    'league matcher: late firstSeen does not break article-date match',
+    rLate.candidate?.id === 'sport5:article:565835'
+  );
+  const wrongDate = toIndex(
+    [{ ...leHavreItem, publishedMs: Date.UTC(2026, 10, 10, 12) }],
+    Date.parse('2026-10-30T22:00:00Z')
+  );
+  const rWrong = matchSport5Index(wrongDate, leHavre, CATEGORY);
+  check('league matcher: article date outside window rejected', rWrong.candidate === null);
+  check(
+    'league matcher: outside-window reason is date',
+    rWrong.considered.find((c) => c.docId === 565835)?.reason === 'date'
+  );
+
+  // Mixed merge: rail (VOD, by vi) and league (articles, by docId)
+  // coexist; re-harvest dedupes each namespace and preserves firstSeen.
+  const t0 = Date.parse('2026-11-01T10:00:00Z');
+  const t1 = Date.parse('2026-11-01T11:00:00Z');
+  const mixed = mergeSport5Index([], [...rail.slice(0, 2), ...league.slice(0, 2)], t0);
+  eq('league merge: rail + article coexist', mixed.length, 4);
+  const mixed2 = mergeSport5Index(mixed, league.slice(0, 2), t1);
+  eq('league merge: article dedupe by docId', mixed2.filter((i) => i.docId).length, 2);
+  eq(
+    'league merge: article firstSeen preserved',
+    mixed2.find((i) => i.docId === 565835)?.firstSeen,
+    t0
+  );
 }
 
 console.log(`\nsport5_external_test: ${pass} passed, ${fail} failed`);
