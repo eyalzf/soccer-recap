@@ -2,7 +2,7 @@
   "league": "leading-teams",
   "league_id": 0,
   "season": "2026/27",
-  "updated_at": "2026-10-31T04:00:40.000Z",
+  "updated_at": "2026-11-01T04:03:36.000Z",
   "checked_through": "2026-08-01",
   "team_ids": {
     "Bayern München": 9823,
@@ -42,9 +42,58 @@
     "FC Cincinnati": 722265,
     "1. FC Magdeburg": 8188,
     "Casa Pia": 212821,
-    "Le Havre": 9746
+    "Le Havre": 9746,
+    "AZ Alkmaar": 10229
   },
   "games": [
+    {
+      "id": "team-20261031-ajax-az-alkmaar",
+      "home": "Ajax",
+      "away": "AZ Alkmaar",
+      "dateISO": "2026-10-31T20:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8593.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10229.png",
+      "stage": "מחזור 11",
+      "competition": "eredivisie"
+    },
+    {
+      "id": "team-20261031-ac-milan-inter",
+      "home": "AC Milan",
+      "away": "Inter",
+      "dateISO": "2026-10-31T19:45:00.000Z",
+      "homeScore": 3,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8564.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8636.png",
+      "stage": "מחזור 10",
+      "competition": "serie-a"
+    },
+    {
+      "id": "team-20261031-bayern-munchen-borussia-dortmund",
+      "home": "Bayern München",
+      "away": "Borussia Dortmund",
+      "dateISO": "2026-10-31T17:30:00.000Z",
+      "homeScore": 2,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9823.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9789.png",
+      "stage": "מחזור 9",
+      "competition": "bundesliga"
+    },
+    {
+      "id": "team-20261031-udinese-roma",
+      "home": "Udinese",
+      "away": "Roma",
+      "dateISO": "2026-10-31T17:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 5,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8600.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8686.png",
+      "stage": "מחזור 10",
+      "competition": "serie-a"
+    },
     {
       "id": "team-20261030-casa-pia-sporting-cp",
       "home": "Casa Pia",
