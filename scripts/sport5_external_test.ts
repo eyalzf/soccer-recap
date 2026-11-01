@@ -402,6 +402,37 @@ for (const { game, vi } of GAMES) {
     applyExternalExclusivity(pl, mixed).map((c) => c.id),
     ['bulk-a', 'sport5:563574', 'bulk-b']
   );
+  // Scoped above-bulk (leading-teams, 2026-11-01: PSG Ligue 1 only):
+  // exclusivity applies to in-scope games only — an out-of-scope
+  // game's list passes through even though the plan is above-bulk.
+  const lt = searchPlanFor('leading-teams');
+  eq(
+    'exclusivity: scoped in-scope game keeps only the external result',
+    applyExternalExclusivity(lt, mixed, {
+      home: 'Le Havre',
+      away: 'Paris Saint-Germain',
+      competition: 'ligue-1',
+    }).map((c) => c.id),
+    ['sport5:563574']
+  );
+  eq(
+    'exclusivity: scoped out-of-scope club is unchanged',
+    applyExternalExclusivity(lt, mixed, {
+      home: 'Bayern Munich',
+      away: 'Borussia Dortmund',
+      competition: 'bundesliga',
+    }).map((c) => c.id),
+    ['bulk-a', 'sport5:563574', 'bulk-b']
+  );
+  eq(
+    'exclusivity: scoped out-of-scope competition is unchanged',
+    applyExternalExclusivity(lt, mixed, {
+      home: 'Paris Saint-Germain',
+      away: 'Troyes',
+      competition: 'coupe-de-france',
+    }).map((c) => c.id),
+    ['bulk-a', 'sport5:563574', 'bulk-b']
+  );
 }
 
 // ---------- Part 3: targeted game-cache clear key filter ----------
@@ -513,7 +544,12 @@ for (const { game, vi } of GAMES) {
 
   const lt = searchPlanFor('leading-teams');
   check('ligue1: leading-teams plan carries Sport5 external', (lt.external ?? []).some((e) => e.provider === 'sport5'));
-  check('ligue1: leading-teams external is below-bulk (default)', lt.externalPosition !== 'above-bulk');
+  check(
+    'ligue1: leading-teams external is scoped above-bulk (PSG Ligue 1 only)',
+    lt.externalPosition === 'above-bulk' &&
+      JSON.stringify(lt.externalFirstScope) ===
+        JSON.stringify({ teams: ['Paris Saint-Germain'], competitions: ['ligue-1'] })
+  );
 }
 
 // ---------- Part 5: Ligue 1 league-page harvest (2026-11-01) ----------
