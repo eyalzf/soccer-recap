@@ -208,6 +208,16 @@ eq('ucl external', searchPlanFor('champions-league').external, [
 eq('leading-teams external', searchPlanFor('leading-teams').external, [
   { provider: 'sport5', category: 893 },
 ]);
+eq(
+  'leading-teams external is non-terminal (general backstop kept)',
+  searchPlanFor('leading-teams').externalTerminal,
+  false
+);
+eq(
+  'ucl external stays terminal (default)',
+  searchPlanFor('champions-league').externalTerminal,
+  undefined
+);
 ok(
   'only ucl and leading-teams have external',
   Object.entries(LEAGUE_SEARCH_PLANS)
