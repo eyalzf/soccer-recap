@@ -3,7 +3,7 @@ import { filterCandidate, hasHighlightIntent, isPreferredChannel } from '@/lib/r
 import { rankCandidates } from '@/lib/recap/rank';
 import { englishQuery, hebrewQuery, sport1Search, youtubeSearch } from '@/lib/recap/sources';
 import type { YouTubeSearchJob } from '@/lib/recap/sources';
-import { searchPlanFor } from '@/lib/recap/leaguePlans';
+import { externalRunsFirst, searchPlanFor } from '@/lib/recap/leaguePlans';
 import type { BulkChannel } from '@/lib/recap/leaguePlans';
 import { bulkScan, channelsForGame, scanPriorityChannel } from '@/lib/recap/bulk';
 import { applyExternalExclusivity, runExternalSource } from '@/lib/recap/external';
@@ -146,7 +146,10 @@ const inflight = new Map<string, Promise<ComputeResult>>();
  *     runs here, after bulk, only when tiers 1+2 kept no proper
  *     highlight; an 'above-bulk' plan runs it before tier 2 instead,
  *     and a hit there is exclusive (bulk never runs, and non-external
- *     results are suppressed — see applyExternalExclusivity). When a
+ *     results are suppressed — see applyExternalExclusivity). A plan
+ *     may scope its above-bulk position to certain games
+ *     (`externalFirstScope` — leading-teams: PSG Ligue 1 only);
+ *     out-of-scope games keep the below-bulk position. When a
  *     plan configures external sources, tier 3 never runs for that
  *     league.
  *  3. General search.list fallback (100 units per language), only when
@@ -206,7 +209,8 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
   // External exclusivity composes on top of it: for a plan that places
   // the external tier above bulk, an external result in the list is the
   // game's whole result set (applyExternalExclusivity no-ops for every
-  // other plan).
+  // other plan — and, for a scoped above-bulk plan, for every
+  // out-of-scope game).
   const visible = <T extends RawCandidate>(list: T[]): T[] => {
     let out = list;
     const pref = list.filter(isPreferredChannel);
@@ -214,7 +218,7 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
       if (pref.some((c) => hasHighlightIntent(c.title))) out = pref;
       else if (plan.preferredStopRule === 'any') out = pref;
     }
-    return applyExternalExclusivity(plan, out);
+    return applyExternalExclusivity(plan, out, game);
   };
   let prevResults: RankedCandidate[] = [];
   if (!debug) {
@@ -432,13 +436,19 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
   // Position is plan-driven: 'below-bulk' (default) it runs after the
   // bulk tier, only when the curated tiers kept no proper highlight;
   // 'above-bulk' it runs here, before bulk, and a hit is exclusive
-  // (bulk never runs). It costs no YouTube quota, so a YouTube 429 does
-  // not stop it. A league with external sources configured NEVER falls
-  // through to general search — this tier is terminal in both
-  // positions, even when it finds nothing (user decision 2026-10-14).
+  // (bulk never runs) — for THIS game, via externalRunsFirst, so a
+  // scoped above-bulk plan (leading-teams: PSG Ligue 1 only) runs it
+  // first just for its scope and below-bulk for everything else.
+  // It costs no YouTube quota, so a YouTube 429 does not stop it. A
+  // league with external sources configured NEVER falls through to
+  // general search — this tier is terminal in both positions, even
+  // when it finds nothing (user decision 2026-10-14) — UNLESS the
+  // plan sets externalTerminal: false, in which case general search
+  // still runs as a backstop when external found nothing
+  // (leading-teams, 2026-11-01).
   const externalCfgs = plan.external ?? [];
   const externalAboveBulk =
-    plan.externalPosition === 'above-bulk' && externalCfgs.length > 0;
+    externalCfgs.length > 0 && externalRunsFirst(plan, game);
   const runExternalTier = async (): Promise<void> => {
     for (const cfg of externalCfgs) {
       try {
@@ -515,7 +525,8 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
 
   // Tier 2.5: external link-out sources in the default (below-bulk)
   // position — runs only when the curated tiers kept no proper
-  // highlight. Above-bulk plans already ran the tier before tier 2.
+  // highlight. Games for which the tier already ran before tier 2
+  // (unscoped above-bulk, or scoped in-scope) skip it here.
   if (!externalAboveBulk && winner === 'none' && externalCfgs.length > 0) {
     await runExternalTier();
   }
@@ -532,8 +543,10 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
   }
 
   // Tier 3: general-search fallback, only when tiers 1+2 found nothing
-  // and the league configures no external source.
-  if (!ytRateLimited && winner === 'none' && externalCfgs.length === 0) {
+  // and the league configures no external source — or its external
+  // tier is non-terminal (plan.externalTerminal === false), in which
+  // case general is the backstop when external found nothing.
+  if (!ytRateLimited && winner === 'none' && (externalCfgs.length === 0 || plan.externalTerminal === false)) {
     for (const lang of plan.fallbackLangs) {
       const q = lang === 'he' ? hebrewQuery(game) : englishQuery(game);
       logEntry.general.ran += 1;

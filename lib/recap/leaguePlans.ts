@@ -130,8 +130,37 @@ export interface LeagueSearchPlan {
    *    external source outranks its bulk pool (Champions League /
    *    Sport5: the bulk aggregators proved poor in preview validation
    *    and one was deny-listed by the user — user decision 2026-10-14).
+   *    With externalFirstScope set, 'above-bulk' applies only to games
+   *    in scope; out-of-scope games keep the below-bulk position.
    */
   externalPosition?: 'above-bulk' | 'below-bulk';
+  /**
+   * Scope limiting an 'above-bulk' external position to certain games
+   * (user decision 2026-11-01: Sport5 first for PSG Ligue 1 games
+   * only). When set, only games matching BOTH lists run the external
+   * tier first; a game outside the scope keeps the default below-bulk
+   * position, so the rest of the plan's cascade is untouched. An empty
+   * or absent list on one axis means no constraint on that axis; a
+   * game filed without a competition slug never matches a
+   * competitions list (safe fallback: bulk-first). Ignored unless
+   * externalPosition is 'above-bulk'.
+   */
+  externalFirstScope?: { teams?: string[]; competitions?: string[] };
+  /**
+   * Whether the external tier is terminal (default true): when true, a
+   * plan with external sources NEVER runs general search, even when
+   * the external tier finds nothing (user decision 2026-10-14, made
+   * for the Champions League, where Sport5 covers nearly every game).
+   * Set false only for a plan whose external source covers a fraction
+   * of its games (leading-teams, 2026-11-01): with false, general
+   * search still runs when the curated + external tiers found no
+   * proper highlight, so a game with no bulk and no Sport5 item keeps
+   * its generic clips instead of going empty. When the external tier
+   * DOES find a result, winner is set and general never runs either
+   * way — false only restores the backstop, it never adds generics
+   * alongside an external hit.
+   */
+  externalTerminal?: boolean;
   /**
    * Max uploads-playlist pages per bulk channel (50 videos/page, newest
    * first, early-stop once videos predate the game). Default 10.
@@ -190,6 +219,31 @@ export interface LeagueSearchPlan {
    * non-highlight keeps from the earlier tiers.
    */
   sport1Fallback?: boolean;
+}
+
+/**
+ * Whether the external tier runs BEFORE bulk for this game: true
+ * only when the plan places it 'above-bulk' AND the game is inside
+ * the plan's externalFirstScope (when one is set). An unscoped
+ * above-bulk plan (Champions League) runs external first for every
+ * game; a scoped one (leading-teams: PSG Ligue 1 only) runs it first
+ * just for its scope and below-bulk for everything else.
+ */
+export function externalRunsFirst(
+  plan: LeagueSearchPlan,
+  game: { home: string; away: string; competition?: string | null },
+): boolean {
+  if (plan.externalPosition !== 'above-bulk') return false;
+  const scope = plan.externalFirstScope;
+  if (!scope) return true;
+  const teamOk =
+    !scope.teams?.length ||
+    scope.teams.includes(game.home) ||
+    scope.teams.includes(game.away);
+  const compOk =
+    !scope.competitions?.length ||
+    (game.competition != null && scope.competitions.includes(game.competition));
+  return teamOk && compOk;
 }
 
 export interface ClubChannelDef {
@@ -750,6 +804,28 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
       clubChannel('Ajax'),
       { handle: 'spflofficial', label: 'SPFL', teams: ['Celtic'] },
     ],
+    // Sport5 (2026-11-01): Hebrew link-out recaps for the leading-teams
+    // view. Priority for PSG Ligue 1 games ONLY (user decision
+    // 2026-11-01): for those games the external tier runs BEFORE bulk
+    // and a hit is exclusive — bulk/general never run. Every other
+    // club's games keep the below-bulk position, so their
+    // club-channel results are untouched. NOTE: any external source
+    // makes the tier terminal — general YouTube search no longer runs
+    // for this plan (route.ts). Category no longer gates matching
+    // (2026-10-15 rail change); 893 is the current rail-level Vc,
+    // kept for signature/diagnostics.
+    external: [{ provider: 'sport5', category: 893 }],
+    externalPosition: 'above-bulk',
+    externalFirstScope: {
+      teams: ['Paris Saint-Germain'],
+      competitions: ['ligue-1'],
+    },
+    // Non-terminal: Sport5 covers Ligue 1 well but only a fraction of
+    // the eleven clubs' games — without the general backstop, a game
+    // with no bulk highlight and no Sport5 item returns nothing at
+    // all (verified on preview 2026-11-01: Le Havre–PSG went empty,
+    // where production serves 2 generic clips).
+    externalTerminal: false,
     fallbackLangs: ['en'],
   },
 };

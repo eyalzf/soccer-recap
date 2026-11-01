@@ -380,14 +380,22 @@ export function filterCandidate(
       return { keep: false, reason: 'language' };
   }
 
-  // Both teams named is the rule — except for preferred channels (ONE/IPFL):
-  // their per-game uploads are consistently the best recap even when the
-  // headline names only one side (e.g. ONE's 'עסקים כרגיל: בארסה מתפוצצת
-  // עם 1:6 אדיר!' for Barcelona 6-1 Alavés). A single-team preferred video
-  // is kept when its title also carries the exact scoreline (either order)
-  // and its publish date is near the game — score + date + trusted channel
-  // together are what keep a one-team news clip from qualifying. Bulk and
-  // general candidates keep the strict both-teams rule.
+  // Both teams named is the rule — except for preferred channels (ONE/IPFL)
+  // and external link-out sources (Sport5): their per-game uploads are
+  // consistently the best recap even when the headline names only one
+  // side (e.g. ONE's 'עסקים כרגיל: בארסה מתפוצצת עם 1:6 אדיר!' for
+  // Barcelona 6-1 Alavés; Sport5's Ligue 1 'שלושער מטורף לחאכימי, 1:5
+  // גדול לפ.ס.ז'' for Le Havre 1-5 PSG). A single-team video from one of
+  // these trusted sources is kept when its title also carries the exact
+  // scoreline (either order) and its publish date is near the game —
+  // score + date + trusted source together are what keep a one-team news
+  // clip from qualifying. Bulk and general candidates keep the strict
+  // both-teams rule.
+  // NOTE (2026-11-01): this exception must mirror the one in
+  // matchSport5Index — external candidates pass through this filter on
+  // ingest, so an exception in the external matcher alone is NOT
+  // enough: the Le Havre article matched there and was then vetoed
+  // here on 'teams' until this clause covered external candidates.
   const prox = dateProximity(c.publishedAt, game.dateISO);
   const sc = extractScore(c.title);
   const homeMentioned = teamMentioned(c.title, home);
@@ -398,7 +406,7 @@ export function filterCandidate(
       ((sc[0] === game.homeScore && sc[1] === game.awayScore) ||
         (sc[0] === game.awayScore && sc[1] === game.homeScore));
     const singleTeamPreferred =
-      isPreferredChannel(c) &&
+      (isPreferredChannel(c) || c.external === true) &&
       homeMentioned !== awayMentioned &&
       scoreMatches &&
       (prox === 'ok' || prox === 'near');

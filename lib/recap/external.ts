@@ -13,7 +13,11 @@
  * pipeline stay untouched.
  */
 import { sport5Search, type Sport5Considered } from './sport5';
-import type { ExternalSourceConfig, LeagueSearchPlan } from './leaguePlans';
+import {
+  externalRunsFirst,
+  type ExternalSourceConfig,
+  type LeagueSearchPlan,
+} from './leaguePlans';
 import type { GameInput, RawCandidate } from './types';
 
 export interface ExternalSearchResult {
@@ -33,13 +37,19 @@ export interface ExternalSearchResult {
  * fresh computes, append-only merges and cached reads alike — so a
  * game cached with bulk results self-corrects on its next refresh
  * once an external result exists for it. Below-bulk plans (and lists
- * without an external result) pass through unchanged.
+ * without an external result) pass through unchanged. When the game
+ * is given and the plan scopes its above-bulk position
+ * (externalFirstScope), exclusivity applies only to in-scope games —
+ * an out-of-scope game's list passes through even though the plan is
+ * above-bulk. Callers without a game keep the plan-level behavior.
  */
 export function applyExternalExclusivity<T extends RawCandidate>(
   plan: LeagueSearchPlan,
-  list: T[]
+  list: T[],
+  game?: { home: string; away: string; competition?: string | null }
 ): T[] {
   if (plan.externalPosition !== 'above-bulk') return list;
+  if (game && !externalRunsFirst(plan, game)) return list;
   const ext = list.filter((c) => c.external === true);
   return ext.length > 0 ? ext : list;
 }

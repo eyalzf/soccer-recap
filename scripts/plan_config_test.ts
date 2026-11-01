@@ -6,7 +6,13 @@
  * ranking terms, preferred stop rule) so a future edit can't silently
  * drop a league's rules.
  */
-import { CLUB_CHANNELS, LEAGUE_SEARCH_PLANS, clubChannel, searchPlanFor } from '../lib/recap/leaguePlans';
+import {
+  CLUB_CHANNELS,
+  LEAGUE_SEARCH_PLANS,
+  clubChannel,
+  externalRunsFirst,
+  searchPlanFor,
+} from '../lib/recap/leaguePlans';
 import { competitionContradiction, excludedCategory } from '../lib/recap/match';
 import { channelsForGame } from '../lib/recap/bulk';
 import type { GameInput } from '../lib/recap/types';
@@ -196,37 +202,107 @@ ok(
   searchPlanFor('premier-league').bulk.some((e) => e.label === 'Everton' && e.teams?.[0] === 'Everton')
 );
 
-// 8. External link-out sources: only the Champions League configures
-// one (Sport5, UCL rail category 12363) — every other league must stay
-// on the general-search fallback, and unknown leagues get none.
+// 8. External link-out sources: the Champions League (Sport5, UCL rail
+// category 12363) and, since 2026-11-01, leading-teams (Sport5,
+// rail-level category 893; above-bulk for PSG Ligue 1 games only,
+// below-bulk otherwise) configure one — every other
+// league must stay on the general-search fallback, and unknown leagues
+// get none. (Any plan with an external source never runs general
+// search — the terminal rule — so this list is the full set.)
 eq('ucl external', searchPlanFor('champions-league').external, [
   { provider: 'sport5', category: 12363 },
 ]);
+eq('leading-teams external', searchPlanFor('leading-teams').external, [
+  { provider: 'sport5', category: 893 },
+]);
+eq(
+  'leading-teams external is non-terminal (general backstop kept)',
+  searchPlanFor('leading-teams').externalTerminal,
+  false
+);
+eq(
+  'ucl external stays terminal (default)',
+  searchPlanFor('champions-league').externalTerminal,
+  undefined
+);
 ok(
-  'only ucl has external',
+  'only ucl and leading-teams have external',
   Object.entries(LEAGUE_SEARCH_PLANS)
-    .filter(([slug]) => slug !== 'champions-league')
+    .filter(([slug]) => slug !== 'champions-league' && slug !== 'leading-teams')
     .every(([, p]) => (p.external ?? []).length === 0)
 );
 eq('unknown league external', searchPlanFor('no-such-league').external, undefined);
-// External position: only the UCL opts into above-bulk (exclusive on a
-// hit); every other plan keeps the default below-bulk placement, so no
-// other league's cascade changes.
+// External position: the UCL opts into above-bulk (exclusive on a
+// hit) for every game; leading-teams opts into above-bulk SCOPED to
+// PSG Ligue 1 games only (user decision 2026-11-01) and keeps the
+// below-bulk placement for every other game, so no other league's —
+// and no other leading-teams club's — cascade changes.
 eq(
   'ucl externalPosition',
   searchPlanFor('champions-league').externalPosition,
   'above-bulk'
 );
+eq(
+  'leading-teams externalPosition',
+  searchPlanFor('leading-teams').externalPosition,
+  'above-bulk'
+);
+eq(
+  'leading-teams externalFirstScope',
+  searchPlanFor('leading-teams').externalFirstScope,
+  { teams: ['Paris Saint-Germain'], competitions: ['ligue-1'] }
+);
 ok(
-  'only ucl is above-bulk',
+  'only ucl and leading-teams are above-bulk',
   Object.entries(LEAGUE_SEARCH_PLANS)
-    .filter(([slug]) => slug !== 'champions-league')
+    .filter(([slug]) => slug !== 'champions-league' && slug !== 'leading-teams')
     .every(([, p]) => p.externalPosition !== 'above-bulk')
 );
 eq(
   'unknown league externalPosition',
   searchPlanFor('no-such-league').externalPosition,
   undefined
+);
+// Scoped first-run: PSG Ligue 1 runs external first; the same club
+// in another competition, another club in any competition, and a
+// game filed without a competition slug all keep bulk-first.
+const lt = searchPlanFor('leading-teams');
+const ucl = searchPlanFor('champions-league');
+ok(
+  'externalRunsFirst: PSG Ligue 1',
+  externalRunsFirst(lt, { home: 'Le Havre', away: 'Paris Saint-Germain', competition: 'ligue-1' })
+);
+ok(
+  'externalRunsFirst: PSG cup is not first',
+  !externalRunsFirst(lt, {
+    home: 'Paris Saint-Germain',
+    away: 'Troyes',
+    competition: 'coupe-de-france',
+  })
+);
+ok(
+  'externalRunsFirst: Bayern Bundesliga is not first',
+  !externalRunsFirst(lt, {
+    home: 'Bayern Munich',
+    away: 'Borussia Dortmund',
+    competition: 'bundesliga',
+  })
+);
+ok(
+  'externalRunsFirst: unslugged game is not first',
+  !externalRunsFirst(lt, { home: 'Le Havre', away: 'Paris Saint-Germain' })
+);
+ok(
+  'externalRunsFirst: unscoped above-bulk (UCL) is always first',
+  externalRunsFirst(ucl, { home: 'Arsenal', away: 'Real Madrid', competition: 'champions-league' })
+);
+ok(
+  'externalRunsFirst: below-bulk plan is never first',
+  !externalRunsFirst(searchPlanFor('premier-league'), {
+    home: 'Arsenal',
+    away: 'Chelsea',
+    competition: 'premier-league',
+  })
 );
 
 console.log(`\nplan_config_test: ${pass} passed, ${fail} failed`);
