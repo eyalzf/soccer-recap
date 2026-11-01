@@ -1,5 +1,5 @@
 import { lookupClubEn } from '../teamIndex';
-import { competitionConfigFor } from './leaguePlans';
+import { CLUB_CHANNELS, competitionConfigFor } from './leaguePlans';
 import {
   dateProximity,
   extractScore,
@@ -26,6 +26,21 @@ export function videoLang(c: RawCandidate): 'he' | 'en' | 'other' {
   return c.lang === 'he' ? 'he' : 'en';
 }
 
+/**
+ * The candidate's channel is the official channel of one of the game's two
+ * clubs (CLUB_CHANNELS registry, by handle or channel id).
+ */
+export function isTeamChannel(c: RawCandidate, game: GameInput): boolean {
+  const h = (c.channelHandle || '').toLowerCase().replace(/^@/, '');
+  for (const team of [game.home, game.away]) {
+    const def = CLUB_CHANNELS[team];
+    if (!def) continue;
+    if (h && def.handle && def.handle.toLowerCase().replace(/^@/, '') === h) return true;
+    if (def.channelId && c.channelId && def.channelId === c.channelId) return true;
+  }
+  return false;
+}
+
 export function scoreCandidate(c: RawCandidate, game: GameInput): number {
   let s = 0;
 
@@ -33,6 +48,10 @@ export function scoreCandidate(c: RawCandidate, game: GameInput): number {
   if (c.source === 'youtube') {
     if (isTrusted(c)) s += 50;
     else if (isBulkChannel(c)) s += 25; // curated pool beats general search
+    // A participating club's own channel outranks league-wide and generic
+    // channels: it is the club's official account of its own game
+    // (e.g. FC Barcelona's video for a Barcelona game beats ESPN FC's).
+    if (isTeamChannel(c, game)) s += 25;
   } else {
     s += 40; // sport1 / sport5 / one
   }
@@ -93,11 +112,13 @@ export function rankCandidates(list: RawCandidate[], game: GameInput): RankedCan
     seen.add(key);
     out.push({ ...c, score: scoreCandidate(c, game) });
   }
-  // Relevance tier first (extended > standard > rest). Within the
-  // non-highlight tier (news, punditry, …) Hebrew outranks longer
-  // non-Hebrew videos; otherwise longest first within each tier;
-  // relevance score breaks remaining ties. Videos with unknown duration
-  // sort last within their tier.
+  // Relevance tier first (extended > standard > rest). Within a tier the
+  // relevance score decides and duration only breaks ties: a shorter
+  // official-channel highlight must be able to outrank a longer
+  // re-upload (previously duration decided and score never got a say).
+  // Within the non-highlight tier (news, punditry, …) external link-outs
+  // still lead and Hebrew still outranks non-Hebrew. Videos with unknown
+  // duration sort last within their tier.
   out.sort((a, b) => {
     const ta = highlightTier(a.title);
     const tb = highlightTier(b.title);
@@ -114,7 +135,7 @@ export function rankCandidates(list: RawCandidate[], game: GameInput): RankedCan
       const hb = videoLang(b) === 'he' ? 0 : 1;
       if (ha !== hb) return ha - hb;
     }
-    return (b.durationSec ?? -1) - (a.durationSec ?? -1) || b.score - a.score;
+    return b.score - a.score || (b.durationSec ?? -1) - (a.durationSec ?? -1);
   });
   return out;
 }

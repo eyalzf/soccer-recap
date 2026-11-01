@@ -214,12 +214,12 @@ export function excludedCategory(title: string, league?: string): string | null 
 }
 
 /**
- * Extract a scoreline like "2-1" / "2:1" from a title. Matches embedded in
+ * Extract a scoreline like "2-1" / "2:1" / "2 vs 1" from a title. Matches embedded in
  * longer digit runs are skipped: a season range like "2026-27" would
  * otherwise veto as score 26-27. The first remaining match wins, so
  * "UCL 2026-27: Real Madrid 2-1 Highlights" still yields (2,1).
  */
-const SCORE_RE = /(?<!\d)(\d{1,2})\s*[-:–—]\s*(\d{1,2})(?!\d)/g;
+const SCORE_RE = /(?<!\d)(\d{1,2})\s*(?:[-:–—]|\bvs\b\.?)\s*(\d{1,2})(?!\d)/g;
 export function extractScore(title: string): [number, number] | null {
   for (const m of title.matchAll(SCORE_RE)) {
     return [parseInt(m[1], 10), parseInt(m[2], 10)];
@@ -380,8 +380,29 @@ export function filterCandidate(
       return { keep: false, reason: 'language' };
   }
 
-  if (!teamMentioned(c.title, home) || !teamMentioned(c.title, away)) {
-    return { keep: false, reason: 'teams' };
+  // Both teams named is the rule — except for preferred channels (ONE/IPFL):
+  // their per-game uploads are consistently the best recap even when the
+  // headline names only one side (e.g. ONE's 'עסקים כרגיל: בארסה מתפוצצת
+  // עם 1:6 אדיר!' for Barcelona 6-1 Alavés). A single-team preferred video
+  // is kept when its title also carries the exact scoreline (either order)
+  // and its publish date is near the game — score + date + trusted channel
+  // together are what keep a one-team news clip from qualifying. Bulk and
+  // general candidates keep the strict both-teams rule.
+  const prox = dateProximity(c.publishedAt, game.dateISO);
+  const sc = extractScore(c.title);
+  const homeMentioned = teamMentioned(c.title, home);
+  const awayMentioned = teamMentioned(c.title, away);
+  if (!homeMentioned || !awayMentioned) {
+    const scoreMatches =
+      sc != null && game.homeScore != null && game.awayScore != null &&
+      ((sc[0] === game.homeScore && sc[1] === game.awayScore) ||
+        (sc[0] === game.awayScore && sc[1] === game.homeScore));
+    const singleTeamPreferred =
+      isPreferredChannel(c) &&
+      homeMentioned !== awayMentioned &&
+      scoreMatches &&
+      (prox === 'ok' || prox === 'near');
+    if (!singleTeamPreferred) return { keep: false, reason: 'teams' };
   }
 
   const contra = competitionContradiction(c.title, game);
@@ -390,10 +411,8 @@ export function filterCandidate(
   const excl = excludedCategory(c.title, game.league);
   if (excl) return { keep: false, reason: 'excluded' };
 
-  const prox = dateProximity(c.publishedAt, game.dateISO);
   if (prox === 'bad') return { keep: false, reason: 'date' };
 
-  const sc = extractScore(c.title);
   const hs = game.homeScore;
   const as = game.awayScore;
   if (sc && hs != null && as != null) {
