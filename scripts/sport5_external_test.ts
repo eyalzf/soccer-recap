@@ -461,5 +461,58 @@ for (const { game, vi } of GAMES) {
   );
 }
 
+// ---------- Part 4: Ligue 1 single-team headlines (2026-11-01) ----------
+// Sport5's Ligue 1 headlines are often narrative and name only one
+// side (the real Oct 2026 PSG headlines, against the real fixtures in
+// data/leading-teams.json). Without the single-team + exact-score
+// exception these are all rejected 'teams' — including Le Havre, the
+// game that motivated adding Sport5 to leading-teams. The leading-
+// teams plan must also carry the external source, below-bulk.
+{
+  const mkItem = (vi: number, title: string, firstSeen: string): Sport5IndexItem => ({
+    vc: 893, vi, title, firstSeen: Date.parse(firstSeen), lastSeen: Date.parse(firstSeen),
+  });
+  const psg = (home: string, away: string, hs: number, as: number, dateISO: string): GameInput => ({
+    home, away, homeScore: hs, awayScore: as, dateISO, league: 'leading-teams',
+  });
+  const leHavre = psg('Le Havre', 'Paris Saint-Germain', 1, 5, '2026-10-30T18:00:00.000Z');
+  const lyon = psg('Paris Saint-Germain', 'Olympique Lyonnais', 2, 0, '2026-10-26T19:30:00.000Z');
+  const strasbourg = psg('Strasbourg', 'Paris Saint-Germain', 1, 3, '2026-10-17T15:15:00.000Z');
+
+  const r1 = matchSport5Index(
+    [mkItem(600001, 'שלושער מטורף לחאכימי, 1:5 גדול לפ.ס.ז\'', '2026-10-30T21:31:00Z')],
+    leHavre, CATEGORY
+  );
+  check('ligue1: Le Havre single-team headline matches', r1.candidate?.id === 'sport5:600001');
+
+  const r2 = matchSport5Index(
+    [mkItem(600002, 'ממשיכה לרוץ: פ.ס.ז\' גברה 0:2 על ליון', '2026-10-26T22:00:00Z')],
+    lyon, CATEGORY
+  );
+  check('ligue1: Lyon headline matches (bare ליון via single-team rule)', r2.candidate?.id === 'sport5:600002');
+
+  const r3 = matchSport5Index(
+    [mkItem(600003, 'לפני ברצלונה: 1:3 לפ.ס.ז\' על שטרסבורג', '2026-10-17T20:00:00Z')],
+    strasbourg, CATEGORY
+  );
+  check('ligue1: Strasbourg headline matches', r3.candidate?.id === 'sport5:600003');
+
+  const r4 = matchSport5Index(
+    [mkItem(600004, 'שלושער מטורף לחאכימי, 1:5 גדול לפ.ס.ז\'', '2026-10-30T21:31:00Z')],
+    { ...leHavre, homeScore: 1, awayScore: 4 }, CATEGORY
+  );
+  check('ligue1: single-team headline with wrong score rejected', r4.candidate === null);
+
+  const r5 = matchSport5Index(
+    [mkItem(600005, 'חגיגה גדולה לפ.ס.ז\'', '2026-10-30T21:31:00Z')],
+    leHavre, CATEGORY
+  );
+  check('ligue1: single-team headline without a score rejected', r5.candidate === null);
+
+  const lt = searchPlanFor('leading-teams');
+  check('ligue1: leading-teams plan carries Sport5 external', (lt.external ?? []).some((e) => e.provider === 'sport5'));
+  check('ligue1: leading-teams external is below-bulk (default)', lt.externalPosition !== 'above-bulk');
+}
+
 console.log(`\nsport5_external_test: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
