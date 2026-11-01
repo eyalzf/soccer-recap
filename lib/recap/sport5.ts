@@ -17,9 +17,10 @@
  * in a Blob index (`external/sport5-index.json`) so a video stays
  * findable after it rolls off the homepage rail.
  *
- * Matching is conservative by design (see matchSport5Index): category
- * + both teams in the headline + score cross-check + date proximity,
- * and ANY ambiguity yields no result — a wrong link is worse than none.
+ * Matching is conservative by design (see matchSport5Index): both
+ * teams in the headline (or one team + the exact scoreline) + score
+ * cross-check + date proximity, and ANY ambiguity yields no result —
+ * a wrong link is worse than none.
  * Every failure mode (fetch error, empty index, no match) degrades to
  * "no external result" silently; this module never throws into the
  * recap pipeline.
@@ -217,7 +218,9 @@ export interface Sport5MatchResult {
 /**
  * Match the accumulated index against one game (pure). Rules:
  *  - both teams identifiable in the Hebrew headline via the central
- *    team registry (canonical names + aliases) ('teams');
+ *    team registry (canonical names + aliases) — or, for a
+ *    single-team narrative headline, exactly one team plus the exact
+ *    scoreline in either order ('teams');
  *  - a score in the headline must match the fixture score in one of
  *    the two orders ('score' — mirrors the shared matcher's veto);
  *  - the item's date (firstSeen; the rail carries no per-item date)
@@ -253,16 +256,26 @@ export function matchSport5Index(
     let reason = 'ok';
     if (!home || !away) {
       reason = 'unknown-team';
-    } else if (!teamMentioned(it.title, home) || !teamMentioned(it.title, away)) {
-      reason = 'teams';
     } else {
+      const homeMentioned = teamMentioned(it.title, home);
+      const awayMentioned = teamMentioned(it.title, away);
       const sc = extractScore(it.title);
-      if (sc && game.homeScore != null && game.awayScore != null) {
-        const [a, b] = sc;
-        const either =
-          (a === game.homeScore && b === game.awayScore) ||
-          (a === game.awayScore && b === game.homeScore);
-        if (!either) reason = 'score';
+      const scoreMatches =
+        sc != null && game.homeScore != null && game.awayScore != null &&
+        ((sc[0] === game.homeScore && sc[1] === game.awayScore) ||
+          (sc[0] === game.awayScore && sc[1] === game.homeScore));
+      if (!homeMentioned && !awayMentioned) {
+        reason = 'teams';
+      } else if ((!homeMentioned || !awayMentioned) && !scoreMatches) {
+        // Single-team narrative headline (e.g. Sport5's Ligue 1
+        // 'שלושער מטורף לחאכימי, 1:5 גדול לפ.ס.ז''): kept only when
+        // the headline also carries the exact scoreline — the
+        // preferred-tier exception's logic, applied to this trusted
+        // broadcaster. The date window and exactly-one rules below
+        // still apply, so a one-team clip cannot hijack a game alone.
+        reason = 'teams';
+      } else if (sc && !scoreMatches) {
+        reason = 'score';
       }
       if (reason === 'ok') {
         const diff = (it.firstSeen - gameTime) / DAY;
