@@ -17,6 +17,19 @@
  * in a Blob index (`external/sport5-index.json`) so a video stays
  * findable after it rolls off the homepage rail.
  *
+ * Second discovery source (2026-11-01): the mobile Ligue 1 league page
+ * (m.sport5.co.il/liga.aspx?FolderId=495). Its items are ARTICLE links
+ * (articles.aspx?FolderID=496&docID=<n>), not VOD links — the article
+ * videos are minute-ly embeds, not Sport5 VOD catalog items, so no VOD
+ * id exists to resolve (verified in the raw article HTML, 2026-11-01).
+ * League-page results therefore link to the article itself (player
+ * inside). The league page retains items for ~2 weeks (vs ~1-2 days on
+ * the rail) and carries a real per-item date, which the matcher uses
+ * for the date window instead of firstSeen. Only video items are
+ * harvested: list items carrying the btn-play marker (verified against
+ * the real page — the two text articles lack it). v1 scope is Ligue 1
+ * only; other competitions' league folders are not yet mapped.
+ *
  * Matching is conservative by design (see matchSport5Index): both
  * teams in the headline (or one team + the exact scoreline) + score
  * cross-check + date proximity, and ANY ambiguity yields no result —
@@ -50,12 +63,13 @@ export interface Sport5IndexItem {
    * rail-level category (893), so `vc` no longer identifies the
    * competition and matching must not gate on it (see matchSport5Index).
    * It is still used verbatim in the link-out URL — it is the URL
-   * Sport5's own rail points at.
+   * Sport5's own rail points at. 0 for league-page article items,
+   * which carry no VOD category (see docId/articleUrl).
    */
   vc: number;
-  /** Sport5 video id. */
+  /** Sport5 video id. 0 for league-page article items. */
   vi: number;
-  /** Hebrew headline, as shown on the rail. */
+  /** Hebrew headline, as shown on the rail / league page. */
   title: string;
   /** Rail thumbnail URL (www.sport5.co.il storage). */
   thumb?: string;
@@ -63,6 +77,16 @@ export interface Sport5IndexItem {
   firstSeen: number;
   /** Most recent harvest that saw this item (ms epoch). */
   lastSeen: number;
+  /**
+   * League-page article items only: the article's docID, its full
+   * article URL (the link-out target — the article page holds the
+   * minute-ly player), and the article's own publication date (ms
+   * epoch, noon UTC of the listing date), which the matcher uses for
+   * the date window instead of firstSeen.
+   */
+  docId?: number;
+  articleUrl?: string;
+  publishedMs?: number;
 }
 
 interface Sport5Index {
@@ -119,6 +143,96 @@ export function parseSport5Rail(html: string): Sport5RailItem[] {
   return out;
 }
 
+const LEAGUE_LIGUE1_URL = 'https://m.sport5.co.il/liga.aspx?FolderId=495';
+
+export interface Sport5LeagueItem {
+  docId: number;
+  articleUrl: string;
+  title: string;
+  thumb?: string;
+  /** Article publication date, noon UTC of the listing date. */
+  publishedMs: number;
+}
+
+/**
+ * Parse the m.sport5.co.il Ligue 1 league page's article list: one
+ * `<a id="ancItem" class="item">` per list item (the featured main
+ * article uses different ids and is skipped — its stories also appear
+ * as list items in the observed snapshots), each wrapping an <img>
+ * whose alt is the headline and whose data-src is the thumbnail, plus
+ * a DD.MM.YY date string. Only items carrying the btn-play marker are
+ * kept — in the captured 2026-11-01 fixture that marker is present on
+ * exactly the 7 video items and absent on the 2 text articles, so it
+ * is the video signal (a text article matching teams+score would be a
+ * wrong result). Pure — unit-tested against the captured real page
+ * (fixtures/sport5/league-ligue1-2026-11-01.html). Duplicate anchors
+ * dedupe by docId.
+ */
+export function parseSport5LeaguePage(html: string): Sport5LeagueItem[] {
+  const out: Sport5LeagueItem[] = [];
+  const seen = new Set<number>();
+  const anchorRe =
+    /<a\s[^>]*href="((?:https?:\/\/m\.sport5\.co\.il)?\/articles\.aspx\?FolderID=\d+&(?:amp;)?docID=(\d+))"[^>]*id="ancItem"[^>]*>/g;
+  let m: RegExpExecArray | null;
+  while ((m = anchorRe.exec(html))) {
+    const docId = parseInt(m[2], 10);
+    if (!Number.isFinite(docId) || seen.has(docId)) continue;
+    // Block = this item up to the NEXT item's anchor. Search past the
+    // current tag's end: the current anchor's own id="ancItem" sits
+    // inside its tag, so searching from m.index + 1 would find itself
+    // and yield an empty block.
+    const tagEnd = html.indexOf('>', m.index);
+    const nextAnchor = html.indexOf('id="ancItem"', tagEnd + 1);
+    const block = html.slice(m.index, nextAnchor === -1 ? m.index + 3000 : nextAnchor);
+    if (!block.includes('btn-play')) continue;
+    const alt = block.match(/<img[^>]*\salt="([^"]*)"/);
+    const rawTitle = alt?.[1] ?? '';
+    const title = decodeEntities(rawTitle);
+    if (!title) continue;
+    const date = block.match(/(\d{1,2})\.(\d{1,2})\.(\d{2})/);
+    if (!date) continue;
+    const publishedMs = Date.UTC(
+      2000 + parseInt(date[3], 10),
+      parseInt(date[2], 10) - 1,
+      parseInt(date[1], 10),
+      12
+    );
+    const ds = block.match(/data-src="([^"]+)"/);
+    const articleUrl = m[1].startsWith('http')
+      ? m[1]
+      : `https://m.sport5.co.il${m[1]}`;
+    seen.add(docId);
+    out.push({
+      docId,
+      articleUrl,
+      title,
+      ...(ds ? { thumb: ds[1] } : {}),
+      publishedMs,
+    });
+  }
+  return out;
+}
+
+/** Fetch the mobile Ligue 1 league page and parse its list. Null on any failure. */
+export async function harvestSport5LeaguePage(
+  timeoutMs = 12000
+): Promise<Sport5LeagueItem[] | null> {
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), timeoutMs);
+  try {
+    const res = await fetch(LEAGUE_LIGUE1_URL, {
+      signal: ctrl.signal,
+      headers: { 'User-Agent': MOBILE_UA },
+    });
+    if (!res.ok) return null;
+    return parseSport5LeaguePage(await res.text());
+  } catch {
+    return null;
+  } finally {
+    clearTimeout(t);
+  }
+}
+
 /** Fetch the mobile homepage and parse its rail. Null on any failure. */
 export async function harvestSport5Rail(
   timeoutMs = 12000
@@ -139,37 +253,71 @@ export async function harvestSport5Rail(
   }
 }
 
-/** Merge freshly harvested rail items into the stored index (pure). */
+/**
+ * Merge freshly harvested items into the stored index (pure). Fresh
+ * items are rail items (VOD, keyed by vi) or league-page items
+ * (articles, keyed by docId) — the two namespaces never collide.
+ * Re-harvest preserves firstSeen and refreshes title/thumb/lastSeen;
+ * items older than INDEX_MAX_AGE_MS by firstSeen are pruned. Sort is
+ * newest-first by firstSeen, then by vi (so a single-harvest batch
+ * keeps the rail's newest-first order).
+ */
 export function mergeSport5Index(
   prev: Sport5IndexItem[],
-  fresh: Sport5RailItem[],
+  fresh: Array<Sport5RailItem | Sport5LeagueItem>,
   now: number
 ): Sport5IndexItem[] {
-  const byVi = new Map<number, Sport5IndexItem>();
-  for (const it of prev) byVi.set(it.vi, it);
+  const keyOf = (it: Sport5IndexItem): string =>
+    it.articleUrl ? `a:${it.docId}` : `v:${it.vi}`;
+  const byKey = new Map<string, Sport5IndexItem>();
+  for (const it of prev) byKey.set(keyOf(it), it);
   for (const f of fresh) {
-    const old = byVi.get(f.vi);
+    const shaped: Sport5IndexItem =
+      'docId' in f
+        ? {
+            vc: 0,
+            vi: 0,
+            docId: f.docId,
+            articleUrl: f.articleUrl,
+            title: f.title,
+            ...(f.thumb ? { thumb: f.thumb } : {}),
+            publishedMs: f.publishedMs,
+            firstSeen: now,
+            lastSeen: now,
+          }
+        : {
+            vc: f.vc,
+            vi: f.vi,
+            title: f.title,
+            ...(f.thumb ? { thumb: f.thumb } : {}),
+            firstSeen: now,
+            lastSeen: now,
+          };
+    const key = keyOf(shaped);
+    const old = byKey.get(key);
     if (old) {
-      byVi.set(f.vi, {
+      byKey.set(key, {
         ...old,
-        vc: f.vc,
-        title: f.title,
-        ...(f.thumb ? { thumb: f.thumb } : {}),
+        vc: shaped.vc,
+        title: shaped.title,
+        ...(shaped.thumb ? { thumb: shaped.thumb } : {}),
         lastSeen: now,
       });
     } else {
-      byVi.set(f.vi, { ...f, firstSeen: now, lastSeen: now });
+      byKey.set(key, shaped);
     }
   }
-  return [...byVi.values()]
+  return [...byKey.values()]
     .filter((it) => now - it.firstSeen <= INDEX_MAX_AGE_MS)
-    .sort((a, b) => b.vi - a.vi);
+    .sort((a, b) => b.firstSeen - a.firstSeen || b.vi - a.vi);
 }
 
 /**
  * Load the accumulated index, re-harvesting first when the last
- * harvest is older than HARVEST_TTL_MS. A failed harvest falls back to
- * the stored index (possibly empty) — never throws.
+ * harvest is older than HARVEST_TTL_MS. Both sources are harvested
+ * (rail + Ligue 1 league page) and each failure is isolated: one
+ * source failing still merges the other. A fully failed harvest falls
+ * back to the stored index (possibly empty) — never throws.
  */
 export async function loadSport5Index(): Promise<Sport5IndexItem[]> {
   let items: Sport5IndexItem[] = [];
@@ -185,8 +333,12 @@ export async function loadSport5Index(): Promise<Sport5IndexItem[]> {
   }
   const now = Date.now();
   if (now - lastHarvest > HARVEST_TTL_MS) {
-    const fresh = await harvestSport5Rail();
-    if (fresh) {
+    const [freshRail, freshLeague] = await Promise.all([
+      harvestSport5Rail(),
+      harvestSport5LeaguePage(),
+    ]);
+    const fresh = [...(freshRail ?? []), ...(freshLeague ?? [])];
+    if (freshRail || freshLeague) {
       items = mergeSport5Index(items, fresh, now);
       try {
         await pset(INDEX_KEY, { items } satisfies Sport5Index);
@@ -201,6 +353,8 @@ export async function loadSport5Index(): Promise<Sport5IndexItem[]> {
 export interface Sport5Considered {
   vi: number;
   vc: number;
+  /** League-page article items only (vi is 0 for them). */
+  docId?: number;
   title: string;
   keep: boolean;
   /** 'ok' when kept; otherwise the rejection reason. */
@@ -223,7 +377,8 @@ export interface Sport5MatchResult {
  *    scoreline in either order ('teams');
  *  - a score in the headline must match the fixture score in one of
  *    the two orders ('score' — mirrors the shared matcher's veto);
- *  - the item's date (firstSeen; the rail carries no per-item date)
+ *  - the item's date (the article's own date for league-page items;
+ *    firstSeen for rail items, since the rail carries no per-item date)
  *    must fall within gameDate −1d .. gameDate +3d ('date');
  *  - exactly one surviving item → the result; zero → none; two or
  *    more → 'ambiguous': no result (a wrong link is worse than none).
@@ -278,13 +433,24 @@ export function matchSport5Index(
         reason = 'score';
       }
       if (reason === 'ok') {
-        const diff = (it.firstSeen - gameTime) / DAY;
+        // League-page article items carry their real publication date;
+        // rail items only have firstSeen (the rail carries no per-item
+        // date), so firstSeen is the fallback.
+        const itemMs = it.publishedMs ?? it.firstSeen;
+        const diff = (itemMs - gameTime) / DAY;
         if (Number.isNaN(diff) || diff < -1 || diff > 3) reason = 'date';
       }
     }
     const keep = reason === 'ok';
     if (keep) matches.push(it);
-    considered.push({ vi: it.vi, vc: it.vc, title: it.title, keep, reason });
+    considered.push({
+      vi: it.vi,
+      vc: it.vc,
+      ...(it.docId ? { docId: it.docId } : {}),
+      title: it.title,
+      keep,
+      reason,
+    });
   }
   if (matches.length > 1) {
     return { candidate: null, ambiguous: true, considered };
@@ -293,13 +459,15 @@ export function matchSport5Index(
   if (!it) return { candidate: null, ambiguous: false, considered };
   return {
     candidate: {
-      id: `sport5:${it.vi}`,
+      // Article items link to the article page (which holds the
+      // minute-ly player); VOD items link to the VOD player page.
+      id: it.articleUrl ? `sport5:article:${it.docId}` : `sport5:${it.vi}`,
       title: it.title,
-      url: `https://vod.sport5.co.il/?Vc=${it.vc}&Vi=${it.vi}`,
+      url: it.articleUrl ?? `https://vod.sport5.co.il/?Vc=${it.vc}&Vi=${it.vi}`,
       source: 'sport5',
       external: true,
       ...(it.thumb ? { thumbnail: it.thumb } : {}),
-      publishedAt: new Date(it.firstSeen).toISOString(),
+      publishedAt: new Date(it.publishedMs ?? it.firstSeen).toISOString(),
       channelName: 'Sport5',
       lang: 'he',
     },
