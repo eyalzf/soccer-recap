@@ -196,16 +196,22 @@ ok(
   searchPlanFor('premier-league').bulk.some((e) => e.label === 'Everton' && e.teams?.[0] === 'Everton')
 );
 
-// 8. External link-out sources: only the Champions League configures
-// one (Sport5, UCL rail category 12363) — every other league must stay
-// on the general-search fallback, and unknown leagues get none.
+// 8. External link-out sources: the Champions League (Sport5, UCL rail
+// category 12363) and, since 2026-11-01, leading-teams (Sport5,
+// rail-level category 893, below-bulk) configure one — every other
+// league must stay on the general-search fallback, and unknown leagues
+// get none. (Any plan with an external source never runs general
+// search — the terminal rule — so this list is the full set.)
 eq('ucl external', searchPlanFor('champions-league').external, [
   { provider: 'sport5', category: 12363 },
 ]);
+eq('leading-teams external', searchPlanFor('leading-teams').external, [
+  { provider: 'sport5', category: 893 },
+]);
 ok(
-  'only ucl has external',
+  'only ucl and leading-teams have external',
   Object.entries(LEAGUE_SEARCH_PLANS)
-    .filter(([slug]) => slug !== 'champions-league')
+    .filter(([slug]) => slug !== 'champions-league' && slug !== 'leading-teams')
     .every(([, p]) => (p.external ?? []).length === 0)
 );
 eq('unknown league external', searchPlanFor('no-such-league').external, undefined);
