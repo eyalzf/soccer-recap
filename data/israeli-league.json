@@ -2,7 +2,7 @@
   "league": "israeli-league",
   "league_id": 127,
   "season": "2026/2027",
-  "updated_at": "2026-11-01T04:03:36.000Z",
+  "updated_at": "2026-11-02T04:03:14.000Z",
   "checked_through": "2026-09-19",
   "team_ids": {
     "Hapoel Haifa": 8301,
@@ -17,6 +17,17 @@
     "Hapoel Beer Sheva": 9754
   },
   "games": [
+    {
+      "id": "manual-20261101-maccabi-petah-tikva-hapoel-beer-sheva",
+      "home": "Maccabi Petah Tikva",
+      "away": "Hapoel Beer Sheva",
+      "dateISO": "2026-11-01T18:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 5,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/3bvby91720417514.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9754.png",
+      "stage": "מחזור 9"
+    },
     {
       "id": "manual-20261031-maccabi-netanya-hapoel-jerusalem-fc",
       "home": "Maccabi Netanya",
