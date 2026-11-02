@@ -2,7 +2,7 @@
   "league": "leading-teams",
   "league_id": 0,
   "season": "2026/27",
-  "updated_at": "2026-11-01T04:03:36.000Z",
+  "updated_at": "2026-11-02T04:03:14.000Z",
   "checked_through": "2026-08-01",
   "team_ids": {
     "Bayern München": 9823,
@@ -43,9 +43,34 @@
     "1. FC Magdeburg": 8188,
     "Casa Pia": 212821,
     "Le Havre": 9746,
-    "AZ Alkmaar": 10229
+    "AZ Alkmaar": 10229,
+    "Falkirk": 8596
   },
   "games": [
+    {
+      "id": "team-20261101-juventus-napoli",
+      "home": "Juventus",
+      "away": "Napoli",
+      "dateISO": "2026-11-01T19:45:00.000Z",
+      "homeScore": 2,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9885.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9875.png",
+      "stage": "מחזור 10",
+      "competition": "serie-a"
+    },
+    {
+      "id": "team-20261101-falkirk-celtic",
+      "home": "Falkirk",
+      "away": "Celtic",
+      "dateISO": "2026-11-01T13:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8596.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9925.png",
+      "stage": "מחזור 12",
+      "competition": "scottish-premiership"
+    },
     {
       "id": "team-20261031-ajax-az-alkmaar",
       "home": "Ajax",
