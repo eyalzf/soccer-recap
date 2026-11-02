@@ -177,6 +177,62 @@ eq('external single-team stale date rejected', filterCandidate(extStale, leHavre
   reason: 'teams',
 });
 
+// --------------------------------- game-day-or-after filter (2026-11-02) ---
+// A highlight cannot predate the game it recaps: IPFL's Oct 27
+// Haifa–BS 5-2 extended highlight matched the Nov 1 Petah Tikva–BS
+// 2-5 game through the single-team exception (same scoreline, BS
+// named, date 'near' — proximity is absolute). Pre-game-day videos
+// are rejected on 'date' before the teams check, whatever the tier.
+const ptBsGame: GameInput = {
+  home: 'Maccabi Petah Tikva',
+  away: 'Hapoel Beer Sheva',
+  dateISO: '2026-11-01T18:00:00.000Z',
+  league: 'israeli-league',
+  homeScore: 2,
+  awayScore: 5,
+};
+const haifaTitle = 'מחזור 8 | תקציר מורחב: מכבי חיפה - הפועל ב"ש 5-2';
+const ipflPreGame = mk('ipfl-pregame', haifaTitle, {
+  channelHandle: 'Ipflofficial',
+  lang: 'he',
+  publishedAt: '2026-10-27T17:00:00Z',
+  durationSec: 600,
+});
+eq('pre-game single-team preferred rejected', filterCandidate(ipflPreGame, ptBsGame), {
+  keep: false,
+  reason: 'date',
+});
+const ipflGameDay = mk('ipfl-gameday', haifaTitle, {
+  channelHandle: 'Ipflofficial',
+  lang: 'he',
+  publishedAt: '2026-11-01T22:00:00Z',
+  durationSec: 600,
+});
+eq('game-day single-team preferred kept', filterCandidate(ipflGameDay, ptBsGame), {
+  keep: true,
+  reason: 'ok',
+});
+const bothTeamsPreGame = mk('both-pregame', 'תקציר: מכבי פתח תקווה - הפועל באר שבע 5-2', {
+  channelHandle: 'Ipflofficial',
+  lang: 'he',
+  publishedAt: '2026-10-30T20:00:00Z',
+  durationSec: 600,
+});
+eq('pre-game both-teams rejected', filterCandidate(bothTeamsPreGame, ptBsGame), {
+  keep: false,
+  reason: 'date',
+});
+const ipflPostGame = mk('ipfl-postgame', haifaTitle, {
+  channelHandle: 'Ipflofficial',
+  lang: 'he',
+  publishedAt: '2026-11-03T10:00:00Z',
+  durationSec: 600,
+});
+eq('post-game single-team preferred kept', filterCandidate(ipflPostGame, ptBsGame), {
+  keep: true,
+  reason: 'ok',
+});
+
 // ------------------------------------------------------------ vs vetoes ---
 const vsWrong = mk('vs-wrong', 'Barcelona 6 vs 2 Alavés | Highlights', {
   publishedAt: '2026-11-01T10:00:00.000Z',

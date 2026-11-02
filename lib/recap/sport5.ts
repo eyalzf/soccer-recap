@@ -379,7 +379,9 @@ export interface Sport5MatchResult {
  *    the two orders ('score' — mirrors the shared matcher's veto);
  *  - the item's date (the article's own date for league-page items;
  *    firstSeen for rail items, since the rail carries no per-item date)
- *    must fall within gameDate −1d .. gameDate +3d ('date');
+ *    must fall within the game's UTC calendar day .. gameDate +3d
+ *    ('date') — a highlight cannot predate the game it recaps (user
+ *    decision 2026-11-02, same rule as the shared matcher);
  *  - exactly one surviving item → the result; zero → none; two or
  *    more → 'ambiguous': no result (a wrong link is worse than none).
  *
@@ -435,10 +437,14 @@ export function matchSport5Index(
       if (reason === 'ok') {
         // League-page article items carry their real publication date;
         // rail items only have firstSeen (the rail carries no per-item
-        // date), so firstSeen is the fallback.
+        // date), so firstSeen is the fallback. Lower bound is the
+        // game's UTC calendar day, not gameTime −1d: an item dated
+        // before the game day is a previous fixture's item, however
+        // close its headline is to this fixture.
         const itemMs = it.publishedMs ?? it.firstSeen;
+        const gameDayStart = Date.parse(game.dateISO.slice(0, 10) + 'T00:00:00.000Z');
         const diff = (itemMs - gameTime) / DAY;
-        if (Number.isNaN(diff) || diff < -1 || diff > 3) reason = 'date';
+        if (Number.isNaN(diff) || itemMs < gameDayStart || diff > 3) reason = 'date';
       }
     }
     const keep = reason === 'ok';

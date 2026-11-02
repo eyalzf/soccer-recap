@@ -542,6 +542,15 @@ for (const { game, vi } of GAMES) {
   );
   check('ligue1: single-team headline without a score rejected', r5.candidate === null);
 
+  // Game-day-or-after (2026-11-02): an item dated before the game's
+  // calendar day is a previous fixture's item, even with matching
+  // teams+score — the shared matcher's rule, mirrored here.
+  const r6 = matchSport5Index(
+    [mkItem(600006, 'שלושער מטורף לחאכימי, 1:5 גדול לפ.ס.ז\'', '2026-10-29T21:00:00Z')],
+    leHavre, CATEGORY
+  );
+  check('ligue1: single-team item dated before game day rejected', r6.candidate === null);
+
   const lt = searchPlanFor('leading-teams');
   check('ligue1: leading-teams plan carries Sport5 external', (lt.external ?? []).some((e) => e.provider === 'sport5'));
   check(
@@ -653,6 +662,20 @@ for (const { game, vi } of GAMES) {
   check(
     'league matcher: outside-window reason is date',
     rWrong.considered.find((c) => c.docId === 565835)?.reason === 'date'
+  );
+
+  // Game-day-or-after (2026-11-02): an article dated the day BEFORE
+  // the game is a previous fixture's item, even with matching
+  // teams+score — the shared matcher's rule, mirrored here.
+  const preDay = toIndex(
+    [{ ...leHavreItem, publishedMs: Date.UTC(2026, 9, 29, 12) }],
+    Date.parse('2026-10-30T22:00:00Z')
+  );
+  const rPre = matchSport5Index(preDay, leHavre, CATEGORY);
+  check('league matcher: pre-game-day article rejected', rPre.candidate === null);
+  check(
+    'league matcher: pre-game-day reason is date',
+    rPre.considered.find((c) => c.docId === 565835)?.reason === 'date'
   );
 
   // Mixed merge: rail (VOD, by vi) and league (articles, by docId)

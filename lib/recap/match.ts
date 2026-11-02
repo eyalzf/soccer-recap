@@ -400,6 +400,22 @@ export function filterCandidate(
   const sc = extractScore(c.title);
   const homeMentioned = teamMentioned(c.title, home);
   const awayMentioned = teamMentioned(c.title, away);
+  // A highlight cannot predate the game it recaps (user decision
+  // 2026-11-02): IPFL's Oct 27 Haifa–BS 5-2 extended highlight matched
+  // the Nov 1 Petah Tikva–BS 2-5 game through the single-team
+  // exception — same scoreline, BS named, date 'near' — because
+  // proximity is absolute and 5 days before still counts as near.
+  // Any video published before the game's UTC calendar day is a
+  // previous fixture's video: rejected here, before the teams check,
+  // so no exception can rescue it. Undated videos fail open
+  // (YouTube uploads always carry a publish date).
+  if (c.publishedAt) {
+    const dayStart = Date.parse(game.dateISO.slice(0, 10) + 'T00:00:00.000Z');
+    const pub = Date.parse(c.publishedAt);
+    if (!Number.isNaN(dayStart) && !Number.isNaN(pub) && pub < dayStart) {
+      return { keep: false, reason: 'date' };
+    }
+  }
   if (!homeMentioned || !awayMentioned) {
     const scoreMatches =
       sc != null && game.homeScore != null && game.awayScore != null &&
