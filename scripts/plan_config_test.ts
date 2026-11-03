@@ -214,6 +214,11 @@ eq('ucl external', searchPlanFor('champions-league').external, [
 ]);
 eq('leading-teams external', searchPlanFor('leading-teams').external, [
   { provider: 'sport5', category: 893 },
+  {
+    provider: 'one',
+    leagueId: 8,
+    firstScope: { teams: ['Inter', 'AC Milan', 'Juventus', 'Roma'] },
+  },
 ]);
 eq('la-liga external', searchPlanFor('la-liga').external, [
   { provider: 'one' },
