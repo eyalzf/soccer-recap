@@ -13,11 +13,19 @@
  *   npx -y tsx scripts/one_external_test.ts
  */
 import { filterCandidate } from '../lib/recap/match';
+import { applyExternalExclusivity } from '../lib/recap/external';
+import {
+  externalRunsFirstFor,
+  scopeMatches,
+  searchPlanFor,
+} from '../lib/recap/leaguePlans';
 import {
   buildOneCandidate,
+  fixturesKeyForLeague,
   httpsUrl,
   jerusalemDate,
   mapOneMatch,
+  oneLeagueUrl,
   oneSearch,
   parseDurationSec,
   parseSummary,
@@ -199,6 +207,100 @@ check(
   );
 }
 
+// ---------- league plumbing (Serie A = ONE league 8) ----------
+
+eq('fixtures key: league 10 keeps legacy key', fixturesKeyForLeague(10), 'external/one-fixtures.json');
+eq('fixtures key: league 8 gets suffixed key', fixturesKeyForLeague(8), 'external/one-fixtures-8.json');
+eq('league url: 8', oneLeagueUrl(8), 'https://www.one.co.il/api/league/8?quick=1');
+eq('league url: 10', oneLeagueUrl(10), 'https://www.one.co.il/api/league/10?quick=1');
+
+// Real Serie A fixtures (ONE league 8): Inter 4-1 Monza (MD1,
+// 2026-08-22) and Roma 4-0 Fiorentina (MD1, 2026-08-24).
+{
+  const interMonza: OneFixture = {
+    id: 479198,
+    round: 'מחזור 1',
+    date: '2026-08-22T19:30:00',
+    homeTeam: { name: 'אינטר', score: 4 },
+    awayTeam: { name: 'מונצה', score: 1 },
+  };
+  const g = game('Inter', 'Monza', '2026-08-22T16:30:00.000Z', 4, 1);
+  eq(
+    'serie-a: Inter-Monza maps via registry',
+    mapOneMatch([interMonza], g, registryHebrewVariants).match?.id,
+    479198
+  );
+  const romaFio: OneFixture = {
+    id: 479204,
+    round: 'מחזור 1',
+    date: '2026-08-24T21:45:00',
+    homeTeam: { name: 'רומא', score: 4 },
+    awayTeam: { name: 'פיורנטינה', score: 0 },
+  };
+  const g2 = game('Roma', 'Fiorentina', '2026-08-24T18:45:00.000Z', 4, 0);
+  eq(
+    'serie-a: Roma-Fiorentina maps via registry (data spelling Roma)',
+    mapOneMatch([romaFio], g2, registryHebrewVariants).match?.id,
+    479204
+  );
+}
+
+// ---------- per-provider above-bulk scope (leading-teams) ----------
+
+const lt = searchPlanFor('leading-teams');
+const sport5Cfg = (lt.external ?? []).find((c) => c.provider === 'sport5');
+const oneCfg = (lt.external ?? []).find((c) => c.provider === 'one');
+check('leading-teams has both external providers', !!sport5Cfg && !!oneCfg);
+eq('leading-teams ONE cfg leagueId', oneCfg?.leagueId, 8);
+eq('leading-teams ONE firstScope teams', oneCfg?.firstScope?.teams, ['Inter', 'AC Milan', 'Juventus', 'Roma']);
+if (sport5Cfg && oneCfg) {
+  const interGame = { home: 'Inter', away: 'Monza' };
+  const interNoComp = { home: 'Inter', away: 'Monza', competition: null };
+  const psgGame = { home: 'Le Havre', away: 'Paris Saint-Germain', competition: 'ligue-1' };
+  const bayernGame = { home: 'Bayern München', away: 'Borussia Dortmund' };
+  check('scope: ONE first for Inter game', externalRunsFirstFor(oneCfg, lt, interGame));
+  check('scope: ONE first for Inter game without competition slug', externalRunsFirstFor(oneCfg, lt, interNoComp));
+  check('scope: Sport5 NOT first for Inter game', !externalRunsFirstFor(sport5Cfg, lt, interGame));
+  check('scope: Sport5 first for PSG Ligue 1 game', externalRunsFirstFor(sport5Cfg, lt, psgGame));
+  check('scope: ONE NOT first for PSG game', !externalRunsFirstFor(oneCfg, lt, psgGame));
+  check('scope: neither first for Bayern game', !externalRunsFirstFor(sport5Cfg, lt, bayernGame) && !externalRunsFirstFor(oneCfg, lt, bayernGame));
+  check('scopeMatches: teams-only scope ignores competition', scopeMatches({ teams: ['Inter'] }, { home: 'Inter', away: 'Monza', competition: 'serie-a' }));
+  check('scopeMatches: competitions list needs slug', !scopeMatches({ teams: ['Inter'], competitions: ['serie-a'] }, { home: 'Inter', away: 'Monza', competition: null }));
+}
+
+// ---------- exclusivity with per-provider scopes ----------
+
+{
+  const oneExt: RawCandidate = { id: 'one:1', title: 'ONE', url: 'https://www.one.co.il/match/1', source: 'one', external: true, lang: 'he' };
+  const sport5Ext: RawCandidate = { id: 'sport5:1', title: 'S5', url: 'https://example.com', source: 'sport5', external: true, lang: 'he' };
+  const bulkYt: RawCandidate = { id: 'yt:1', title: 'YT', url: 'https://youtube.com/watch?v=1', source: 'youtube', lang: 'en' };
+  eq(
+    'exclusivity: ONE result exclusive on Inter game',
+    applyExternalExclusivity(lt, [oneExt, bulkYt], { home: 'Inter', away: 'Monza' }).map((c) => c.id),
+    ['one:1']
+  );
+  eq(
+    'exclusivity: ONE result NOT exclusive on Bayern game',
+    applyExternalExclusivity(lt, [oneExt, bulkYt], { home: 'Bayern München', away: 'Borussia Dortmund' }).map((c) => c.id),
+    ['one:1', 'yt:1']
+  );
+  eq(
+    'exclusivity: Sport5 result exclusive on PSG Ligue 1 game',
+    applyExternalExclusivity(lt, [sport5Ext, bulkYt], { home: 'Le Havre', away: 'Paris Saint-Germain', competition: 'ligue-1' }).map((c) => c.id),
+    ['sport5:1']
+  );
+  eq(
+    'exclusivity: ONE result NOT exclusive on PSG game',
+    applyExternalExclusivity(lt, [oneExt, bulkYt], { home: 'Le Havre', away: 'Paris Saint-Germain', competition: 'ligue-1' }).map((c) => c.id),
+    ['one:1', 'yt:1']
+  );
+  eq(
+    'exclusivity: no-game callers keep plan-level behavior',
+    applyExternalExclusivity(lt, [oneExt, bulkYt]).map((c) => c.id),
+    ['one:1']
+  );
+}
+
 // ---------- parseSummary / parseDurationSec / httpsUrl ----------
 
 const ATLETICO_SUMMARY = {
@@ -295,6 +397,32 @@ async function main() {
     });
     eq('search: no fixture -> no candidate', r.candidate, null);
     eq('search: no fixture -> empty considered', r.considered, []);
+  }
+  {
+    // Serie A via cfg leagueId 8 (stubbed fixtures + summary).
+    const g = game('Inter', 'Monza', '2026-08-22T16:30:00.000Z', 4, 1);
+    const r = await oneSearch(g, {
+      cfg: { leagueId: 8 },
+      fixtures: [
+        {
+          id: 479198,
+          round: 'מחזור 1',
+          date: '2026-08-22T19:30:00',
+          homeTeam: { name: 'אינטר', score: 4 },
+          awayTeam: { name: 'מונצה', score: 1 },
+        },
+      ],
+      fetchSummary: async () => ({
+        available: true,
+        videoId: 99001,
+        title: 'אינטר מביסה את מונצה',
+        duration: '00:03:00',
+        poster: 'https://photo.one.co.il/Image/Cover/x/99001.webp',
+        failover: 'http://onevod.s3.amazonaws.com/2026_08/99001.mp4',
+      }),
+    });
+    eq('search: serie-a cfg -> candidate id', r.candidate?.id, 'one:99001');
+    eq('search: serie-a cfg -> match page url', r.candidate?.url, 'https://www.one.co.il/match/479198');
   }
 
   // ---------- filterCandidate: ONE candidate survives ingest ----------
