@@ -18,7 +18,8 @@ function esc(s: string): string {
  * (״) vs straight quote ("), geresh (׳) vs apostrophe, and occasional
  * niqqud (שׁ vs ש). Without this, "מכבי ת״א" never matches our "מכבי ת\"א".
  */
-function normHeCompare(s: string): string {
+/** Exported for provider modules that match Hebrew names (ONE fixtures). */
+export function normHeCompare(s: string): string {
   return s
     .replace(/[״"]/g, '"')
     .replace(/[׳'’‘`]/g, "'")

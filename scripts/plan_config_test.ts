@@ -215,9 +215,17 @@ eq('ucl external', searchPlanFor('champions-league').external, [
 eq('leading-teams external', searchPlanFor('leading-teams').external, [
   { provider: 'sport5', category: 893 },
 ]);
+eq('la-liga external', searchPlanFor('la-liga').external, [
+  { provider: 'one' },
+]);
 eq(
   'leading-teams external is non-terminal (general backstop kept)',
   searchPlanFor('leading-teams').externalTerminal,
+  false
+);
+eq(
+  'la-liga external is non-terminal (general backstop kept)',
+  searchPlanFor('la-liga').externalTerminal,
   false
 );
 eq(
@@ -226,9 +234,12 @@ eq(
   undefined
 );
 ok(
-  'only ucl and leading-teams have external',
+  'only ucl, leading-teams and la-liga have external',
   Object.entries(LEAGUE_SEARCH_PLANS)
-    .filter(([slug]) => slug !== 'champions-league' && slug !== 'leading-teams')
+    .filter(
+      ([slug]) =>
+        slug !== 'champions-league' && slug !== 'leading-teams' && slug !== 'la-liga'
+    )
     .every(([, p]) => (p.external ?? []).length === 0)
 );
 eq('unknown league external', searchPlanFor('no-such-league').external, undefined);
@@ -236,7 +247,10 @@ eq('unknown league external', searchPlanFor('no-such-league').external, undefine
 // hit) for every game; leading-teams opts into above-bulk SCOPED to
 // PSG Ligue 1 games only (user decision 2026-11-01) and keeps the
 // below-bulk placement for every other game, so no other league's —
-// and no other leading-teams club's — cascade changes.
+// and no other leading-teams club's — cascade changes. La Liga opts
+// into above-bulk UNSCOPED for the ONE website source (user decision
+// 2026-11-03): a ONE hit is exclusive, a miss falls through to bulk
+// and (non-terminal) general.
 eq(
   'ucl externalPosition',
   searchPlanFor('champions-league').externalPosition,
@@ -248,14 +262,22 @@ eq(
   'above-bulk'
 );
 eq(
+  'la-liga externalPosition',
+  searchPlanFor('la-liga').externalPosition,
+  'above-bulk'
+);
+eq(
   'leading-teams externalFirstScope',
   searchPlanFor('leading-teams').externalFirstScope,
   { teams: ['Paris Saint-Germain'], competitions: ['ligue-1'] }
 );
 ok(
-  'only ucl and leading-teams are above-bulk',
+  'only ucl, leading-teams and la-liga are above-bulk',
   Object.entries(LEAGUE_SEARCH_PLANS)
-    .filter(([slug]) => slug !== 'champions-league' && slug !== 'leading-teams')
+    .filter(
+      ([slug]) =>
+        slug !== 'champions-league' && slug !== 'leading-teams' && slug !== 'la-liga'
+    )
     .every(([, p]) => p.externalPosition !== 'above-bulk')
 );
 eq(
