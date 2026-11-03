@@ -401,7 +401,7 @@ export interface Sport5MatchResult {
 export function matchSport5Index(
   items: Sport5IndexItem[],
   game: GameInput,
-  category: number
+  category?: number
 ): Sport5MatchResult {
   void category;
   const home = lookupClubEn(game.home);
