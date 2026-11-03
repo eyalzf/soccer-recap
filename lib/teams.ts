@@ -182,7 +182,8 @@ export const CLUBS: ClubEntry[] = [
     en: "Deportivo de A Coruña",
     he: "דפורטיבו לה קורוניה",
     enAliases: ["Deportivo", "Depor", "A Coruña", "RC Deportivo", "Deportivo A Coruña"],
-    heAliases: ["דפוטיבו", "אה קורוניה", "דפורטיבו"],
+    // ONE's fixture spelling (one.co.il league API) for this club.
+    heAliases: ["דפוטיבו", "אה קורוניה", "דפורטיבו", "דפורטיבו אה קורוניה"],
   },
   {
     en: "Elche",
@@ -218,7 +219,8 @@ export const CLUBS: ClubEntry[] = [
     en: "Racing de Santander",
     he: "ראסינג סנטנדר",
     enAliases: ["Racing", "Real Racing", "Racing Santander", "Real Racing Club", "R. Racing Club"],
-    heAliases: ["ראסינג", "ראסינג סאנטנדר", "סנטנדר", "סאנטנדר"],
+    // ONE's fixture spelling (one.co.il league API) for this club.
+    heAliases: ["ראסינג", "ראסינג סאנטנדר", "סנטנדר", "סאנטנדר", "ראסינג סנטאנדר"],
   },
   {
     en: "Rayo Vallecano",
