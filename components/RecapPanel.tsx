@@ -15,7 +15,7 @@ interface Candidate {
   source: string;
   videoId?: string;
   embedUrl?: string;
-  /** External link-out result (Sport5): opens at the source in a new tab; never embedded. */
+  /** External result (Sport5/ONE): link-out only when no embedUrl is set; with an embedUrl (ONE MP4) it renders as an inline player. */
   external?: boolean;
   thumbnail?: string;
   publishedAt?: string;
@@ -31,6 +31,11 @@ const SOURCE_HE: Record<string, string> = {
   sport5: 'ספורט5',
   one: 'ONE',
 };
+
+/** Direct video files (ONE MP4s) render as <video>, not an iframe. */
+function isDirectVideo(url: string): boolean {
+  return /\.mp4(\?|#|$)/.test(url) || /\.m4v(\?|#|$)/.test(url);
+}
 
 /** 83 -> "1:23", 3661 -> "1:01:01". */
 function formatDuration(sec: number): string {
@@ -72,6 +77,12 @@ export default function RecapPanel({
   };
   /** Candidate ids whose YouTube thumbnail failed to load (fall back to crests). */
   const [brokenThumb, setBrokenThumb] = useState<Record<string, boolean>>({});
+  /** Direct-video load failed (e.g. geo-restricted) — show the source link instead. */
+  const [videoFailed, setVideoFailed] = useState(false);
+
+  useEffect(() => {
+    setVideoFailed(false);
+  }, [selected?.id]);
 
   useEffect(() => {
     setResults([]);
@@ -144,17 +155,46 @@ export default function RecapPanel({
             onProgress={() => setProgressTick((n) => n + 1)}
           />
         ) : selected?.embedUrl ? (
-          // Sport1 (Walla) player: iframe-only embed, no JS API — no resume
-          // or progress tracking, but watched-on-select still applies.
-          <div className="player-wrap">
-            <iframe
-              key={selected.id}
-              src={selected.embedUrl}
-              title={selected.title}
-              allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
-              allowFullScreen
-            />
-          </div>
+          isDirectVideo(selected.embedUrl) ? (
+            // ONE website: direct MP4 file — native <video>, no JS API,
+            // same as the iframe branch (no resume or progress tracking,
+            // but watched-on-select still applies). If the file fails to
+            // load, fall back to the source link.
+            <div className="player-wrap" key={selected.id}>
+              {videoFailed ? (
+                <a
+                  className="source-link"
+                  href={selected.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  פתח במקור ({SOURCE_HE[selected.source] ?? selected.source})
+                </a>
+              ) : (
+                <video
+                  controls
+                  preload="metadata"
+                  poster={selected.thumbnail}
+                  src={selected.embedUrl}
+                  title={selected.title}
+                  style={{ width: '100%', aspectRatio: '16 / 9', background: '#000' }}
+                  onError={() => setVideoFailed(true)}
+                />
+              )}
+            </div>
+          ) : (
+            // Sport1 (Walla) player: iframe-only embed, no JS API — no resume
+            // or progress tracking, but watched-on-select still applies.
+            <div className="player-wrap">
+              <iframe
+                key={selected.id}
+                src={selected.embedUrl}
+                title={selected.title}
+                allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+          )
         ) : selected ? (
           <a
             className="source-link"
@@ -227,10 +267,12 @@ export default function RecapPanel({
                 </span>
               </>
             );
-            // External results (Sport5) are link-out only: the source
-            // site blocks framing, so the card itself is a link that
-            // opens the video page in a new tab — never a player.
-            if (c.external) {
+            // External results without an embed (Sport5) are link-out
+            // only: the source site blocks framing, so the card itself
+            // is a link that opens the video page in a new tab — never
+            // a player. External results WITH an embed (ONE MP4s) are
+            // selectable like any embedded player.
+            if (c.external && !c.embedUrl) {
               return (
                 <a
                   key={c.id}
