@@ -110,6 +110,19 @@ export interface ExternalSourceConfig {
    * fixtures are league-scoped already.
    */
   category?: number;
+  /**
+   * ONE only: the ONE league id whose fixtures this source maps
+   * against (10 = La Liga, 8 = Serie A). Defaults to 10 when omitted
+   * (the original La Liga source).
+   */
+  leagueId?: number;
+  /**
+   * Per-provider above-bulk scope, overriding the plan's
+   * externalFirstScope for this provider only (2026-11-03: ONE for
+   * Italian leading-teams games). A provider without its own scope
+   * keeps the plan-level behavior (Sport5: PSG Ligue 1 only).
+   */
+  firstScope?: ExternalFirstScope;
 }
 
 export interface LeagueSearchPlan {
@@ -149,7 +162,7 @@ export interface LeagueSearchPlan {
    * competitions list (safe fallback: bulk-first). Ignored unless
    * externalPosition is 'above-bulk'.
    */
-  externalFirstScope?: { teams?: string[]; competitions?: string[] };
+  externalFirstScope?: ExternalFirstScope;
   /**
    * Whether the external tier is terminal (default true): when true, a
    * plan with external sources NEVER runs general search, even when
@@ -225,6 +238,32 @@ export interface LeagueSearchPlan {
   sport1Fallback?: boolean;
 }
 
+/** Above-bulk scope: which games a provider runs first for. */
+export interface ExternalFirstScope {
+  teams?: string[];
+  competitions?: string[];
+}
+
+/**
+ * Whether a game matches an above-bulk scope. An empty or absent
+ * list on one axis means no constraint on that axis; a game filed
+ * without a competition slug never matches a competitions list
+ * (safe fallback: bulk-first).
+ */
+export function scopeMatches(
+  scope: ExternalFirstScope,
+  game: { home: string; away: string; competition?: string | null },
+): boolean {
+  const teamOk =
+    !scope.teams?.length ||
+    scope.teams.includes(game.home) ||
+    scope.teams.includes(game.away);
+  const compOk =
+    !scope.competitions?.length ||
+    (game.competition != null && scope.competitions.includes(game.competition));
+  return teamOk && compOk;
+}
+
 /**
  * Whether the external tier runs BEFORE bulk for this game: true
  * only when the plan places it 'above-bulk' AND the game is inside
@@ -240,14 +279,25 @@ export function externalRunsFirst(
   if (plan.externalPosition !== 'above-bulk') return false;
   const scope = plan.externalFirstScope;
   if (!scope) return true;
-  const teamOk =
-    !scope.teams?.length ||
-    scope.teams.includes(game.home) ||
-    scope.teams.includes(game.away);
-  const compOk =
-    !scope.competitions?.length ||
-    (game.competition != null && scope.competitions.includes(game.competition));
-  return teamOk && compOk;
+  return scopeMatches(scope, game);
+}
+
+/**
+ * Per-provider version of externalRunsFirst: a provider with its own
+ * firstScope is gated by that scope alone; a provider without one
+ * keeps the plan-level behavior. The route splits the plan's external
+ * configs per game with this, so two scoped providers (Sport5 for PSG,
+ * ONE for Italian clubs) can share one above-bulk plan without
+ * gating each other.
+ */
+export function externalRunsFirstFor(
+  cfg: ExternalSourceConfig,
+  plan: LeagueSearchPlan,
+  game: { home: string; away: string; competition?: string | null },
+): boolean {
+  if (plan.externalPosition !== 'above-bulk') return false;
+  if (cfg.firstScope) return scopeMatches(cfg.firstScope, game);
+  return externalRunsFirst(plan, game);
 }
 
 export interface ClubChannelDef {
@@ -826,7 +876,22 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
     // for this plan (route.ts). Category no longer gates matching
     // (2026-10-15 rail change); 893 is the current rail-level Vc,
     // kept for signature/diagnostics.
-    external: [{ provider: 'sport5', category: 893 }],
+    external: [
+      { provider: 'sport5', category: 893 },
+      // ONE website (2026-11-03): the LEADING source for Italian
+      // leading-teams games (user decision 2026-11-03) — before any
+      // YouTube channel. The per-provider firstScope gates it to
+      // games of the four Italian clubs; the plan-level PSG scope
+      // still gates Sport5. Out-of-scope games keep the below-bulk
+      // position for both providers (ONE then misses via fixture
+      // mapping — its Serie A fixtures contain no other club's
+      // games — at the cost of one cached fixtures read).
+      {
+        provider: 'one',
+        leagueId: 8,
+        firstScope: { teams: ['Inter', 'AC Milan', 'Juventus', 'Roma'] },
+      },
+    ],
     externalPosition: 'above-bulk',
     externalFirstScope: {
       teams: ['Paris Saint-Germain'],

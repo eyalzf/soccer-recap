@@ -3,7 +3,11 @@ import { filterCandidate, hasHighlightIntent, isPreferredChannel } from '@/lib/r
 import { rankCandidates } from '@/lib/recap/rank';
 import { englishQuery, hebrewQuery, sport1Search, youtubeSearch } from '@/lib/recap/sources';
 import type { YouTubeSearchJob } from '@/lib/recap/sources';
-import { externalRunsFirst, searchPlanFor } from '@/lib/recap/leaguePlans';
+import {
+  externalRunsFirstFor,
+  searchPlanFor,
+  type ExternalSourceConfig,
+} from '@/lib/recap/leaguePlans';
 import type { BulkChannel } from '@/lib/recap/leaguePlans';
 import { bulkScan, channelsForGame, scanPriorityChannel } from '@/lib/recap/bulk';
 import { applyExternalExclusivity, runExternalSource } from '@/lib/recap/external';
@@ -432,13 +436,14 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
   )
     winner = 'preferred';
 
-  // External link-out tier (plan-configured; Sport5 for the UCL).
-  // Position is plan-driven: 'below-bulk' (default) it runs after the
+  // External tier (plan-configured; Sport5, ONE).
+  // Position is per-provider: 'below-bulk' (default) it runs after the
   // bulk tier, only when the curated tiers kept no proper highlight;
   // 'above-bulk' it runs here, before bulk, and a hit is exclusive
-  // (bulk never runs) — for THIS game, via externalRunsFirst, so a
-  // scoped above-bulk plan (leading-teams: PSG Ligue 1 only) runs it
-  // first just for its scope and below-bulk for everything else.
+  // (bulk never runs) — for THIS game, via externalRunsFirstFor, so
+  // each provider runs first just for its own scope (leading-teams:
+  // Sport5 for PSG Ligue 1, ONE for Italian clubs) and below-bulk
+  // for everything else.
   // It costs no YouTube quota, so a YouTube 429 does not stop it. A
   // league with external sources configured NEVER falls through to
   // general search — this tier is terminal in both positions, even
@@ -447,10 +452,15 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
   // still runs as a backstop when external found nothing
   // (leading-teams, 2026-11-01).
   const externalCfgs = plan.external ?? [];
-  const externalAboveBulk =
-    externalCfgs.length > 0 && externalRunsFirst(plan, game);
-  const runExternalTier = async (): Promise<void> => {
-    for (const cfg of externalCfgs) {
+  const externalAboveBulkCfgs =
+    plan.externalPosition === 'above-bulk'
+      ? externalCfgs.filter((cfg) => externalRunsFirstFor(cfg, plan, game))
+      : [];
+  const externalBelowBulkCfgs = externalCfgs.filter(
+    (cfg) => !externalAboveBulkCfgs.includes(cfg)
+  );
+  const runExternalTier = async (cfgs: ExternalSourceConfig[]): Promise<void> => {
+    for (const cfg of cfgs) {
       try {
         const r = await runExternalSource(cfg, game);
         logEntry.external.ran += 1;
@@ -483,7 +493,8 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
       }
     }
   };
-  if (externalAboveBulk && winner === 'none') await runExternalTier();
+  if (externalAboveBulkCfgs.length > 0 && winner === 'none')
+    await runExternalTier(externalAboveBulkCfgs);
 
   // Tier 2: curated bulk pool (uploads playlists, app-side matching).
   // Team-scoped channels (club / FA channels) are scanned FIRST: when
@@ -523,12 +534,12 @@ async function computeRecap(game: GameInput, debug: boolean): Promise<ComputeRes
     if (hasProperHighlight()) winner = 'bulk';
   }
 
-  // Tier 2.5: external link-out sources in the default (below-bulk)
+  // Tier 2.5: external sources in the default (below-bulk)
   // position — runs only when the curated tiers kept no proper
-  // highlight. Games for which the tier already ran before tier 2
-  // (unscoped above-bulk, or scoped in-scope) skip it here.
-  if (!externalAboveBulk && winner === 'none' && externalCfgs.length > 0) {
-    await runExternalTier();
+  // highlight. Providers that already ran above bulk for this game
+  // skip it here.
+  if (winner === 'none' && externalBelowBulkCfgs.length > 0) {
+    await runExternalTier(externalBelowBulkCfgs);
   }
 
   // Tier 2.6: Sport1 as a rescue source (plan.sport1Fallback; Israeli

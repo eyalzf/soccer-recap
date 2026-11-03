@@ -1,6 +1,9 @@
 /**
- * ONE website (one.co.il) as a La Liga recap source (user decision
- * 2026-11-03: secondary source after the preferred YouTube channel).
+ * ONE website (one.co.il) as a recap source, parameterized by ONE
+ * league id: 10 = La Liga (user decision 2026-11-03: secondary
+ * source after the preferred YouTube channel) and 8 = Serie A
+ * (user decision 2026-11-03: LEADING source for Italian
+ * leading-teams games, before any YouTube channel).
  *
  * Unlike Sport5, ONE needs no index harvest and no title parsing:
  * - Discovery: ONE's league API returns the whole season's fixtures
@@ -37,12 +40,21 @@ import { pget, pset } from './persist';
 import { lookupClubEn } from '../teamIndex';
 import type { GameInput, RawCandidate } from './types';
 
-export const ONE_LEAGUE_URL =
-  'https://www.one.co.il/api/league/10?quick=1';
+export const oneLeagueUrl = (leagueId: number) =>
+  `https://www.one.co.il/api/league/${leagueId}?quick=1`;
 export const oneMatchUrl = (id: number) => `https://www.one.co.il/match/${id}`;
 const oneSummaryUrl = (id: number) =>
   `https://www.one.co.il/api/match/${id}/summary-video`;
-const FIXTURES_KEY = 'external/one-fixtures.json';
+/**
+ * Storage key for a league's fixtures. League 10 keeps the original
+ * key (the La Liga source shipped first); other leagues get a
+ * suffixed key, so each league's fixtures cache independently.
+ */
+export function fixturesKeyForLeague(leagueId: number): string {
+  return leagueId === 10
+    ? 'external/one-fixtures.json'
+    : `external/one-fixtures-${leagueId}.json`;
+}
 const FIXTURES_TTL_MS = 60 * 60 * 1000;
 const ONE_UA =
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36';
@@ -107,10 +119,11 @@ function numOrUndef(v: unknown): number | undefined {
   return typeof v === 'number' ? v : undefined;
 }
 
-/** Full-season fixture list, cached 1h in storage. */
-export async function loadOneFixtures(): Promise<OneFixture[]> {
+/** Full-season fixture list for one ONE league, cached 1h in storage. */
+export async function loadOneFixtures(leagueId = 10): Promise<OneFixture[]> {
+  const key = fixturesKeyForLeague(leagueId);
   try {
-    const rec = await pget<OneFixturesRecord>(FIXTURES_KEY);
+    const rec = await pget<OneFixturesRecord>(key);
     if (
       rec &&
       Array.isArray(rec.val?.items) &&
@@ -122,7 +135,7 @@ export async function loadOneFixtures(): Promise<OneFixture[]> {
   } catch {
     // Fall through to a live fetch.
   }
-  const data = (await fetchJson(ONE_LEAGUE_URL)) as {
+  const data = (await fetchJson(oneLeagueUrl(leagueId))) as {
     matches?: Record<string, Record<string, unknown>[]>;
   };
   const items: OneFixture[] = [];
@@ -152,7 +165,7 @@ export async function loadOneFixtures(): Promise<OneFixture[]> {
   }
   if (items.length > 0) {
     try {
-      await pset(FIXTURES_KEY, { items } satisfies OneFixturesRecord);
+      await pset(key, { items } satisfies OneFixturesRecord);
     } catch {
       // Cache failure must not fail the search.
     }
@@ -308,12 +321,15 @@ export interface OneSearchResult {
 export async function oneSearch(
   game: GameInput,
   opts?: {
+    /** Plan config for this provider; leagueId selects the ONE league (default 10). */
+    cfg?: { leagueId?: number };
     fixtures?: OneFixture[];
     fetchSummary?: (id: number) => Promise<OneSummary | null>;
   }
 ): Promise<OneSearchResult> {
   try {
-    const fixtures = opts?.fixtures ?? (await loadOneFixtures());
+    const leagueId = opts?.cfg?.leagueId ?? 10;
+    const fixtures = opts?.fixtures ?? (await loadOneFixtures(leagueId));
     const { match, ambiguous } = mapOneMatch(
       fixtures,
       game,
