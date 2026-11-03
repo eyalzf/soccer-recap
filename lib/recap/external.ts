@@ -1,18 +1,22 @@
 /**
- * External (link-out) sources dispatcher.
+ * External sources dispatcher.
  *
  * Where the external tier runs is plan-driven (see
  * LeagueSearchPlan.externalPosition): by default after the curated
  * bulk tier, only when no proper highlight was kept; a plan may place
  * it above bulk, where a hit is exclusive. Either way, a league whose
  * plan configures external sources never falls through to general
- * YouTube search (the external tier is terminal). Providers return
- * link-out results: rendered as "open at source" cards, never embedded.
+ * YouTube search unless the plan sets `externalTerminal: false`
+ * (the external tier is terminal). Providers return third-party
+ * results: Sport5 renders as an "open at source" card and is never
+ * embedded; ONE returns an embeddable MP4 (`embedUrl`) rendered as
+ * an inline <video> player.
  *
  * Adding a provider = one new module + one case here; plans and the
  * pipeline stay untouched.
  */
-import { sport5Search, type Sport5Considered } from './sport5';
+import { oneSearch } from './one';
+import { sport5Search } from './sport5';
 import {
   externalRunsFirst,
   type ExternalSourceConfig,
@@ -20,11 +24,20 @@ import {
 } from './leaguePlans';
 import type { GameInput, RawCandidate } from './types';
 
+/** Diagnostics item shared by all providers (Sport5's shape conforms). */
+export interface ExternalConsidered {
+  /** Always present: the video title, or the fixture matchup when no video exists. */
+  title: string;
+  keep: boolean;
+  /** 'ok' when kept; otherwise the rejection reason. */
+  reason: string;
+}
+
 export interface ExternalSearchResult {
   /** At most one result per provider (ambiguity suppresses it). */
   candidates: RawCandidate[];
-  /** Index/catalog items the provider considered (diagnostics). */
-  considered: Sport5Considered[];
+  /** Items the provider considered (diagnostics). */
+  considered: ExternalConsidered[];
   /** True when ≥2 items matched and the result was suppressed. */
   ambiguous: boolean;
 }
@@ -61,6 +74,14 @@ export async function runExternalSource(
   switch (cfg.provider) {
     case 'sport5': {
       const r = await sport5Search(game, cfg);
+      return {
+        candidates: r.candidate ? [r.candidate] : [],
+        considered: r.considered,
+        ambiguous: r.ambiguous,
+      };
+    }
+    case 'one': {
+      const r = await oneSearch(game);
       return {
         candidates: r.candidate ? [r.candidate] : [],
         considered: r.considered,
