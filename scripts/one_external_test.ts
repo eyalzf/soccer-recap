@@ -21,6 +21,7 @@ import {
   oneSearch,
   parseDurationSec,
   parseSummary,
+  registryHebrewVariants,
   type HebrewVariants,
   type OneFixture,
   type OneSummary,
@@ -152,6 +153,50 @@ eq('jerusalemDate: invalid -> empty', jerusalemDate('not-a-date'), '');
   // Unknown club (no Hebrew variants) -> no match, not a crash.
   const g = game('No Such Club', 'Levante', '2026-10-31T13:00:00.000Z', 0, 2);
   eq('map: unknown club -> no match', mapOneMatch(FIXTURES, g, variants).match, null);
+}
+
+// ---------- registry resolver: ONE spellings for promoted clubs ----------
+// Racing de Santander and Deportivo de A Coruna already live in the
+// compiled registry (under their "de" spellings); only ONE's Hebrew
+// spellings were missing, added as heAliases in lib/teams.ts. The
+// provider must map through the real registry resolver for them.
+check(
+  'registry: Racing Santander variants include ONE spelling',
+  registryHebrewVariants('Racing Santander').includes('ראסינג סנטאנדר')
+);
+check(
+  'registry: Deportivo A Coruna variants include ONE spelling',
+  registryHebrewVariants('Deportivo A Coruña').includes('דפורטיבו אה קורוניה')
+);
+{
+  const racingFixture: OneFixture = {
+    id: 484000,
+    round: 'מחזור 5',
+    date: '2026-09-20T18:00:00',
+    homeTeam: { name: 'ראסינג סנטאנדר', score: 1 },
+    awayTeam: { name: 'ברצלונה', score: 1 },
+  };
+  const g = game('Racing Santander', 'Barcelona', '2026-09-20T15:00:00.000Z', 1, 1);
+  eq(
+    'registry: Racing game maps via ONE spelling',
+    mapOneMatch([racingFixture], g, registryHebrewVariants).match?.id,
+    484000
+  );
+}
+{
+  const depoFixture: OneFixture = {
+    id: 484001,
+    round: 'מחזור 5',
+    date: '2026-09-21T20:00:00',
+    homeTeam: { name: 'דפורטיבו אה קורוניה', score: 0 },
+    awayTeam: { name: 'סביליה', score: 2 },
+  };
+  const g = game('Deportivo A Coruña', 'Sevilla', '2026-09-21T17:00:00.000Z', 0, 2);
+  eq(
+    'registry: Deportivo game maps via ONE spelling',
+    mapOneMatch([depoFixture], g, registryHebrewVariants).match?.id,
+    484001
+  );
 }
 
 // ---------- parseSummary / parseDurationSec / httpsUrl ----------
