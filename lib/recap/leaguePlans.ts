@@ -87,25 +87,29 @@ export interface BulkChannel {
 
 /**
  * One external (link-out) web source for a league. External providers
- * discover a per-game video on a third-party site and return a LINK to
- * it — the result is rendered as an "open at source" card and never
- * embedded (the site blocks third-party framing). Where the tier runs
- * is the plan's `externalPosition`; either way, a league with any
- * external source configured never falls through to general YouTube
- * search: the external tier is terminal (user decision 2026-10-14).
+ * discover a per-game video on a third-party site. Sport5 results are
+ * rendered as an "open at source" card and never embedded (the site
+ * blocks third-party framing); ONE results are embeddable MP4s
+ * (see lib/recap/one.ts) and render as an inline <video> player.
+ * Where the tier runs is the plan's `externalPosition`; either way,
+ * a league with any external source configured never falls through
+ * to general YouTube search unless the plan sets
+ * `externalTerminal: false`: the external tier is terminal
+ * (user decision 2026-10-14).
  */
 export interface ExternalSourceConfig {
   /** Provider implementation key (see lib/recap/external.ts). */
-  provider: 'sport5';
+  provider: 'sport5' | 'one';
   /**
    * Provider-specific catalog selector: for Sport5, the Vc category id
    * of the competition's highlight rail on the site (12363 = Champions
    * League). Retained as the canonical category reference, but since
    * the 2026-10-15 rail change (the homepage rail links all items
    * under one rail-level Vc) it no longer gates matching — see
-   * matchSport5Index in lib/recap/sport5.ts.
+   * matchSport5Index in lib/recap/sport5.ts. Unused by ONE, whose
+   * fixtures are league-scoped already.
    */
-  category: number;
+  category?: number;
 }
 
 export interface LeagueSearchPlan {
@@ -406,6 +410,14 @@ export const LEAGUE_SEARCH_PLANS: Record<string, LeagueSearchPlan> = {
     // when its title carries no highlight wording, so any kept ONE result
     // stops the cascade and is exclusive (user decision 2026-10-02).
     preferredStopRule: 'any',
+    // ONE website as the secondary source after the preferred YouTube
+    // channel (user decision 2026-11-03): fixture-mapped MP4 highlights
+    // (lib/recap/one.ts), placed above bulk so a Hebrew ONE video
+    // outranks English bulk clips on a hit. NOT terminal: when ONE has
+    // no video, English general search still runs as a backstop.
+    external: [{ provider: 'one' }],
+    externalPosition: 'above-bulk',
+    externalTerminal: false,
     bulk: [
       // LaLiga official (@laliga) is on the deny list — its videos are
       // embedding-blocked (user report 2026-10-02). Do not re-add here.
