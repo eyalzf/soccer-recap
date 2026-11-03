@@ -246,12 +246,17 @@ export default function RecapPanel({
                   <span className="recap-title">{c.title}</span>
                   <br />
                   <span className="recap-src">
-                    {c.external ? (
+                    {c.external && !c.embedUrl ? (
+                      // Link-out only (Sport5): the card opens the source
+                      // in a new tab, hence the external-link mark.
                       <>לצפייה בספורט 5 ↗</>
                     ) : (
                       <>
                         {SOURCE_HE[c.source] ?? c.source}
-                        {c.channelName ? ` · ${c.channelName}` : ''}
+                        {c.channelName &&
+                        c.channelName !== (SOURCE_HE[c.source] ?? c.source)
+                          ? ` · ${c.channelName}`
+                          : ''}
                       </>
                     )}
                   </span>
