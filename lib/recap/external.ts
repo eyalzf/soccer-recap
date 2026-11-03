@@ -19,6 +19,7 @@ import { oneSearch } from './one';
 import { sport5Search } from './sport5';
 import {
   externalRunsFirst,
+  scopeMatches,
   type ExternalSourceConfig,
   type LeagueSearchPlan,
 } from './leaguePlans';
@@ -51,10 +52,13 @@ export interface ExternalSearchResult {
  * game cached with bulk results self-corrects on its next refresh
  * once an external result exists for it. Below-bulk plans (and lists
  * without an external result) pass through unchanged. When the game
- * is given and the plan scopes its above-bulk position
- * (externalFirstScope), exclusivity applies only to in-scope games —
- * an out-of-scope game's list passes through even though the plan is
- * above-bulk. Callers without a game keep the plan-level behavior.
+ * is given, exclusivity applies only when at least one external
+ * result's own provider scope matches the game: a provider with its
+ * own firstScope is gated by that scope, a provider without one by
+ * the plan-level scope (Sport5: PSG Ligue 1 only). So a ONE result
+ * on an Italian game is exclusive, while a stale external result on
+ * an out-of-scope game does not suppress that game's bulk results.
+ * Callers without a game keep the plan-level behavior.
  */
 export function applyExternalExclusivity<T extends RawCandidate>(
   plan: LeagueSearchPlan,
@@ -62,9 +66,16 @@ export function applyExternalExclusivity<T extends RawCandidate>(
   game?: { home: string; away: string; competition?: string | null }
 ): T[] {
   if (plan.externalPosition !== 'above-bulk') return list;
-  if (game && !externalRunsFirst(plan, game)) return list;
   const ext = list.filter((c) => c.external === true);
-  return ext.length > 0 ? ext : list;
+  if (ext.length === 0) return list;
+  if (!game) return ext;
+  const qualifies = ext.some((c) => {
+    const cfg = (plan.external ?? []).find((e) => e.provider === c.source);
+    if (!cfg) return true;
+    if (cfg.firstScope) return scopeMatches(cfg.firstScope, game);
+    return externalRunsFirst(plan, game);
+  });
+  return qualifies ? ext : list;
 }
 
 export async function runExternalSource(
@@ -81,7 +92,7 @@ export async function runExternalSource(
       };
     }
     case 'one': {
-      const r = await oneSearch(game);
+      const r = await oneSearch(game, { cfg });
       return {
         candidates: r.candidate ? [r.candidate] : [],
         considered: r.considered,
