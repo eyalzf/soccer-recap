@@ -2,7 +2,7 @@
   "league": "la-liga",
   "league_id": 87,
   "season": "2026/2027",
-  "updated_at": "2026-11-02T04:03:14.000Z",
+  "updated_at": "2026-11-03T03:58:52.000Z",
   "checked_through": "2026-09-19",
   "team_ids": {
     "Villarreal": 10205,
@@ -36,6 +36,17 @@
     "Auriense Cented Academy": 2341117
   },
   "games": [
+    {
+      "id": "manual-20261102-deportivo-a-coruna-osasuna",
+      "home": "Deportivo A Coruña",
+      "away": "Osasuna",
+      "dateISO": "2026-11-02T20:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9783.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8371.png",
+      "stage": "מחזור 11"
+    },
     {
       "id": "manual-20261101-athletic-club-real-sociedad",
       "home": "Athletic Club",
