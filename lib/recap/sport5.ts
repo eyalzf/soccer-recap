@@ -39,7 +39,7 @@
  * recap pipeline.
  */
 import { pget, pset } from './persist';
-import { extractScore, teamMentioned } from './match';
+import { extractScore, teamMentioned, titleHasScore } from './match';
 import { lookupClubEn } from '../teamIndex';
 import type { ExternalSourceConfig } from './leaguePlans';
 import type { GameInput, RawCandidate } from './types';
@@ -417,10 +417,10 @@ export function matchSport5Index(
       const homeMentioned = teamMentioned(it.title, home);
       const awayMentioned = teamMentioned(it.title, away);
       const sc = extractScore(it.title);
-      const scoreMatches =
-        sc != null && game.homeScore != null && game.awayScore != null &&
-        ((sc[0] === game.homeScore && sc[1] === game.awayScore) ||
-          (sc[0] === game.awayScore && sc[1] === game.homeScore));
+      // Any-score matching (2026-11-04): comeback headlines carry the
+      // intermediate score first ('חזרה מ-2:0 ל-2:3') — the fixture
+      // score may be the second scoreline in the title, not the first.
+      const scoreMatches = titleHasScore(it.title, game.homeScore, game.awayScore);
       if (!homeMentioned && !awayMentioned) {
         reason = 'teams';
       } else if ((!homeMentioned || !awayMentioned) && !scoreMatches) {

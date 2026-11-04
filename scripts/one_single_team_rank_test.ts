@@ -15,7 +15,7 @@
  * Run: npx -y tsx scripts/one_single_team_rank_test.ts
  * Exit code 0 = all assertions pass, 1 = failures (listed on stdout).
  */
-import { extractScore, filterCandidate } from '../lib/recap/match';
+import { extractScore, extractScores, filterCandidate } from '../lib/recap/match';
 import { isTeamChannel, rankCandidates, scoreCandidate } from '../lib/recap/rank';
 import type { GameInput, RawCandidate } from '../lib/recap/types';
 
@@ -69,6 +69,8 @@ eq('vs-dot score', extractScore('FC BARCELONA 6 vs. 1 ALAVÉS'), [6, 1]);
 eq('vs no-boundary', extractScore('Team 1vs1 Team | Highlights'), null);
 eq('year guard intact', extractScore('UCL 2026-27: Real Madrid 2-1 Inter | Highlights'), [2, 1]);
 eq('season range intact', extractScore('Season 2026-27 review: Barcelona 3-1 Sevilla'), [3, 1]);
+eq('multi-score title lists all scores', extractScores('יונייטד חזרה מ-2:0 ל-2:3 דרמטי'), [[2, 0], [2, 3]]);
+eq('first-score semantics unchanged', extractScore('יונייטד חזרה מ-2:0 ל-2:3 דרמטי'), [2, 0]);
 
 // ------------------------------------------- ONE single-team exception ---
 const oneTitle = 'עסקים כרגיל: בארסה מתפוצצת עם 1:6 אדיר!';
@@ -175,6 +177,42 @@ const extStale = ext('sport5:article:stale', 'שלושער מטורף לחאכי
 eq('external single-team stale date rejected', filterCandidate(extStale, leHavreGame), {
   keep: false,
   reason: 'teams',
+});
+
+// ------------------ comeback headlines carry two scores (2026-11-04) --------
+// Sport5's real Man Utd 3-2 Roma headline: only Roma named ('יונייטד'
+// is not a registry alias) and the intermediate 2:0 precedes the final
+// 2:3. The ingest filter must apply the same any-score rule as
+// matchSport5Index, or the item dies here after matching there — and
+// the both-teams variant must not be vetoed on the intermediate score.
+const utdRomaGame: GameInput = {
+  home: 'Manchester United',
+  away: 'Roma',
+  dateISO: '2026-11-03T20:00:00.000Z',
+  league: 'champions-league',
+  homeScore: 3,
+  awayScore: 2,
+};
+const extComeback = ext('sport5:article:comeback', 'מטורף! יונייטד חזרה מ-2:0 ל-2:3 דרמטי מול רומא', {
+  publishedAt: '2026-11-04T06:00:00.000Z',
+});
+eq('external comeback single-team kept', filterCandidate(extComeback, utdRomaGame), {
+  keep: true,
+  reason: 'ok',
+});
+const extComebackWrong = ext('sport5:article:comeback-wrong', 'מטורף! יונייטד חזרה מ-2:0 ל-2:1 דרמטי מול רומא', {
+  publishedAt: '2026-11-04T06:00:00.000Z',
+});
+eq('external comeback wrong final score rejected', filterCandidate(extComebackWrong, utdRomaGame), {
+  keep: false,
+  reason: 'teams',
+});
+const extComebackBoth = ext('sport5:article:comeback-both', 'מנצ`סטר יונייטד חזרה מ-2:0 ל-2:3 דרמטי מול רומא', {
+  publishedAt: '2026-11-04T06:00:00.000Z',
+});
+eq('external comeback both-teams kept (veto must not fire on intermediate score)', filterCandidate(extComebackBoth, utdRomaGame), {
+  keep: true,
+  reason: 'ok',
 });
 
 // --------------------------------- game-day-or-after filter (2026-11-02) ---

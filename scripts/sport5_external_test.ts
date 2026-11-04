@@ -693,5 +693,38 @@ for (const { game, vi } of GAMES) {
   );
 }
 
+// ---------- Part 6: comeback headlines carry TWO scores (2026-11-04) ----------
+// Sport5's real Nov 3 UCL headline for Manchester United 3-2 Roma names
+// only Roma ('יונייטד' is not a registry alias — deliberately ambiguous,
+// so the matcher sees exactly one team) and carries the intermediate
+// 2:0 BEFORE the final 2:3. First-score matching vetoed it on 'teams'
+// although the final score is right there in the title, and the live
+// card came up empty (UCL external is terminal, so no fallback ran).
+// Score matching must consider every scoreline in the title.
+{
+  const mkItem = (vi: number, title: string, firstSeen: string): Sport5IndexItem => ({
+    vc: 893, vi, title, firstSeen: Date.parse(firstSeen), lastSeen: Date.parse(firstSeen),
+  });
+  const utdRoma: GameInput = {
+    home: 'Manchester United', away: 'Roma', homeScore: 3, awayScore: 2,
+    dateISO: '2026-11-03T20:00:00.000Z', league: 'champions-league',
+  };
+  const r1 = matchSport5Index(
+    [mkItem(600101, 'מטורף! יונייטד חזרה מ-2:0 ל-2:3 דרמטי מול רומא', '2026-11-04T06:00:00Z')],
+    utdRoma, CATEGORY
+  );
+  check('comeback: single-team headline with final score later in title matches', r1.candidate?.id === 'sport5:600101');
+  const r2 = matchSport5Index(
+    [mkItem(600102, 'מנצ`סטר יונייטד חזרה מ-2:0 ל-2:3 דרמטי מול רומא', '2026-11-04T06:00:00Z')],
+    utdRoma, CATEGORY
+  );
+  check('comeback: both-teams headline with intermediate score first matches', r2.candidate?.id === 'sport5:600102');
+  const r3 = matchSport5Index(
+    [mkItem(600103, 'מטורף! יונייטד חזרה מ-2:0 ל-2:1 דרמטי מול רומא', '2026-11-04T06:00:00Z')],
+    utdRoma, CATEGORY
+  );
+  check('comeback: headline with no matching score still rejected', r3.candidate === null);
+}
+
 console.log(`\nsport5_external_test: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
