@@ -228,6 +228,31 @@ export function extractScore(title: string): [number, number] | null {
   return null;
 }
 
+/**
+ * Every scoreline in a title, in order. extractScore keeps first-score
+ * semantics (ranking, season-range guards), but score MATCHING must
+ * consider all of them: comeback narratives carry two — Sport5's real
+ * 'יונייטד חזרה מ-2:0 ל-2:3 דרמטי מול רומא' for Manchester United 3-2
+ * Roma leads with the intermediate 2:0 and only then the final 2:3.
+ * First-score matching vetoed that headline on its own intermediate
+ * score and left the (terminal-external) UCL card empty.
+ */
+export function extractScores(title: string): [number, number][] {
+  const out: [number, number][] = [];
+  for (const m of title.matchAll(SCORE_RE)) {
+    out.push([parseInt(m[1], 10), parseInt(m[2], 10)]);
+  }
+  return out;
+}
+
+/** True when ANY scoreline in the title equals the fixture score, either order. */
+export function titleHasScore(title: string, hs: number | null, as: number | null): boolean {
+  if (hs == null || as == null) return false;
+  return extractScores(title).some(
+    ([a, b]) => (a === hs && b === as) || (a === as && b === hs)
+  );
+}
+
 export type Proximity = 'ok' | 'near' | 'bad' | 'undated';
 
 export function dateProximity(publishedAt: string | undefined, gameISO: string): Proximity {
@@ -418,10 +443,10 @@ export function filterCandidate(
     }
   }
   if (!homeMentioned || !awayMentioned) {
-    const scoreMatches =
-      sc != null && game.homeScore != null && game.awayScore != null &&
-      ((sc[0] === game.homeScore && sc[1] === game.awayScore) ||
-        (sc[0] === game.awayScore && sc[1] === game.homeScore));
+    // Any-score matching (2026-11-04): a comeback headline's FIRST
+    // scoreline is the intermediate score, not the final one — the
+    // exception must look for the fixture score anywhere in the title.
+    const scoreMatches = titleHasScore(c.title, game.homeScore, game.awayScore);
     const singleTeamPreferred =
       (isPreferredChannel(c) || c.external === true) &&
       homeMentioned !== awayMentioned &&
@@ -442,8 +467,12 @@ export function filterCandidate(
   const as = game.awayScore;
   if (sc && hs != null && as != null) {
     const [a, b] = sc;
-    const matchesEither = (a === hs && b === as) || (a === as && b === hs);
-    if (!matchesEither) return { keep: false, reason: 'score' }; // veto (a)
+    // Veto (a) fires only when NO scoreline in the title matches the
+    // fixture score (2026-11-04): a comeback headline's intermediate
+    // score must not veto a title that also carries the final score.
+    // Veto (b) below keeps first-score semantics — it targets titles
+    // whose (single) score is written in the reversed order.
+    if (!titleHasScore(c.title, hs, as)) return { keep: false, reason: 'score' }; // veto (a)
     // Veto (b): home listed first + reversed digits + untrusted + undated.
     // Skipped for draws: a reversed draw scoreline is identical, so there
     // is no reversal to veto (e.g. "Leeds 0-0 Man Utd" is correct either way).
