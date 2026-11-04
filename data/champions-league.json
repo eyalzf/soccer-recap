@@ -2,7 +2,7 @@
   "league": "champions-league",
   "league_id": 42,
   "season": "2026/2027",
-  "updated_at": "2026-10-22T02:58:36.000Z",
+  "updated_at": "2026-11-04T03:59:10.000Z",
   "checked_through": "2026-09-19",
   "team_ids": {
     "Arsenal": 9825,
@@ -17,6 +17,105 @@
     "Villarreal": 10205
   },
   "games": [
+    {
+      "id": "manual-20261103-atletico-madrid-bayern-munchen",
+      "home": "Atlético Madrid",
+      "away": "Bayern München",
+      "dateISO": "2026-11-03T20:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9906.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/01ogkh1716960412.png",
+      "stage": "שלב הליגה · מחזור 4"
+    },
+    {
+      "id": "manual-20261103-barcelona-aston-villa",
+      "home": "Barcelona",
+      "away": "Aston Villa",
+      "dateISO": "2026-11-03T20:00:00.000Z",
+      "homeScore": 3,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8634.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10252.png",
+      "stage": "שלב הליגה · מחזור 4"
+    },
+    {
+      "id": "manual-20261103-bodo-glimt-lille",
+      "home": "Bodø/Glimt",
+      "away": "Lille",
+      "dateISO": "2026-11-03T20:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 0,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/uqpwwx1449165943.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/2giize1534005340.png",
+      "stage": "שלב הליגה · מחזור 4"
+    },
+    {
+      "id": "manual-20261103-feyenoord-inter",
+      "home": "Feyenoord",
+      "away": "Inter",
+      "dateISO": "2026-11-03T20:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 3,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/uturtx1473534803.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/ryhu6d1617113103.png",
+      "stage": "שלב הליגה · מחזור 4"
+    },
+    {
+      "id": "manual-20261103-lask-slovan-bratislava",
+      "home": "LASK",
+      "away": "Slovan Bratislava",
+      "dateISO": "2026-11-03T20:00:00.000Z",
+      "homeScore": 4,
+      "awayScore": 0,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/oox26l1683556395.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/uzkg701781199823.png",
+      "stage": "שלב הליגה · מחזור 4"
+    },
+    {
+      "id": "manual-20261103-manchester-united-roma",
+      "home": "Manchester United",
+      "away": "Roma",
+      "dateISO": "2026-11-03T20:00:00.000Z",
+      "homeScore": 3,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10260.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/jwro2s1760820674.png",
+      "stage": "שלב הליגה · מחזור 4"
+    },
+    {
+      "id": "manual-20261103-villarreal-paris-saint-germain",
+      "home": "Villarreal",
+      "away": "Paris Saint-Germain",
+      "dateISO": "2026-11-03T20:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 6,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10205.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/rwqrrq1473504808.png",
+      "stage": "שלב הליגה · מחזור 4"
+    },
+    {
+      "id": "manual-20261103-galatasaray-vfb-stuttgart",
+      "home": "Galatasaray",
+      "away": "VfB Stuttgart",
+      "dateISO": "2026-11-03T17:45:00.000Z",
+      "homeScore": 2,
+      "awayScore": 0,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/io7jk21767941298.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/yppyux1473454085.png",
+      "stage": "שלב הליגה · מחזור 4"
+    },
+    {
+      "id": "manual-20261103-shakhtar-donetsk-sporting-cp",
+      "home": "Shakhtar Donetsk",
+      "away": "Sporting CP",
+      "dateISO": "2026-11-03T17:45:00.000Z",
+      "homeScore": 0,
+      "awayScore": 1,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/sqrxsr1421791799.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/5hiuk71783137875.png",
+      "stage": "שלב הליגה · מחזור 4"
+    },
     {
       "id": "manual-20261021-aston-villa-viking",
       "home": "Aston Villa",
