@@ -2,7 +2,7 @@
   "league": "champions-league",
   "league_id": 42,
   "season": "2026/2027",
-  "updated_at": "2026-11-04T03:59:10.000Z",
+  "updated_at": "2026-11-05T03:58:04.000Z",
   "checked_through": "2026-09-19",
   "team_ids": {
     "Arsenal": 9825,
@@ -17,6 +17,105 @@
     "Villarreal": 10205
   },
   "games": [
+    {
+      "id": "manual-20261104-borussia-dortmund-real-betis",
+      "home": "Borussia Dortmund",
+      "away": "Real Betis",
+      "dateISO": "2026-11-04T20:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 1,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/tqo8ge1716960353.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8603.png",
+      "stage": "שלב הליגה · מחזור 4"
+    },
+    {
+      "id": "manual-20261104-fc-porto-napoli",
+      "home": "FC Porto",
+      "away": "Napoli",
+      "dateISO": "2026-11-04T20:00:00.000Z",
+      "homeScore": 4,
+      "awayScore": 1,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/xu47rb1628855600.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/l8qyxv1742982541.png",
+      "stage": "שלב הליגה · מחזור 4"
+    },
+    {
+      "id": "manual-20261104-psv-eindhoven-club-brugge",
+      "home": "PSV Eindhoven",
+      "away": "Club Brugge",
+      "dateISO": "2026-11-04T20:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 2,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/xfsz6i1721297428.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/mz8y0q1771129880.png",
+      "stage": "שלב הליגה · מחזור 4"
+    },
+    {
+      "id": "manual-20261104-rb-leipzig-manchester-city",
+      "home": "RB Leipzig",
+      "away": "Manchester City",
+      "dateISO": "2026-11-04T20:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 3,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/zjgapo1594244951.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8456.png",
+      "stage": "שלב הליגה · מחזור 4"
+    },
+    {
+      "id": "manual-20261104-lens-como",
+      "home": "Lens",
+      "away": "Como",
+      "dateISO": "2026-11-04T20:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 9,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/3pxoum1598797195.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/02x81t1627405841.png",
+      "stage": "שלב הליגה · מחזור 4"
+    },
+    {
+      "id": "manual-20261104-slavia-prague-arsenal",
+      "home": "Slavia Prague",
+      "away": "Arsenal",
+      "dateISO": "2026-11-04T20:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 2,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/l7kl4n1759252139.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9825.png",
+      "stage": "שלב הליגה · מחזור 4"
+    },
+    {
+      "id": "manual-20261104-viking-sabah-fk",
+      "home": "Viking",
+      "away": "Sabah FK",
+      "dateISO": "2026-11-04T20:00:00.000Z",
+      "homeScore": 4,
+      "awayScore": 1,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/9mzq961590148192.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/dug7wr1614888756.png",
+      "stage": "שלב הליגה · מחזור 4"
+    },
+    {
+      "id": "manual-20261104-aek-athens-real-madrid",
+      "home": "AEK Athens",
+      "away": "Real Madrid",
+      "dateISO": "2026-11-04T17:45:00.000Z",
+      "homeScore": 2,
+      "awayScore": 3,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/4nogst1602773624.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8633.png",
+      "stage": "שלב הליגה · מחזור 4"
+    },
+    {
+      "id": "manual-20261104-fenerbahce-liverpool",
+      "home": "Fenerbahçe",
+      "away": "Liverpool",
+      "dateISO": "2026-11-04T17:45:00.000Z",
+      "homeScore": 3,
+      "awayScore": 2,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/twxxvs1448199691.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8650.png",
+      "stage": "שלב הליגה · מחזור 4"
+    },
     {
       "id": "manual-20261103-atletico-madrid-bayern-munchen",
       "home": "Atlético Madrid",
