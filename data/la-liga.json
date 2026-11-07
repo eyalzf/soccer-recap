@@ -2,7 +2,7 @@
   "league": "la-liga",
   "league_id": 87,
   "season": "2026/2027",
-  "updated_at": "2026-11-03T03:58:52.000Z",
+  "updated_at": "2026-11-07T04:01:24.000Z",
   "checked_through": "2026-09-19",
   "team_ids": {
     "Villarreal": 10205,
@@ -36,6 +36,17 @@
     "Auriense Cented Academy": 2341117
   },
   "games": [
+    {
+      "id": "manual-20261106-sevilla-deportivo-alaves",
+      "home": "Sevilla",
+      "away": "Deportivo Alavés",
+      "dateISO": "2026-11-06T20:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8302.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9866.png",
+      "stage": "מחזור 12"
+    },
     {
       "id": "manual-20261102-deportivo-a-coruna-osasuna",
       "home": "Deportivo A Coruña",
