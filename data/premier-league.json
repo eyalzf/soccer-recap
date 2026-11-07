@@ -2,7 +2,7 @@
   "league": "premier-league",
   "league_id": 47,
   "season": "2026/2027",
-  "updated_at": "2026-11-03T03:58:52.000Z",
+  "updated_at": "2026-11-07T04:01:24.000Z",
   "checked_through": "2026-09-19",
   "team_ids": {
     "Leeds United": 8463,
@@ -31,6 +31,17 @@
     "Fleetwood Town": 45723
   },
   "games": [
+    {
+      "id": "manual-20261106-everton-coventry-city",
+      "home": "Everton",
+      "away": "Coventry City",
+      "dateISO": "2026-11-06T20:00:00.000Z",
+      "homeScore": 3,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8668.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8669.png",
+      "stage": "מחזור 10"
+    },
     {
       "id": "manual-20261102-newcastle-united-everton",
       "home": "Newcastle United",
