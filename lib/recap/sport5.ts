@@ -156,17 +156,25 @@ export interface Sport5LeagueItem {
 
 /**
  * Parse the m.sport5.co.il Ligue 1 league page's article list: one
- * `<a id="ancItem" class="item">` per list item (the featured main
- * article uses different ids and is skipped — its stories also appear
- * as list items in the observed snapshots), each wrapping an <img>
+ * `<a id="ancItem" class="item">` per list item, each wrapping an <img>
  * whose alt is the headline and whose data-src is the thumbnail, plus
  * a DD.MM.YY date string. Only items carrying the btn-play marker are
  * kept — in the captured 2026-11-01 fixture that marker is present on
  * exactly the 7 video items and absent on the 2 text articles, so it
  * is the video signal (a text article matching teams+score would be a
- * wrong result). Pure — unit-tested against the captured real page
- * (fixtures/sport5/league-ligue1-2026-11-01.html). Duplicate anchors
- * dedupe by docId.
+ * wrong result). Pure — unit-tested against the captured real pages
+ * (fixtures/sport5/league-ligue1-2026-11-01.html and -2026-11-08.html).
+ * Duplicate anchors dedupe by docId.
+ *
+ * The featured main article is parsed too (2026-11-08): it lives in a
+ * `main-article-holder` block with different markup (`btn-play-main`
+ * instead of `btn-play`) and is NOT duplicated as a list item — the
+ * Nov 1 assumption that main stories also appear as list items failed
+ * for PSG–Troyes (Nov 7), whose highlight was main-article-only and
+ * went unharvested, leaving the card without its Sport5 source. Its
+ * date comes from the `<em class="date">DD.MM.YY - HH:MM</em>` stamp
+ * (same noon-UTC convention as list items); it is kept only when the
+ * block carries the btn-play-main video marker.
  */
 export function parseSport5LeaguePage(html: string): Sport5LeagueItem[] {
   const out: Sport5LeagueItem[] = [];
@@ -209,6 +217,54 @@ export function parseSport5LeaguePage(html: string): Sport5LeagueItem[] {
       ...(ds ? { thumb: ds[1] } : {}),
       publishedMs,
     });
+  }
+  // Featured main article (see the doc comment): same shape as a list
+  // item, taken from the main-article-holder block. Dedupe by docId —
+  // when the main story also appears as a list item, the list copy
+  // (parsed above) wins.
+  // Anchor on the div's class attribute: the literal 'main-article-holder'
+  // also appears inside a <script> (a querySelector string) earlier in
+  // the page, and a slice from there misses the real block.
+  const holderIdx = html.indexOf('class="main-article-holder');
+  if (holderIdx !== -1) {
+    const block = html.slice(holderIdx, holderIdx + 6000);
+    if (block.includes('btn-play-main')) {
+      const link = block.match(
+        /href="((?:https?:\/\/m\.sport5\.co\.il)?\/articles\.aspx\?FolderID=\d+&(?:amp;)?docID=(\d+))"/
+      );
+      const docId = link ? parseInt(link[2], 10) : NaN;
+      if (link && Number.isFinite(docId) && !seen.has(docId)) {
+        const alt = block.match(/<img[^>]*\salt="([^"]*)"/);
+        const mainTitle = block.match(/<span class="main-title">([^<]*)</);
+        const title = decodeEntities((alt?.[1] ?? mainTitle?.[1] ?? '').trim());
+        const date = block.match(/<em class="date">(\d{1,2})\.(\d{1,2})\.(\d{2})/);
+        if (title && date) {
+          const publishedMs = Date.UTC(
+            2000 + parseInt(date[3], 10),
+            parseInt(date[2], 10) - 1,
+            parseInt(date[1], 10),
+            12
+          );
+          // The mask img's own src is the main article's thumbnail. A
+          // data-src in this block belongs to a later list item (the
+          // 6000-char window reaches past the main article), so it is
+          // only a fallback when the mask img is lazy-loaded.
+          const src = block.match(/<img[^>]*\ssrc="(https:\/\/[^"]+)"/);
+          const ds = block.match(/data-src="([^"]+)"/);
+          const articleUrl = link[1].startsWith('http')
+            ? link[1]
+            : `https://m.sport5.co.il${link[1]}`;
+          seen.add(docId);
+          out.push({
+            docId,
+            articleUrl,
+            title,
+            ...(src ? { thumb: src[1] } : ds ? { thumb: ds[1] } : {}),
+            publishedMs,
+          });
+        }
+      }
+    }
   }
   return out;
 }
