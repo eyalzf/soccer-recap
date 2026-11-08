@@ -2,7 +2,7 @@
   "league": "leading-teams",
   "league_id": 0,
   "season": "2026/27",
-  "updated_at": "2026-11-06T04:02:10.000Z",
+  "updated_at": "2026-11-08T04:06:27.000Z",
   "checked_through": "2026-08-01",
   "team_ids": {
     "1. FC Magdeburg": 8188,
@@ -47,9 +47,87 @@
     "Strasbourg": 9848,
     "Udinese": 8600,
     "Venezia": 7881,
-    "Werder Bremen": 8697
+    "Werder Bremen": 8697,
+    "SV Elversberg": 8232,
+    "Mainz 05": 9905,
+    "Sassuolo": 7943,
+    "Moreirense": 8348,
+    "Troyes": 10242,
+    "Charlotte FC": 1323940
   },
   "games": [
+    {
+      "id": "team-20261107-inter-miami-cf-charlotte-fc",
+      "home": "Inter Miami CF",
+      "away": "Charlotte FC",
+      "dateISO": "2026-11-07T21:00:00.000Z",
+      "homeScore": 3,
+      "awayScore": 3,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/960720.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/1323940.png",
+      "stage": "מחזור 34",
+      "competition": "mls"
+    },
+    {
+      "id": "team-20261107-sporting-cp-moreirense",
+      "home": "Sporting CP",
+      "away": "Moreirense",
+      "dateISO": "2026-11-07T20:30:00.000Z",
+      "homeScore": 1,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9768.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8348.png",
+      "stage": "מחזור 11",
+      "competition": "primeira-liga"
+    },
+    {
+      "id": "team-20261107-paris-saint-germain-troyes",
+      "home": "Paris Saint-Germain",
+      "away": "Troyes",
+      "dateISO": "2026-11-07T20:05:00.000Z",
+      "homeScore": 1,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9847.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10242.png",
+      "stage": "מחזור 10",
+      "competition": "ligue-1"
+    },
+    {
+      "id": "team-20261107-roma-sassuolo",
+      "home": "Roma",
+      "away": "Sassuolo",
+      "dateISO": "2026-11-07T19:45:00.000Z",
+      "homeScore": 3,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8686.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/7943.png",
+      "stage": "מחזור 11",
+      "competition": "serie-a"
+    },
+    {
+      "id": "team-20261107-borussia-dortmund-sv-elversberg",
+      "home": "Borussia Dortmund",
+      "away": "SV Elversberg",
+      "dateISO": "2026-11-07T14:30:00.000Z",
+      "homeScore": 2,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9789.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8232.png",
+      "stage": "מחזור 9",
+      "competition": "bundesliga"
+    },
+    {
+      "id": "team-20261107-mainz-05-bayern-munchen",
+      "home": "Mainz 05",
+      "away": "Bayern München",
+      "dateISO": "2026-11-07T14:30:00.000Z",
+      "homeScore": 1,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9905.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9823.png",
+      "stage": "מחזור 9",
+      "competition": "bundesliga"
+    },
     {
       "id": "team-20261105-az-alkmaar-juventus",
       "home": "AZ Alkmaar",
@@ -155,7 +233,7 @@
       "awayScore": 2,
       "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9823.png",
       "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9789.png",
-      "stage": "מחזור 9",
+      "stage": "מחזור 8",
       "competition": "bundesliga"
     },
     {
