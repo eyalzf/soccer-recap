@@ -2,7 +2,7 @@
   "league": "la-liga",
   "league_id": 87,
   "season": "2026/2027",
-  "updated_at": "2026-11-07T04:01:24.000Z",
+  "updated_at": "2026-11-08T04:06:27.000Z",
   "checked_through": "2026-09-19",
   "team_ids": {
     "Villarreal": 10205,
@@ -36,6 +36,50 @@
     "Auriense Cented Academy": 2341117
   },
   "games": [
+    {
+      "id": "manual-20261107-valencia-real-madrid",
+      "home": "Valencia",
+      "away": "Real Madrid",
+      "dateISO": "2026-11-07T20:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 3,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10267.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8633.png",
+      "stage": "מחזור 12"
+    },
+    {
+      "id": "manual-20261107-osasuna-athletic-club",
+      "home": "Osasuna",
+      "away": "Athletic Club",
+      "dateISO": "2026-11-07T16:30:00.000Z",
+      "homeScore": 1,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8371.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8315.png",
+      "stage": "מחזור 12"
+    },
+    {
+      "id": "manual-20261107-espanyol-deportivo-a-coruna",
+      "home": "Espanyol",
+      "away": "Deportivo A Coruña",
+      "dateISO": "2026-11-07T14:15:00.000Z",
+      "homeScore": 0,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8558.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9783.png",
+      "stage": "מחזור 12"
+    },
+    {
+      "id": "manual-20261107-malaga-racing-santander",
+      "home": "Málaga",
+      "away": "Racing Santander",
+      "dateISO": "2026-11-07T13:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9864.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8696.png",
+      "stage": "מחזור 12"
+    },
     {
       "id": "manual-20261106-sevilla-deportivo-alaves",
       "home": "Sevilla",
