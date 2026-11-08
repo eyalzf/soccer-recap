@@ -726,5 +726,88 @@ for (const { game, vi } of GAMES) {
   check('comeback: headline with no matching score still rejected', r3.candidate === null);
 }
 
+// ---------- Part 7: featured main article (2026-11-08) ----------
+// The Ligue 1 league page's featured main article uses different markup
+// (main-article-holder, btn-play-main) and is NOT duplicated as a list
+// item — the Nov 1 assumption failed for PSG–Troyes (Nov 7): its
+// highlight 'בהילוך שני: 0:1 קטן לפ.ס.ז\` בליגה' was main-article-only,
+// the harvest missed it, and the live card showed YouTube results
+// instead of the Sport5 source even though Sport5 priority was live.
+// The parser must harvest the main article when it carries the
+// btn-play-main video marker.
+{
+  const toIndex = (
+    items: Sport5LeagueItem[],
+    seen: number
+  ): Sport5IndexItem[] =>
+    items.map((i) => ({
+      vc: 0,
+      vi: 0,
+      docId: i.docId,
+      articleUrl: i.articleUrl,
+      title: i.title,
+      ...(i.thumb ? { thumb: i.thumb } : {}),
+      publishedMs: i.publishedMs,
+      firstSeen: seen,
+      lastSeen: seen,
+    }));
+  const leagueHtml = readFileSync(
+    path.join(__dirname, '..', 'fixtures', 'sport5', 'league-ligue1-2026-11-08.html'),
+    'utf8'
+  );
+  const league = parseSport5LeaguePage(leagueHtml);
+  eq('main article: 7 list items + 1 main article', league.length, 8);
+  const main = league.find((i) => i.docId === 566805)!;
+  eq(
+    'main article: PSG title',
+    main.title,
+    'בהילוך שני: 0:1 קטן לפ.ס.ז\` בליגה'
+  );
+  eq('main article: date is the listing day, noon UTC', main.publishedMs, Date.UTC(2026, 10, 7, 12));
+  eq(
+    'main article: article URL',
+    main.articleUrl,
+    'https://m.sport5.co.il/articles.aspx?FolderID=496&docID=566805'
+  );
+  check('main article: thumbnail captured', !!main.thumb);
+  const psgTroyes: GameInput = {
+    home: 'Paris Saint-Germain', away: 'Troyes', homeScore: 1, awayScore: 0,
+    dateISO: '2026-11-07T20:05:00.000Z', league: 'leading-teams',
+  };
+  const idx = toIndex(league, Date.parse('2026-11-08T08:50:00Z'));
+  const r = matchSport5Index(idx, psgTroyes, CATEGORY);
+  eq('main article: PSG–Troyes matches the main article', r.candidate?.id, 'sport5:article:566805');
+
+  // Guard: a main article WITHOUT the btn-play-main marker is a text
+  // story, not a video — skipped, same as text list items.
+  const textMain = `<div class="main-article-holder share-bar-holder">
+    <a href="https://m.sport5.co.il/articles.aspx?FolderID=496&docID=999001" id="ContentPlaceHolder1_ucMainArticle_ancMainArticle">
+      <div class="main-article"><div class="mask">
+        <img src="https://www.sport5.co.il/Sip_Storage/FILES/8/size475x318/1.jpg" alt="פ.ס.ז\` ניצחה 0:1 את טרואה" />
+      </div><div class="main-article-container">
+        <div class="text"><span class="main-title">פ.ס.ז\` ניצחה 0:1 את טרואה</span></div>
+        <div class="writer-label"><a href="/Author/x"><span class="writer-label-text">מערכת</span>
+        <em class="date">07.11.26 - 23:59</em></a></div>
+      </div></div></a></div>`;
+  eq('main article: no btn-play-main marker is skipped', parseSport5LeaguePage(textMain).length, 0);
+
+  // The marker alone is enough: the same block WITH btn-play-main parses.
+  const videoMain = textMain.replace(
+    '<div class="main-article-container">',
+    '<div class="main-article-container"><a href="https://m.sport5.co.il/articles.aspx?FolderID=496&docID=999001" class=" btn-play-main">'
+  );
+  const parsedVideoMain = parseSport5LeaguePage(videoMain);
+  eq('main article: btn-play-main marker parses', parsedVideoMain.length, 1);
+  eq('main article: synthetic docId', parsedVideoMain[0]?.docId, 999001);
+
+  // When the main story also appears as a list item, it is harvested
+  // exactly once (the list copy wins).
+  const dupHtml = videoMain + `
+    <a href="https://m.sport5.co.il/articles.aspx?FolderID=496&docID=999001" id="ancItem" class="item">
+      <div class="btn-play"><img data-src="https://example.com/t.jpg" alt="פ.ס.ז\` ניצחה 0:1 את טרואה" /></div>
+      <span>07.11.26</span></a>`;
+  eq('main article: duplicated as list item parses once', parseSport5LeaguePage(dupHtml).length, 1);
+}
+
 console.log(`\nsport5_external_test: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
