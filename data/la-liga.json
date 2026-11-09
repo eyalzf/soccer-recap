@@ -2,7 +2,7 @@
   "league": "la-liga",
   "league_id": 87,
   "season": "2026/2027",
-  "updated_at": "2026-11-08T04:06:27.000Z",
+  "updated_at": "2026-11-09T04:09:39.000Z",
   "checked_through": "2026-09-19",
   "team_ids": {
     "Villarreal": 10205,
@@ -36,6 +36,61 @@
     "Auriense Cented Academy": 2341117
   },
   "games": [
+    {
+      "id": "manual-20261108-atletico-madrid-barcelona",
+      "home": "Atlético Madrid",
+      "away": "Barcelona",
+      "dateISO": "2026-11-08T20:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9906.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8634.png",
+      "stage": "מחזור 12"
+    },
+    {
+      "id": "manual-20261108-celta-vigo-levante",
+      "home": "Celta Vigo",
+      "away": "Levante",
+      "dateISO": "2026-11-08T17:30:00.000Z",
+      "homeScore": 0,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9910.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8581.png",
+      "stage": "מחזור 12"
+    },
+    {
+      "id": "manual-20261108-villarreal-getafe",
+      "home": "Villarreal",
+      "away": "Getafe",
+      "dateISO": "2026-11-08T17:30:00.000Z",
+      "homeScore": 2,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10205.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8305.png",
+      "stage": "מחזור 12"
+    },
+    {
+      "id": "manual-20261108-real-sociedad-rayo-vallecano",
+      "home": "Real Sociedad",
+      "away": "Rayo Vallecano",
+      "dateISO": "2026-11-08T15:15:00.000Z",
+      "homeScore": 1,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8560.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8370.png",
+      "stage": "מחזור 12"
+    },
+    {
+      "id": "manual-20261108-elche-real-betis",
+      "home": "Elche",
+      "away": "Real Betis",
+      "dateISO": "2026-11-08T13:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10268.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8603.png",
+      "stage": "מחזור 12"
+    },
     {
       "id": "manual-20261107-valencia-real-madrid",
       "home": "Valencia",
