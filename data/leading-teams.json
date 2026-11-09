@@ -2,7 +2,7 @@
   "league": "leading-teams",
   "league_id": 0,
   "season": "2026/27",
-  "updated_at": "2026-11-08T04:06:27.000Z",
+  "updated_at": "2026-11-09T04:09:39.000Z",
   "checked_through": "2026-08-01",
   "team_ids": {
     "1. FC Magdeburg": 8188,
@@ -53,9 +53,71 @@
     "Sassuolo": 7943,
     "Moreirense": 8348,
     "Troyes": 10242,
-    "Charlotte FC": 1323940
+    "Charlotte FC": 1323940,
+    "FC Twente": 8611,
+    "Kilmarnock": 8597
   },
   "games": [
+    {
+      "id": "team-20261108-fiorentina-juventus",
+      "home": "Fiorentina",
+      "away": "Juventus",
+      "dateISO": "2026-11-08T19:45:00.000Z",
+      "homeScore": 2,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8535.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9885.png",
+      "stage": "מחזור 11",
+      "competition": "serie-a"
+    },
+    {
+      "id": "team-20261108-inter-como",
+      "home": "Inter",
+      "away": "Como",
+      "dateISO": "2026-11-08T17:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8636.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/02x81t1627405841.png",
+      "stage": "מחזור 11",
+      "competition": "serie-a"
+    },
+    {
+      "id": "team-20261108-celtic-kilmarnock",
+      "home": "Celtic",
+      "away": "Kilmarnock",
+      "dateISO": "2026-11-08T16:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9925.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8597.png",
+      "stage": "מחזור 13",
+      "competition": "scottish-premiership"
+    },
+    {
+      "id": "team-20261108-genoa-ac-milan",
+      "home": "Genoa",
+      "away": "AC Milan",
+      "dateISO": "2026-11-08T14:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10233.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8564.png",
+      "stage": "מחזור 11",
+      "competition": "serie-a"
+    },
+    {
+      "id": "team-20261108-fc-twente-ajax",
+      "home": "FC Twente",
+      "away": "Ajax",
+      "dateISO": "2026-11-08T13:30:00.000Z",
+      "homeScore": 2,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8611.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8593.png",
+      "stage": "מחזור 12",
+      "competition": "eredivisie"
+    },
     {
       "id": "team-20261107-inter-miami-cf-charlotte-fc",
       "home": "Inter Miami CF",
