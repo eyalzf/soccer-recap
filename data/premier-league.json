@@ -2,7 +2,7 @@
   "league": "premier-league",
   "league_id": 47,
   "season": "2026/2027",
-  "updated_at": "2026-11-08T04:06:27.000Z",
+  "updated_at": "2026-11-09T04:09:39.000Z",
   "checked_through": "2026-09-19",
   "team_ids": {
     "Leeds United": 8463,
@@ -31,6 +31,61 @@
     "Fleetwood Town": 45723
   },
   "games": [
+    {
+      "id": "manual-20261108-manchester-united-aston-villa",
+      "home": "Manchester United",
+      "away": "Aston Villa",
+      "dateISO": "2026-11-08T16:30:00.000Z",
+      "homeScore": 4,
+      "awayScore": 4,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10260.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10252.png",
+      "stage": "מחזור 10"
+    },
+    {
+      "id": "manual-20261108-brighton-hove-albion-brentford",
+      "home": "Brighton & Hove Albion",
+      "away": "Brentford",
+      "dateISO": "2026-11-08T14:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10204.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9937.png",
+      "stage": "מחזור 10"
+    },
+    {
+      "id": "manual-20261108-crystal-palace-liverpool",
+      "home": "Crystal Palace",
+      "away": "Liverpool",
+      "dateISO": "2026-11-08T14:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 3,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9826.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8650.png",
+      "stage": "מחזור 10"
+    },
+    {
+      "id": "manual-20261108-ipswich-town-afc-bournemouth",
+      "home": "Ipswich Town",
+      "away": "AFC Bournemouth",
+      "dateISO": "2026-11-08T14:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9902.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8678.png",
+      "stage": "מחזור 10"
+    },
+    {
+      "id": "manual-20261108-sunderland-chelsea",
+      "home": "Sunderland",
+      "away": "Chelsea",
+      "dateISO": "2026-11-08T14:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8472.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8455.png",
+      "stage": "מחזור 10"
+    },
     {
       "id": "manual-20261107-nottingham-forest-manchester-city",
       "home": "Nottingham Forest",
