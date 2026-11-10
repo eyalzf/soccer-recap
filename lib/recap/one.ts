@@ -299,6 +299,10 @@ export function buildOneCandidate(
     durationSec: parseDurationSec(summary.duration),
     channelName: 'ONE',
     external: true,
+    // Fixture-mapped (see types.ts): this video IS this match's
+    // summary by ONE's own API, so its editorial headline must not
+    // be title-parsed for teams/score by filterCandidate.
+    fixtureMapped: true,
     lang: 'he',
   };
 }

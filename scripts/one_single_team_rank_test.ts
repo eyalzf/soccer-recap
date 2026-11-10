@@ -215,6 +215,67 @@ eq('external comeback both-teams kept (veto must not fire on intermediate score)
   reason: 'ok',
 });
 
+// ----------------- fixture-mapped ONE website candidates (2026-11-10) --------
+// ONE's website video for Fiorentina 2-2 Juventus (Nov 8) is the match's
+// summary by ONE's own API (match 479306, video 111304) — but its
+// editorial headline 'פיורנטינה נשארת בתחתית אחרי תיקו עם יובה' names
+// only Fiorentina ('יובה' is not a Juventus registry alias) and carries
+// no scoreline, so ingest vetoed it on 'teams' even though the fixture
+// matcher had already proven it correct, and the live card showed
+// YouTube only. Fixture-mapped candidates skip the title-based
+// teams/score checks; every other guard still applies.
+const fioGame: GameInput = {
+  home: 'Fiorentina',
+  away: 'Juventus',
+  dateISO: '2026-11-08T19:45:00.000Z',
+  league: 'leading-teams',
+  homeScore: 2,
+  awayScore: 2,
+};
+const fioOneBase: RawCandidate = {
+  id: 'one:111304',
+  title: 'פיורנטינה נשארת בתחתית אחרי תיקו עם יובה',
+  url: 'https://www.one.co.il/match/479306',
+  source: 'one',
+  external: true,
+  fixtureMapped: true,
+  channelName: 'ONE',
+  lang: 'he',
+  publishedAt: '2026-11-08T19:45:00.000Z',
+  durationSec: 280,
+};
+eq('fixture-mapped ONE scoreless single-team headline kept', filterCandidate(fioOneBase, fioGame), {
+  keep: true,
+  reason: 'ok',
+});
+const fioOneUnmapped = { ...fioOneBase, fixtureMapped: undefined };
+eq('same headline without fixtureMapped rejected', filterCandidate(fioOneUnmapped, fioGame), {
+  keep: false,
+  reason: 'teams',
+});
+const fioSport5 = ext('sport5:article:fio', 'פיורנטינה נשארת בתחתית אחרי תיקו עם יובה', {
+  publishedAt: '2026-11-08T19:45:00.000Z',
+});
+eq('Sport5 title-matched twin still rejected', filterCandidate(fioSport5, fioGame), {
+  keep: false,
+  reason: 'teams',
+});
+const fioWrongScore = { ...fioOneBase, title: 'פיורנטינה - יובנטוס 0:1: ניצחון דרמטי ליובה' };
+eq('fixture-mapped ONE wrong-score title kept (veto skipped)', filterCandidate(fioWrongScore, fioGame), {
+  keep: true,
+  reason: 'ok',
+});
+const fioWrongScoreUnmapped = { ...fioWrongScore, fixtureMapped: undefined };
+eq('wrong-score title without fixtureMapped vetoed', filterCandidate(fioWrongScoreUnmapped, fioGame), {
+  keep: false,
+  reason: 'score',
+});
+const fioTooLong = { ...fioOneBase, durationSec: 2000 };
+eq('fixture-mapped ONE too-long still rejected', filterCandidate(fioTooLong, fioGame), {
+  keep: false,
+  reason: 'too-long',
+});
+
 // --------------------------------- game-day-or-after filter (2026-11-02) ---
 // A highlight cannot predate the game it recaps: IPFL's Oct 27
 // Haifa–BS 5-2 extended highlight matched the Nov 1 Petah Tikva–BS
