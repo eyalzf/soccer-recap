@@ -39,6 +39,15 @@ export interface RawCandidate {
    * source" card (new tab) and never as an embedded player.
    */
   external?: boolean;
+  /**
+   * Fixture-mapped by the source's own API (ONE website): the video
+   * is this exact match's summary video by construction (match id +
+   * Israel day + Hebrew team variants + exact score), so its title is
+   * ONE's editorial headline, not an identity signal — filterCandidate
+   * skips the title-based teams/score checks for these candidates.
+   * Never set for title-matched sources (Sport5, YouTube).
+   */
+  fixtureMapped?: boolean;
   lang: 'he' | 'en';
 }
 
