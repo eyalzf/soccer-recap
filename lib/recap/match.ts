@@ -442,7 +442,18 @@ export function filterCandidate(
       return { keep: false, reason: 'date' };
     }
   }
-  if (!homeMentioned || !awayMentioned) {
+  // Fixture-mapped candidates (ONE website, 2026-11-10): the video is
+  // this exact match's summary by the source's own API, so the title
+  // is an editorial headline, not an identity signal — ONE's real
+  // 'פיורנטינה נשארת בתחתית אחרי תיקו עם יובה' for Fiorentina 2-2
+  // Juventus names only Fiorentina ('יובה' is not a registry alias)
+  // and carries no scoreline, so the teams check below vetoed a video
+  // the fixture matcher had already proven correct. Title-based
+  // identity checks (teams here, score veto (a) below) do not apply;
+  // every other guard (deny-list, format, duration, date, competition,
+  // excluded terms, proximity) still does. Title-matched sources
+  // (Sport5, YouTube) are unaffected: they never set fixtureMapped.
+  if (!c.fixtureMapped && (!homeMentioned || !awayMentioned)) {
     // Any-score matching (2026-11-04): a comeback headline's FIRST
     // scoreline is the intermediate score, not the final one — the
     // exception must look for the fixture score anywhere in the title.
@@ -472,7 +483,7 @@ export function filterCandidate(
     // score must not veto a title that also carries the final score.
     // Veto (b) below keeps first-score semantics — it targets titles
     // whose (single) score is written in the reversed order.
-    if (!titleHasScore(c.title, hs, as)) return { keep: false, reason: 'score' }; // veto (a)
+    if (!c.fixtureMapped && !titleHasScore(c.title, hs, as)) return { keep: false, reason: 'score' }; // veto (a)
     // Veto (b): home listed first + reversed digits + untrusted + undated.
     // Skipped for draws: a reversed draw scoreline is identical, so there
     // is no reversal to veto (e.g. "Leeds 0-0 Man Utd" is correct either way).
