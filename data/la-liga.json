@@ -2,7 +2,7 @@
   "league": "la-liga",
   "league_id": 87,
   "season": "2026/2027",
-  "updated_at": "2026-11-09T04:09:39.000Z",
+  "updated_at": "2026-11-11T04:05:04.000Z",
   "checked_through": "2026-09-19",
   "team_ids": {
     "Villarreal": 10205,
@@ -36,6 +36,30 @@
     "Auriense Cented Academy": 2341117
   },
   "games": [
+    {
+      "id": "cup-20261110-ue-tavernes-valencia",
+      "home": "UE Tavernes",
+      "away": "Valencia",
+      "dateISO": "2026-11-10T20:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 6,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/mzldoy1789165250.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10267.png",
+      "stage": "סיבוב ראשון",
+      "cup": "copa-del-rey"
+    },
+    {
+      "id": "cup-20261110-cd-anaitasuna-deportivo-alaves",
+      "home": "CD Anaitasuna",
+      "away": "Deportivo Alavés",
+      "dateISO": "2026-11-10T18:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 6,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/um09uy1726501356.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9866.png",
+      "stage": "סיבוב ראשון",
+      "cup": "copa-del-rey"
+    },
     {
       "id": "manual-20261108-atletico-madrid-barcelona",
       "home": "Atlético Madrid",
