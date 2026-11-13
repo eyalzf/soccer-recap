@@ -38,11 +38,16 @@ interface LeagueMeta {
   kind: 'club' | 'national';
 }
 
-function dayLabel(iso: string): string {
+function diffDaysFromToday(iso: string): number {
   const d = new Date(iso);
   const now = new Date();
   const dayStart = (x: Date) => new Date(x.getFullYear(), x.getMonth(), x.getDate()).getTime();
-  const diffDays = Math.round((dayStart(now) - dayStart(d)) / 86400000);
+  return Math.round((dayStart(now) - dayStart(d)) / 86400000);
+}
+
+function dayLabel(iso: string): string {
+  const d = new Date(iso);
+  const diffDays = diffDaysFromToday(iso);
   if (diffDays === 0) return 'היום';
   if (diffDays === 1) return 'אתמול';
   return d.toLocaleDateString('he-IL', {
@@ -96,6 +101,15 @@ export default function Home() {
   const isNations = mode === 'nations';
   const clubGames = useMemo(() => games.filter((g) => !isNationalSlug(g.league)), [games]);
   const nationGames = useMemo(() => games.filter((g) => isNationalSlug(g.league)), [games]);
+  /** Yesterday's national games drive the dot on the נבחרות toggle
+   * (clubs mode only): the default view is clubs, so without it a
+   * Nations League matchday passes unnoticed. Same local-day
+   * definition as the 'אתמול' group header. */
+  const hasNationGamesYesterday = useMemo(
+    () => nationGames.some((g) => diffDaysFromToday(g.dateISO) === 1),
+    [nationGames]
+  );
+  const showNationDot = !isNations && hasNationGamesYesterday;
   const modeGames = isNations ? nationGames : clubGames;
 
   const views = useMemo(
@@ -196,9 +210,11 @@ export default function Home() {
               className={'mode-opt' + (mode === 'nations' ? ' active' : '')}
               onClick={() => switchMode('nations')}
               aria-pressed={mode === 'nations'}
+              aria-label={showNationDot ? 'נבחרות, יש משחקים מאתמול' : undefined}
             >
               נבחרות
             </button>
+            {showNationDot && <span className="nation-dot" aria-hidden="true" />}
           </div>
         </div>
         <button
