@@ -280,8 +280,26 @@ a.recap-item { text-decoration: none; }
 .frow-scroll::-webkit-scrollbar { display: none; }
 /* Collapsed clubs/nations toggle: compact segmented control */
 .mode-toggle {
+  position: relative;
   display: inline-flex; background: var(--card);
   border: 1px solid var(--border); border-radius: 999px; padding: 3px; gap: 2px;
+}
+/* Dot on the toggle's outer corner (the נבחרות side) when yesterday has
+ * national-team games. It straddles the toggle's border — half outside —
+ * so it reads as an external badge, not part of the selector. */
+.nation-dot {
+  position: absolute; top: -7px; left: -5px; width: 14px; height: 14px;
+  border-radius: 50%; background: var(--accent); border: 2px solid var(--bg);
+  pointer-events: none; z-index: 2;
+  animation: nationDotGlow 1.8s ease-in-out infinite;
+}
+@keyframes nationDotGlow {
+  0% { box-shadow: 0 0 0 0 rgba(47,191,113,.55), 0 0 6px rgba(47,191,113,.8); }
+  70% { box-shadow: 0 0 0 8px rgba(47,191,113,0), 0 0 6px rgba(47,191,113,.8); }
+  100% { box-shadow: 0 0 0 0 rgba(47,191,113,0), 0 0 6px rgba(47,191,113,.8); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nation-dot { animation: none; }
 }
 .mode-opt {
   border: 0; background: transparent; color: var(--muted);
