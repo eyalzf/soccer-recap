@@ -1,6 +1,61 @@
 {
   "games": [
     {
+      "id": "nat-20261113-saint-martin-el-salvador",
+      "home": "Saint Martin",
+      "away": "El Salvador",
+      "dateISO": "2026-11-13T23:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 2,
+      "homeBadge": "https://flagcdn.com/w80/mf.png",
+      "awayBadge": "https://flagcdn.com/w80/sv.png",
+      "stage": "פלייאוף"
+    },
+    {
+      "id": "nat-20261113-grenada-saint-kitts-and-nevis",
+      "home": "Grenada",
+      "away": "Saint Kitts and Nevis",
+      "dateISO": "2026-11-13T20:00:00.000Z",
+      "homeScore": 3,
+      "awayScore": 2,
+      "homeBadge": "https://flagcdn.com/w80/gd.png",
+      "awayBadge": "https://flagcdn.com/w80/kn.png",
+      "stage": "שלב הבתים"
+    },
+    {
+      "id": "nat-20261113-puerto-rico-dominica",
+      "home": "Puerto Rico",
+      "away": "Dominica",
+      "dateISO": "2026-11-13T19:00:00.000Z",
+      "homeScore": 4,
+      "awayScore": 2,
+      "homeBadge": "https://flagcdn.com/w80/pr.png",
+      "awayBadge": "https://flagcdn.com/w80/dm.png",
+      "stage": "שלב הבתים"
+    },
+    {
+      "id": "nat-20261113-bermuda-saint-lucia",
+      "home": "Bermuda",
+      "away": "Saint Lucia",
+      "dateISO": "2026-11-13T19:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 2,
+      "homeBadge": "https://flagcdn.com/w80/bm.png",
+      "awayBadge": "https://flagcdn.com/w80/lc.png",
+      "stage": "שלב הבתים"
+    },
+    {
+      "id": "nat-20261113-curacao-panama",
+      "home": "Curaçao",
+      "away": "Panama",
+      "dateISO": "2026-11-13T00:30:00.000Z",
+      "homeScore": 0,
+      "awayScore": 0,
+      "homeBadge": "https://flagcdn.com/w80/cw.png",
+      "awayBadge": "https://flagcdn.com/w80/pa.png",
+      "stage": "רבע גמר"
+    },
+    {
       "id": "nat-20261112-antigua-and-barbuda-trinidad-and-tobago",
       "home": "Antigua and Barbuda",
       "away": "Trinidad and Tobago",
@@ -874,5 +929,5 @@
   "league_he": "ליגת האומות (אמריקה)",
   "season": "2026/27",
   "source": "concacaf.com",
-  "updated_at": "2026-11-13T04:13:59.000Z"
+  "updated_at": "2026-11-14T04:04:04.000Z"
 }
