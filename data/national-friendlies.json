@@ -1,6 +1,17 @@
 {
   "games": [
     {
+      "id": "fr-20261113-argentina-uruguay",
+      "home": "Argentina",
+      "away": "Uruguay",
+      "dateISO": "2026-11-13T23:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 2,
+      "homeBadge": "https://flagcdn.com/w80/ar.png",
+      "awayBadge": "https://flagcdn.com/w80/uy.png",
+      "stage": "משחק ידידות"
+    },
+    {
       "id": "fr-20261007-mexico-chile",
       "home": "Mexico",
       "away": "Chile",
@@ -246,5 +257,5 @@
   "league": "national-friendlies",
   "season": "2026",
   "source": "web research (Wikipedia, ESPN, Reuters, playmakerstats) - verified 2026-10-02",
-  "updated_at": "2026-10-08T02:59:08.000Z"
+  "updated_at": "2026-11-14T04:04:07.000Z"
 }
