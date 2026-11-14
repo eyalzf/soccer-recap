@@ -2,7 +2,7 @@
   "league": "la-liga",
   "league_id": 87,
   "season": "2026/2027",
-  "updated_at": "2026-11-13T04:13:59.000Z",
+  "updated_at": "2026-11-14T04:04:11.000Z",
   "checked_through": "2026-09-19",
   "team_ids": {
     "Villarreal": 10205,
@@ -34,9 +34,22 @@
     "UB Lebrijana": 477697,
     "Ribadesella CF": 189591,
     "Auriense Cented Academy": 2341117,
-    "CDA Navalcarnero": 161758
+    "CDA Navalcarnero": 161758,
+    "Salamanca CF UDS": 490334
   },
   "games": [
+    {
+      "id": "cup-20261113-salamanca-cf-uds-celta-vigo",
+      "home": "Salamanca CF UDS",
+      "away": "Celta Vigo",
+      "dateISO": "2026-11-13T20:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 5,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/490334.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9910.png",
+      "stage": "סיבוב ראשון",
+      "cup": "copa-del-rey"
+    },
     {
       "id": "cup-20261112-cda-navalcarnero-real-betis",
       "home": "CDA Navalcarnero",
