@@ -1,6 +1,39 @@
 {
   "games": [
     {
+      "id": "nat-20261114-algeria-togo",
+      "home": "Algeria",
+      "away": "Togo",
+      "dateISO": "2026-11-14T19:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 0,
+      "homeBadge": "https://flagcdn.com/w80/dz.png",
+      "awayBadge": "https://flagcdn.com/w80/tg.png",
+      "stage": "מוקדמות"
+    },
+    {
+      "id": "nat-20261114-angola-south-sudan",
+      "home": "Angola",
+      "away": "South Sudan",
+      "dateISO": "2026-11-14T19:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 0,
+      "homeBadge": "https://flagcdn.com/w80/ao.png",
+      "awayBadge": "https://flagcdn.com/w80/ss.png",
+      "stage": "מוקדמות"
+    },
+    {
+      "id": "nat-20261114-uganda-botswana",
+      "home": "Uganda",
+      "away": "Botswana",
+      "dateISO": "2026-11-14T16:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 1,
+      "homeBadge": "https://flagcdn.com/w80/ug.png",
+      "awayBadge": "https://flagcdn.com/w80/bw.png",
+      "stage": "מוקדמות"
+    },
+    {
       "id": "nat-20261113-morocco-niger",
       "home": "Morocco",
       "away": "Niger",
@@ -764,5 +797,5 @@
   "league_he": "גביע אפריקה",
   "season": "2027",
   "source": "cafonline.com",
-  "updated_at": "2026-11-14T04:04:00.000Z"
+  "updated_at": "2026-11-15T04:05:09.000Z"
 }
