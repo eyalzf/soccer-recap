@@ -1,6 +1,28 @@
 {
   "games": [
     {
+      "id": "fr-20261114-japan-brazil",
+      "home": "Japan",
+      "away": "Brazil",
+      "dateISO": "2026-11-14T10:15:00.000Z",
+      "homeScore": 3,
+      "awayScore": 2,
+      "homeBadge": "https://flagcdn.com/w80/jp.png",
+      "awayBadge": "https://flagcdn.com/w80/br.png",
+      "stage": "משחק ידידות"
+    },
+    {
+      "id": "fr-20261114-colombia-chile",
+      "home": "Colombia",
+      "away": "Chile",
+      "dateISO": "2026-11-14T00:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 0,
+      "homeBadge": "https://flagcdn.com/w80/co.png",
+      "awayBadge": "https://flagcdn.com/w80/cl.png",
+      "stage": "משחק ידידות"
+    },
+    {
       "id": "fr-20261113-argentina-uruguay",
       "home": "Argentina",
       "away": "Uruguay",
@@ -9,6 +31,17 @@
       "awayScore": 2,
       "homeBadge": "https://flagcdn.com/w80/ar.png",
       "awayBadge": "https://flagcdn.com/w80/uy.png",
+      "stage": "משחק ידידות"
+    },
+    {
+      "id": "fr-20261113-saudi-arabia-korea-republic",
+      "home": "Saudi Arabia",
+      "away": "Korea Republic",
+      "dateISO": "2026-11-13T14:30:00.000Z",
+      "homeScore": 3,
+      "awayScore": 2,
+      "homeBadge": "https://flagcdn.com/w80/sa.png",
+      "awayBadge": "https://flagcdn.com/w80/kr.png",
       "stage": "משחק ידידות"
     },
     {
@@ -257,5 +290,5 @@
   "league": "national-friendlies",
   "season": "2026",
   "source": "web research (Wikipedia, ESPN, Reuters, playmakerstats) - verified 2026-10-02",
-  "updated_at": "2026-11-14T04:04:07.000Z"
+  "updated_at": "2026-11-15T04:05:09.000Z"
 }
