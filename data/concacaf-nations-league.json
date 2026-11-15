@@ -1,6 +1,50 @@
 {
   "games": [
     {
+      "id": "nat-20261114-haiti-united-states",
+      "home": "Haiti",
+      "away": "United States",
+      "dateISO": "2026-11-14T21:30:00.000Z",
+      "homeScore": 0,
+      "awayScore": 6,
+      "homeBadge": "https://flagcdn.com/w80/ht.png",
+      "awayBadge": "https://flagcdn.com/w80/us.png",
+      "stage": "רבע גמר"
+    },
+    {
+      "id": "nat-20261114-sint-maarten-french-guiana",
+      "home": "Sint Maarten",
+      "away": "French Guiana",
+      "dateISO": "2026-11-14T19:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 5,
+      "homeBadge": "https://flagcdn.com/w80/sx.png",
+      "awayBadge": "https://flagcdn.com/w80/gf.png",
+      "stage": "שלב הבתים"
+    },
+    {
+      "id": "nat-20261114-guatemala-canada",
+      "home": "Guatemala",
+      "away": "Canada",
+      "dateISO": "2026-11-14T02:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 3,
+      "homeBadge": "https://flagcdn.com/w80/gt.png",
+      "awayBadge": "https://flagcdn.com/w80/ca.png",
+      "stage": "רבע גמר"
+    },
+    {
+      "id": "nat-20261114-montserrat-nicaragua",
+      "home": "Montserrat",
+      "away": "Nicaragua",
+      "dateISO": "2026-11-14T00:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 2,
+      "homeBadge": "https://flagcdn.com/w80/ms.png",
+      "awayBadge": "https://flagcdn.com/w80/ni.png",
+      "stage": "פלייאוף"
+    },
+    {
       "id": "nat-20261113-saint-martin-el-salvador",
       "home": "Saint Martin",
       "away": "El Salvador",
@@ -929,5 +973,5 @@
   "league_he": "ליגת האומות (אמריקה)",
   "season": "2026/27",
   "source": "concacaf.com",
-  "updated_at": "2026-11-14T04:04:04.000Z"
+  "updated_at": "2026-11-15T04:05:09.000Z"
 }
