@@ -1,6 +1,39 @@
 {
   "games": [
     {
+      "id": "nat-20261115-panama-curacao",
+      "home": "Panama",
+      "away": "Curaçao",
+      "dateISO": "2026-11-15T23:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 0,
+      "homeBadge": "https://flagcdn.com/w80/pa.png",
+      "awayBadge": "https://flagcdn.com/w80/cw.png",
+      "stage": "רבע גמר"
+    },
+    {
+      "id": "nat-20261115-jamaica-mexico",
+      "home": "Jamaica",
+      "away": "Mexico",
+      "dateISO": "2026-11-15T01:00:00.000Z",
+      "homeScore": 3,
+      "awayScore": 2,
+      "homeBadge": "https://flagcdn.com/w80/jm.png",
+      "awayBadge": "https://flagcdn.com/w80/mx.png",
+      "stage": "רבע גמר"
+    },
+    {
+      "id": "nat-20261115-saint-vincent-and-the-grenadines-belize",
+      "home": "Saint Vincent and the Grenadines",
+      "away": "Belize",
+      "dateISO": "2026-11-15T00:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 0,
+      "homeBadge": "https://flagcdn.com/w80/vc.png",
+      "awayBadge": "https://flagcdn.com/w80/bz.png",
+      "stage": "שלב הבתים"
+    },
+    {
       "id": "nat-20261114-haiti-united-states",
       "home": "Haiti",
       "away": "United States",
@@ -973,5 +1006,5 @@
   "league_he": "ליגת האומות (אמריקה)",
   "season": "2026/27",
   "source": "concacaf.com",
-  "updated_at": "2026-11-15T04:05:09.000Z"
+  "updated_at": "2026-11-16T04:03:50.000Z"
 }
