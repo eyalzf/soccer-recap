@@ -1,6 +1,116 @@
 {
   "games": [
     {
+      "id": "nat-20261116-germany-netherlands",
+      "home": "Germany",
+      "away": "Netherlands",
+      "dateISO": "2026-11-16T19:45:00.000Z",
+      "homeScore": 5,
+      "awayScore": 0,
+      "homeBadge": "https://flagcdn.com/w80/de.png",
+      "awayBadge": "https://flagcdn.com/w80/nl.png",
+      "stage": "שלב הבתים"
+    },
+    {
+      "id": "nat-20261116-greece-serbia",
+      "home": "Greece",
+      "away": "Serbia",
+      "dateISO": "2026-11-16T19:45:00.000Z",
+      "homeScore": 1,
+      "awayScore": 0,
+      "homeBadge": "https://flagcdn.com/w80/gr.png",
+      "awayBadge": "https://flagcdn.com/w80/rs.png",
+      "stage": "שלב הבתים"
+    },
+    {
+      "id": "nat-20261116-north-macedonia-slovenia",
+      "home": "North Macedonia",
+      "away": "Slovenia",
+      "dateISO": "2026-11-16T19:45:00.000Z",
+      "homeScore": 0,
+      "awayScore": 3,
+      "homeBadge": "https://flagcdn.com/w80/mk.png",
+      "awayBadge": "https://flagcdn.com/w80/si.png",
+      "stage": "שלב הבתים"
+    },
+    {
+      "id": "nat-20261116-switzerland-scotland",
+      "home": "Switzerland",
+      "away": "Scotland",
+      "dateISO": "2026-11-16T19:45:00.000Z",
+      "homeScore": 4,
+      "awayScore": 0,
+      "homeBadge": "https://flagcdn.com/w80/ch.png",
+      "awayBadge": "https://flagcdn.com/w80/gb-sct.png",
+      "stage": "שלב הבתים"
+    },
+    {
+      "id": "nat-20261116-gibraltar-malta",
+      "home": "Gibraltar",
+      "away": "Malta",
+      "dateISO": "2026-11-16T19:45:00.000Z",
+      "homeScore": 1,
+      "awayScore": 1,
+      "homeBadge": "https://flagcdn.com/w80/gi.png",
+      "awayBadge": "https://flagcdn.com/w80/mt.png",
+      "stage": "שלב הבתים"
+    },
+    {
+      "id": "nat-20261116-estonia-bulgaria",
+      "home": "Estonia",
+      "away": "Bulgaria",
+      "dateISO": "2026-11-16T17:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 1,
+      "homeBadge": "https://flagcdn.com/w80/ee.png",
+      "awayBadge": "https://flagcdn.com/w80/bg.png",
+      "stage": "שלב הבתים"
+    },
+    {
+      "id": "nat-20261116-iceland-luxembourg",
+      "home": "Iceland",
+      "away": "Luxembourg",
+      "dateISO": "2026-11-16T17:00:00.000Z",
+      "homeScore": 3,
+      "awayScore": 0,
+      "homeBadge": "https://flagcdn.com/w80/is.png",
+      "awayBadge": "https://flagcdn.com/w80/lu.png",
+      "stage": "שלב הבתים"
+    },
+    {
+      "id": "nat-20261116-lithuania-liechtenstein",
+      "home": "Lithuania",
+      "away": "Liechtenstein",
+      "dateISO": "2026-11-16T17:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 1,
+      "homeBadge": "https://flagcdn.com/w80/lt.png",
+      "awayBadge": "https://flagcdn.com/w80/li.png",
+      "stage": "שלב הבתים"
+    },
+    {
+      "id": "nat-20261116-faroe-islands-moldova",
+      "home": "Faroe Islands",
+      "away": "Moldova",
+      "dateISO": "2026-11-16T15:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 0,
+      "homeBadge": "https://flagcdn.com/w80/fo.png",
+      "awayBadge": "https://flagcdn.com/w80/md.png",
+      "stage": "שלב הבתים"
+    },
+    {
+      "id": "nat-20261116-kazakhstan-slovakia",
+      "home": "Kazakhstan",
+      "away": "Slovakia",
+      "dateISO": "2026-11-16T15:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 2,
+      "homeBadge": "https://flagcdn.com/w80/kz.png",
+      "awayBadge": "https://flagcdn.com/w80/sk.png",
+      "stage": "שלב הבתים"
+    },
+    {
       "id": "nat-20261115-belgium-italy",
       "home": "Belgium",
       "away": "Italy",
@@ -1522,5 +1632,5 @@
   "league": "nations-league",
   "season": "2026/27",
   "source": "uefa.com",
-  "updated_at": "2026-11-16T04:03:50.000Z"
+  "updated_at": "2026-11-17T04:04:56.000Z"
 }
