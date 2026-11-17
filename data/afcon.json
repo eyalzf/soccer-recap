@@ -1,6 +1,72 @@
 {
   "games": [
     {
+      "id": "nat-20261116-eritrea-guinea",
+      "home": "Eritrea",
+      "away": "Guinea",
+      "dateISO": "2026-11-16T16:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 3,
+      "homeBadge": "https://flagcdn.com/w80/er.png",
+      "awayBadge": "https://flagcdn.com/w80/gn.png",
+      "stage": "מוקדמות"
+    },
+    {
+      "id": "nat-20261116-central-african-republic-benin",
+      "home": "Central African Republic",
+      "away": "Benin",
+      "dateISO": "2026-11-16T16:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 1,
+      "homeBadge": "https://flagcdn.com/w80/cf.png",
+      "awayBadge": "https://flagcdn.com/w80/bj.png",
+      "stage": "מוקדמות"
+    },
+    {
+      "id": "nat-20261116-somalia-ghana",
+      "home": "Somalia",
+      "away": "Ghana",
+      "dateISO": "2026-11-16T15:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 1,
+      "homeBadge": "https://flagcdn.com/w80/so.png",
+      "awayBadge": "https://flagcdn.com/w80/gh.png",
+      "stage": "מוקדמות"
+    },
+    {
+      "id": "nat-20261116-namibia-cameroon",
+      "home": "Namibia",
+      "away": "Cameroon",
+      "dateISO": "2026-11-16T13:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 3,
+      "homeBadge": "https://flagcdn.com/w80/na.png",
+      "awayBadge": "https://flagcdn.com/w80/cm.png",
+      "stage": "מוקדמות"
+    },
+    {
+      "id": "nat-20261116-sudan-senegal",
+      "home": "Sudan",
+      "away": "Senegal",
+      "dateISO": "2026-11-16T13:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 4,
+      "homeBadge": "https://flagcdn.com/w80/sd.png",
+      "awayBadge": "https://flagcdn.com/w80/sn.png",
+      "stage": "מוקדמות"
+    },
+    {
+      "id": "nat-20261116-zimbabwe-equatorial-guinea",
+      "home": "Zimbabwe",
+      "away": "Equatorial Guinea",
+      "dateISO": "2026-11-16T13:00:00.000Z",
+      "homeScore": 3,
+      "awayScore": 0,
+      "homeBadge": "https://flagcdn.com/w80/zw.png",
+      "awayBadge": "https://flagcdn.com/w80/gq.png",
+      "stage": "מוקדמות"
+    },
+    {
       "id": "nat-20261114-algeria-togo",
       "home": "Algeria",
       "away": "Togo",
@@ -797,5 +863,5 @@
   "league_he": "גביע אפריקה",
   "season": "2027",
   "source": "cafonline.com",
-  "updated_at": "2026-11-15T04:05:09.000Z"
+  "updated_at": "2026-11-17T04:04:56.000Z"
 }
