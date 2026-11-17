@@ -1,6 +1,39 @@
 {
   "games": [
     {
+      "id": "nat-20261116-cuba-grenada",
+      "home": "Cuba",
+      "away": "Grenada",
+      "dateISO": "2026-11-16T19:00:00.000Z",
+      "homeScore": 9,
+      "awayScore": 0,
+      "homeBadge": "https://flagcdn.com/w80/cu.png",
+      "awayBadge": "https://flagcdn.com/w80/gd.png",
+      "stage": "שלב הבתים"
+    },
+    {
+      "id": "nat-20261116-guadeloupe-bermuda",
+      "home": "Guadeloupe",
+      "away": "Bermuda",
+      "dateISO": "2026-11-16T19:00:00.000Z",
+      "homeScore": 4,
+      "awayScore": 1,
+      "homeBadge": "https://flagcdn.com/w80/gp.png",
+      "awayBadge": "https://flagcdn.com/w80/bm.png",
+      "stage": "שלב הבתים"
+    },
+    {
+      "id": "nat-20261116-guyana-puerto-rico",
+      "home": "Guyana",
+      "away": "Puerto Rico",
+      "dateISO": "2026-11-16T19:00:00.000Z",
+      "homeScore": 4,
+      "awayScore": 2,
+      "homeBadge": "https://flagcdn.com/w80/gy.png",
+      "awayBadge": "https://flagcdn.com/w80/pr.png",
+      "stage": "שלב הבתים"
+    },
+    {
       "id": "nat-20261115-panama-curacao",
       "home": "Panama",
       "away": "Curaçao",
@@ -1006,5 +1039,5 @@
   "league_he": "ליגת האומות (אמריקה)",
   "season": "2026/27",
   "source": "concacaf.com",
-  "updated_at": "2026-11-16T04:03:50.000Z"
+  "updated_at": "2026-11-17T04:04:56.000Z"
 }
