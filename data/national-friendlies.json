@@ -1,6 +1,39 @@
 {
   "games": [
     {
+      "id": "fr-20261117-uruguay-dominican-republic",
+      "home": "Uruguay",
+      "away": "Dominican Republic",
+      "dateISO": "2026-11-17T23:30:00.000Z",
+      "homeScore": 5,
+      "awayScore": 0,
+      "homeBadge": "https://flagcdn.com/w80/uy.png",
+      "awayBadge": "https://flagcdn.com/w80/do.png",
+      "stage": "משחק ידידות"
+    },
+    {
+      "id": "fr-20261117-argentina-costa-rica",
+      "home": "Argentina",
+      "away": "Costa Rica",
+      "dateISO": "2026-11-17T23:00:00.000Z",
+      "homeScore": 7,
+      "awayScore": 0,
+      "homeBadge": "https://flagcdn.com/w80/ar.png",
+      "awayBadge": "https://flagcdn.com/w80/cr.png",
+      "stage": "משחק ידידות"
+    },
+    {
+      "id": "fr-20261117-singapore-brazil",
+      "home": "Singapore",
+      "away": "Brazil",
+      "dateISO": "2026-11-17T10:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 7,
+      "homeBadge": null,
+      "awayBadge": "https://flagcdn.com/w80/br.png",
+      "stage": "משחק ידידות"
+    },
+    {
       "id": "fr-20261114-japan-brazil",
       "home": "Japan",
       "away": "Brazil",
@@ -290,5 +323,5 @@
   "league": "national-friendlies",
   "season": "2026",
   "source": "web research (Wikipedia, ESPN, Reuters, playmakerstats) - verified 2026-10-02",
-  "updated_at": "2026-11-15T04:05:09.000Z"
+  "updated_at": "2026-11-18T04:13:17.000Z"
 }
