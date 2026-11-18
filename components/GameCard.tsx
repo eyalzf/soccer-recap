@@ -3,6 +3,7 @@
 import CompositeThumb from './CompositeThumb';
 import { cupLabelHe } from '../lib/cups';
 import { competitionLabelHe } from '../lib/competitions';
+import { isNationalSlug } from '../lib/leagues';
 
 export interface GameItem {
   id: string;
@@ -70,6 +71,7 @@ export default function GameCard({
               awayBadge={game.awayBadge}
               homeHe={game.homeHe}
               awayHe={game.awayHe}
+              national={isNationalSlug(game.league)}
             />
           )}
         </div>

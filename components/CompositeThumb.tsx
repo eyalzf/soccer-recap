@@ -7,6 +7,8 @@ interface Props {
   awayBadge: string | null;
   homeHe: string;
   awayHe: string;
+  /** National-team game: badges are flags, drawn rounded (option B). */
+  national?: boolean;
 }
 
 /**
@@ -17,7 +19,7 @@ interface Props {
  * and the AWAY team on the LEFT. The slots below are bound to team roles
  * (HOME_SLOT <- home team, AWAY_SLOT <- away team); do not "mirror" them.
  */
-export default function CompositeThumb({ homeBadge, awayBadge, homeHe, awayHe }: Props) {
+export default function CompositeThumb({ homeBadge, awayBadge, homeHe, awayHe, national }: Props) {
   const ref = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -99,6 +101,17 @@ export default function CompositeThumb({ homeBadge, awayBadge, homeHe, awayHe }:
         });
       };
 
+      // Rounded-rect path (manual arcs: no ctx.roundRect dependency).
+      const traceRoundRect = (x: number, y: number, w: number, h: number, r: number) => {
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.arcTo(x + w, y, x + w, y + h, r);
+        ctx.arcTo(x + w, y + h, x, y + h, r);
+        ctx.arcTo(x, y + h, x, y, r);
+        ctx.arcTo(x, y, x + w, y, r);
+        ctx.closePath();
+      };
+
       const drawCrest = (
         img: HTMLImageElement | null,
         slot: { x: number; label: string; fallback: string }
@@ -108,7 +121,34 @@ export default function CompositeThumb({ homeBadge, awayBadge, homeHe, awayHe }:
           const ratio = Math.min(size / img.width, size / img.height);
           const w = img.width * ratio;
           const h = img.height * ratio;
-          ctx.drawImage(img, slot.x - w / 2, 100 - h / 2, w, h);
+          const x = slot.x - w / 2;
+          const y = 100 - h / 2;
+          if (national) {
+            // Flags only (option B, 2026-11-18): rounded corners, a thin
+            // light border and a soft drop shadow. Club crests keep the
+            // plain draw below — their transparent, irregular shapes
+            // must never be clipped into a rectangle.
+            const r = 14;
+            ctx.save();
+            traceRoundRect(x, y, w, h, r);
+            ctx.shadowColor = 'rgba(0,0,0,0.5)';
+            ctx.shadowBlur = 14;
+            ctx.shadowOffsetY = 5;
+            ctx.fillStyle = '#000';
+            ctx.fill();
+            ctx.restore();
+            ctx.save();
+            traceRoundRect(x, y, w, h, r);
+            ctx.clip();
+            ctx.drawImage(img, x, y, w, h);
+            ctx.restore();
+            traceRoundRect(x, y, w, h, r);
+            ctx.strokeStyle = 'rgba(255,255,255,0.30)';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+          } else {
+            ctx.drawImage(img, x, y, w, h);
+          }
         } else {
           ctx.fillStyle = '#2a3a5c';
           ctx.beginPath();
@@ -130,7 +170,7 @@ export default function CompositeThumb({ homeBadge, awayBadge, homeHe, awayHe }:
       ctx.fillStyle = 'rgba(255,255,255,0.14)';
       ctx.fillRect(W / 2 - 1, 40, 2, 150);
     });
-  }, [homeBadge, awayBadge, homeHe, awayHe]);
+  }, [homeBadge, awayBadge, homeHe, awayHe, national]);
 
   return <canvas ref={ref} style={{ width: '100%', height: '100%', display: 'block' }} />;
 }
