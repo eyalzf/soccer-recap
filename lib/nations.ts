@@ -145,6 +145,7 @@ export const NATIONS: NationEntry[] = [
   { en: 'Jordan', he: 'ירדן', enAliases: ['JOR'], heAliases: [], iso: 'jo' },
   { en: 'Uzbekistan', he: 'אוזבקיסטן', enAliases: ['UZB'], heAliases: [], iso: 'uz' },
   { en: 'India', he: 'הודו', enAliases: ['IND'], heAliases: [], iso: 'in' },
+  { en: 'Singapore', he: 'סינגפור', enAliases: ['SGP'], heAliases: [], iso: 'sg' },
   // ----------------------------------------------------------------- CAF
   { en: 'Morocco', he: 'מרוקו', enAliases: ['MAR'], heAliases: [], iso: 'ma' },
   { en: 'Algeria', he: "אלג׳יריה", enAliases: ['ALG'], heAliases: ['אלגיריה'], iso: 'dz' },
