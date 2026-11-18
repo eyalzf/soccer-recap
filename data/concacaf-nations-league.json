@@ -1,6 +1,17 @@
 {
   "games": [
     {
+      "id": "nat-20261117-canada-guatemala",
+      "home": "Canada",
+      "away": "Guatemala",
+      "dateISO": "2026-11-17T01:00:00.000Z",
+      "homeScore": 4,
+      "awayScore": 1,
+      "homeBadge": "https://flagcdn.com/w80/ca.png",
+      "awayBadge": "https://flagcdn.com/w80/gt.png",
+      "stage": "רבע גמר"
+    },
+    {
       "id": "nat-20261116-cuba-grenada",
       "home": "Cuba",
       "away": "Grenada",
@@ -1039,5 +1050,5 @@
   "league_he": "ליגת האומות (אמריקה)",
   "season": "2026/27",
   "source": "concacaf.com",
-  "updated_at": "2026-11-17T04:04:56.000Z"
+  "updated_at": "2026-11-18T04:13:17.000Z"
 }
