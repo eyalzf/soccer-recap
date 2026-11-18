@@ -122,6 +122,17 @@
       "stage": "מוקדמות"
     },
     {
+      "id": "nat-20261117-togo-algeria",
+      "home": "Togo",
+      "away": "Algeria",
+      "dateISO": "2026-11-17T16:00:00.000Z",
+      "homeScore": 3,
+      "awayScore": 0,
+      "homeBadge": "https://flagcdn.com/w80/tg.png",
+      "awayBadge": "https://flagcdn.com/w80/dz.png",
+      "stage": "מוקדמות"
+    },
+    {
       "id": "nat-20261117-lesotho-gabon",
       "home": "Lesotho",
       "away": "Gabon",
@@ -1050,5 +1061,5 @@
   "league_he": "גביע אפריקה",
   "season": "2027",
   "source": "cafonline.com",
-  "updated_at": "2026-11-18T04:13:17.000Z"
+  "updated_at": "2026-11-18T04:13:53.000Z"
 }
