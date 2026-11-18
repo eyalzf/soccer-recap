@@ -29,7 +29,7 @@
       "dateISO": "2026-11-17T10:00:00.000Z",
       "homeScore": 0,
       "awayScore": 7,
-      "homeBadge": null,
+      "homeBadge": "https://flagcdn.com/w80/sg.png",
       "awayBadge": "https://flagcdn.com/w80/br.png",
       "stage": "משחק ידידות"
     },
