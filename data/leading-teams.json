@@ -2,9 +2,10 @@
   "league": "leading-teams",
   "league_id": 0,
   "season": "2026/27",
-  "updated_at": "2026-11-09T04:09:39.000Z",
+  "updated_at": "2026-11-21T04:02:24.000Z",
   "checked_through": "2026-08-01",
   "team_ids": {
+    "1. FC Köln": 8722,
     "1. FC Magdeburg": 8188,
     "AC Milan": 8564,
     "AZ Alkmaar": 10229,
@@ -58,6 +59,18 @@
     "Kilmarnock": 8597
   },
   "games": [
+    {
+      "id": "team-20261120-bayern-munchen-1-fc-koln",
+      "home": "Bayern München",
+      "away": "1. FC Köln",
+      "dateISO": "2026-11-20T19:30:00.000Z",
+      "homeScore": 1,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9823.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8722.png",
+      "stage": "מחזור 10",
+      "competition": "bundesliga"
+    },
     {
       "id": "team-20261108-fiorentina-juventus",
       "home": "Fiorentina",
