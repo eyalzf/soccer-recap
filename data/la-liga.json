@@ -2,7 +2,7 @@
   "league": "la-liga",
   "league_id": 87,
   "season": "2026/2027",
-  "updated_at": "2026-11-14T04:04:11.000Z",
+  "updated_at": "2026-11-21T04:02:24.000Z",
   "checked_through": "2026-09-19",
   "team_ids": {
     "Villarreal": 10205,
@@ -38,6 +38,17 @@
     "Salamanca CF UDS": 490334
   },
   "games": [
+    {
+      "id": "manual-20261120-athletic-club-espanyol",
+      "home": "Athletic Club",
+      "away": "Espanyol",
+      "dateISO": "2026-11-20T20:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8315.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8558.png",
+      "stage": "מחזור 13"
+    },
     {
       "id": "cup-20261113-salamanca-cf-uds-celta-vigo",
       "home": "Salamanca CF UDS",
