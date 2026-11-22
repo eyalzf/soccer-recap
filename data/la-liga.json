@@ -2,7 +2,7 @@
   "league": "la-liga",
   "league_id": 87,
   "season": "2026/2027",
-  "updated_at": "2026-11-21T04:02:24.000Z",
+  "updated_at": "2026-11-22T04:03:16.000Z",
   "checked_through": "2026-09-19",
   "team_ids": {
     "Villarreal": 10205,
@@ -38,6 +38,50 @@
     "Salamanca CF UDS": 490334
   },
   "games": [
+    {
+      "id": "manual-20261121-real-madrid-celta-vigo",
+      "home": "Real Madrid",
+      "away": "Celta Vigo",
+      "dateISO": "2026-11-21T19:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8633.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9910.png",
+      "stage": "מחזור 13"
+    },
+    {
+      "id": "manual-20261121-sevilla-real-betis",
+      "home": "Sevilla",
+      "away": "Real Betis",
+      "dateISO": "2026-11-21T16:30:00.000Z",
+      "homeScore": 1,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8302.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8603.png",
+      "stage": "מחזור 13"
+    },
+    {
+      "id": "manual-20261121-rayo-vallecano-valencia",
+      "home": "Rayo Vallecano",
+      "away": "Valencia",
+      "dateISO": "2026-11-21T14:15:00.000Z",
+      "homeScore": 0,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8370.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10267.png",
+      "stage": "מחזור 13"
+    },
+    {
+      "id": "manual-20261121-deportivo-alaves-deportivo-a-coruna",
+      "home": "Deportivo Alavés",
+      "away": "Deportivo A Coruña",
+      "dateISO": "2026-11-21T12:00:00.000Z",
+      "homeScore": 3,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9866.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9783.png",
+      "stage": "מחזור 13"
+    },
     {
       "id": "manual-20261120-athletic-club-espanyol",
       "home": "Athletic Club",
