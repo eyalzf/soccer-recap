@@ -2,7 +2,7 @@
   "league": "leading-teams",
   "league_id": 0,
   "season": "2026/27",
-  "updated_at": "2026-11-21T04:02:24.000Z",
+  "updated_at": "2026-11-22T04:03:16.000Z",
   "checked_through": "2026-08-01",
   "team_ids": {
     "1. FC Köln": 8722,
@@ -56,9 +56,86 @@
     "Troyes": 10242,
     "Charlotte FC": 1323940,
     "FC Twente": 8611,
-    "Kilmarnock": 8597
+    "Kilmarnock": 8597,
+    "Borussia Mönchengladbach": 9788,
+    "Parma": 10167,
+    "Nice": 9831,
+    "St Mirren": 9800,
+    "Columbus Crew": 6001
   },
   "games": [
+    {
+      "id": "team-20261121-inter-miami-cf-columbus-crew",
+      "home": "Inter Miami CF",
+      "away": "Columbus Crew",
+      "dateISO": "2026-11-21T23:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 3,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/960720.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/6001.png",
+      "stage": "סיבוב ראשון",
+      "competition": "mls"
+    },
+    {
+      "id": "team-20261121-sporting-cp-ud-da-serra",
+      "home": "Sporting CP",
+      "away": "UD da Serra",
+      "dateISO": "2026-11-21T18:00:00.000Z",
+      "homeScore": 4,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9768.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/vjx6y01739547761.png",
+      "stage": "סיבוב רביעי",
+      "competition": "taca-de-portugal"
+    },
+    {
+      "id": "team-20261121-parma-roma",
+      "home": "Parma",
+      "away": "Roma",
+      "dateISO": "2026-11-21T17:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 5,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10167.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8686.png",
+      "stage": "מחזור 12",
+      "competition": "serie-a"
+    },
+    {
+      "id": "team-20261121-nice-paris-saint-germain",
+      "home": "Nice",
+      "away": "Paris Saint-Germain",
+      "dateISO": "2026-11-21T16:15:00.000Z",
+      "homeScore": 2,
+      "awayScore": 3,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9831.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9847.png",
+      "stage": "מחזור 11",
+      "competition": "ligue-1"
+    },
+    {
+      "id": "team-20261121-celtic-st-mirren",
+      "home": "Celtic",
+      "away": "St Mirren",
+      "dateISO": "2026-11-21T15:00:00.000Z",
+      "homeScore": 4,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9925.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9800.png",
+      "stage": "מחזור 14",
+      "competition": "scottish-premiership"
+    },
+    {
+      "id": "team-20261121-borussia-monchengladbach-borussia-dortmund",
+      "home": "Borussia Mönchengladbach",
+      "away": "Borussia Dortmund",
+      "dateISO": "2026-11-21T13:30:00.000Z",
+      "homeScore": 0,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9788.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9789.png",
+      "stage": "מחזור 10",
+      "competition": "bundesliga"
+    },
     {
       "id": "team-20261120-bayern-munchen-1-fc-koln",
       "home": "Bayern München",
