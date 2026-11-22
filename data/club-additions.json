@@ -183,7 +183,20 @@
         "Salamanca UDS"
       ],
       "heAliases": []
+    },
+    {
+      "en": "UD da Serra",
+      "he": "דה סרה",
+      "enAliases": [
+        "Uniao Serra",
+        "União da Serra",
+        "UD Serra",
+        "União Desportiva da Serra"
+      ],
+      "heAliases": [
+        "אוניאו דה סרה"
+      ]
     }
   ],
-  "updated_at": "2026-11-14T04:03:51.000Z"
+  "updated_at": "2026-11-22T04:02:59.000Z"
 }
