@@ -2,7 +2,7 @@
   "league": "la-liga",
   "league_id": 87,
   "season": "2026/2027",
-  "updated_at": "2026-11-22T04:03:16.000Z",
+  "updated_at": "2026-11-23T04:01:06.000Z",
   "checked_through": "2026-09-19",
   "team_ids": {
     "Villarreal": 10205,
@@ -38,6 +38,50 @@
     "Salamanca CF UDS": 490334
   },
   "games": [
+    {
+      "id": "manual-20261122-getafe-atletico-madrid",
+      "home": "Getafe",
+      "away": "Atlético Madrid",
+      "dateISO": "2026-11-22T20:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 3,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8305.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9906.png",
+      "stage": "מחזור 13"
+    },
+    {
+      "id": "manual-20261122-osasuna-malaga",
+      "home": "Osasuna",
+      "away": "Málaga",
+      "dateISO": "2026-11-22T17:30:00.000Z",
+      "homeScore": 1,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8371.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9864.png",
+      "stage": "מחזור 13"
+    },
+    {
+      "id": "manual-20261122-racing-santander-real-sociedad",
+      "home": "Racing Santander",
+      "away": "Real Sociedad",
+      "dateISO": "2026-11-22T15:15:00.000Z",
+      "homeScore": 3,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8696.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8560.png",
+      "stage": "מחזור 13"
+    },
+    {
+      "id": "manual-20261122-barcelona-villarreal",
+      "home": "Barcelona",
+      "away": "Villarreal",
+      "dateISO": "2026-11-22T13:00:00.000Z",
+      "homeScore": 3,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8634.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10205.png",
+      "stage": "מחזור 13"
+    },
     {
       "id": "manual-20261121-real-madrid-celta-vigo",
       "home": "Real Madrid",
