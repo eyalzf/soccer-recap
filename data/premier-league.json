@@ -2,7 +2,7 @@
   "league": "premier-league",
   "league_id": 47,
   "season": "2026/2027",
-  "updated_at": "2026-11-22T04:03:16.000Z",
+  "updated_at": "2026-11-23T04:01:06.000Z",
   "checked_through": "2026-09-19",
   "team_ids": {
     "Leeds United": 8463,
@@ -31,6 +31,28 @@
     "Fleetwood Town": 45723
   },
   "games": [
+    {
+      "id": "manual-20261122-liverpool-manchester-united",
+      "home": "Liverpool",
+      "away": "Manchester United",
+      "dateISO": "2026-11-22T16:30:00.000Z",
+      "homeScore": 4,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8650.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10260.png",
+      "stage": "מחזור 11"
+    },
+    {
+      "id": "manual-20261122-hull-city-brighton-hove-albion",
+      "home": "Hull City",
+      "away": "Brighton & Hove Albion",
+      "dateISO": "2026-11-22T14:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8667.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10204.png",
+      "stage": "מחזור 11"
+    },
     {
       "id": "manual-20261121-newcastle-united-arsenal",
       "home": "Newcastle United",
