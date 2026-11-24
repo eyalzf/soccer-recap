@@ -2,7 +2,7 @@
   "league": "la-liga",
   "league_id": 87,
   "season": "2026/2027",
-  "updated_at": "2026-11-23T04:01:06.000Z",
+  "updated_at": "2026-11-24T04:00:44.000Z",
   "checked_through": "2026-09-19",
   "team_ids": {
     "Villarreal": 10205,
@@ -38,6 +38,17 @@
     "Salamanca CF UDS": 490334
   },
   "games": [
+    {
+      "id": "manual-20261123-levante-elche",
+      "home": "Levante",
+      "away": "Elche",
+      "dateISO": "2026-11-23T20:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8581.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10268.png",
+      "stage": "מחזור 13"
+    },
     {
       "id": "manual-20261122-getafe-atletico-madrid",
       "home": "Getafe",
