@@ -2,7 +2,7 @@
   "league": "champions-league",
   "league_id": 42,
   "season": "2026/2027",
-  "updated_at": "2026-11-05T03:58:04.000Z",
+  "updated_at": "2026-11-25T04:04:53.000Z",
   "checked_through": "2026-09-19",
   "team_ids": {
     "Arsenal": 9825,
@@ -17,6 +17,105 @@
     "Villarreal": 10205
   },
   "games": [
+    {
+      "id": "manual-20261124-arsenal-borussia-dortmund",
+      "home": "Arsenal",
+      "away": "Borussia Dortmund",
+      "dateISO": "2026-11-24T20:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9825.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/tqo8ge1716960353.png",
+      "stage": "שלב הליגה · מחזור 5"
+    },
+    {
+      "id": "manual-20261124-como-aek-athens",
+      "home": "Como",
+      "away": "AEK Athens",
+      "dateISO": "2026-11-24T20:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 0,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/02x81t1627405841.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/4nogst1602773624.png",
+      "stage": "שלב הליגה · מחזור 5"
+    },
+    {
+      "id": "manual-20261124-feyenoord-fc-porto",
+      "home": "Feyenoord",
+      "away": "FC Porto",
+      "dateISO": "2026-11-24T20:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 1,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/uturtx1473534803.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/xu47rb1628855600.png",
+      "stage": "שלב הליגה · מחזור 5"
+    },
+    {
+      "id": "manual-20261124-manchester-city-napoli",
+      "home": "Manchester City",
+      "away": "Napoli",
+      "dateISO": "2026-11-24T20:00:00.000Z",
+      "homeScore": 2,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8456.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/l8qyxv1742982541.png",
+      "stage": "שלב הליגה · מחזור 5"
+    },
+    {
+      "id": "manual-20261124-rb-leipzig-lens",
+      "home": "RB Leipzig",
+      "away": "Lens",
+      "dateISO": "2026-11-24T20:00:00.000Z",
+      "homeScore": 3,
+      "awayScore": 1,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/zjgapo1594244951.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/3pxoum1598797195.png",
+      "stage": "שלב הליגה · מחזור 5"
+    },
+    {
+      "id": "manual-20261124-real-madrid-psv-eindhoven",
+      "home": "Real Madrid",
+      "away": "PSV Eindhoven",
+      "dateISO": "2026-11-24T20:00:00.000Z",
+      "homeScore": 5,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8633.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/xfsz6i1721297428.png",
+      "stage": "שלב הליגה · מחזור 5"
+    },
+    {
+      "id": "manual-20261124-slovan-bratislava-real-betis",
+      "home": "Slovan Bratislava",
+      "away": "Real Betis",
+      "dateISO": "2026-11-24T20:00:00.000Z",
+      "homeScore": 0,
+      "awayScore": 2,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/uzkg701781199823.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8603.png",
+      "stage": "שלב הליגה · מחזור 5"
+    },
+    {
+      "id": "manual-20261124-bodo-glimt-lask",
+      "home": "Bodø/Glimt",
+      "away": "LASK",
+      "dateISO": "2026-11-24T17:45:00.000Z",
+      "homeScore": 1,
+      "awayScore": 0,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/uqpwwx1449165943.png",
+      "awayBadge": "https://r2.thesportsdb.com/images/media/team/badge/oox26l1683556395.png",
+      "stage": "שלב הליגה · מחזור 5"
+    },
+    {
+      "id": "manual-20261124-galatasaray-aston-villa",
+      "home": "Galatasaray",
+      "away": "Aston Villa",
+      "dateISO": "2026-11-24T17:45:00.000Z",
+      "homeScore": 1,
+      "awayScore": 0,
+      "homeBadge": "https://r2.thesportsdb.com/images/media/team/badge/io7jk21767941298.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10252.png",
+      "stage": "שלב הליגה · מחזור 5"
+    },
     {
       "id": "manual-20261104-borussia-dortmund-real-betis",
       "home": "Borussia Dortmund",
