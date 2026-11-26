@@ -57,7 +57,8 @@ import type { ExternalSourceConfig } from './leaguePlans';
 import type { GameInput, RawCandidate } from './types';
 
 const DAY = 86400000;
-const INDEX_KEY = 'external/sport5-index.json';
+export const SPORT5_INDEX_KEY = 'external/sport5-index.json';
+const INDEX_KEY = SPORT5_INDEX_KEY;
 /** Re-harvest at most this often; matching always uses the full index. */
 const HARVEST_TTL_MS = 30 * 60 * 1000;
 /** Index entries older than this (by firstSeen) are pruned. */
@@ -406,13 +407,17 @@ export async function harvestSport5VideoSitemap(
  * newest-first by firstSeen, then by vi (so a single-harvest batch
  * keeps the rail's newest-first order).
  */
+/** Index key: rail/sitemap items by vi, league-page articles by docId. */
+function sport5IndexKey(it: Sport5IndexItem): string {
+  return it.articleUrl ? `a:${it.docId}` : `v:${it.vi}`;
+}
+
 export function mergeSport5Index(
   prev: Sport5IndexItem[],
   fresh: Array<Sport5RailItem | Sport5LeagueItem>,
   now: number
 ): Sport5IndexItem[] {
-  const keyOf = (it: Sport5IndexItem): string =>
-    it.articleUrl ? `a:${it.docId}` : `v:${it.vi}`;
+  const keyOf = sport5IndexKey;
   const byKey = new Map<string, Sport5IndexItem>();
   for (const it of prev) byKey.set(keyOf(it), it);
   for (const f of fresh) {
@@ -456,13 +461,98 @@ export function mergeSport5Index(
     .sort((a, b) => b.firstSeen - a.firstSeen || b.vi - a.vi);
 }
 
+export interface Sport5RefreshResult {
+  items: Sport5IndexItem[];
+  /** Fresh items whose key was not in the index before. */
+  added: number;
+  /** Fresh items already in the index (title/thumb/lastSeen refreshed). */
+  refreshed: number;
+  /** Which sources returned items (a source returning null is a failure). */
+  sources: { rail: boolean; league: boolean; sitemap: boolean };
+}
+
+/**
+ * Forced harvest: all three sources are fetched and merged into the
+ * stored index regardless of HARVEST_TTL_MS. This is the scheduled
+ * harvest's entry point (see app/api/recap/harvest/route.ts) — the
+ * click-driven path still goes through loadSport5Index and its TTL.
+ * Each source failure is isolated: one failing still merges the
+ * others. A fully failed harvest leaves the stored index untouched
+ * and returns it. Never throws.
+ *
+ * `deps` exists for tests (in-memory store + stub harvesters, same
+ * injection pattern as oneSearch's fixtures?/fetchSummary?): the
+ * defaults are the real harvesters and the R2-backed store.
+ */
+export async function refreshSport5Index(deps?: {
+  load?: () => Promise<{ items: Sport5IndexItem[]; fetchedAt: number }>;
+  save?: (items: Sport5IndexItem[]) => Promise<void>;
+  harvestRail?: () => Promise<Sport5RailItem[] | null>;
+  harvestLeague?: () => Promise<Sport5LeagueItem[] | null>;
+  harvestSitemap?: () => Promise<Sport5RailItem[] | null>;
+}): Promise<Sport5RefreshResult> {
+  const load =
+    deps?.load ??
+    (async () => {
+      try {
+        const rec = await pget<Sport5Index>(INDEX_KEY);
+        if (rec && Array.isArray(rec.val?.items)) {
+          return { items: rec.val.items, fetchedAt: rec.fetchedAt };
+        }
+      } catch {
+        /* unreadable index = empty index */
+      }
+      return { items: [], fetchedAt: 0 };
+    });
+  const save =
+    deps?.save ??
+    (async (items: Sport5IndexItem[]) => {
+      try {
+        await pset(INDEX_KEY, { items } satisfies Sport5Index);
+      } catch {
+        /* persistence is best-effort; the in-memory copy still serves */
+      }
+    });
+  const prev = await load().catch(() => ({ items: [] as Sport5IndexItem[], fetchedAt: 0 }));
+  const now = Date.now();
+  const [freshRail, freshLeague, freshSitemap] = await Promise.all([
+    (deps?.harvestRail ?? harvestSport5Rail)(),
+    (deps?.harvestLeague ?? harvestSport5LeaguePage)(),
+    (deps?.harvestSitemap ?? harvestSport5VideoSitemap)(),
+  ]);
+  const sources = {
+    rail: freshRail !== null,
+    league: freshLeague !== null,
+    sitemap: freshSitemap !== null,
+  };
+  if (!freshRail && !freshLeague && !freshSitemap) {
+    return { items: prev.items, added: 0, refreshed: 0, sources };
+  }
+  const fresh = [
+    ...(freshRail ?? []),
+    ...(freshLeague ?? []),
+    ...(freshSitemap ?? []),
+  ];
+  const prevKeys = new Set(prev.items.map(sport5IndexKey));
+  const freshKeys = new Set<string>();
+  let added = 0;
+  let refreshed = 0;
+  for (const f of fresh) {
+    const key = 'docId' in f ? `a:${f.docId}` : `v:${f.vi}`;
+    if (freshKeys.has(key)) continue;
+    freshKeys.add(key);
+    if (prevKeys.has(key)) refreshed++;
+    else added++;
+  }
+  const items = mergeSport5Index(prev.items, fresh, now);
+  await save(items);
+  return { items, added, refreshed, sources };
+}
+
 /**
  * Load the accumulated index, re-harvesting first when the last
- * harvest is older than HARVEST_TTL_MS. All three sources are
- * harvested (rail + Ligue 1 league page + video news-sitemap) and each
- * failure is isolated: one source failing still merges the others. A
- * fully failed harvest falls back to the stored index (possibly
- * empty) — never throws.
+ * harvest is older than HARVEST_TTL_MS. A fully failed harvest falls
+ * back to the stored index (possibly empty) — never throws.
  */
 export async function loadSport5Index(): Promise<Sport5IndexItem[]> {
   let items: Sport5IndexItem[] = [];
@@ -478,24 +568,7 @@ export async function loadSport5Index(): Promise<Sport5IndexItem[]> {
   }
   const now = Date.now();
   if (now - lastHarvest > HARVEST_TTL_MS) {
-    const [freshRail, freshLeague, freshSitemap] = await Promise.all([
-      harvestSport5Rail(),
-      harvestSport5LeaguePage(),
-      harvestSport5VideoSitemap(),
-    ]);
-    const fresh = [
-      ...(freshRail ?? []),
-      ...(freshLeague ?? []),
-      ...(freshSitemap ?? []),
-    ];
-    if (freshRail || freshLeague || freshSitemap) {
-      items = mergeSport5Index(items, fresh, now);
-      try {
-        await pset(INDEX_KEY, { items } satisfies Sport5Index);
-      } catch {
-        /* persistence is best-effort; the in-memory copy still serves */
-      }
-    }
+    return (await refreshSport5Index()).items;
   }
   return items;
 }
