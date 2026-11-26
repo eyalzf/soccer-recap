@@ -20,6 +20,7 @@ import {
   mergeSport5Index,
   parseSport5LeaguePage,
   parseSport5Rail,
+  parseSport5VideoSitemap,
   type Sport5IndexItem,
   type Sport5LeagueItem,
 } from '../lib/recap/sport5';
@@ -910,6 +911,64 @@ for (const { game, vi } of GAMES) {
   // guard itself can reject it.
   const guardExternal: RawCandidate = { ...rescued, publishedAt: '2026-11-27T22:30:00.000Z' };
   eq('rescue: filterCandidate rejects +50h scoreless external (date guard)', filterCandidate(guardExternal, game).reason, 'teams');
+}
+
+// ---------- Part 9: video news-sitemap harvest (2026-11-26) ----------
+// The homepage rail keeps ~12 items for ~13-17h, so a game whose
+// highlight rotates off the rail before any compute runs is never
+// captured — the preview's cold index proved it on Nov 26 (Lille,
+// Inter, Atlético items 568931/32/33 were on the rail at 03:59 UTC
+// and gone by 08:47). Sport5's video news-sitemap
+// (www.sport5.co.il/sitemap/video/news-sitemap.xml, declared in
+// robots.txt) lists ~43 recent VOD items with ~2 days of coverage,
+// fetchable server-side from the www host. The captured real sitemap
+// below (2026-11-26 11:46 IST) still lists all three rotated-off
+// items with their exact headlines.
+{
+  const sitemapXml = readFileSync(
+    path.join(__dirname, '..', 'fixtures', 'sport5', 'video-sitemap-2026-11-26.xml'),
+    'utf8'
+  );
+  const items = parseSport5VideoSitemap(sitemapXml);
+  eq('sitemap: 43 items parsed', items.length, 43);
+  const byVi = new Map(items.map((i) => [i.vi, i]));
+  eq('sitemap: Lille headline exact', byVi.get(568933)?.title, 'ניצחון ענק: 1:2 לליל על באיירן מינכן');
+  eq('sitemap: Inter headline exact', byVi.get(568932)?.title, '0:2 לאינטר על שטוטגארט');
+  eq('sitemap: Atlético headline exact', byVi.get(568931)?.title, 'אלבארז וסורלות` העניקו לאתלטיקו ניצחון על ויקינג');
+  eq('sitemap: Roma headline exact', byVi.get(568936)?.title, 'רומא עצרה את אלופת אירופה בביתה');
+  check('sitemap: thumbnails parsed', items.every((i) => !!i.thumb));
+
+  // Sitemap items enter the index rail-style: no publishedMs (the
+  // sitemap's publication_date is a CMS creation stamp that predates
+  // kickoff, so it must NOT feed the date window). A Lille game
+  // (2026-11-25T20:00) matches a sitemap item firstSeen in-window.
+  const now = Date.parse('2026-11-26T04:00:00Z');
+  const merged = mergeSport5Index([], items, now);
+  eq('sitemap: merged items carry no publishedMs', merged.every((i) => i.publishedMs === undefined), true);
+  eq('sitemap: merged firstSeen is the harvest time', merged.find((i) => i.vi === 568933)?.firstSeen, now);
+  const lilleGame: GameInput = {
+    home: 'Lille', away: 'Bayern München', homeScore: 2, awayScore: 1,
+    dateISO: '2026-11-25T20:00:00.000Z', league: 'champions-league',
+  };
+  const rLille = matchSport5Index(merged, lilleGame, CATEGORY);
+  check('sitemap: rotated-off Lille item serves its game', rLille.candidate?.id === 'sport5:568933');
+
+  // Dedupe against rail items by vi: a re-harvest preserves the
+  // rail item's firstSeen.
+  const railFirst = Date.parse('2026-11-26T03:59:59.939Z');
+  const prev: Sport5IndexItem[] = [{
+    vc: 893, vi: 568936, title: 'רומא עצרה את אלופת אירופה בביתה',
+    firstSeen: railFirst, lastSeen: railFirst,
+  }];
+  const merged2 = mergeSport5Index(prev, items, now);
+  eq('sitemap: dedupe keeps one item per vi', merged2.filter((i) => i.vi === 568936).length, 1);
+  eq('sitemap: re-harvest preserves firstSeen', merged2.find((i) => i.vi === 568936)?.firstSeen, railFirst);
+
+  // Robustness on synthetic input: a non-VOD loc and a title-less
+  // entry are skipped; a video:title-only entry is kept.
+  const synthetic = `<urlset><url><loc>https://www.sport5.co.il/articles.aspx?FolderID=398&amp;docID=1</loc><news:title><![CDATA[story]]></news:title></url><url><loc>https://vod.sport5.co.il/?vc=893&amp;vi=900001</loc></url><url><loc>https://vod.sport5.co.il/?vc=893&amp;vi=900002</loc><video:title><![CDATA[clip only]]></video:title></url></urlset>`;
+  const syn = parseSport5VideoSitemap(synthetic);
+  eq('sitemap: synthetic keeps only the video:title entry', syn.map((i) => i.vi), [900002]);
 }
 
 console.log(`\nsport5_external_test: ${pass} passed, ${fail} failed`);

@@ -30,6 +30,18 @@
  * the real page — the two text articles lack it). v1 scope is Ligue 1
  * only; other competitions' league folders are not yet mapped.
  *
+ * Third discovery source (2026-11-26): Sport5's video news-sitemap
+ * (www.sport5.co.il/sitemap/video/news-sitemap.xml, declared in
+ * robots.txt). It lists ~43 recent VOD items — about 2 days of
+ * coverage, vs ~12 items for ~13-17h on the rail — with the exact
+ * headline, VOD id and thumbnail per item, and it is fetchable
+ * server-side from the www host (unlike the VOD pages themselves,
+ * which 403 datacenter fetches). Its <news:publication_date> is a CMS
+ * creation stamp that PREDATES the game (the UCL batch is stamped
+ * 10:32 IST on match day, hours before kickoff), so sitemap items
+ * deliberately carry no publishedMs: they enter the index rail-style,
+ * with firstSeen governing the date window.
+ *
  * Matching is conservative by design (see matchSport5Index): both
  * teams in the headline (or one team + the exact scoreline) + score
  * cross-check + date proximity, and ANY ambiguity yields no result —
@@ -309,6 +321,82 @@ export async function harvestSport5Rail(
   }
 }
 
+const VIDEO_SITEMAP_URL =
+  'https://www.sport5.co.il/sitemap/video/news-sitemap.xml';
+const DESKTOP_UA =
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 ' +
+  '(KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36';
+
+/**
+ * Parse Sport5's video news-sitemap: one <url> per recent video, with
+ * the VOD link (lowercase vc/vi params) in <loc> and the headline in
+ * <news:title> (CDATA), falling back to <video:title>. Thumbnail from
+ * <video:thumbnail_loc>. Pure — unit-tested against the captured real
+ * sitemap (fixtures/sport5/video-sitemap-2026-11-26.xml, 43 entries).
+ * Duplicate vis dedupe. The sitemap's <news:publication_date> is
+ * deliberately NOT parsed: it is a CMS creation stamp that predates
+ * the game (the Nov 25 UCL batch is stamped 10:32 IST on match day,
+ * hours before kickoff), so feeding it to the matcher would reject
+ * real highlights on the game-day rule — items enter the index
+ * rail-style, with firstSeen governing the date window.
+ */
+export function parseSport5VideoSitemap(xml: string): Sport5RailItem[] {
+  const out: Sport5RailItem[] = [];
+  const seen = new Set<number>();
+  const blocks = xml.match(/<url>[\s\S]*?<\/url>/g) ?? [];
+  for (const block of blocks) {
+    const loc = block.match(/<loc>([^<]+)<\/loc>/);
+    if (!loc) continue;
+    // The loc carries &amp; separators, so decode before matching
+    // the query params (the char before "vi" is otherwise ";" from
+    // "&amp;", not "&").
+    const href = decodeEntities(loc[1]);
+    const vcM = href.match(/[?&]vc=(\d+)/i);
+    const viM = href.match(/[?&]vi=(\d+)/i);
+    if (!vcM || !viM) continue;
+    const vc = parseInt(vcM[1], 10);
+    const vi = parseInt(viM[1], 10);
+    if (!Number.isFinite(vc) || !Number.isFinite(vi) || seen.has(vi)) continue;
+    const titleM =
+      block.match(/<news:title>([\s\S]*?)<\/news:title>/) ??
+      block.match(/<video:title>([\s\S]*?)<\/video:title>/);
+    const rawTitle = (titleM?.[1] ?? '')
+      .replace(/^<!\[CDATA\[/, '')
+      .replace(/\]\]>$/, '');
+    const title = decodeEntities(rawTitle);
+    if (!title) continue;
+    const thumbM = block.match(/<video:thumbnail_loc>([^<]+)<\/video:thumbnail_loc>/);
+    seen.add(vi);
+    out.push({
+      vc,
+      vi,
+      title,
+      ...(thumbM ? { thumb: thumbM[1].trim() } : {}),
+    });
+  }
+  return out;
+}
+
+/** Fetch the video news-sitemap and parse its VOD items. Null on any failure. */
+export async function harvestSport5VideoSitemap(
+  timeoutMs = 12000
+): Promise<Sport5RailItem[] | null> {
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), timeoutMs);
+  try {
+    const res = await fetch(VIDEO_SITEMAP_URL, {
+      signal: ctrl.signal,
+      headers: { 'User-Agent': DESKTOP_UA },
+    });
+    if (!res.ok) return null;
+    return parseSport5VideoSitemap(await res.text());
+  } catch {
+    return null;
+  } finally {
+    clearTimeout(t);
+  }
+}
+
 /**
  * Merge freshly harvested items into the stored index (pure). Fresh
  * items are rail items (VOD, keyed by vi) or league-page items
@@ -370,10 +458,11 @@ export function mergeSport5Index(
 
 /**
  * Load the accumulated index, re-harvesting first when the last
- * harvest is older than HARVEST_TTL_MS. Both sources are harvested
- * (rail + Ligue 1 league page) and each failure is isolated: one
- * source failing still merges the other. A fully failed harvest falls
- * back to the stored index (possibly empty) — never throws.
+ * harvest is older than HARVEST_TTL_MS. All three sources are
+ * harvested (rail + Ligue 1 league page + video news-sitemap) and each
+ * failure is isolated: one source failing still merges the others. A
+ * fully failed harvest falls back to the stored index (possibly
+ * empty) — never throws.
  */
 export async function loadSport5Index(): Promise<Sport5IndexItem[]> {
   let items: Sport5IndexItem[] = [];
@@ -389,12 +478,17 @@ export async function loadSport5Index(): Promise<Sport5IndexItem[]> {
   }
   const now = Date.now();
   if (now - lastHarvest > HARVEST_TTL_MS) {
-    const [freshRail, freshLeague] = await Promise.all([
+    const [freshRail, freshLeague, freshSitemap] = await Promise.all([
       harvestSport5Rail(),
       harvestSport5LeaguePage(),
+      harvestSport5VideoSitemap(),
     ]);
-    const fresh = [...(freshRail ?? []), ...(freshLeague ?? [])];
-    if (freshRail || freshLeague) {
+    const fresh = [
+      ...(freshRail ?? []),
+      ...(freshLeague ?? []),
+      ...(freshSitemap ?? []),
+    ];
+    if (freshRail || freshLeague || freshSitemap) {
       items = mergeSport5Index(items, fresh, now);
       try {
         await pset(INDEX_KEY, { items } satisfies Sport5Index);
