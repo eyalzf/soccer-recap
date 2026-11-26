@@ -24,6 +24,7 @@ import {
   type Sport5LeagueItem,
 } from '../lib/recap/sport5';
 import { applyExternalExclusivity } from '../lib/recap/external';
+import { filterCandidate } from '../lib/recap/match';
 import { gameCacheKeyMatchesDate } from '../lib/recap/sweep';
 import { searchPlanFor } from '../lib/recap/leaguePlans';
 import type { GameInput, RawCandidate } from '../lib/recap/types';
@@ -124,7 +125,16 @@ for (const { game, vi } of GAMES) {
     dateISO: '2026-10-13T19:00:00.000Z', league: 'champions-league',
   };
   const r = matchSport5Index(index, game, CATEGORY);
-  eq('absent pairing: no candidate', r.candidate, null);
+  // 2026-11-26: the scoreless single-team rescue changes this case.
+  // The rail's Real Madrid BASKETBALL item (vi 563580, 'מאלדון ופליז
+  // הובילו את ריאל לניצחון על מילאנו' — 'ריאל' names Real Madrid and
+  // there is no scoreline) is now the unique rescue: the fixture's
+  // uniform firstSeen (2026-10-14T08:00Z) sits 13h after this game's
+  // kickoff, inside the rescue's 24h date guard. This is the accepted
+  // slip the rescue trades for scoreless real highlights (PSG–Roma,
+  // Part 8); the guard pins there bound it to the game window, and a
+  // scored headline still never rescues (563574 stays 'teams').
+  eq('absent pairing: scoreless basketball item is the unique rescue (2026-11-26)', r.candidate?.id, 'sport5:563580');
   eq('absent pairing: barca item rejected on teams', r.considered.find((c) => c.vi === 563574)?.reason, 'teams');
 }
 
@@ -540,7 +550,10 @@ for (const { game, vi } of GAMES) {
     [mkItem(600005, 'חגיגה גדולה לפ.ס.ז\'', '2026-10-30T21:31:00Z')],
     leHavre, CATEGORY
   );
-  check('ligue1: single-team headline without a score rejected', r5.candidate === null);
+  // 2026-11-26: a scoreless single-team headline is now kept as the
+  // unique rescue when nothing stricter matches (Part 8 pins the
+  // guards around this: competing rescues, pre-game-day, wrong score).
+  check('ligue1: single-team headline without a score kept as unique rescue (2026-11-26)', r5.candidate?.id === 'sport5:600005');
 
   // Game-day-or-after (2026-11-02): an item dated before the game's
   // calendar day is a previous fixture's item, even with matching
@@ -807,6 +820,96 @@ for (const { game, vi } of GAMES) {
       <div class="btn-play"><img data-src="https://example.com/t.jpg" alt="פ.ס.ז\` ניצחה 0:1 את טרואה" /></div>
       <span>07.11.26</span></a>`;
   eq('main article: duplicated as list item parses once', parseSport5LeaguePage(dupHtml).length, 1);
+}
+
+// ---------- Part 8: scoreless single-team rescue (2026-11-26) ----------
+// PSG 2-2 Roma (UCL MD5, 2026-11-25) found no Sport5 source although
+// the highlight WAS in the index: vi 568936, 'רומא עצרה את אלופת
+// אירופה בביתה' — Roma named, PSG present only as 'the European
+// champion', and no scoreline at all, so the strict single-team
+// exception (which needs the exact score) rejected it on 'teams'
+// (production debug diag 2026-11-26: 261 considered, 0 kept). The
+// rescue: when the strict rules match nothing, a scoreless
+// single-team item is kept iff it is the ONLY such item in the
+// window AND it is dated within 24h after kickoff (the date guard —
+// the strict rules' +3d window does not apply to the rescue).
+{
+  const mkItem = (vi: number, title: string, firstSeen: string): Sport5IndexItem => ({
+    vc: 893, vi, title, firstSeen: Date.parse(firstSeen), lastSeen: Date.parse(firstSeen),
+  });
+  const game: GameInput = {
+    home: 'Paris Saint-Germain', away: 'Roma', homeScore: 2, awayScore: 2,
+    dateISO: '2026-11-25T20:00:00.000Z', league: 'champions-league',
+  };
+  const HEADLINE = 'רומא עצרה את אלופת אירופה בביתה';
+
+  const r1 = matchSport5Index([mkItem(568936, HEADLINE, '2026-11-25T22:30:00Z')], game, CATEGORY);
+  check('rescue: real PSG–Roma headline kept', r1.candidate?.id === 'sport5:568936');
+  check('rescue: kept verdict marked ok', r1.considered.find((c) => c.vi === 568936)?.keep === true);
+
+  // A strict (both-teams) match beats the rescue — the rescue item
+  // stays rejected and the strict item is the result.
+  const r2 = matchSport5Index(
+    [
+      mkItem(568936, HEADLINE, '2026-11-25T22:30:00Z'),
+      mkItem(568999, 'תקציר: פ.ס.ז\' ורומא נפרדו ב-2:2', '2026-11-25T22:35:00Z'),
+    ],
+    game, CATEGORY
+  );
+  check('rescue: strict match wins over rescue', r2.candidate?.id === 'sport5:568999');
+  check('rescue: unused rescue stays rejected', r2.considered.find((c) => c.vi === 568936)?.keep === false);
+
+  // Two competing scoreless single-team items → ambiguous, no result.
+  const r3 = matchSport5Index(
+    [
+      mkItem(568936, HEADLINE, '2026-11-25T22:30:00Z'),
+      mkItem(568937, 'חגיגה גדולה לפ.ס.ז\'', '2026-11-25T22:31:00Z'),
+    ],
+    game, CATEGORY
+  );
+  check('rescue: two competing rescues are ambiguous', r3.candidate === null && r3.ambiguous === true);
+
+  // A scoreless single-team item dated before the game day is a
+  // previous fixture's item — no rescue.
+  const r4 = matchSport5Index([mkItem(568936, HEADLINE, '2026-11-24T22:00:00Z')], game, CATEGORY);
+  check('rescue: pre-game-day item not rescued', r4.candidate === null);
+  eq('rescue: pre-game-day reason', r4.considered.find((c) => c.vi === 568936)?.reason, 'date');
+
+  // A single-team headline WITH a (wrong) scoreline is never rescued:
+  // the score veto stands.
+  const r5b = matchSport5Index(
+    [mkItem(568940, 'ניצחון חוץ ענק: רומא גברה 1:0 על אלופת אירופה', '2026-11-25T22:30:00Z')],
+    game, CATEGORY
+  );
+  check('rescue: wrong-score single-team headline not rescued', r5b.candidate === null && r5b.ambiguous === false);
+
+  // Date guard (user, 2026-11-26): the rescue does NOT inherit the
+  // strict +3d window — the item must be dated within 24h after
+  // kickoff. +50h is inside the strict window but outside the guard;
+  // +23h is inside the guard.
+  const r6 = matchSport5Index([mkItem(568936, HEADLINE, '2026-11-27T22:30:00Z')], game, CATEGORY);
+  check('rescue: item +50h after kickoff not rescued (date guard)', r6.candidate === null);
+  eq('rescue: date-guard rejection keeps teams reason', r6.considered.find((c) => c.vi === 568936)?.reason, 'teams');
+  const r7 = matchSport5Index([mkItem(568936, HEADLINE, '2026-11-26T19:00:00Z')], game, CATEGORY);
+  check('rescue: item +23h after kickoff still rescued', r7.candidate?.id === 'sport5:568936');
+
+  // filterCandidate (route ingest) must keep the rescued candidate —
+  // the Le Havre mirror rule — while still rejecting the same shape
+  // from a preferred YouTube channel and when the date is far away.
+  const rescued = r1.candidate!;
+  check('rescue: filterCandidate keeps rescued Sport5 candidate', filterCandidate(rescued, game).keep === true);
+  const ytPreferred: RawCandidate = {
+    id: 'yt:x', title: HEADLINE, source: 'youtube', channelName: 'ONE',
+    url: 'https://www.youtube.com/watch?v=x', lang: 'he',
+    publishedAt: '2026-11-25T22:30:00.000Z',
+  };
+  eq('rescue: filterCandidate still rejects preferred-channel scoreless single-team', filterCandidate(ytPreferred, game).reason, 'teams');
+  const farExternal: RawCandidate = { ...rescued, publishedAt: '2026-12-06T22:30:00.000Z' };
+  eq('rescue: filterCandidate rejects far-dated scoreless external', filterCandidate(farExternal, game).reason, 'teams');
+  // Ingest-side date guard: +50h has prox 'ok' (2.1d), so only the
+  // guard itself can reject it.
+  const guardExternal: RawCandidate = { ...rescued, publishedAt: '2026-11-27T22:30:00.000Z' };
+  eq('rescue: filterCandidate rejects +50h scoreless external (date guard)', filterCandidate(guardExternal, game).reason, 'teams');
 }
 
 console.log(`\nsport5_external_test: ${pass} passed, ${fail} failed`);
