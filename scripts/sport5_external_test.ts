@@ -21,6 +21,7 @@ import {
   parseSport5LeaguePage,
   parseSport5Rail,
   parseSport5VideoSitemap,
+  refreshSport5Index,
   type Sport5IndexItem,
   type Sport5LeagueItem,
 } from '../lib/recap/sport5';
@@ -971,5 +972,72 @@ for (const { game, vi } of GAMES) {
   eq('sitemap: synthetic keeps only the video:title entry', syn.map((i) => i.vi), [900002]);
 }
 
-console.log(`\nsport5_external_test: ${pass} passed, ${fail} failed`);
-process.exit(fail ? 1 : 0);
+// ---------- Part 10: forced refresh for the scheduled harvest (2026-11-26) ----------
+// The harvest endpoint (app/api/recap/harvest/route.ts) must refresh
+// on demand, not on the 30-min TTL — otherwise a scheduled ping
+// inside the TTL would be a no-op. refreshSport5Index forces the
+// harvest and reports added/refreshed counts; the in-memory store
+// below stands in for R2.
+(async () => {
+  let stored: Sport5IndexItem[] = [];
+  const store = {
+    load: async () => ({ items: stored, fetchedAt: 0 }),
+    save: async (items: Sport5IndexItem[]) => {
+      stored = items;
+    },
+  };
+  const siteStub = parseSport5VideoSitemap(
+    readFileSync(
+      path.join(__dirname, '..', 'fixtures', 'sport5', 'video-sitemap-2026-11-26.xml'),
+      'utf8'
+    )
+  );
+  const railStub = [{ vc: 893, vi: 568936, title: 'רומא עצרה את אלופת אירופה בביתה' }];
+  const r1 = await refreshSport5Index({
+    ...store,
+    harvestRail: async () => railStub,
+    harvestLeague: async () => null,
+    harvestSitemap: async () => siteStub,
+  });
+  // The rail stub's vi is also in the sitemap (43 items) → deduped in
+  // the count: 43 added, 0 refreshed.
+  eq('refresh: first run adds the sitemap items', r1.added, 43);
+  eq('refresh: first run refreshes nothing', r1.refreshed, 0);
+  eq('refresh: sources report rail + sitemap, league failed', r1.sources, {
+    rail: true,
+    league: false,
+    sitemap: true,
+  });
+  eq('refresh: index holds the merged items', r1.items.length, 43);
+
+  // Second refresh with one new rail item: only it is added, the rest
+  // refreshed, and firstSeen is preserved for the refreshed items.
+  const firstSeenBefore = r1.items.find((i) => i.vi === 568936)?.firstSeen;
+  const r2 = await refreshSport5Index({
+    ...store,
+    harvestRail: async () => [...railStub, { vc: 893, vi: 568999, title: 'קליפ חדש' }],
+    harvestLeague: async () => null,
+    harvestSitemap: async () => siteStub,
+  });
+  eq('refresh: second run adds only the new item', r2.added, 1);
+  eq('refresh: second run refreshes the rest', r2.refreshed, 43);
+  eq('refresh: firstSeen preserved across refreshes', r2.items.find((i) => i.vi === 568936)?.firstSeen, firstSeenBefore);
+
+  // Total failure leaves the stored index untouched.
+  const r3 = await refreshSport5Index({
+    ...store,
+    harvestRail: async () => null,
+    harvestLeague: async () => null,
+    harvestSitemap: async () => null,
+  });
+  eq('refresh: total failure returns stored index unchanged', r3.items.length, 44);
+  eq('refresh: total failure adds nothing', r3.added, 0);
+  eq('refresh: total failure reports all sources down', r3.sources, {
+    rail: false,
+    league: false,
+    sitemap: false,
+  });
+
+  console.log(`\nsport5_external_test: ${pass} passed, ${fail} failed`);
+  process.exit(fail ? 1 : 0);
+})();
