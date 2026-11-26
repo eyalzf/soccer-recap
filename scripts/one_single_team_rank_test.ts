@@ -224,6 +224,15 @@ eq('external comeback both-teams kept (veto must not fire on intermediate score)
 // matcher had already proven it correct, and the live card showed
 // YouTube only. Fixture-mapped candidates skip the title-based
 // teams/score checks; every other guard still applies.
+// 2026-11-26 amendment: the scoreless single-team rescue added a
+// second, narrower path for title-matched external candidates — a
+// scoreless single-team headline within kickoff +24h is kept at
+// ingest as the mirror of matchSport5Index's rescue (whose
+// fallback-only + uniqueness gating lives in the index matcher).
+// The pins below therefore changed for the in-guard scoreless shape;
+// what the fixtureMapped flag still buys on its own is pinned by the
+// late-date pair: outside the rescue guard, only the flagged
+// candidate survives.
 const fioGame: GameInput = {
   home: 'Fiorentina',
   away: 'Juventus',
@@ -249,14 +258,31 @@ eq('fixture-mapped ONE scoreless single-team headline kept', filterCandidate(fio
   reason: 'ok',
 });
 const fioOneUnmapped = { ...fioOneBase, fixtureMapped: undefined };
-eq('same headline without fixtureMapped rejected', filterCandidate(fioOneUnmapped, fioGame), {
+eq('same headline without fixtureMapped kept via rescue mirror (2026-11-26)', filterCandidate(fioOneUnmapped, fioGame), {
+  keep: true,
+  reason: 'ok',
+});
+const fioOneUnmappedLate = { ...fioOneUnmapped, publishedAt: '2026-11-10T21:45:00.000Z' };
+eq('unmapped headline outside rescue date guard rejected', filterCandidate(fioOneUnmappedLate, fioGame), {
   keep: false,
   reason: 'teams',
+});
+const fioOneLate = { ...fioOneBase, publishedAt: '2026-11-10T21:45:00.000Z' };
+eq('fixture-mapped headline outside rescue guard still kept (flag exempts)', filterCandidate(fioOneLate, fioGame), {
+  keep: true,
+  reason: 'ok',
 });
 const fioSport5 = ext('sport5:article:fio', 'פיורנטינה נשארת בתחתית אחרי תיקו עם יובה', {
   publishedAt: '2026-11-08T19:45:00.000Z',
 });
-eq('Sport5 title-matched twin still rejected', filterCandidate(fioSport5, fioGame), {
+eq('Sport5 title-matched twin kept via rescue mirror (2026-11-26)', filterCandidate(fioSport5, fioGame), {
+  keep: true,
+  reason: 'ok',
+});
+const fioSport5Late = ext('sport5:article:fio-late', 'פיורנטינה נשארת בתחתית אחרי תיקו עם יובה', {
+  publishedAt: '2026-11-10T21:45:00.000Z',
+});
+eq('Sport5 twin outside rescue date guard rejected', filterCandidate(fioSport5Late, fioGame), {
   keep: false,
   reason: 'teams',
 });
