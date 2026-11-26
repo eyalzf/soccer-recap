@@ -39,7 +39,7 @@
  * recap pipeline.
  */
 import { pget, pset } from './persist';
-import { extractScore, teamMentioned, titleHasScore } from './match';
+import { extractScore, extractScores, teamMentioned, titleHasScore } from './match';
 import { lookupClubEn } from '../teamIndex';
 import type { ExternalSourceConfig } from './leaguePlans';
 import type { GameInput, RawCandidate } from './types';
@@ -439,7 +439,20 @@ export interface Sport5MatchResult {
  *    ('date') — a highlight cannot predate the game it recaps (user
  *    decision 2026-11-02, same rule as the shared matcher);
  *  - exactly one surviving item → the result; zero → none; two or
- *    more → 'ambiguous': no result (a wrong link is worse than none).
+ *    more → 'ambiguous': no result (a wrong link is worse than none);
+ *  - scoreless single-team rescue (2026-11-26): when the rules above
+ *    match nothing, an item naming exactly one team and carrying NO
+ *    scoreline at all is kept if it is the ONLY such item in the
+ *    window (two or more → 'ambiguous'). Sport5's real PSG 2-2 Roma
+ *    headline 'רומא עצרה את אלופת אירופה בביתה' names Roma only —
+ *    PSG appears as 'the European champion' — and has no score to
+ *    verify against; it also cannot contradict the fixture, so the
+ *    identity rests on trusted source + one team + date window +
+ *    uniqueness. An item WITH a non-matching scoreline is never a
+ *    rescue candidate: the score veto stands. The rescue's date
+ *    window is tighter than the strict rules' (user, 2026-11-26):
+ *    within 24h after kickoff, not +3d — the guard that keeps
+ *    same-club items from other days (other sports included) out.
  *
  * The item's rail category (`vc`) is deliberately NOT a gate: on
  * 2026-10-15 Sport5 changed the homepage rail to link every item
@@ -463,10 +476,12 @@ export function matchSport5Index(
   const home = lookupClubEn(game.home);
   const away = lookupClubEn(game.away);
   const gameTime = Date.parse(game.dateISO);
-  const considered: Sport5Considered[] = [];
+  const verdicts: { it: Sport5IndexItem; entry: Sport5Considered }[] = [];
   const matches: Sport5IndexItem[] = [];
+  const rescueMatches: Sport5IndexItem[] = [];
   for (const it of items) {
     let reason = 'ok';
+    let rescue = false;
     if (!home || !away) {
       reason = 'unknown-team';
     } else {
@@ -487,10 +502,14 @@ export function matchSport5Index(
         // broadcaster. The date window and exactly-one rules below
         // still apply, so a one-team clip cannot hijack a game alone.
         reason = 'teams';
+        // Scoreless variant (2026-11-26): no scoreline at all → the
+        // item becomes a rescue candidate (see the function doc). A
+        // non-matching scoreline never rescues — the veto stands.
+        if (extractScores(it.title).length === 0) rescue = true;
       } else if (sc && !scoreMatches) {
         reason = 'score';
       }
-      if (reason === 'ok') {
+      if (reason === 'ok' || rescue) {
         // League-page article items carry their real publication date;
         // rail items only have firstSeen (the rail carries no per-item
         // date), so firstSeen is the fallback. Lower bound is the
@@ -500,24 +519,58 @@ export function matchSport5Index(
         const itemMs = it.publishedMs ?? it.firstSeen;
         const gameDayStart = Date.parse(game.dateISO.slice(0, 10) + 'T00:00:00.000Z');
         const diff = (itemMs - gameTime) / DAY;
-        if (Number.isNaN(diff) || itemMs < gameDayStart || diff > 3) reason = 'date';
+        if (Number.isNaN(diff) || itemMs < gameDayStart || diff > 3) {
+          reason = 'date';
+          rescue = false;
+        }
+        // Date guard for the rescue (user, 2026-11-26): the rescue
+        // rests on weaker identity than the strict rules, so it does
+        // not inherit their +3d window — a rescue item must be dated
+        // within 24h after kickoff (the game-day lower bound above
+        // still applies). A genuine highlight is published within
+        // hours; the tighter window is what keeps a same-club item
+        // from another day (e.g. the club's basketball team) from
+        // slipping in.
+        if (rescue && itemMs > gameTime + DAY) rescue = false;
       }
     }
     const keep = reason === 'ok';
     if (keep) matches.push(it);
-    considered.push({
-      vi: it.vi,
-      vc: it.vc,
-      ...(it.docId ? { docId: it.docId } : {}),
-      title: it.title,
-      keep,
-      reason,
+    if (rescue) rescueMatches.push(it);
+    verdicts.push({
+      it,
+      entry: {
+        vi: it.vi,
+        vc: it.vc,
+        ...(it.docId ? { docId: it.docId } : {}),
+        title: it.title,
+        keep,
+        reason,
+      },
     });
   }
+  const considered = verdicts.map((v) => v.entry);
   if (matches.length > 1) {
     return { candidate: null, ambiguous: true, considered };
   }
-  const it = matches[0];
+  let it = matches[0];
+  if (!it) {
+    // Scoreless single-team rescue (2026-11-26): the strict rules
+    // matched nothing. Exactly one rescue candidate in the window →
+    // keep it; two or more → 'ambiguous', exactly like strict
+    // ambiguity (a wrong link is worse than none).
+    if (rescueMatches.length > 1) {
+      return { candidate: null, ambiguous: true, considered };
+    }
+    it = rescueMatches[0];
+    if (it) {
+      const v = verdicts.find((x) => x.it === it);
+      if (v) {
+        v.entry.keep = true;
+        v.entry.reason = 'ok';
+      }
+    }
+  }
   if (!it) return { candidate: null, ambiguous: false, considered };
   return {
     candidate: {
