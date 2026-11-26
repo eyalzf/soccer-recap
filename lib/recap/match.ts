@@ -458,11 +458,33 @@ export function filterCandidate(
     // scoreline is the intermediate score, not the final one — the
     // exception must look for the fixture score anywhere in the title.
     const scoreMatches = titleHasScore(c.title, game.homeScore, game.awayScore);
+    // Scoreless external rescue (2026-11-26): matchSport5Index keeps a
+    // single-team headline carrying NO scoreline at all only as a last
+    // resort — no strict match, and the only such item in the window
+    // (Sport5's real 'רומא עצרה את אלופת אירופה בביתה' for PSG 2-2
+    // Roma, where PSG is present only as 'the European champion'). An
+    // external candidate reaching this filter in that shape IS that
+    // rescue, so the teams check must not veto it here either (the
+    // Le Havre lesson in the NOTE above). Preferred YouTube channels
+    // do NOT get this branch: their single-team headlines still need
+    // the exact scoreline. The scoreless branch carries the rescue's
+    // date guard (mirrors matchSport5Index): the candidate's date
+    // must fall within kickoff +24h — the pre-game-day reject above
+    // covers the lower bound, so only the upper bound is checked
+    // here. The scored exception keeps the looser ok/near proximity.
+    const pubMs = c.publishedAt ? Date.parse(c.publishedAt) : NaN;
+    const gameMs = Date.parse(game.dateISO);
+    const scorelessExternal =
+      c.external === true &&
+      !sc &&
+      extractScores(c.title).length === 0 &&
+      !Number.isNaN(pubMs) &&
+      !Number.isNaN(gameMs) &&
+      pubMs <= gameMs + 86400000;
     const singleTeamPreferred =
       (isPreferredChannel(c) || c.external === true) &&
       homeMentioned !== awayMentioned &&
-      scoreMatches &&
-      (prox === 'ok' || prox === 'near');
+      ((scoreMatches && (prox === 'ok' || prox === 'near')) || scorelessExternal);
     if (!singleTeamPreferred) return { keep: false, reason: 'teams' };
   }
 
