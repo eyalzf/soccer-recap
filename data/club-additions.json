@@ -196,7 +196,26 @@
       "heAliases": [
         "אוניאו דה סרה"
       ]
+    },
+    {
+      "en": "Torreense",
+      "enAliases": [
+        "SCU Torreense",
+        "União Torreense"
+      ],
+      "he": "טורנסה",
+      "heAliases": []
+    },
+    {
+      "en": "FC Thun",
+      "enAliases": [
+        "Thun"
+      ],
+      "he": "תון",
+      "heAliases": [
+        "ת'ון"
+      ]
     }
   ],
-  "updated_at": "2026-11-22T04:02:59.000Z"
+  "updated_at": "2026-11-27T04:07:53.000Z"
 }
