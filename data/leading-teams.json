@@ -2,7 +2,7 @@
   "league": "leading-teams",
   "league_id": 0,
   "season": "2026/27",
-  "updated_at": "2026-11-23T04:01:06.000Z",
+  "updated_at": "2026-11-27T04:07:53.000Z",
   "checked_through": "2026-08-01",
   "team_ids": {
     "1. FC Köln": 8722,
@@ -63,9 +63,61 @@
     "St Mirren": 9800,
     "Columbus Crew": 6001,
     "Frosinone": 9891,
-    "ADO Den Haag": 10217
+    "ADO Den Haag": 10217,
+    "FC Thun": 10191,
+    "Olympiacos": 8638,
+    "Omonia Nicosia": 8044,
+    "Torreense": 212820
   },
   "games": [
+    {
+      "id": "team-20261126-juventus-omonia-nicosia",
+      "home": "Juventus",
+      "away": "Omonia Nicosia",
+      "dateISO": "2026-11-26T20:00:00.000Z",
+      "homeScore": 4,
+      "awayScore": 1,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9885.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8044.png",
+      "stage": "שלב הליגה · מחזור 5",
+      "competition": "europa-league"
+    },
+    {
+      "id": "team-20261126-torreense-celtic",
+      "home": "Torreense",
+      "away": "Celtic",
+      "dateISO": "2026-11-26T20:00:00.000Z",
+      "homeScore": 1,
+      "awayScore": 2,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/212820.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/9925.png",
+      "stage": "שלב הליגה · מחזור 5",
+      "competition": "europa-league"
+    },
+    {
+      "id": "team-20261126-ajax-fc-thun",
+      "home": "Ajax",
+      "away": "FC Thun",
+      "dateISO": "2026-11-26T17:45:00.000Z",
+      "homeScore": 4,
+      "awayScore": 0,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8593.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/10191.png",
+      "stage": "שלב הליגה · מחזור 4",
+      "competition": "conference-league"
+    },
+    {
+      "id": "team-20261126-olympiacos-ac-milan",
+      "home": "Olympiacos",
+      "away": "AC Milan",
+      "dateISO": "2026-11-26T17:45:00.000Z",
+      "homeScore": 2,
+      "awayScore": 4,
+      "homeBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8638.png",
+      "awayBadge": "https://images.fotmob.com/image_resources/logo/teamlogo/8564.png",
+      "stage": "שלב הליגה · מחזור 5",
+      "competition": "europa-league"
+    },
     {
       "id": "team-20261122-atalanta-inter",
       "home": "Atalanta",
